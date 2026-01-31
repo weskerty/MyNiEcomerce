@@ -40,29 +40,24 @@ jobs:
                   print(f"Error reading directory {directory}: {e}")
                   return []
           
-          def process_dinamico_gallery(folder_path):
-              if not os.path.exists(folder_path):
-                  print(f"Directory not found: {folder_path}")
-                  return []
-              
-              image_files = get_files(folder_path, {'.jpg', '.jpeg', '.png', '.gif', '.webp'})
-              html_files = get_files(folder_path, {'.html', '.md'})
-              gallery_items = []
-              
-              html_file_map = {os.path.splitext(f)[0]: f for f in html_files}
-              
-              for image_file in image_files:
-                  name = os.path.splitext(image_file)[0]
-                  html_file = html_file_map.get(name)
-                  
-                  if html_file:
-                      gallery_items.append({
-                          "image": f"web/Dinamico/{os.path.basename(folder_path)}/{image_file}",
-                          "link": f"web/Dinamico/{os.path.basename(folder_path)}/{html_file}",
-                          "name": name
-                      })
-              
-              return gallery_items
+          def process_dinamico_gallery(b, n):
+              g = []
+              for r, d, f in os.walk(b):
+                  i = [x for x in f if os.path.splitext(x)[1].lower() in {'.jpg','.jpeg','.png','.gif','.webp'}]
+                  h = [x for x in f if os.path.splitext(x)[1].lower() in {'.html','.md'}]
+                  if i:
+                      p = os.path.relpath(r, b)
+                      m = {os.path.splitext(x)[0]: x for x in h}
+                      for img in i:
+                          nm = os.path.splitext(img)[0]
+                          ht = m.get(nm)
+                          it = {"image": os.path.join(r, img).replace(os.sep, '/'), "name": nm}
+                          if p != '.':
+                              it["path"] = p
+                          if ht:
+                              it["link"] = os.path.join(r, ht).replace(os.sep, '/')
+                          g.append(it)
+              return g
           
           def process_recursive_gallery(base_path):
               galleries = {}
@@ -112,7 +107,7 @@ jobs:
                   if folder.is_dir():
                       print(f"Processing Dinamico folder: {folder.name}")
                       galleries[folder.name] = {
-                          "images": process_dinamico_gallery(folder)
+                          "images": process_dinamico_gallery(folder, folder.name)
                       }
               
               try:
@@ -151,3 +146,5 @@ jobs:
           git add web/Dinamico/data.json web/otros/Archivos/Imagenes/data.json
           git diff --staged --quiet || git commit -m "Actualizado Galeria Dinamica"
           git push
+          
+          
