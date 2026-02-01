@@ -1,3 +1,5 @@
+@import url('https://tetunori.github.io/fluent-emoji-webfont/dist/FluentEmojiColor.css');
+
 @font-face {
     font-family: 'OpenDyslexic';
     src: url('Fuentes/OpenDyslexic/OpenDyslexic-Regular.woff2') format('woff2');
@@ -7,7 +9,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: 'OpenDyslexic', sans-serif;
+    font-family: 'OpenDyslexic', 'Fluent Emoji Color', sans-serif;
     color: white;
     overflow-x: hidden; 
     /* background: url('https://i.ibb.co/TMjC4dH0/tekstury-razmytie-siniy.jpg') no-repeat center center fixed; */
@@ -118,7 +120,7 @@ blockquote.gold {
 
 .loading-screen p {
     font-size: 2em;
-    font-family: 'OpenDyslexic', sans-serif;
+    font-family: 'OpenDyslexic', 'Fluent Emoji Color', sans-serif;
 }
 
 .hide {
@@ -208,8 +210,8 @@ code {
 }
 
 .swiper-slide {
-    width: 210px !important; 
-    height: 252px !important; 
+    width: 250px !important; 
+    height: 300px !important; 
     position: relative;
     transition: all 0.3s ease; 
     overflow: hidden; 
@@ -257,14 +259,6 @@ code {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 30px;
     padding: 20px;
-}
-
-@media (max-width: 600px) {
-    .grid-gallery {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1px; 
-        padding: 1px;  
-    }
 }
 
 .grid-gallery img {
@@ -571,13 +565,36 @@ h2 {
   margin-bottom: 0; 
 }
 
-a {
-  text-decoration: none;
-}
-
 a:hover {
   text-decoration: underline; 
 }
+
+a:hover {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0);
+  background: linear-gradient(90deg, white, rgba(255,255,255,0.4), white);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+  transition: all 0.3s ease;
+}
+
+a::after {
+  content: '';
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+a:hover::after {
+  content: ' ↗️';
+  opacity: 1;
+}
+
+
+
+
 
 h1 a,
 h2 a,
