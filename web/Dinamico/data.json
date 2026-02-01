@@ -3,8 +3,13 @@
     "Alimentos": {
       "images": [
         {
+<<<<<<< Updated upstream
           "image": "web/Dinamico/Alimentos/Dulces/NM=0972184435-ID=Dulce8643-NB=Pasta Flora.jpg",
           "name": "NM=0972184435-ID=Dulce8643-NB=Pasta Flora",
+=======
+          "image": "web/Dinamico/Alimentos/Dulces/NM=0972184435-ID=Dulce8643-NB=Pasta_Flora.jpg",
+          "name": "N#=0972184435-ID=Dulce8643-NB=Pasta Flora",
+>>>>>>> Stashed changes
           "path": "Dulces",
           "link": "web/Dinamico/Alimentos/Dulces/NM=0972184435-ID=Dulce8643-NB=Pasta Flora.md"
         }
