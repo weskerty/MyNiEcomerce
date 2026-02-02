@@ -6,17 +6,40 @@
 <div class="grid-gallery" 
      id="Alimentos-grid"
      data-json-path="web/Dinamico/data.json"
-     data-path-filter="dulces">
+     data-path-filter="Dulces">
 </div>
 
 <a href="web/es.html" class="back-button">← Volver al Inicio</a>
 </div>
 
+
+
+
+
+
+
+<!-- galerías -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script>
+
 <script>
-async function loadGalleryData(j) {
+function eN(n) {
+    const m = n.match(/NB=([^.]+)/);
+    return m ? m[1] : n;
+}
+
+async function lGD(j) {
     try {
+        console.log(`Intentando cargar: ${j}`);
         const r = await fetch(j);
+        console.log(`Response status: ${r.status}`);
+        
+        if (!r.ok) {
+            throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+        }
+        
         const d = await r.json();
+        console.log('Datos cargados:', d);
         return d.galleries;
     } catch (e) {
         console.error(`Error loading gallery data from ${j}:`, e);
@@ -24,19 +47,49 @@ async function loadGalleryData(j) {
     }
 }
 
-function createGridGallery(c, i) {
-    c.innerHTML = i.map(x => `
-        <a href="${x.link || '#'}">
+function cGI(x) {
+    return `
+        <a href="${x.link || '#'}" class="gallery-item">
             <img src="${x.image}" alt="${x.name || 'Imagen'}" loading="lazy" />
+            <div class="menu-content">
+                <h3>${eN(x.name)}</h3>
+            </div>
         </a>
-    `).join('');
+    `;
 }
 
-function filterGalleryData(g, c) {
+function cS(c, i) {
+    c.innerHTML = `
+        <div class="swiper-wrapper">
+            ${i.map(x => `
+                <div class="swiper-slide">
+                    ${cGI(x)}
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+    return new Swiper(c, {
+        slidesPerView: 'auto',
+        spaceBetween: 20,
+        loop: true,
+        centeredSlides: true,
+        autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+        }
+    });
+}
+
+function cG(c, i) {
+    c.innerHTML = i.map(x => cGI(x)).join('');
+}
+
+function fGD(g, c) {
     const k = c.dataset.galleryKey;
     const f = c.dataset.galleryFilter;
     const p = c.dataset.pathFilter;
-    const id = c.id.replace('-grid', '');
+    const id = c.id.replace(/-gallery|-grid/g, '');
     
     if (k && g[k]) {
         let im = g[k].images || [];
@@ -75,10 +128,17 @@ function filterGalleryData(g, c) {
     return [];
 }
 
-async function initializeUniversalGallery() {
-    const ge = document.querySelectorAll('.grid-gallery[data-json-path]');
+async function iG() {
+    const sE = document.querySelectorAll('.contenedor-imagenes-animado[data-json-path]');
+    const gE = document.querySelectorAll('.grid-gallery[data-json-path]');
     
-    for (const c of ge) {
+    if (sE.length > 0 && typeof Swiper === 'undefined') {
+        console.log('Swiper no está cargado aún');
+        setTimeout(iG, 100);
+        return;
+    }
+    
+    for (const c of sE) {
         const j = c.dataset.jsonPath;
         
         if (!j) {
@@ -86,22 +146,48 @@ async function initializeUniversalGallery() {
             continue;
         }
         
-        const gd = await loadGalleryData(j);
+        const gd = await lGD(j);
         
         if (!gd) {
-            c.innerHTML = '<p>Sin Corrupcion</p>';
+            c.innerHTML = '<p>Error al cargar datos</p>';
             continue;
         }
         
-        const im = filterGalleryData(gd, c);
+        const im = fGD(gd, c);
         
         if (im.length > 0) {
-            createGridGallery(c, im);
+            c.classList.add('swiper');
+            cS(c, im);
         } else {
-            c.innerHTML = '<p>Sin Corrupcion</p>';
+            c.innerHTML = '<p>Sin Elementos</p>';
+        }
+    }
+    
+    for (const c of gE) {
+        const j = c.dataset.jsonPath;
+        
+        if (!j) {
+            c.innerHTML = '<p>No se especificó ruta JSON</p>';
+            continue;
+        }
+        
+        const gd = await lGD(j);
+        
+        if (!gd) {
+            c.innerHTML = '<p>Error al cargar datos</p>';
+            continue;
+        }
+        
+        const im = fGD(gd, c);
+        
+        if (im.length > 0) {
+            cG(c, im);
+        } else {
+            c.innerHTML = '<p>Sin Elementos</p>';
         }
     }
 }
 
-initializeUniversalGallery();
+iG();
 </script>
+

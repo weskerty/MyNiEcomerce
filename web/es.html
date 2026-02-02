@@ -42,70 +42,58 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- galerías -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script>
 
 <script>
-async function loadGalleryData(jsonPath) {
+function eN(n) {
+    const m = n.match(/NB=([^.]+)/);
+    return m ? m[1] : n;
+}
+
+async function lGD(j) {
     try {
-        console.log(`Intentando cargar: ${jsonPath}`);
-        const response = await fetch(jsonPath);
-        console.log(`Response status: ${response.status}`);
+        console.log(`Intentando cargar: ${j}`);
+        const r = await fetch(j);
+        console.log(`Response status: ${r.status}`);
         
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        if (!r.ok) {
+            throw new Error(`HTTP ${r.status}: ${r.statusText}`);
         }
         
-        const data = await response.json();
-        console.log('Datos cargados:', data);
-        return data.galleries;
-    } catch (error) {
-        console.error(`Error loading gallery data from ${jsonPath}:`, error);
+        const d = await r.json();
+        console.log('Datos cargados:', d);
+        return d.galleries;
+    } catch (e) {
+        console.error(`Error loading gallery data from ${j}:`, e);
         return null;
     }
 }
 
-function createSwiper(container, images) {
-    container.innerHTML = `
+function cGI(x) {
+    return `
+        <a href="${x.link || '#'}" class="gallery-item">
+            <img src="${x.image}" alt="${x.name || 'Imagen'}" loading="lazy" />
+            <div class="menu-content">
+                <h3>${eN(x.name)}</h3>
+            </div>
+        </a>
+    `;
+}
+
+function cS(c, i) {
+    c.innerHTML = `
         <div class="swiper-wrapper">
-            ${images.map(item => `
+            ${i.map(x => `
                 <div class="swiper-slide">
-                    <a href="${item.link || '#'}">
-                        <img src="${item.image}" alt="${item.name || 'Imagen'}" loading="lazy" />
-                    </a>
+                    ${cGI(x)}
                 </div>
             `).join('')}
         </div>
     `;
 
-    return new Swiper(container, {
+    return new Swiper(c, {
         slidesPerView: 'auto',
         spaceBetween: 20,
         loop: true,
@@ -117,77 +105,129 @@ function createSwiper(container, images) {
     });
 }
 
-function filterGalleryData(galleryData, container) {
-    const galleryKey = container.dataset.galleryKey;
-    const galleryFilter = container.dataset.galleryFilter;
-    const containerId = container.id.replace('-gallery', '');
+function cG(c, i) {
+    c.innerHTML = i.map(x => cGI(x)).join('');
+}
+
+function fGD(g, c) {
+    const k = c.dataset.galleryKey;
+    const f = c.dataset.galleryFilter;
+    const p = c.dataset.pathFilter;
+    const id = c.id.replace(/-gallery|-grid/g, '');
     
-    if (galleryKey && galleryData[galleryKey]) {
-        return galleryData[galleryKey].images || [];
+    if (k && g[k]) {
+        let im = g[k].images || [];
+        if (p) {
+            im = im.filter(x => x.path && x.path.includes(p));
+        }
+        return im;
     }
     
-    if (galleryFilter) {
-        const matchingEntries = Object.entries(galleryData).filter(([key, value]) => 
-            key.toLowerCase().includes(galleryFilter.toLowerCase())
+    if (f) {
+        const m = Object.entries(g).filter(([ky, v]) => 
+            ky.toLowerCase().includes(f.toLowerCase())
         );
         
-        if (matchingEntries.length > 0) {
-            return matchingEntries.flatMap(([key, value]) => value.images || []);
+        if (m.length > 0) {
+            let im = m.flatMap(([ky, v]) => v.images || []);
+            if (p) {
+                im = im.filter(x => x.path && x.path.includes(p));
+            }
+            return im;
         }
     }
     
-    const matchingKey = Object.keys(galleryData).find(key => 
-        key.toLowerCase() === containerId.toLowerCase()
+    const mk = Object.keys(g).find(ky => 
+        ky.toLowerCase() === id.toLowerCase()
     );
     
-    if (matchingKey && galleryData[matchingKey]) {
-        return galleryData[matchingKey].images || [];
+    if (mk && g[mk]) {
+        let im = g[mk].images || [];
+        if (p) {
+            im = im.filter(x => x.path && x.path.includes(p));
+        }
+        return im;
     }
     
     return [];
 }
 
-async function initializeUniversalSwiper() {
-    if (typeof Swiper === 'undefined') {
+async function iG() {
+    const sE = document.querySelectorAll('.contenedor-imagenes-animado[data-json-path]');
+    const gE = document.querySelectorAll('.grid-gallery[data-json-path]');
+    
+    if (sE.length > 0 && typeof Swiper === 'undefined') {
         console.log('Swiper no está cargado aún');
+        setTimeout(iG, 100);
         return;
     }
     
-    const galleryElements = document.querySelectorAll('.contenedor-imagenes-animado[data-json-path]');
-    
-    for (const container of galleryElements) {
-        const jsonPath = container.dataset.jsonPath;
+    for (const c of sE) {
+        const j = c.dataset.jsonPath;
         
-        if (!jsonPath) {
-            container.innerHTML = '<p>No se especificó ruta JSON</p>';
+        if (!j) {
+            c.innerHTML = '<p>No se especificó ruta JSON</p>';
             continue;
         }
         
-        const galleryData = await loadGalleryData(jsonPath);
+        const gd = await lGD(j);
         
-        if (!galleryData) {
-            container.innerHTML = '<p>Error al cargar datos</p>';
+        if (!gd) {
+            c.innerHTML = '<p>Error al cargar datos</p>';
             continue;
         }
         
-        const images = filterGalleryData(galleryData, container);
+        const im = fGD(gd, c);
         
-        if (images.length > 0) {
-            container.classList.add('swiper');
-            createSwiper(container, images);
+        if (im.length > 0) {
+            c.classList.add('swiper');
+            cS(c, im);
         } else {
-            container.innerHTML = '<p>Sin Elementos</p>';
+            c.innerHTML = '<p>Sin Elementos</p>';
+        }
+    }
+    
+    for (const c of gE) {
+        const j = c.dataset.jsonPath;
+        
+        if (!j) {
+            c.innerHTML = '<p>No se especificó ruta JSON</p>';
+            continue;
+        }
+        
+        const gd = await lGD(j);
+        
+        if (!gd) {
+            c.innerHTML = '<p>Error al cargar datos</p>';
+            continue;
+        }
+        
+        const im = fGD(gd, c);
+        
+        if (im.length > 0) {
+            cG(c, im);
+        } else {
+            c.innerHTML = '<p>Sin Elementos</p>';
         }
     }
 }
 
-function waitForSwiperAndInit() {
-    if (typeof Swiper !== 'undefined') {
-        initializeUniversalSwiper();
-    } else {
-        setTimeout(waitForSwiperAndInit, 100);
-    }
-}
-
-waitForSwiperAndInit();
+iG();
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
