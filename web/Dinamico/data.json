@@ -1,12 +1,33 @@
 {
   "galleries": {
+    "Accesorios": {
+      "images": [
+        {
+          "image": "web/Dinamico/Accesorios/Cocina/NM=0972184435-ID=Cocina0001-NB=Tacita Auto Mezcladora Pila AA.jpg",
+          "name": "NM=0972184435-ID=Cocina0001-NB=Tacita Auto Mezcladora Pila AA",
+          "path": "Cocina",
+          "link": "web/Dinamico/Accesorios/Cocina/NM=0972184435-ID=Cocina0001-NB=Tacita Auto Mezcladora Pila AA.md"
+        }
+      ]
+    },
     "Alimentos": {
       "images": [
+        {
+          "image": "web/Dinamico/Alimentos/Salados/NM=0972184435-ID=Salado0001-NB=Panqueque Pollo.jpg",
+          "name": "NM=0972184435-ID=Salado0001-NB=Panqueque Pollo",
+          "path": "Salados"
+        },
         {
           "image": "web/Dinamico/Alimentos/Dulces/NM=0972184435-ID=Dulce8643-NB=Pasta Flora.jpg",
           "name": "NM=0972184435-ID=Dulce8643-NB=Pasta Flora",
           "path": "Dulces",
           "link": "web/Dinamico/Alimentos/Dulces/NM=0972184435-ID=Dulce8643-NB=Pasta Flora.md"
+        },
+        {
+          "image": "web/Dinamico/Alimentos/Dulces/NM=0972184435-ID=Dulce0002-NB=Torta Chocolate.jpg",
+          "name": "NM=0972184435-ID=Dulce0002-NB=Torta Chocolate",
+          "path": "Dulces",
+          "link": "web/Dinamico/Alimentos/Dulces/NM=0972184435-ID=Dulce0002-NB=Torta Chocolate.md"
         }
       ]
     }
