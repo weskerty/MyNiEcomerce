@@ -3,9 +3,20 @@
 
 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Basket.png" alt="Man Technologist Medium-Dark Skin Tone" width="120px" />
 
+<div class="mariposas-section">
+    <div class="butterfly"></div>
+    <div id="typed-strings" style="display: none;">
+        <p>Tu tienda de Confianza, donde vos ganas</p>
+        <p>Tu Tienda con Reponsabilidad Ecologica</p>
+        <p></p>
+        <p>Tu Tienda donde encontras todo Rico.</p>
+    </div>
+    <span id="typed"></span>
+</div>
+
 
 <div class="section">
-    <h2>🍰 Comestibles</h2>
+    <h1>🍰 Comestibles</h1>
     <div class="gallery-container">
         <div id="Alimentos-gallery" 
              class="contenedor-imagenes-animado"
@@ -19,7 +30,7 @@
 </br>
 
 <div class="section">
-    <h2>🍰 Accesorios</h2>
+    <h1>🍰 Accesorios</h1>
     <div class="gallery-container">
         <div id="Accesorios-gallery" 
              class="contenedor-imagenes-animado"
@@ -40,6 +51,32 @@
 
 
 
+
+
+
+
+
+<!-- Frases -->
+<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+<script>
+function initTypedQuotes() {
+    if (typeof Typed !== 'undefined') {
+        new Typed('#typed', {
+            stringsElement: '#typed-strings',
+            typeSpeed: 40,
+            backSpeed: 20,
+            backDelay: 5000,
+            startDelay: 300,
+            loop: true,
+            showCursor: true,
+            cursorChar: '❤'
+        });
+    } else {
+        setTimeout(initTypedQuotes, 100);
+    }
+}
+initTypedQuotes();
+</script>
 
 <!-- galerías -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css">

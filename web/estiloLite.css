@@ -15,10 +15,39 @@ body {
     background-color: #040a22;
     background-size: cover;
     position: relative;
-    background: url('https://i.ibb.co/TMjC4dH0/tekstury-razmytie-siniy.jpg') no-repeat center center fixed;
 }
 
+body::before {
+    content: '';
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    height: 500px;
+    transform: translate(-50%, -50%);
+    filter: blur(50px);
+    background-image: linear-gradient(#4ddc9e, #5b37eb, #f1307e);
+    animation: rotate 10s cubic-bezier(0.8, 0.2, 0.2, 0.8) alternate infinite;
+    border-radius: 30% 70% 70% 30%/30% 30% 70% 70%;
+    z-index: -1;
+    pointer-events: none;
+}
 
+@keyframes rotate {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@media (max-width: 500px) {
+    body::before {
+        width: 300px;
+        height: 300px;
+    }
+}
 
 blockquote {
     margin: 20px 0;
@@ -149,21 +178,17 @@ code {
     align-items: center;
     gap: 0;
     padding: 0 0 10px 0;
-    background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.25) 0%,
-        rgba(255, 255, 255, 0.05) 50%,
-        rgba(255, 255, 255, 0.15) 100%
-    );
-    backdrop-filter: blur(20px) saturate(1.8);
-    -webkit-backdrop-filter: blur(20px) saturate(1.8);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    min-height: 260px;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(12px) saturate(1.3);
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 24px;
     box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+        0 8px 32px rgba(31, 38, 135, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.1);
     text-decoration: none;
     color: white;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -181,7 +206,7 @@ code {
     height: 50%;
     background: linear-gradient(
         180deg,
-        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.2) 0%,
         transparent 100%
     );
     pointer-events: none;
@@ -191,14 +216,16 @@ code {
 .gallery-item:hover {
     transform: translateY(-3px) scale(1.02);
     box-shadow:
-        0 12px 40px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+        0 12px 40px rgba(31, 38, 135, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.15);
 }
+
 
 .gallery-item img {
     width: 100%;
     height: 200px;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: 24px 24px 0 0;
     flex-shrink: 0;
@@ -231,7 +258,7 @@ code {
 
 .grid-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 20px;
     padding: 20px;
 }
