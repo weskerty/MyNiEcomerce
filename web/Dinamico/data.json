@@ -1,5 +1,19 @@
 {
   "galleries": {
+    "Sorteos": {
+      "images": [
+        {
+          "image": "web/Dinamico/Sorteos/NM=WA595972184435-ID=Sorteo0001-NB=Telefono Redmi Note 8 WaPlus sin Publicidad en Ningun Lado.jpg",
+          "name": "NM=WA595972184435-ID=Sorteo0001-NB=Telefono Redmi Note 8 WaPlus sin Publicidad en Ningun Lado",
+          "link": "web/Dinamico/Sorteos/NM=WA595972184435-ID=Sorteo0001-NB=Telefono Redmi Note 8 WaPlus sin Publicidad en Ningun Lado.md"
+        },
+        {
+          "image": "web/Dinamico/Sorteos/NM=WA595972184435-ID=Sorteo0001-NB=Circuito Cerrado Camara DVR HickVision de 4 Camaras.webp",
+          "name": "NM=WA595972184435-ID=Sorteo0001-NB=Circuito Cerrado Camara DVR HickVision de 4 Camaras",
+          "link": "web/Dinamico/Sorteos/NM=WA595972184435-ID=Sorteo0001-NB=Circuito Cerrado Camara DVR HickVision de 4 Camaras.md"
+        }
+      ]
+    },
     "Accesorios": {
       "images": [
         {
@@ -7,6 +21,12 @@
           "name": "NM=TG@WiskaBot-ID=Cocina0001-NB=Tacita Auto Mezcladora Pila AA",
           "path": "Cocina",
           "link": "web/Dinamico/Accesorios/Cocina/NM=TG@WiskaBot-ID=Cocina0001-NB=Tacita Auto Mezcladora Pila AA.md"
+        },
+        {
+          "image": "web/Dinamico/Accesorios/Personal/NM=WA595972184435-ID=Sorteo0001-NB=Telefono Redmi Note 8 WaPlus sin Publicidad en Ningun Lado.jpg",
+          "name": "NM=WA595972184435-ID=Sorteo0001-NB=Telefono Redmi Note 8 WaPlus sin Publicidad en Ningun Lado",
+          "path": "Personal",
+          "link": "web/Dinamico/Accesorios/Personal/NM=WA595972184435-ID=Sorteo0001-NB=Telefono Redmi Note 8 WaPlus sin Publicidad en Ningun Lado.md"
         }
       ]
     },
@@ -15,7 +35,8 @@
         {
           "image": "web/Dinamico/Alimentos/Salados/NM=TG595972184435-ID=Salado0001-NB=Panqueque Pollo.jpg",
           "name": "NM=TG595972184435-ID=Salado0001-NB=Panqueque Pollo",
-          "path": "Salados"
+          "path": "Salados",
+          "link": "web/Dinamico/Alimentos/Salados/NM=TG595972184435-ID=Salado0001-NB=Panqueque Pollo.md"
         },
         {
           "image": "web/Dinamico/Alimentos/Dulces/NM=WA595972184435-ID=Dulce8643-NB=Pasta Flora.jpg",

@@ -1,3 +1,19 @@
 {
-  "galleries": {}
+  "galleries": {
+    "root": {
+      "path": ".",
+      "images": [
+        {
+          "image": "web/otros/Archivos/Imagenes/IB.jpg",
+          "name": "IB",
+          "path": "."
+        },
+        {
+          "image": "web/otros/Archivos/Imagenes/IvanBal.jpg",
+          "name": "IvanBal",
+          "path": "."
+        }
+      ]
+    }
+  }
 }
