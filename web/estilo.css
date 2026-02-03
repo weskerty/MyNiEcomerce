@@ -11,12 +11,15 @@ body {
     padding: 0;
     font-family: 'OpenDyslexic', 'Fluent Emoji Color', sans-serif;
     color: white;
-    overflow-x: hidden; 
+    overflow-x: hidden;
     background-color: #040a22;
-    background-size: cover;
-    position: relative;
+    background: url('otros/Archivos/Imagenes/IB.jpg') no-repeat center center fixed;
+    background-size: cover; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
 }
-
+/* 
 body::before {
     content: '';
     position: fixed;
@@ -48,6 +51,8 @@ body::before {
         height: 300px;
     }
 }
+
+*/
 
 blockquote {
     margin: 20px 0;
