@@ -195,7 +195,7 @@ code {
         inset 0 -1px 0 rgba(255, 255, 255, 0.05);
     text-decoration: none;
     color: white;
-    transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
     overflow: hidden;
     position: relative;
@@ -219,19 +219,10 @@ code {
 
 .gallery-item:hover {
     transform: translateY(-3px) scale(1.02);
-    background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.35) 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        rgba(255, 255, 255, 0.25) 100%
-    ) !important;
     box-shadow:
-        0 12px 40px rgba(0, 0, 0, 0.25),
+        0 12px 40px rgba(0, 0, 0, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.4),
         inset 0 -1px 0 rgba(255, 255, 255, 0.08);
-    color: white !important;
-    -webkit-text-fill-color: white !important;
-    filter: none !important;
 }
 
 .gallery-item img {
@@ -298,12 +289,8 @@ code {
 }
 
 .swiper-slide:not(.swiper-slide-active) .gallery-item {
-    transform: scale(0.9); 
-    opacity: 0.7; 
-}
-
-.swiper-slide:hover .gallery-item {
-    transform: scale(1) translateY(-3px);
+    transform: scale(0.9);
+    opacity: 0.7;
 }
 
 .view-all-button {
@@ -319,27 +306,16 @@ code {
     backdrop-filter: blur(20px) saturate(1.8);
     -webkit-backdrop-filter: blur(20px) saturate(1.8);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white !important;
+    color: white;
     border-radius: 20px;
-    text-decoration: none !important;
+    text-decoration: none;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    -webkit-text-fill-color: white !important;
-    filter: none !important;
 }
 
 .view-all-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(26, 115, 232, 0.4);
-    background: linear-gradient(
-        135deg,
-        rgba(26, 115, 232, 0.4) 0%,
-        rgba(26, 115, 232, 0.2) 50%,
-        rgba(26, 115, 232, 0.35) 100%
-    ) !important;
-    color: white !important;
-    -webkit-text-fill-color: white !important;
-    filter: none !important;
 }
 
 .back-button {
@@ -355,27 +331,16 @@ code {
     backdrop-filter: blur(20px) saturate(1.8);
     -webkit-backdrop-filter: blur(20px) saturate(1.8);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white !important;
+    color: white;
     border-radius: 20px;
-    text-decoration: none !important;
+    text-decoration: none;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    -webkit-text-fill-color: white !important;
-    filter: none !important;
 }
 
 .back-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(102, 102, 102, 0.4);
-    background: linear-gradient(
-        135deg,
-        rgba(102, 102, 102, 0.4) 0%,
-        rgba(102, 102, 102, 0.2) 50%,
-        rgba(102, 102, 102, 0.35) 100%
-    ) !important;
-    color: white !important;
-    -webkit-text-fill-color: white !important;
-    filter: none !important;
 }
 
 .rss-section {
@@ -627,25 +592,7 @@ a:hover {
 }
 
 a:hover {
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0);
-  background: linear-gradient(90deg, white, rgba(255,255,255,0.4), white);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: none;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
-  transition: all 0.3s ease;
-}
-
-.gallery-item:hover,
-.view-all-button:hover,
-.back-button:hover {
-  background: none;
-  -webkit-background-clip: unset;
-  -webkit-text-fill-color: white;
-  background-clip: unset;
-  filter: none;
+  text-decoration: underline; 
 }
 
 a::after {
@@ -654,16 +601,16 @@ a::after {
   transition: opacity 0.3s ease;
 }
 
-a:hover::after {
-  content: ' ↗️';
-  opacity: 1;
+.gallery-item,
+.view-all-button,
+.back-button {
+  text-decoration: none;
 }
 
-.gallery-item:hover::after,
-.view-all-button:hover::after,
-.back-button:hover::after {
-  content: '';
-  opacity: 0;
+.gallery-item:hover,
+.view-all-button:hover,
+.back-button:hover {
+  text-decoration: none;
 }
 
 h1 a,
