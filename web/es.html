@@ -56,13 +56,191 @@
     </div>
 </div>
 
+</br>
+
+<style>
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+@media (min-width: 600px) {
+  .menu-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.menu-item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.15) 100%
+  );
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  text-decoration: none !important;
+  color: white;
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  min-height: 120px;
+}
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.menu-item:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.25) 100%
+  );
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  text-decoration: none !important;
+}
+
+.menu-item img {
+  width: 20%;
+  min-width: 20%;
+  max-width: 20%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 24px 0 0 24px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 0;
+}
+
+.menu-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+  padding: 15px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.menu-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.4em;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.menu-content p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95em;
+  line-height: 1.4;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 600px) {
+  .menu-item {
+    flex-direction: column !important;
+    text-align: center;
+    text-decoration: none;
+    min-height: auto;
+  }
+
+  .menu-item img {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    height: 140px;
+    border-radius: 24px 24px 0 0 !important;
+  }
+
+  .menu-content {
+    text-align: center;
+    padding: 15px;
+  }
+}
+</style>
+
+
+
+<div style="text-align:center;">
+<h1>🫂 Recursos Utiles</h1>
+<p>Selecciona a donde quieres ir 🤗</p>
+</div>
+
+<div class="menu-list">
+  <a href="web/otros/MarkDowns/Garantia&Reparacion.md" class="menu-item">
+    <img src="">
+    <div class="menu-content">
+      <h3>❤️‍🩹 Reparaciones&Garantia</h3>
+      <p>Incluso si ya no Tienes Garantia es Posible Repararlo Gratis</p>
+    </div>
+  </a>
+
+  <a href="web/otros/MarkDowns/Desecho&Reciclaje.md" class="menu-item">
+    <img src="">
+    <div class="menu-content">
+      <h3>🌱 Donde Desechar</h3>
+      <p> Juntos cuidamos el Ambiente por un Paraguay mas Limpio y Sano</p>
+    </div>
+  </a>
+
+
+
+<blockquote> <a href="web/otros/MarkDowns/PoliticaPrivacidad.md">Acuerdo y Politica de Privacidad</a> </blockquote>
+
+
+
+
+
+
+
+  
+</div>
+  
+  
+
 
 
 
 </br>
 <h2>Agradecimientos</h2>
 </br>
-<a href="https://www.pexels.com/es-es/@marco-rota-1033995997/collections/">Fondo</a> · <a href="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis" target="_blank" onclick="window.open('https://tetunori.github.io/fluent-emoji-webfont', '_blank')">Emojis</a> · <a href="https://github.com/alexandresanlim/Badges4-README.md-Profile/blob/master/README.md">Badges</a> · <a href="https://github.com/markdown-it/markdown-it">MarkdownIt</a> · <a href="https://swiperjs.com/swiper-api#navigation">Galerias</a> · <a href="https://opendyslexic.org/about">Fuente</a> 
+<a href="https://www.pexels.com/es-es/@marco-rota-1033995997/collections/">Fondo</a> · <a href="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis" target="_blank" onclick="window.open('https://tetunori.github.io/fluent-emoji-webfont', '_blank')">Emojis</a> · <a href="https://github.com/markdown-it/markdown-it">MarkdownIt</a> · <a href="https://swiperjs.com/swiper-api#navigation">Galerias</a> · <a href="https://opendyslexic.org/about">Fuente</a> 
 
 
 
@@ -72,7 +250,7 @@
 
 
 <!-- Frases -->
-<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+<script src="https://unpkg.com/typed.js@3.0.0/dist/typed.umd.js"></script>
 <script>
 function initTypedQuotes() {
     if (typeof Typed !== 'undefined') {
@@ -94,180 +272,182 @@ initTypedQuotes();
 </script>
 
 <!-- galerías -->
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script>
 
-<script>
-function eN(n) {
-    const m = n.match(/NB=([^.]+)/);
-    return m ? m[1] : n;
-}
-
-async function lGD(j) {
-    try {
-        console.log(`Intentando cargar: ${j}`);
-        const r = await fetch(j);
-        console.log(`Response status: ${r.status}`);
-        
-        if (!r.ok) {
-            throw new Error(`HTTP ${r.status}: ${r.statusText}`);
-        }
-        
-        const d = await r.json();
-        console.log('Datos cargados:', d);
-        return d.galleries;
-    } catch (e) {
-        console.error(`Error loading gallery data from ${j}:`, e);
-        return null;
-    }
-}
-
-function cGI(x) {
-    return `
-        <a href="${x.link || '#'}" class="gallery-item">
-            <img src="${x.image}" alt="${x.name || 'Imagen'}" loading="lazy" />
-            <div class="menu-content">
-                <h3>${eN(x.name)}</h3>
-            </div>
-        </a>
-    `;
-}
-
-function cS(c, i) {
-    c.innerHTML = `
-        <div class="swiper-wrapper">
-            ${i.map(x => `
-                <div class="swiper-slide">
-                    ${cGI(x)}
-                </div>
-            `).join('')}
-        </div>
-    `;
-
-    return new Swiper(c, {
-        slidesPerView: 'auto',
-        spaceBetween: 20,
-        loop: true,
-        centeredSlides: true,
-        autoplay: {
-            delay: 3000,
-            disableOnInteraction: false,
-        }
-    });
-}
-
-function cG(c, i) {
-    c.innerHTML = i.map(x => cGI(x)).join('');
-}
-
-function fGD(g, c) {
-    const k = c.dataset.galleryKey;
-    const f = c.dataset.galleryFilter;
-    const p = c.dataset.pathFilter;
-    const id = c.id.replace(/-gallery|-grid/g, '');
-    
-    if (k && g[k]) {
-        let im = g[k].images || [];
-        if (p) {
-            im = im.filter(x => x.path && x.path.includes(p));
-        }
-        return im;
-    }
-    
-    if (f) {
-        const m = Object.entries(g).filter(([ky, v]) => 
-            ky.toLowerCase().includes(f.toLowerCase())
-        );
-        
-        if (m.length > 0) {
-            let im = m.flatMap(([ky, v]) => v.images || []);
-            if (p) {
-                im = im.filter(x => x.path && x.path.includes(p));
-            }
-            return im;
-        }
-    }
-    
-    const mk = Object.keys(g).find(ky => 
-        ky.toLowerCase() === id.toLowerCase()
-    );
-    
-    if (mk && g[mk]) {
-        let im = g[mk].images || [];
-        if (p) {
-            im = im.filter(x => x.path && x.path.includes(p));
-        }
-        return im;
-    }
-    
-    return [];
-}
-
-async function iG() {
-    const sE = document.querySelectorAll('.contenedor-imagenes-animado[data-json-path]');
-    const gE = document.querySelectorAll('.grid-gallery[data-json-path]');
-    
-    if (sE.length > 0 && typeof Swiper === 'undefined') {
-        console.log('Swiper no está cargado aún');
-        setTimeout(iG, 100);
-        return;
-    }
-    
-    for (const c of sE) {
-        const j = c.dataset.jsonPath;
-        
-        if (!j) {
-            c.innerHTML = '<p>No se especificó ruta JSON</p>';
-            continue;
-        }
-        
-        const gd = await lGD(j);
-        
-        if (!gd) {
-            c.innerHTML = '<p>Error al cargar datos</p>';
-            continue;
-        }
-        
-        const im = fGD(gd, c);
-        
-        if (im.length > 0) {
-            c.classList.add('swiper');
-            cS(c, im);
-        } else {
-            c.innerHTML = '<p>Sin Elementos</p>';
-        }
-    }
-    
-    for (const c of gE) {
-        const j = c.dataset.jsonPath;
-        
-        if (!j) {
-            c.innerHTML = '<p>No se especificó ruta JSON</p>';
-            continue;
-        }
-        
-        const gd = await lGD(j);
-        
-        if (!gd) {
-            c.innerHTML = '<p>Error al cargar datos</p>';
-            continue;
-        }
-        
-        const im = fGD(gd, c);
-        
-        if (im.length > 0) {
-            cG(c, im);
-        } else {
-            c.innerHTML = '<p>Sin Elementos</p>';
-        }
-    }
-}
-
-iG();
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script> 
 
 
-
+<script>  
+function eN(n) {  
+    const m = n.match(/NB=([^.]+)/);  
+    return m ? m[1] : n;  
+}  
+  
+async function lGD(j) {  
+    try {  
+        console.log(`Intentando cargar: ${j}`);  
+        const r = await fetch(j);  
+        console.log(`Response status: ${r.status}`);  
+          
+        if (!r.ok) {  
+            throw new Error(`HTTP ${r.status}: ${r.statusText}`);  
+        }  
+          
+        const d = await r.json();  
+        console.log('Datos cargados:', d);  
+        return d.galleries;  
+    } catch (e) {  
+        console.error(`Error loading gallery data from ${j}:`, e);  
+        return null;  
+    }  
+}  
+  
+function cGI(x) {  
+    return `  
+        <a href="${x.link || '#'}" class="gallery-item">  
+            <img src="${x.image}" alt="${x.name || 'Imagen'}" loading="lazy" />  
+            <div class="menu-content">  
+                <h3>${eN(x.name)}</h3>  
+            </div>  
+        </a>  
+    `;  
+}  
+  
+function cS(c, i) {  
+    c.innerHTML = `  
+        <div class="swiper-wrapper">  
+            ${i.map(x => `  
+                <div class="swiper-slide">  
+                    ${cGI(x)}  
+                </div>  
+            `).join('')}  
+        </div>  
+    `;  
+  
+    return new Swiper(c, {  
+        slidesPerView: 'auto',  
+        spaceBetween: 20,  
+        loop: true,  
+        centeredSlides: true,  
+        autoplay: {  
+            delay: 3000,  
+            disableOnInteraction: true,
+            pauseOnMouseEnter: true
+            
+        }  
+    });  
+}  
+  
+function cG(c, i) {  
+    c.innerHTML = i.map(x => cGI(x)).join('');  
+}  
+  
+function fGD(g, c) {  
+    const k = c.dataset.galleryKey;  
+    const f = c.dataset.galleryFilter;  
+    const p = c.dataset.pathFilter;  
+    const id = c.id.replace(/-gallery|-grid/g, '');  
+      
+    if (k && g[k]) {  
+        let im = g[k].images || [];  
+        if (p) {  
+            im = im.filter(x => x.path && x.path.includes(p));  
+        }  
+        return im;  
+    }  
+      
+    if (f) {  
+        const m = Object.entries(g).filter(([ky, v]) =>   
+            ky.toLowerCase().includes(f.toLowerCase())  
+        );  
+          
+        if (m.length > 0) {  
+            let im = m.flatMap(([ky, v]) => v.images || []);  
+            if (p) {  
+                im = im.filter(x => x.path && x.path.includes(p));  
+            }  
+            return im;  
+        }  
+    }  
+      
+    const mk = Object.keys(g).find(ky =>   
+        ky.toLowerCase() === id.toLowerCase()  
+    );  
+      
+    if (mk && g[mk]) {  
+        let im = g[mk].images || [];  
+        if (p) {  
+            im = im.filter(x => x.path && x.path.includes(p));  
+        }  
+        return im;  
+    }  
+      
+    return [];  
+}  
+  
+async function iG() {  
+    const sE = document.querySelectorAll('.contenedor-imagenes-animado[data-json-path]');  
+    const gE = document.querySelectorAll('.grid-gallery[data-json-path]');  
+      
+    if (sE.length > 0 && typeof Swiper === 'undefined') {  
+        console.log('Swiper no está cargado aún');  
+        setTimeout(iG, 100);  
+        return;  
+    }  
+      
+    for (const c of sE) {  
+        const j = c.dataset.jsonPath;  
+          
+        if (!j) {  
+            c.innerHTML = '<p>No se especificó ruta JSON</p>';  
+            continue;  
+        }  
+          
+        const gd = await lGD(j);  
+          
+        if (!gd) {  
+            c.innerHTML = '<p>Error al cargar datos</p>';  
+            continue;  
+        }  
+          
+        const im = fGD(gd, c);  
+          
+        if (im.length > 0) {  
+            c.classList.add('swiper');  
+            cS(c, im);  
+        } else {  
+            c.innerHTML = '<p>Sin Elementos</p>';  
+        }  
+    }  
+      
+    for (const c of gE) {  
+        const j = c.dataset.jsonPath;  
+          
+        if (!j) {  
+            c.innerHTML = '<p>No se especificó ruta JSON</p>';  
+            continue;  
+        }  
+          
+        const gd = await lGD(j);  
+          
+        if (!gd) {  
+            c.innerHTML = '<p>Error al cargar datos</p>';  
+            continue;  
+        }  
+          
+        const im = fGD(gd, c);  
+          
+        if (im.length > 0) {  
+            cG(c, im);  
+        } else {  
+            c.innerHTML = '<p>Sin Elementos</p>';  
+        }  
+    }  
+}  
+  
+iG();  
+</script>  
 
 
 
