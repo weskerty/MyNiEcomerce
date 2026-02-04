@@ -58,8 +58,10 @@
 
 </br>
 
+
 <style>
-.menu-list {
+
+  .menu-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -74,11 +76,11 @@
 }
 
 .menu-item {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 0;
-  padding: 0;
+  padding: 15px;
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.25) 0%,
@@ -94,13 +96,12 @@
     0 8px 32px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-  text-decoration: none !important;
+  text-decoration: none;
   color: white;
   transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
   overflow: hidden;
   position: relative;
-  min-height: 120px;
 }
 
 .menu-item::before {
@@ -131,28 +132,13 @@
     0 12px 40px rgba(0, 0, 0, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
     inset 0 -1px 0 rgba(255, 255, 255, 0.08);
-  text-decoration: none !important;
-}
-
-.menu-item img {
-  width: 20%;
-  min-width: 20%;
-  max-width: 20%;
-  height: auto;
-  object-fit: cover;
-  border-radius: 24px 0 0 24px;
-  flex-shrink: 0;
-  position: relative;
-  z-index: 0;
+  text-decoration: none;
 }
 
 .menu-content {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: left;
-  padding: 15px 20px;
+  text-align: center;
+  padding: 15px;
   position: relative;
   z-index: 2;
 }
@@ -174,26 +160,14 @@
 
 @media (max-width: 600px) {
   .menu-item {
-    flex-direction: column !important;
+    flex-direction: column;
     text-align: center;
     text-decoration: none;
-    min-height: auto;
-  }
-
-  .menu-item img {
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100% !important;
-    height: 140px;
-    border-radius: 24px 24px 0 0 !important;
-  }
-
-  .menu-content {
-    text-align: center;
-    padding: 15px;
   }
 }
+
 </style>
+
 
 
 
@@ -207,7 +181,7 @@
     <img src="">
     <div class="menu-content">
       <h3>❤️‍🩹 Reparaciones&Garantia</h3>
-      <p>Incluso si ya no Tienes Garantia es Posible Repararlo Gratis</p>
+      <p>Reparar, no Tirar.</p>
     </div>
   </a>
 
@@ -219,19 +193,22 @@
     </div>
   </a>
 
-
-
-<blockquote> <a href="web/otros/MarkDowns/PoliticaPrivacidad.md">Acuerdo y Politica de Privacidad</a> </blockquote>
-
-
-
-
+  <a href="web/otros/MarkDowns/Desecho&Reciclaje.md" class="menu-item">
+    <img src="">
+    <div class="menu-content">
+      <h3>🤝 Ser Parte</h3>
+      <p> Añade tus Productos a este Catalogo</p>
+    </div>
+  </a>
 
 
 
   
 </div>
   
+  
+<blockquote> <a href="web/otros/MarkDowns/PoliticaPrivacidad.md">Acuerdo y Politica de Privacidad</a> </blockquote>
+
   
 
 
@@ -270,6 +247,9 @@ function initTypedQuotes() {
 }
 initTypedQuotes();
 </script>
+
+
+
 
 <!-- galerías -->
 
