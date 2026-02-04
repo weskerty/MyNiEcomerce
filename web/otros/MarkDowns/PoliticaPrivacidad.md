@@ -47,5 +47,34 @@ La foto de perfil de WhatsApp o Telegram **no es obligatoria** para realizar com
 Nos reservamos el derecho de actualizar esta política. Las modificaciones se publicarán en esta página con la fecha de última actualización.
 
 **Última actualización:** 
-ScriptGet Github 
-link versiones
+
+
+<script>
+const archivoPath = 'web/otros/MarkDowns/PoliticaPrivacidad.md';
+const repo = 'weskerty/YoGano';
+const branch = 'main';
+
+async function obtenerUltimoCommit() {
+    const url = `https://api.github.com/repos/${repo}/commits?path=${archivoPath}&sha=${branch}&per_page=1`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Error: No Datos Git');
+        const commits = await response.json();
+        if (commits.length === 0) {
+            document.getElementById('fecha').textContent = 'No commit.';
+            return;
+        }
+        const fechaCommit = commits[0].commit.author.date;
+        const fechaFormateada = new Date(fechaCommit).toLocaleString('es-ES', {
+            dateStyle: 'medium',
+            timeStyle: 'short'
+        });
+        document.getElementById('fecha').textContent = fechaFormateada;
+    } catch (error) {
+        console.error(error);
+        document.getElementById('fecha').textContent = 'Error en fecha.';
+    }
+}
+
+obtenerUltimoCommit();
+</script>
