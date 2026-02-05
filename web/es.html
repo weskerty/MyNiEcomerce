@@ -7,9 +7,9 @@
     <div class="butterfly"></div>
     <div id="typed-strings" style="display: none;">
         <p>Tu tienda de Confianza, donde vos ganas</p>
-        <p>Tu Tienda con Reponsabilidad Ecologica</p>
+        <p>Con Reponsabilidad Ambiental</p>
         <p></p>
-        <p>Tu Tienda donde encontras todo Rico.</p>
+        <p>Aqui encontras todo Rico.</p>
     </div>
     <span id="typed"></span>
 </div>
@@ -177,7 +177,7 @@
 </div>
 
 <div class="menu-list">
-  <a href="web/otros/MarkDowns/Garantia&Reparacion.md" class="menu-item">
+  <a href="web/otros/Archivos/MarkDowns/Garantia&Reparacion.md" class="menu-item">
     <img src="">
     <div class="menu-content">
       <h3>❤️‍🩹 Garantia</h3>
@@ -185,15 +185,15 @@
     </div>
   </a>
 
-  <a href="web/otros/MarkDowns/Desecho&Reciclaje.md" class="menu-item">
+  <a href="web/otros/Archivos/MarkDowns/Desecho&Reciclaje.md" class="menu-item">
     <img src="">
     <div class="menu-content">
       <h3>🌱 Donde Desechar</h3>
-      <p> Juntos cuidamos el Ambiente por un Paraguay mas Limpio y Sano</p>
+      <p> Juntos por un Paraguay Limpio y Sano</p>
     </div>
   </a>
 
-  <a href="web/otros/MarkDowns/Desecho&Reciclaje.md" class="menu-item">
+  <a href="web/otros/Archivos/MarkDowns/SerParte.md" class="menu-item">
     <img src="">
     <div class="menu-content">
       <h3>🤝 Ser Parte</h3>
@@ -213,7 +213,7 @@
 </div>
   
   
-<blockquote> <a href="web/otros/MarkDowns/PoliticaPrivacidad.md">Acuerdo y Politica de Privacidad</a> </blockquote>
+<blockquote> <a href="web/otros/Archivos/MarkDowns/PoliticaPrivacidad.md">Acuerdo y Politica de Privacidad</a> </blockquote>
 
   
 
@@ -258,9 +258,16 @@ initTypedQuotes();
 
 
 <!-- galerías -->
-<!-- Swiper 12 -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css">
-<script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
+
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css"
+onerror="this.href='web/scripts/Otros/Swiper/8.4.5-bundle.min.css'">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"
+onerror="var s=document.createElement('script');s.src='web/scripts/Otros/Swiper/8.4.5-bundle.min.js';document.head.appendChild(s);">
+</script>
+
 
 <script>
 function eN(n){
@@ -271,11 +278,10 @@ return m?m[1]:n;
 async function lGD(j){
 try{
 const r=await fetch(j);
-if(!r.ok)throw new Error(`HTTP ${r.status}: ${r.statusText}`);
+if(!r.ok)throw new Error();
 const d=await r.json();
 return d.galleries;
 }catch(e){
-console.error(`Error loading gallery data from ${j}:`,e);
 return null;
 }
 }
@@ -284,7 +290,6 @@ function cGI(x){
 return `
 <a href="${x.link||'#'}" class="gallery-item">
 <img src="${x.image}" alt="${x.name||'Imagen'}" loading="lazy"/>
-<div class="swiper-lazy-preloader"></div>
 <div class="menu-content">
 <h3>${eN(x.name)}</h3>
 </div>
@@ -333,11 +338,11 @@ return im;
 }
 
 if(f){
-const m=Object.entries(g).filter(([ky,v])=>
+const m=Object.entries(g).filter(([ky])=>
 ky.toLowerCase().includes(f.toLowerCase())
 );
 if(m.length>0){
-let im=m.flatMap(([ky,v])=>v.images||[]);
+let im=m.flatMap(([_,v])=>v.images||[]);
 if(p)im=im.filter(x=>x.path&&x.path.includes(p));
 return im;
 }
@@ -367,18 +372,21 @@ return;
 
 for(const c of sE){
 const j=c.dataset.jsonPath;
+
 if(!j){
 c.innerHTML='<p>No se especificó ruta JSON</p>';
 continue;
 }
 
 const gd=await lGD(j);
+
 if(!gd){
 c.innerHTML='<p>Error al cargar datos</p>';
 continue;
 }
 
 const im=fGD(gd,c);
+
 if(im.length>0){
 c.classList.add('swiper');
 cS(c,im);
@@ -389,18 +397,21 @@ c.innerHTML='<p>Sin Elementos</p>';
 
 for(const c of gE){
 const j=c.dataset.jsonPath;
+
 if(!j){
 c.innerHTML='<p>No se especificó ruta JSON</p>';
 continue;
 }
 
 const gd=await lGD(j);
+
 if(!gd){
 c.innerHTML='<p>Error al cargar datos</p>';
 continue;
 }
 
 const im=fGD(gd,c);
+
 if(im.length>0){
 cG(c,im);
 }else{
@@ -411,6 +422,7 @@ c.innerHTML='<p>Sin Elementos</p>';
 
 iG();
 </script>
+
 
 
 

@@ -15,7 +15,6 @@
   width: 90px;
   height: 90px;
   flex: 0 0 auto;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,14 +22,12 @@
   border-radius: 18px;
   text-decoration: none;
   color: white;
-
   background: linear-gradient(
     135deg,
     rgba(255,255,255,0.25),
     rgba(255,255,255,0.05),
     rgba(255,255,255,0.15)
   );
-
   backdrop-filter: blur(20px) saturate(1.8);
   -webkit-backdrop-filter: blur(20px) saturate(1.8);
 }
@@ -39,9 +36,10 @@
   text-align: center;
 }
 
-.menu-content h3 {
-  margin: 0;
-  font-size: 1.4em;
+selectorEmoji {
+  font-size: 4em;
+  line-height: 1;
+  display: inline-block;
 }
 
 .menu-content p {
@@ -51,24 +49,20 @@
 }
 </style>
 
-<h3>Separar por Tipo</h3>
-
 <div class="menu-list">
   <a href="web/Dinamico/Alimentos/Dulces/es.html" class="menu-item">
     <div class="menu-content">
-      <h3>🍰</h3>
+      <selectorEmoji>🍰</selectorEmoji>
       <p>Dulces</p>
     </div>
   </a>
   
   <a href="web/Dinamico/Alimentos/Salados/es.html" class="menu-item">
     <div class="menu-content">
-      <h3>🥟</h3>
+      <selectorEmoji>🥟</selectorEmoji>
       <p>Salados</p>
     </div>
   </a>
-
-  
 </div>
 
 
@@ -90,176 +84,169 @@
 
 
 
-<!-- galerías -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css"
+onerror="this.href='web/scripts/Otros/Swiper/8.4.5-bundle.min.css'">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"
+onerror="var s=document.createElement('script');s.src='web/scripts/Otros/Swiper/8.4.5-bundle.min.js';document.head.appendChild(s);">
+</script>
+
 
 <script>
-function eN(n) {
-    const m = n.match(/NB=([^.]+)/);
-    return m ? m[1] : n;
+function eN(n){
+const m=n.match(/NB=([^.]+)/);
+return m?m[1]:n;
 }
 
-async function lGD(j) {
-    try {
-        console.log(`Intentando cargar: ${j}`);
-        const r = await fetch(j);
-        console.log(`Response status: ${r.status}`);
-        
-        if (!r.ok) {
-            throw new Error(`HTTP ${r.status}: ${r.statusText}`);
-        }
-        
-        const d = await r.json();
-        console.log('Datos cargados:', d);
-        return d.galleries;
-    } catch (e) {
-        console.error(`Error loading gallery data from ${j}:`, e);
-        return null;
-    }
+async function lGD(j){
+try{
+const r=await fetch(j);
+if(!r.ok)throw new Error();
+const d=await r.json();
+return d.galleries;
+}catch(e){
+return null;
+}
 }
 
-function cGI(x) {
-    return `
-        <a href="${x.link || '#'}" class="gallery-item">
-            <img src="${x.image}" alt="${x.name || 'Imagen'}" loading="lazy" />
-            <div class="menu-content">
-                <h3>${eN(x.name)}</h3>
-            </div>
-        </a>
-    `;
+function cGI(x){
+return `
+<a href="${x.link||'#'}" class="gallery-item">
+<img src="${x.image}" alt="${x.name||'Imagen'}" loading="lazy"/>
+<div class="menu-content">
+<h3>${eN(x.name)}</h3>
+</div>
+</a>
+`;
 }
 
-function cS(c, i) {
-    c.innerHTML = `
-        <div class="swiper-wrapper">
-            ${i.map(x => `
-                <div class="swiper-slide">
-                    ${cGI(x)}
-                </div>
-            `).join('')}
-        </div>
-    `;
+function cS(c,i){
+c.innerHTML=`
+<div class="swiper-wrapper">
+${i.map(x=>`
+<div class="swiper-slide">
+${cGI(x)}
+</div>
+`).join('')}
+</div>
+`;
 
-    return new Swiper(c, {
-        slidesPerView: 'auto',
-        spaceBetween: 20,
-        loop: true,
-        centeredSlides: true,
-        autoplay: {
-            delay: 3000,
-            disableOnInteraction: false,
-        }
-    });
+return new Swiper(c,{
+slidesPerView:'auto',
+spaceBetween:20,
+loop:true,
+centeredSlides:true,
+autoplay:{
+delay:3000,
+disableOnInteraction:true,
+pauseOnMouseEnter:true
+}
+});
 }
 
-function cG(c, i) {
-    c.innerHTML = i.map(x => cGI(x)).join('');
+function cG(c,i){
+c.innerHTML=i.map(x=>cGI(x)).join('');
 }
 
-function fGD(g, c) {
-    const k = c.dataset.galleryKey;
-    const f = c.dataset.galleryFilter;
-    const p = c.dataset.pathFilter;
-    const id = c.id.replace(/-gallery|-grid/g, '');
-    
-    if (k && g[k]) {
-        let im = g[k].images || [];
-        if (p) {
-            im = im.filter(x => x.path && x.path.includes(p));
-        }
-        return im;
-    }
-    
-    if (f) {
-        const m = Object.entries(g).filter(([ky, v]) => 
-            ky.toLowerCase().includes(f.toLowerCase())
-        );
-        
-        if (m.length > 0) {
-            let im = m.flatMap(([ky, v]) => v.images || []);
-            if (p) {
-                im = im.filter(x => x.path && x.path.includes(p));
-            }
-            return im;
-        }
-    }
-    
-    const mk = Object.keys(g).find(ky => 
-        ky.toLowerCase() === id.toLowerCase()
-    );
-    
-    if (mk && g[mk]) {
-        let im = g[mk].images || [];
-        if (p) {
-            im = im.filter(x => x.path && x.path.includes(p));
-        }
-        return im;
-    }
-    
-    return [];
+function fGD(g,c){
+const k=c.dataset.galleryKey;
+const f=c.dataset.galleryFilter;
+const p=c.dataset.pathFilter;
+const id=c.id.replace(/-gallery|-grid/g,'');
+
+if(k&&g[k]){
+let im=g[k].images||[];
+if(p)im=im.filter(x=>x.path&&x.path.includes(p));
+return im;
 }
 
-async function iG() {
-    const sE = document.querySelectorAll('.contenedor-imagenes-animado[data-json-path]');
-    const gE = document.querySelectorAll('.grid-gallery[data-json-path]');
-    
-    if (sE.length > 0 && typeof Swiper === 'undefined') {
-        console.log('Swiper no está cargado aún');
-        setTimeout(iG, 100);
-        return;
-    }
-    
-    for (const c of sE) {
-        const j = c.dataset.jsonPath;
-        
-        if (!j) {
-            c.innerHTML = '<p>No se especificó ruta JSON</p>';
-            continue;
-        }
-        
-        const gd = await lGD(j);
-        
-        if (!gd) {
-            c.innerHTML = '<p>Error al cargar datos</p>';
-            continue;
-        }
-        
-        const im = fGD(gd, c);
-        
-        if (im.length > 0) {
-            c.classList.add('swiper');
-            cS(c, im);
-        } else {
-            c.innerHTML = '<p>Sin Elementos</p>';
-        }
-    }
-    
-    for (const c of gE) {
-        const j = c.dataset.jsonPath;
-        
-        if (!j) {
-            c.innerHTML = '<p>No se especificó ruta JSON</p>';
-            continue;
-        }
-        
-        const gd = await lGD(j);
-        
-        if (!gd) {
-            c.innerHTML = '<p>Error al cargar datos</p>';
-            continue;
-        }
-        
-        const im = fGD(gd, c);
-        
-        if (im.length > 0) {
-            cG(c, im);
-        } else {
-            c.innerHTML = '<p>Sin Elementos</p>';
-        }
-    }
+if(f){
+const m=Object.entries(g).filter(([ky])=>
+ky.toLowerCase().includes(f.toLowerCase())
+);
+if(m.length>0){
+let im=m.flatMap(([_,v])=>v.images||[]);
+if(p)im=im.filter(x=>x.path&&x.path.includes(p));
+return im;
+}
+}
+
+const mk=Object.keys(g).find(ky=>
+ky.toLowerCase()===id.toLowerCase()
+);
+
+if(mk&&g[mk]){
+let im=g[mk].images||[];
+if(p)im=im.filter(x=>x.path&&x.path.includes(p));
+return im;
+}
+
+return [];
+}
+
+async function iG(){
+const sE=document.querySelectorAll('.contenedor-imagenes-animado[data-json-path]');
+const gE=document.querySelectorAll('.grid-gallery[data-json-path]');
+
+if(sE.length>0&&typeof Swiper==='undefined'){
+setTimeout(iG,100);
+return;
+}
+
+for(const c of sE){
+const j=c.dataset.jsonPath;
+
+if(!j){
+c.innerHTML='<p>No se especificó ruta JSON</p>';
+continue;
+}
+
+const gd=await lGD(j);
+
+if(!gd){
+c.innerHTML='<p>Error al cargar datos</p>';
+continue;
+}
+
+const im=fGD(gd,c);
+
+if(im.length>0){
+c.classList.add('swiper');
+cS(c,im);
+}else{
+c.innerHTML='<p>Sin Elementos</p>';
+}
+}
+
+for(const c of gE){
+const j=c.dataset.jsonPath;
+
+if(!j){
+c.innerHTML='<p>No se especificó ruta JSON</p>';
+continue;
+}
+
+const gd=await lGD(j);
+
+if(!gd){
+c.innerHTML='<p>Error al cargar datos</p>';
+continue;
+}
+
+const im=fGD(gd,c);
+
+if(im.length>0){
+cG(c,im);
+}else{
+c.innerHTML='<p>Sin Elementos</p>';
+}
+}
 }
 
 iG();
 </script>
+
+
 
