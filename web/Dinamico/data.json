@@ -3,6 +3,16 @@
     "Sorteos": {
       "images": [
         {
+          "image": "web/Dinamico/Sorteos/NM=WA595972184435-ID=Sorteo0001-NB=Tablet Xiaomi con WaPlus sin Publicidad en Ningun Lado.jpg",
+          "name": "NM=WA595972184435-ID=Sorteo0001-NB=Tablet Xiaomi con WaPlus sin Publicidad en Ningun Lado",
+          "link": "web/Dinamico/Sorteos/NM=WA595972184435-ID=Sorteo0001-NB=Tablet Xiaomi con WaPlus sin Publicidad en Ningun Lado.md"
+        },
+        {
+          "image": "web/Dinamico/Sorteos/NM=WA595972184435-ID=Sorteo0001-NB=Notebook con WaPlus sin Publicidad en Ningun Lado.jpg",
+          "name": "NM=WA595972184435-ID=Sorteo0001-NB=Notebook con WaPlus sin Publicidad en Ningun Lado",
+          "link": "web/Dinamico/Sorteos/NM=WA595972184435-ID=Sorteo0001-NB=Notebook con WaPlus sin Publicidad en Ningun Lado.md"
+        },
+        {
           "image": "web/Dinamico/Sorteos/NM=WA595972184435-ID=Sorteo0001-NB=Telefono Redmi Note 8 WaPlus sin Publicidad en Ningun Lado.jpg",
           "name": "NM=WA595972184435-ID=Sorteo0001-NB=Telefono Redmi Note 8 WaPlus sin Publicidad en Ningun Lado",
           "link": "web/Dinamico/Sorteos/NM=WA595972184435-ID=Sorteo0001-NB=Telefono Redmi Note 8 WaPlus sin Publicidad en Ningun Lado.md"
@@ -37,6 +47,18 @@
           "name": "NM=TG595972184435-ID=Salado0001-NB=Panqueque Pollo",
           "path": "Salados",
           "link": "web/Dinamico/Alimentos/Salados/NM=TG595972184435-ID=Salado0001-NB=Panqueque Pollo.md"
+        },
+        {
+          "image": "web/Dinamico/Alimentos/Salados/NM=TG595972184435-ID=Salado0001-NB=Milanesa Papas y Arroz.jpg",
+          "name": "NM=TG595972184435-ID=Salado0001-NB=Milanesa Papas y Arroz",
+          "path": "Salados",
+          "link": "web/Dinamico/Alimentos/Salados/NM=TG595972184435-ID=Salado0001-NB=Milanesa Papas y Arroz.md"
+        },
+        {
+          "image": "web/Dinamico/Alimentos/Salados/NM=TG595972184435-ID=Salado0001-NB=Empanadas.webp",
+          "name": "NM=TG595972184435-ID=Salado0001-NB=Empanadas",
+          "path": "Salados",
+          "link": "web/Dinamico/Alimentos/Salados/NM=TG595972184435-ID=Salado0001-NB=Empanadas.md"
         },
         {
           "image": "web/Dinamico/Alimentos/Dulces/NM=WA595972184435-ID=Dulce8643-NB=Pasta Flora.jpg",
