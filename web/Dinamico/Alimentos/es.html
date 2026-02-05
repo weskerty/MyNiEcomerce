@@ -1,12 +1,84 @@
 <div style="text-align:center;">
-<h1>Separar por Tipo</h1>
-<p>Pronto sera Posible</p>
+ 
+<h1>😋 Comida Rica</h1>
+
+<style>
+.menu-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0;
+  justify-content: center; 
+}
+
+.menu-item {
+  width: 90px;
+  height: 90px;
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 18px;
+  text-decoration: none;
+  color: white;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.25),
+    rgba(255,255,255,0.05),
+    rgba(255,255,255,0.15)
+  );
+
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+}
+
+.menu-content {
+  text-align: center;
+}
+
+.menu-content h3 {
+  margin: 0;
+  font-size: 1.4em;
+}
+
+.menu-content p {
+  margin: 0;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+</style>
+
+<h3>Separar por Tipo</h3>
+
+<div class="menu-list">
+  <a href="web/Dinamico/Alimentos/Dulces/es.html" class="menu-item">
+    <div class="menu-content">
+      <h3>🍰</h3>
+      <p>Dulces</p>
+    </div>
+  </a>
+  
+  <a href="web/Dinamico/Alimentos/Salados/es.html" class="menu-item">
+    <div class="menu-content">
+      <h3>🥟</h3>
+      <p>Salados</p>
+    </div>
+  </a>
+
+  
+</div>
+
+
+
 
 <h1>Lista Total</h1>
 <div class="grid-gallery" 
      id="Alimentos-grid"
      data-json-path="web/Dinamico/data.json"
-     data-path-filter="Dulces">
+     data-path-filter="">
 </div>
 
 <a href="web/es.html" class="back-button">← Volver al Inicio</a>
