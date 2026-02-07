@@ -137,11 +137,14 @@ code {
     backdrop-filter: blur(7px);
 }
 
+/* Corrige Fondo Div RSS. Falta Corregir.
 .content div div {
     background: none !important;
     backdrop-filter: none !important;
     box-shadow: none !important;
 }
+
+*/
 
 .gallery-item {
     display: flex;
