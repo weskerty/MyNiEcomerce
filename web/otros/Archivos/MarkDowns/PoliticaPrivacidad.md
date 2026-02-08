@@ -4,6 +4,9 @@ YoGano, contacto en:
 
 ---
 
+Rifas solo para Mayores de 18 años.
+Si se detecta fraude o errores en el sistema la empresa se reserva el derecho a cancelar la venta y o rifas.
+
 ## 2. Datos Personales Recopilados
 Recopilamos los siguientes datos cuando interactúas con nosotros en las Plataformas:  
 - **Nombre completo**.  
