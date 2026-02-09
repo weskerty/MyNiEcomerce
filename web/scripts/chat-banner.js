@@ -1,6 +1,6 @@
 (function(){
-const W={p:'Hola%20Quiero%20Comprar%20',d:'https://wa.me/595972184435?text=Hola%2C%20Quiero%20saber%20mas%20de%20la%20Tienda%20YoGano%0A%0A'};
-let S={c:[],r:false},A={b:false};
+const W={p:'Vengo%20de%20YoGano%20y%20quiero%20Comprar%20estos%20Productos%20LISTA%3D',d:'https://wa.me/595972184435?text=Hola%2C%20Quiero%20saber%20mas%20de%20la%20Tienda%20YoGano%0A%0A'};
+let S={c:[],r:false},A={b:false},L={s:null,a:false};
 const B=document.createElement('div');
 B.className='b';
 B.innerHTML='💬';
@@ -8,7 +8,14 @@ B.style.boxShadow='0 8px 32px rgba(34,197,94,0.3)';
 const F=document.createElement('div');
 F.className='f';
 F.innerHTML='👇';
+const Q=document.createElement('div');
+Q.className='q';
+const P=document.createElement('div');
+P.className='pk';
+P.innerHTML='📦';
 B.appendChild(F);
+B.appendChild(Q);
+B.appendChild(P);
 document.body.appendChild(B);
 const M=document.createElement('div');
 M.className='m';
@@ -24,6 +31,12 @@ s.textContent=`
 @keyframes abe{0%{transform:translateX(-50%) rotate(0deg) translateY(0)}15%{transform:translateX(-50%) rotate(-8deg) translateY(0)}30%{transform:translateX(-50%) rotate(-15deg) translateY(12px)}50%{transform:translateX(-50%) rotate(-12deg) translateY(18px)}70%{transform:translateX(-50%) rotate(-6deg) translateY(10px)}85%{transform:translateX(-50%) rotate(-2deg) translateY(4px)}100%{transform:translateX(-50%) rotate(0deg) translateY(0)}}
 .f{position:absolute;top:-55px;left:50%;transform:translateX(-50%);font-size:40px;opacity:0;pointer-events:none;transition:opacity 0.3s}
 .f.v{opacity:1;animation:fb 0.8s ease-in-out infinite}
+.q{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(239,68,68,0.95);color:#fff;font-size:14px;font-weight:bold;min-width:24px;height:24px;border-radius:12px;display:none;align-items:center;justify-content:center;padding:0 6px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.q.v{display:flex}
+.b.c .q{display:none}
+.pk{position:absolute;top:-120px;left:50%;transform:translateX(-50%);font-size:45px;opacity:0;pointer-events:none;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4))}
+.pk.dr{animation:pk 1.2s cubic-bezier(0.34,1.45,0.64,1)}
+@keyframes pk{0%{opacity:0;top:-120px;transform:translateX(-50%) rotate(-15deg) scale(0.3)}15%{opacity:1;top:-100px;transform:translateX(-50%) rotate(-8deg) scale(0.6)}30%{top:-60px;transform:translateX(-50%) rotate(5deg) scale(0.85)}50%{top:-20px;transform:translateX(-50%) rotate(-3deg) scale(1.05)}70%{top:-5px;transform:translateX(-50%) rotate(2deg) scale(1.1)}85%{top:5px;transform:translateX(-50%) rotate(-1deg) scale(0.95)}100%{opacity:0;top:15px;transform:translateX(-50%) rotate(0deg) scale(0.7)}}
 .fz{display:inline-block;animation:fzo 1.6s ease-out}
 @keyframes fzo{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.3)}100%{transform:scale(1);opacity:1}}
 @keyframes fb{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(12px)}}
@@ -55,21 +68,42 @@ s.textContent=`
 `;
 document.head.appendChild(s);
 
+function N(n){
+return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+}
+
+function UQ(){
+const tc=S.c.reduce((a,i)=>a+i.d,0);
+if(tc>0){
+Q.textContent=tc;
+Q.classList.add('v');
+}else{
+Q.classList.remove('v');
+}
+}
+
 function UB(){
 if(S.c.length>0){
 if(B.classList.contains('e')){
 B.innerHTML='🛒 Finalizar compra';
+B.classList.add('c');
 }else{
 B.innerHTML='🛒';
+B.classList.remove('c');
 }
 }else{
 if(B.classList.contains('e')){
 B.innerHTML='💬 Clic para chatear';
+B.classList.add('c');
 }else{
 B.innerHTML='💬';
+B.classList.remove('c');
 }
 }
 B.appendChild(F);
+B.appendChild(Q);
+B.appendChild(P);
+UQ();
 }
 
 function UF(){
@@ -84,6 +118,8 @@ z.innerHTML='🫵';
 B.innerHTML='';
 B.appendChild(z);
 B.appendChild(F);
+B.appendChild(Q);
+B.appendChild(P);
 setTimeout(()=>{
 UB();
 setTimeout(()=>{
@@ -97,10 +133,27 @@ F.classList.remove('v');
 UB();
 }
 
+function PK(){
+P.classList.remove('dr');
+void P.offsetWidth;
+P.classList.add('dr');
+setTimeout(()=>{
+P.classList.remove('dr');
+},1200);
+}
+
 function AB(){
 if(A.b)return;
 A.b=true;
 B.classList.add('ab');
+PK();
+const we=B.classList.contains('e');
+if(!we){
+B.classList.add('e');
+UB();
+L.a=true;
+clearTimeout(L.s);
+}
 setTimeout(()=>{
 B.classList.remove('ab');
 A.b=false;
@@ -112,18 +165,36 @@ el.classList.add('rm');
 setTimeout(()=>el.remove(),400);
 }
 
+function RS(){
+if(!L.a)return;
+clearTimeout(L.s);
+L.s=setTimeout(()=>{
+if(B.classList.contains('e')&&!M.classList.contains('v')){
+const d=document.getElementById('disqus-container');
+if(!d||(window.pageYOffset+window.innerHeight<d.offsetTop)){
+B.classList.remove('e');
+B.style.position='fixed';
+B.style.bottom='20px';
+B.style.top='';
+HF();
+L.a=false;
+}
+}
+},1500);
+}
+
 function R(){
 if(!S.r)return;
 const d=document.getElementById('disqus-container');
 if(!d)return;
 const t=d.offsetTop,b=window.pageYOffset+window.innerHeight;
 if(b>=t){
-if(!B.classList.contains('e')){
+if(!B.classList.contains('e')&&!L.a){
 B.classList.add('e');
 UB();
 }
 }else{
-if(B.classList.contains('e')){
+if(B.classList.contains('e')&&!L.a){
 B.classList.remove('e');
 B.style.position='fixed';
 B.style.bottom='20px';
@@ -149,6 +220,7 @@ HF();
 }
 }
 }
+RS();
 }
 
 function C(t,n,i,d,p,b,m='add'){
@@ -178,12 +250,12 @@ h+=`<div class="cp"><div class="cn">📦 ${grp.n}</div>`;
 grp.items.forEach(i=>{
 const tp=i.p*i.d;
 total+=tp;
-h+=`<div class="ci" data-key="${i.t}-${i.n}-${i.i}"><div class="ct">${i.b}</div><div class="cr"><span>👛 ${i.p}Gs</span><span>💰 ${tp}Gs</span></div><div class="cr"><span>🛒</span><div class="cc"><button data-t="${i.t}" data-n="${i.n}" data-i="${i.i}" data-a="-">−</button><span>${i.d}</span><button data-t="${i.t}" data-n="${i.n}" data-i="${i.i}" data-a="+">+</button></div></div></div>`;
+h+=`<div class="ci" data-key="${i.t}-${i.n}-${i.i}"><div class="ct">${i.b}</div><div class="cr"><span>👛 ${N(i.p)}Gs</span><span>💰 ${N(tp)}Gs</span></div><div class="cr"><span>🛒</span><div class="cc"><button data-t="${i.t}" data-n="${i.n}" data-i="${i.i}" data-a="-">−</button><span>${i.d}</span><button data-t="${i.t}" data-n="${i.n}" data-i="${i.i}" data-a="+">+</button></div></div></div>`;
 });
 let msg='';
 grp.items.forEach(i=>msg+=`CD=${i.d}-ID=${i.i};`);
 msg=msg.slice(0,-1);
-const me=encodeURIComponent(W.p+msg);
+const me=W.p+encodeURIComponent(msg);
 h+=`<div class="ca">`;
 if(grp.t==='wt'){
 h+=`<button class="bt w" data-l="https://wa.me/${grp.n}?text=${me}">📱 WhatsApp</button>`;
@@ -195,7 +267,7 @@ h+=`<button class="bt g" data-l="https://t.me/+${grp.n}?text=${me}">✈️ Teleg
 }
 h+=`</div></div>`;
 });
-h+=`<div class="to">💸 Total: ${total}Gs</div>`;
+h+=`<div class="to">💸 Total: ${N(total)}Gs</div>`;
 M.querySelector('.mb').innerHTML=h;
 }
 

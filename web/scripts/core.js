@@ -3,14 +3,14 @@ const D='web/es.html';
 let c='';
 let bg={};
 
-const md=window.markdownit({
-html:!0,
-breaks:!0,
-linkify:!0,
-typographer:!0
-}).use(window.markdownItAnchor.default,{
-permalink:window.markdownItAnchor.default.permalink.headerLink(),
-slugify:s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\w\s-]/g,'').replace(/\s+/g,'-')
+const md = window.markdownit({
+  html: !0,
+  breaks: !0,
+  linkify: !0,
+  typographer: !0
+}).use(window.markdownItAnchor, { 
+  permalink: window.markdownItAnchor.permalink.headerLink(),  
+  slugify: s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')
 });
 
 function iM(){

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor de Productos</title>
+<script src="https://cdn.jsdelivr.net/npm/minisearch@7.2.0/dist/umd/index.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:#0f172a;color:#fff;padding:20px}
+.h{display:flex;gap:15px;margin-bottom:20px;flex-wrap:wrap}
+.b{background:#3b82f6;border:none;padding:12px 24px;border-radius:8px;color:#fff;cursor:pointer;font-weight:600;font-size:14px}
+.b:hover{background:#2563eb}
+.b2{background:#10b981}
+.b2:hover{background:#059669}
+.b3{background:#8b5cf6}
+.b3:hover{background:#7c3aed}
+.sb{position:relative;flex:1;min-width:250px}
+.sb input{width:100%;padding:12px 40px 12px 12px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#fff;font-size:14px}
+.sb input:focus{outline:none;border-color:#3b82f6}
+.bx{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:#64748b;cursor:pointer;font-size:18px;padding:5px 10px;border-radius:4px}
+.bx:hover{background:#334155;color:#fff}
+#sc{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:1000;align-items:center;justify-content:center;flex-direction:column;gap:20px}
+#sc.a{display:flex}
+#qr{width:90%;max-width:500px;border-radius:12px;overflow:hidden}
+.cl{background:#ef4444;padding:10px 20px;border-radius:8px;border:none;color:#fff;cursor:pointer}
+.l{display:flex;flex-direction:column;gap:15px}
+.i{background:#1e293b;border-radius:12px;padding:15px;display:grid;grid-template-columns:80px 1fr auto;gap:15px;align-items:center;border:1px solid #334155;margin-bottom:10px}
+.i img{width:80px;height:80px;object-fit:cover;border-radius:8px;background:#334155}
+.cg{margin-bottom:30px}
+.ct{font-size:22px;font-weight:700;color:#3b82f6;margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid #334155}
+.cp{font-size:18px;font-weight:600;color:#8b5cf6;margin:15px 0 10px 15px}
+.inf{display:flex;flex-direction:column;gap:5px}
+.inf div{font-size:13px;color:#94a3b8}
+.inf .n{font-size:16px;font-weight:600;color:#fff;margin-bottom:5px}
+.be{background:#8b5cf6;border:none;padding:8px 16px;border-radius:6px;color:#fff;cursor:pointer;font-size:13px}
+.be:hover{background:#7c3aed}
+.m{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:2000;overflow-y:auto;padding:20px}
+.m.a{display:flex;align-items:center;justify-content:center}
+.mc{background:#1e293b;border-radius:12px;padding:30px;max-width:600px;width:100%;border:1px solid #334155}
+.mt{font-size:24px;font-weight:700;margin-bottom:20px}
+.f{display:flex;flex-direction:column;gap:15px}
+.fg{display:flex;flex-direction:column;gap:8px}
+.fg label{font-size:14px;color:#94a3b8;font-weight:500}
+.fg input,.fg select{padding:10px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:#fff;font-size:14px}
+.fg input:focus,.fg select:focus{outline:none;border-color:#3b82f6}
+.fa{display:flex;gap:10px;margin-top:10px}
+.bs{background:#10b981;border:none;padding:10px 20px;border-radius:6px;color:#fff;cursor:pointer;font-weight:600}
+.bs:hover{background:#059669}
+.bc{background:#64748b;border:none;padding:10px 20px;border-radius:6px;color:#fff;cursor:pointer}
+.bc:hover{background:#475569}
+.sec{margin-top:30px}
+.st{font-size:20px;font-weight:600;margin-bottom:15px;color:#fbbf24}
+input[type="file"]{display:none}
+.msg{position:fixed;top:20px;right:20px;background:#10b981;color:#fff;padding:15px 25px;border-radius:8px;font-weight:600;z-index:3000;animation:slide 0.3s}
+@keyframes slide{from{transform:translateX(400px)}to{transform:translateX(0)}}
+.me{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:4000;align-items:center;justify-content:center;padding:20px}
+.me.a{display:flex}
+.mec{background:#1e293b;border-radius:12px;padding:30px;max-width:700px;width:100%;border:2px solid #ef4444}
+.met{font-size:24px;font-weight:700;margin-bottom:20px;color:#ef4444}
+.mee{background:#0f172a;padding:15px;border-radius:8px;margin-bottom:20px;font-family:monospace;font-size:13px;color:#fbbf24;max-height:400px;overflow-y:auto;white-space:pre-wrap;word-break:break-all}
+.mea{display:flex;gap:10px}
+.mea button{padding:10px 20px;border-radius:6px;border:none;cursor:pointer;font-weight:600}
+.cp{background:#3b82f6;color:#fff}
+.cp:hover{background:#2563eb}
+
+</style>
+
+
+
+
+</head>
+<body>
+
+<div class="h">
+<input type="file" id="fl" accept=".json">
+<label for="fl" class="b">📁 Cargar JSON</label>
+<button class="b b2" id="exp">💾 Exportar JSON</button>
+<button class="b b3" id="esn">📷 Escanear Código</button>
+<div class="sb">
+<input type="text" id="bus" placeholder="🔍 Buscar productos...">
+<button class="bx" id="clb">✖</button>
+</div>
+</div>
+
+<div id="lt"></div>
+
+<div class="sec" id="sq" style="display:none">
+<div class="st">⚠️ Sin Cantidad</div>
+<div id="lsq"></div>
+</div>
+
+<div id="sc">
+<div id="qr"></div>
+<button class="cl" id="csc">✖ Cerrar</button>
+</div>
+
+<div id="mdl" class="m">
+<div class="mc">
+<div class="mt" id="mtt">Editar Producto</div>
+<div class="f">
+<div class="fg">
+<label>Tipo (NM)</label>
+<select id="enm">
+<option value="WATG">WhatsApp y Telegram</option>
+<option value="WA">Solo WhatsApp</option>
+<option value="TG">Solo Telegram</option>
+</select>
+</div>
+<div class="fg">
+<label>Número</label>
+<input type="text" id="enu" placeholder="01, 02, 03...">
+</div>
+<div class="fg">
+<label>Código ID</label>
+<input type="text" id="eid" placeholder="Codigo de Barras">
+</div>
+<div class="fg">
+<label>Nombre </label>
+<input type="text" id="enb" placeholder="Nombre del producto">
+</div>
+<div class="fg">
+<label>Precio</label>
+<input type="text" id="epc" placeholder="5.000">
+</div>
+<div class="fg">
+<label>Cantidad</label>
+<input type="number" id="ecd">
+</div>
+<div class="fg">
+<label>Imagen</label>
+<input type="file" id="eimg" accept="image/*">
+<label for="eimg" class="b" style="display:inline-block;text-align:center;margin-top:5px">📷 Cambiar Imagen</label>
+<div id="imgnm" style="color:#94a3b8;font-size:12px;margin-top:5px"></div>
+</div>
+<div class="fa">
+<button class="bs" id="grd">💾 Guardar</button>
+<button class="bc" id="cnc">Cancelar</button>
+</div>
+</div>
+</div>
+</div>
+
+<div id="merr" class="me">
+<div class="mec">
+<div class="met">❌ Error </div>
+<div class="mee" id="mtxt"></div>
+<div class="mea">
+<button class="cp" id="cpe">📋 Copiar</button>
+<button class="bc" id="cme">Cerrar</button>
+</div>
+</div>
+</div>
+
+<script>
+let D=[],M,S,E=null,NI=null;
+
+function FP(n){
+return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+}
+
+function ME(err){
+const txt=`ERROR: ${err.message}
+
+STACK:
+${err.stack||'No disponible'}
+
+TIPO DE D: ${typeof D}
+ES ARRAY: ${Array.isArray(D)}
+CONTENIDO: ${JSON.stringify(D,null,2)}`;
+document.getElementById('mtxt').textContent=txt;
+document.getElementById('merr').classList.add('a');
+}
+
+document.getElementById('cpe').onclick=function(){
+const txt=document.getElementById('mtxt').textContent;
+navigator.clipboard.writeText(txt).then(()=>P('📋 Error copiado'));
+};
+
+document.getElementById('cme').onclick=()=>document.getElementById('merr').classList.remove('a');
+
+function P(t,d=3000){
+const m=document.createElement('div');
+m.className='msg';
+m.textContent=t;
+document.body.appendChild(m);
+setTimeout(()=>m.remove(),d);
+}
+
+function GN(o){
+const p=o.NM||'';
+let b='',n='';
+const m=p.match(/^(WATG|WA|TG)(.*)$/);
+if(m){
+b=m[1];
+n=m[2];
+}
+return{b:b||'N/A',n:n||''};
+}
+
+function PI(o){
+return o.image||'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"%3E%3C/svg%3E';
+}
+
+function GI(o){
+return{m:o.link,i:o.image};
+}
+
+function BN(nm,nu,id,pc,nb,cd){
+let n=`${nm}${nu}-ID=${id}-PC=${pc}-NB=${nb}`;
+if(cd)n+=`-CD=${cd}`;
+return n;
+}
+
+function R(){
+try{
+console.log('Renderizando productos:',D.length);
+const cat={};
+D.forEach((o,i)=>{
+const g=o.gallery||'Sin Categoría';
+const p=o.path||'General';
+if(!cat[g])cat[g]={};
+if(!cat[g][p])cat[g][p]=[];
+cat[g][p].push({o,i});
+});
+let h='';
+Object.keys(cat).sort().forEach(g=>{
+h+=`<div class="cg"><div class="ct">${g}</div>`;
+Object.keys(cat[g]).sort().forEach(p=>{
+h+=`<div class="cp">${p}</div>`;
+cat[g][p].forEach(({o,i})=>{
+h+=RI(o,i);
+});
+});
+h+=`</div>`;
+});
+document.getElementById('lt').innerHTML=h;
+document.getElementById('sq').style.display='none';
+console.log('Renderizado OK');
+}catch(err){
+console.error('Error en R():',err);
+ME(err);
+}
+}
+
+function RI(o,x){
+try{
+const{b,n}=GN(o);
+const im=PI(o)||'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"%3E%3C/svg%3E';
+return`<div class="i">
+<img src="${im}" alt="">
+<div class="inf">
+<div class="n">${o.NB||'Sin nombre'}</div>
+<div>ID: ${o.ID||'N/A'}</div>
+<div>Precio: ${FP(o.PC||0)} Gs</div>
+<div>Cantidad: ${o.CD?o.CD:'Sin'}</div>
+<div>Tipo: ${n||b}</div>
+</div>
+<button class="be" onclick="AE(${x})">✏️ Editar</button>
+</div>`;
+}catch(err){
+console.error('Error renderizando producto:',o,err);
+return'';
+}
+}
+
+function AE(x){
+E=x;
+const o=D[x];
+const{b,n}=GN(o);
+const{i}=GI(o);
+document.getElementById('mtt').textContent=o.ID?'Editar Producto':'Nuevo Producto';
+document.getElementById('enm').value=b||'WATG';
+document.getElementById('enu').value=n||'';
+document.getElementById('eid').value=o.ID||'';
+document.getElementById('enb').value=o.NB||'';
+document.getElementById('epc').value=o.PC?FP(o.PC):'';
+document.getElementById('ecd').value=o.CD||'';
+document.getElementById('imgnm').textContent=i?`Actual: ${i.split('/').pop()}`:'Sin imagen';
+NI=null;
+document.getElementById('mdl').classList.add('a');
+}
+
+document.getElementById('epc').oninput=function(e){
+let v=e.target.value.replace(/\D/g,'');
+if(v)e.target.value=FP(parseInt(v));
+};
+
+function AN(id){
+const ex=D.findIndex(o=>o.ID===id);
+if(ex>=0){
+AE(ex);
+P('Código existente, editando...');
+}else{
+E=null;
+document.getElementById('mtt').textContent='Nuevo Producto';
+document.getElementById('enm').value='WATG';
+document.getElementById('enu').value='';
+document.getElementById('eid').value=id;
+document.getElementById('enb').value='';
+document.getElementById('epc').value='';
+document.getElementById('ecd').value='';
+document.getElementById('imgnm').textContent='Sin imagen';
+NI=null;
+document.getElementById('mdl').classList.add('a');
+}
+}
+
+document.getElementById('eimg').onchange=function(e){
+const f=e.target.files[0];
+if(f){
+NI=f;
+document.getElementById('imgnm').textContent=`Nueva: ${f.name}`;
+}
+};
+
+document.getElementById('grd').onclick=function(){
+const nm=document.getElementById('enm').value;
+const nu=document.getElementById('enu').value;
+const id=document.getElementById('eid').value;
+const nb=document.getElementById('enb').value;
+const pc=document.getElementById('epc').value.replace(/\./g,'');
+const cd=document.getElementById('ecd').value;
+
+if(!id||!nb||!pc){
+P('⚠️ Completa los Datos',2000);
+return;
+}
+
+const nmnm=nm+(nu||'');
+const p={
+NM:nmnm,
+ID:id,
+NB:nb,
+PC:parseInt(pc),
+CD:cd?parseInt(cd):null
+};
+
+if(NI){
+const r=new FileReader();
+r.onload=function(ev){
+const bn=BN2(p);
+const ext=NI.name.split('.').pop();
+p.image=`web/Dinamico/${bn}.${ext}`;
+p.link=`web/Dinamico/${bn}.md`;
+if(E!==null){
+p.gallery=D[E].gallery;
+p.path=D[E].path;
+D[E]=p;
+}else{
+p.gallery='Sin Categoría';
+p.path=null;
+D.push(p);
+}
+CI();
+};
+r.readAsDataURL(NI);
+}else{
+if(E!==null){
+const old=D[E];
+p.image=old.image;
+p.link=old.link;
+p.gallery=old.gallery;
+p.path=old.path;
+D[E]=p;
+}else{
+const bn=BN2(p);
+p.image=`web/Dinamico/${bn}.jpg`;
+p.link=`web/Dinamico/${bn}.md`;
+p.gallery='Sin Categoría';
+p.path=null;
+D.push(p);
+}
+CI();
+}
+};
+
+function CI(){
+document.getElementById('mdl').classList.remove('a');
+IM();
+R();
+P('✅ Guardado');
+}
+
+document.getElementById('cnc').onclick=()=>document.getElementById('mdl').classList.remove('a');
+
+window.addEventListener('popstate',function(e){
+const mdl=document.getElementById('mdl');
+if(mdl.classList.contains('a')){
+e.preventDefault();
+mdl.classList.remove('a');
+history.pushState(null,null,location.href);
+}
+});
+
+history.pushState(null,null,location.href);
+
+document.getElementById('fl').onchange=function(e){
+const f=e.target.files[0];
+if(!f)return;
+const r=new FileReader();
+r.onload=function(ev){
+try{
+const raw=JSON.parse(ev.target.result);
+console.log('JSON parseado - Tipo:', typeof raw);
+D=[];
+if(raw.galleries){
+console.log('Estructura galleries detectada');
+Object.keys(raw.galleries).forEach(g=>{
+const gal=raw.galleries[g];
+if(gal.images&&Array.isArray(gal.images)){
+gal.images.forEach(itm=>{
+const n=itm.name||'';
+const mID=n.match(/ID=([^-\s]+)/);
+const mPC=n.match(/PC=([^-\s]+)/);
+const mNB=n.match(/NB=(.+)$/);
+const mNM=n.match(/NM=([^-\s]+)/);
+const mCD=n.match(/CD=([^-\s]+)/);
+if(!mID||!mPC||!mNB||!mNM){
+console.warn('Faltan campos:',n);
+return;
+}
+D.push({
+ID:mID[1],
+PC:parseInt(mPC[1]),
+NB:mNB[1],
+NM:mNM[1],
+CD:mCD?parseInt(mCD[1]):null,
+image:itm.image,
+link:itm.link,
+gallery:g,
+path:itm.path||null
+});
+});
+}
+});
+}else if(Array.isArray(raw)){
+D=raw;
+console.log('Cargado como array directo');
+}
+console.log('Productos cargados:',D.length);
+IM();
+R();
+P('✅ JSON cargado: '+D.length+' productos');
+}catch(err){
+console.error('Error completo:',err);
+ME(err);
+P(`❌ Error: ${err.message}`);
+}
+};
+r.readAsText(f);
+};
+
+document.getElementById('exp').onclick=function(){
+if(D.length===0){
+P('⚠️ No hay datos a exportar');
+return;
+}
+const gal={};
+D.forEach(p=>{
+const g=p.gallery||'Sin Categoría';
+if(!gal[g])gal[g]={images:[]};
+gal[g].images.push({
+name:BN2(p),
+image:p.image,
+link:p.link,
+path:p.path||null
+});
+});
+const o={galleries:gal};
+const j=JSON.stringify(o,null,2);
+const b=new Blob([j],{type:'application/json'});
+const u=URL.createObjectURL(b);
+const a=document.createElement('a');
+a.href=u;
+a.download='data.json';
+a.click();
+URL.revokeObjectURL(u);
+P('✅ JSON exportado');
+};
+
+function BN2(p){
+let n=`NM=${p.NM}-ID=${p.ID}-PC=${p.PC}`;
+if(p.CD)n+=`-CD=${p.CD}`;
+n+=`-NB=${p.NB}`;
+return n;
+}
+
+function IM(){
+M=new MiniSearch({fields:['NB','ID','NM'],storeFields:['NB','ID','PC','CD','NM']});
+const idx=D.map((o,i)=>({
+id:i,
+NB:o.NB||'',
+ID:o.ID||'',
+NM:o.NM||'',
+PC:o.PC||0,
+CD:o.CD||0
+}));
+M.addAll(idx);
+}
+
+document.getElementById('bus').oninput=function(e){
+const q=e.target.value.trim();
+if(!q){
+R();
+return;
+}
+const rs=M.search(q,{prefix:true,fuzzy:0.2});
+const ids=rs.map(r=>r.id);
+const f=D.map((o,i)=>ids.includes(i)?{o,i}:null).filter(Boolean);
+const cat={};
+f.forEach(({o,i})=>{
+const g=o.gallery||'Sin Categoría';
+const p=o.path||'General';
+if(!cat[g])cat[g]={};
+if(!cat[g][p])cat[g][p]=[];
+cat[g][p].push({o,i});
+});
+let h='';
+Object.keys(cat).sort().forEach(g=>{
+h+=`<div class="cg"><div class="ct">${g}</div>`;
+Object.keys(cat[g]).sort().forEach(p=>{
+h+=`<div class="cp">${p}</div>`;
+cat[g][p].forEach(({o,i})=>{
+h+=RI(o,i);
+});
+});
+h+=`</div>`;
+});
+document.getElementById('lt').innerHTML=h;
+document.getElementById('sq').style.display='none';
+};
+
+document.getElementById('clb').onclick=function(){
+document.getElementById('bus').value='';
+R();
+};
+
+document.getElementById('esn').onclick=function(){
+document.getElementById('sc').classList.add('a');
+S=new Html5Qrcode('qr');
+S.start({facingMode:'environment'},{fps:60,qrbox:160},
+(t)=>{
+S.stop();
+document.getElementById('sc').classList.remove('a');
+const m=t.match(/ID=([^-\s]+)/);
+const id=m?m[1]:t.trim();
+document.getElementById('bus').value=id;
+document.getElementById('bus').dispatchEvent(new Event('input'));
+const ex=D.findIndex(o=>o.ID===id);
+if(ex>=0){
+AE(ex);
+}else{
+P('🔍 Código: '+id);
+}
+},
+()=>{}
+).catch((e)=>{
+console.error(e);
+P('❌ Permiso cámara degado');
+document.getElementById('sc').classList.remove('a');
+S=null;
+});
+};
+
+document.getElementById('csc').onclick=function(){
+if(S){
+S.stop().catch(()=>{});
+S=null;
+}
+document.getElementById('sc').classList.remove('a');
+};
+</script>
+
+</body>
+</html>
