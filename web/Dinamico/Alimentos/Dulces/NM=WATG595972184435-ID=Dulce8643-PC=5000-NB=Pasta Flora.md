@@ -1,9 +1,13 @@
 # Pasta Frola
+
+Crocante y Rica para Acompañar siempre
+
+### Imagenes
 <div class="gallery-container">
     <div class="contenedor-imagenes-animado">
         {"image": "web/otros/Archivos/Imagenes/IB.jpg"},
         {"image": "web/otros/Archivos/Imagenes/IvanBal.jpg"},
-        {"image": "https://i.ibb.co/4wDx4rJ2/image.png"}
+        {"image": "https://www.encasacookingspace.com/wp-content/uploads/2019/04/Pasta_Frola-from-Overhead.jpg"}
     </div>
 </div>
 
@@ -18,12 +22,18 @@
 
 > Libre de Lácteos; Sin Caseína ni Lactosa.
 
+
+
+
+
+
+
+
+
+
+
+
 <div id="cs"></div>
-
-
-
-
-
 
 
 <!-- Precio y Cantidad -->
