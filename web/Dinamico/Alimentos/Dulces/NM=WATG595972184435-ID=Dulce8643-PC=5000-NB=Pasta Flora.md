@@ -1,6 +1,6 @@
 # Pasta Frola
 
-Crocante y Rica para Acompañar siempre
+Crocante y Rica para Acompañar siempre...
 
 ### Imagenes
 <div class="gallery-container">
