@@ -1,169 +1,230 @@
-# 🌱 No a la Obsolescencia Artificial.
-Por un Paraguay Linpio y sin Basura.
-Por un Pais donde seamos Dueño de lo que Compramos.
+# 🌱 Por un Paraguay Limpio y sin Basura Tecnológica
+# Por un País donde seamos Dueños de lo que Compramos
 
-### Garantia
-Los productos adquiridos en esta tienda tienen una Garantia de 30 Dias.
-Solo se Aplica si son desperfectos de Fabrica y no daños provocados despues de la Compra.
+Creemos que los dispositivos electrónicos no deberían volverse basura solo porque son viejos, lentos o dejaron de recibir actualizaciones.
 
-Pasado ese Plazo aun podemos Reparar el dispositivo de manera Gratuita si son daños leves 
-Ejemplo: Mojaste la taza electrica y se sulfato las conexiones. 
-Se te Perdio la Pastilla Magnetica de la Taza giratoria.
+Promovemos el derecho a reparar, reutilizar y comprender la tecnología que usamos todos los días.
 
-### Reparaciones Gratuitas 
+---
 
-Este es un espacio comunitario y gratuito donde ayudamos a que computadoras, teléfonos y demas dispositivos sigan funcionando por más tiempo.
+# 🛍️ Garantía de Productos
 
-Muchas veces los equipos se dejan de usar por problemas simples, falta de mantenimiento o porque ya no reciben actualizaciones. La idea es intentar darles una segunda vida, reducir desperdicios y compartir conocimiento.
+### Garantía Comercial
 
-No es un servicio técnico profesional. Es una iniciativa comunitaria basada en aprendizaje, colaboración y buena voluntad.
+Los productos adquiridos en esta tienda cuentan con una garantía de 30 días.
 
-Ejemplo: 
-Galaxy S2 Salido en 2011
-Su ultima actualizacion fue a Android 4.
-Hoy en dia Incompatible con WhatsApp, Facebook, TikTok, YouTube etc.
+Esta garantía aplica únicamente a defectos de fábrica y no cubre daños provocados después de la compra.
 
-Pero aun es posible actualizarlo a una version de Android que permita el uso de WhatsApp y demas plataformas.
+---
 
-No todos los telefonos y modelos pueden hacen hacer esto, pero muchos Si. Acerca tu Telefono para el Diagnostico y Posible Actualizacion Gratuita.
+### Reparaciones Posteriores
 
-Lo mismo para computadoras
-Muchas ya no pueden actualizar a Windows 10, 11 o Superior
-Quedan Obsoletas artificialmente sin poder ni acceder a paginas como YouTube para simplemente escuchar Musica.
-Nosotros tenemos una solucion para que puedas utilizarlo de nuevo. Acercate para mas Info.
+Pasado el plazo de garantía, aún podemos intentar ayudarte a reparar el dispositivo de forma gratuita si el daño es leve.
 
+Ejemplos:
 
-Con esto esperamos Lograr:
+- Se mojó una taza eléctrica y se sulfataron las conexiones  
+- Se perdió la pastilla magnética de una taza giratoria  
+
+Clic aquí para leer más ↗️
+
+---
+
+# ♻️ Dónde Desechar Dispositivos Electrónicos
+
+### Puntos de Reciclaje
+
+¿No sabés dónde desechar baterías, pilas o dispositivos electrónicos?
+
+Aquí listamos lugares de reciclaje disponibles:
+
+Clic aquí ↗️
+
+---
+
+### Recomendaciones
+
+Guardá pilas, baterías y componentes electrónicos en recipientes cerrados herméticamente, como botellas plásticas, hasta poder llevarlos a un punto de reciclaje.
+
+---
+
+### Donación y Reutilización
+
+Si pensás que tu dispositivo ya no sirve porque es lento, tiene la pantalla rota o la batería desgastada:
+
+¡No lo tires!
+
+Podés traerlo a la tienda para intentar darle una nueva vida.
+
+Algunos dispositivos pueden ser reacondicionados y donados a instituciones, orfanatos u organizaciones donde aprender computación puede generar oportunidades reales.
+
+---
+
+# 🔧 Reparaciones Gratuitas Comunitarias
+
+Este es un espacio comunitario y gratuito donde ayudamos a que computadoras, teléfonos y otros dispositivos sigan funcionando por más tiempo.
+
+Muchos equipos se dejan de usar por problemas simples, falta de mantenimiento o porque dejaron de recibir actualizaciones. La idea es darles una segunda vida, reducir desperdicios y compartir conocimiento.
+
+Este servicio no reemplaza a un servicio técnico profesional. Es una iniciativa comunitaria basada en buena voluntad.
+
+---
+
+### Ejemplo Real
+
+El Galaxy S2 fue lanzado en 2011.  
+Su última actualización oficial fue Android 4.
+
+Hoy es incompatible con WhatsApp, Facebook, TikTok y YouTube.
+
+Sin embargo, en algunos casos es posible instalar versiones más modernas del sistema que permiten volver a usar estas aplicaciones.
+
+No todos los teléfonos son compatibles, pero muchos sí. Podés acercar tu dispositivo para un diagnóstico y posible actualización gratuita.
+
+---
+
+### Computadoras
+
+Muchas computadoras ya no pueden actualizar a Windows moderno y quedan obsoletas artificialmente, incluso para tareas simples como reproducir música o navegar en internet.
+
+Existen alternativas que permiten volver a utilizarlas.
+
+Acercate para más información.
+
+---
+
+# 🎯 Qué Buscamos Lograr
 
 ✔ Reducir basura electrónica  
 ✔ Ayudar a personas a seguir usando sus dispositivos  
-✔ Promover software libre y alternativas más livianas  
-✔ Explicar de forma simple cómo funcionan los equipos  
-✔ Enseñar para que cada persona pueda cuidar mejor su tecnología  
+✔ Promover software libre y alternativas livianas  
+✔ Explicar de forma simple cómo funciona la tecnología  
+✔ Enseñar a cuidar mejor los equipos  
 
 ---
 
-# 💻 ¿Que Hacemos Realmente?
+# 💻 Qué Hacemos Realmente
 
-## Computadoras
+### Computadoras – Software
 
-### 🧩 Software
-- Reinstalar sistemas operativos
-- Instalar Linux en equipos que ya no soportan Windows moderno
-- Mejorar rendimiento de computadoras lentas
-- Eliminar programas innecesarios
-- Instalar programas básicos
-- Configuración inicial del sistema
+- Reinstalación de sistemas operativos  
+- Instalación de Linux en equipos sin soporte moderno  
+- Optimización de rendimiento  
+- Eliminación de programas innecesarios  
+- Instalación de programas básicos  
+- Configuración inicial del sistema  
 
 ---
 
-### 🔧 Hardware básico
-(Solo cambios simples)
+### Computadoras – Hardware Básico
+
+(Solo reemplazos simples)
 
 - Cambio de disco duro por SSD  
 - Instalación o ampliación de memoria RAM  
 - Limpieza interna básica  
-- Cambio de batería de notebook (si traes el repuesto)  
+- Cambio de batería de notebook (si el repuesto es provisto por el usuario)  
 
 ---
 
-### 🩺 Diagnóstico general
+### Diagnóstico General
+
 Podemos revisar:
 
-- Estado del disco
-- Rendimiento general
-- Temperaturas del equipo
-- Estado de batería
-- Compatibilidad con sistemas operativos
-- Recomendaciones para mejorar el equipo
+- Estado del disco  
+- Rendimiento general  
+- Temperaturas del equipo  
+- Estado de batería  
+- Compatibilidad con sistemas operativos  
+- Recomendaciones de mejora  
 
 ---
 
-## 📱 Teléfonos Android
+### Teléfonos Android
 
 Podemos ayudar con:
 
-- Instalación de sistemas alternativos en modelos compatibles
-- Eliminación de aplicaciones innecesarias del fabricante
-- Mejora de rendimiento
-- Diagnóstico básico
+- Instalación de sistemas alternativos en modelos compatibles  
+- Eliminación de aplicaciones innecesarias del fabricante  
+- Optimización de rendimiento  
+- Diagnóstico básico  
 
-⚠️ No todos son compatibles, Traelo para el Diagnostico.
-
-
----
-
-# 🚫 ¿Qué cosas no Hacemos?
-
-
-- Reparaciones de placas electrónicas
-- Soldadura o microelectrónica
-- Reparación por daño de agua o líquidos
-- Reparación de pantallas
-- Recuperación de datos
-- Desbloqueo de Contraseña Ilegal 
-- Instalación de software pirata
-- Soporte para empresas o servicios comerciales
-- Garantías profesionales certificadas
+⚠️ No todos los modelos son compatibles. Podés traer tu equipo para diagnóstico.
 
 ---
+
+# 🚫 Qué No Hacemos
+
+- Reparaciones de placas electrónicas  
+- Soldadura o microelectrónica  
+- Reparaciones por daño de líquidos  
+- Reparación de pantallas  
+- Recuperación avanzada de datos  
+- Desbloqueo ilegal de dispositivos  
+- Instalación de software pirata  
+- Soporte empresarial o comercial  
+- Garantías profesionales certificadas  
 
 Trabajamos con buena fe y ganas de ayudar, pero no somos un servicio técnico profesional.
 
 ---
 
-## Toda reparación tiene riesgos
+# ⚠️ Riesgos de Reparación
 
-Al trabajar con software o hardware pueden ocurrir cosas como:
+Toda intervención de software o hardware puede implicar riesgos como:
 
-- Pérdida de archivos
-- Fallas inesperadas
-- Programas que dejen de funcionar
-- Pérdida de garantía del fabricante
-- Cambios en el comportamiento del dispositivo
+- Pérdida de archivos  
+- Fallas inesperadas  
+- Programas que dejen de funcionar  
+- Pérdida de garantía del fabricante  
+- Cambios en el comportamiento del dispositivo  
 
-Por eso debes entender que estas cosas pueden pasar, no hay garantias de reparaciones existosas.
-
----
-
-## Recomendamos
-
-### 💾 Copias de seguridad
-
-Antes de traer tu equipo, es fundamental que guardes tus datos importantes.
-
-No podemos garantizar la conservación de información durante los trabajos.
+No podemos garantizar que todas las reparaciones tengan éxito.
 
 ---
 
-✔ No Revisamos archivos personales  
-✔ No Copiamos datos privados  
-✔ No guardamos información tuya  
+# 💾 Copias de Seguridad
 
-> El cuidado y respaldo de los datos siempre es responsabilidad del dueño del equipo.
+Antes de traer tu equipo, es fundamental realizar copias de seguridad de la información importante.
 
----
-
-Al traer un equipo, aceptas que:
-
-- Eres Dueño legítima del dispositivo
-- Hiciste copias de tus Archivos en otra Memoria
-- Autorizas la manipulación básica del equipo
-- Entiendes que no se garantizan resultados
+No podemos garantizar la conservación de datos durante los trabajos.
 
 ---
 
-Ayuda mucho si podés:
+### Privacidad
 
-✔ Hacer copia de seguridad  
+✔ No revisamos archivos personales  
+✔ No copiamos información privada  
+✔ No almacenamos datos del usuario  
+
+El respaldo de información es responsabilidad del propietario del dispositivo.
+
+---
+
+# 📋 Condiciones de Servicio
+
+Al traer un equipo, aceptás que:
+
+- Sos propietario legítimo del dispositivo  
+- Realizaste copia de seguridad de tus datos  
+- Autorizás la manipulación básica del equipo  
+- Entendés que no se garantizan resultados  
+
+La entrega del dispositivo implica aceptación de estas condiciones.
+
+---
+
+# 🧰 Cómo Prepararte Antes de Traer tu Equipo
+
+✔ Realizar copia de seguridad  
 ✔ Traer cargadores y accesorios  
-✔ Explicar qué problemas notaste  
-✔ Comprar repuestos si sabés que se necesitan  
-✔ Tener contraseñas necesarias para ingresar al equipo  
+✔ Explicar los problemas detectados  
+✔ Comprar repuestos si ya sabés que son necesarios  
+✔ Tener contraseñas de acceso al equipo  
 
 ---
 
-No Podemos Prometer 
+# ❌ Qué No Podemos Prometer
 
 - Que todos los equipos puedan repararse  
 - Recuperar datos perdidos  
@@ -173,10 +234,14 @@ No Podemos Prometer
 
 ---
 
-# 🌍 Mundo Sano
+# 🌍 Mundo Más Sano
 
-Los dispositivos electrónicos genera un gran daño ambiental. Extender la vida útil de un equipo aunque sea algunos años puede ayudar mucho al planeta y la salud y la economia de la gente.
+La fabricación de dispositivos electrónicos genera un alto impacto ambiental. Extender la vida útil de un equipo ayuda al planeta, a la economía familiar y al acceso a la tecnología.
 
-Además, creemos que entender y reparar tecnología debería ser algo accesible para todos.
+Creemos que comprender y reparar tecnología debería ser algo accesible para todos.
 
-Envia tu Mensaje de Solicitud desde Aqui:
+---
+
+# 📩 Solicitudes y Consultas
+
+Enviá tu mensaje desde aquí:
