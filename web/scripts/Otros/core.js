@@ -74,12 +74,15 @@ hL()
 function eS(e){
 const s=e.querySelectorAll('script');
 s.forEach(o=>{
+if(o.dataset.executed)return;
+o.dataset.executed="1";
+
 const n=document.createElement('script');
 for(const a of o.attributes)n.setAttribute(a.name,a.value);
 if(o.src)n.src=o.src;
 else n.textContent=o.textContent;
-o.parentNode.replaceChild(n,o)
-})
+o.parentNode.replaceChild(n,o);
+});
 }
 
 function lD(){
@@ -111,6 +114,7 @@ document.body.appendChild(s)
 }
 
 async function lC(u,h=!0,a=''){
+if(u===c)return;
 try{
 const r=await fetch(u);
 if(!r.ok)throw new Error(`Error fetching ${u}: ${r.statusText}`);
@@ -119,6 +123,7 @@ const d=document.getElementById('content');
 if(u.endsWith('.md'))t=`<div class="markdown-content">${md.render(t)}</div>`;
 d.innerHTML=t;
 eS(d);
+d.dispatchEvent(new CustomEvent('contentLoaded',{bubbles:true}));
 c=u;
 if(h){
 const n=a?`${u}#${a}`:u;
@@ -214,7 +219,9 @@ document.addEventListener('click',(e)=>{
 const a=e.target.closest('a');
 if(!a)return;
 if(a.target==="_blank")return;
+
 const h=a.getAttribute('href');
+
 if(h&&h.startsWith('#')&&!h.includes('web/')){
 e.preventDefault();
 const i=h.substring(1);
@@ -226,18 +233,22 @@ t.scrollIntoView({behavior:'smooth',block:'start'})
 }
 return
 }
+
 const iE=a.href.startsWith('http://')||a.href.startsWith('https://');
 const iS=a.href.startsWith(window.location.origin);
 if(iE&&!iS)return;
-e.preventDefault();
-const f=a.href;
-let u;
-if(f.includes('web/')){
-const w=f.indexOf('web/');
-u=f.substring(w)
-}else{
-u=h
+
+const spaExt=/\.(md|html)$/i;
+
+if(!spaExt.test(h)){
+return;
 }
+
+e.preventDefault();
+
+const url=new URL(a.href);
+let u=url.pathname.startsWith('/') ? url.pathname.slice(1) : url.pathname;
+
 window.scrollTo({top:0,behavior:'smooth'});
 lC(u)
 });

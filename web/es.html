@@ -12,9 +12,7 @@
     <h1>🍰 Comestibles</h1>
     <div class="gallery-container">
         <div id="Alimentos-gallery" 
-             class="contenedor-imagenes-animado"
-             data-json-path="web/Dinamico/data.json">
-           
+             class="contenedor-imagenes-animado">
         </div>
         <a href="web/Dinamico/Alimentos/es.html" class="view-all-button">Ver Lista Completa</a>
     </div>
@@ -26,14 +24,11 @@
     <h1>🫕 Accesorios</h1>
     <div class="gallery-container">
         <div id="Accesorios-gallery" 
-             class="contenedor-imagenes-animado"
-             data-json-path="web/Dinamico/data.json">
-           
+             class="contenedor-imagenes-animado">
         </div>
         <a href="web/Dinamico/Accesorios/es.html" class="view-all-button">Ver Lista Completa</a>
     </div>
 </div>
-
 
 </br>
 
@@ -41,14 +36,11 @@
     <h1>👒 Prendas</h1>
     <div class="gallery-container">
         <div id="Prendas-gallery" 
-             class="contenedor-imagenes-animado"
-             data-json-path="web/Dinamico/data.json">
-           
+             class="contenedor-imagenes-animado">
         </div>
         <a href="web/Dinamico/Prendas/es.html" class="view-all-button">Ver Lista Completa</a>
     </div>
 </div>
-
 
 </br>
 
@@ -56,14 +48,11 @@
     <h1>🎁️ Sorteos</h1>
     <div class="gallery-container">
         <div id="Sorteos-gallery" 
-             class="contenedor-imagenes-animado"
-             data-json-path="web/Dinamico/data.json">
-           
+             class="contenedor-imagenes-animado">
         </div>
         <a href="web/Dinamico/Sorteos/es.html" class="view-all-button">Ver Lista Completa</a>
     </div>
 </div>
-
 </br>
 
 
@@ -271,70 +260,7 @@ Typed No es de uso Comercial Libre
 <!-- galerías -->
 
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css"
-onerror="this.href='web/scripts/Otros/Swiper/8.4.5-bundle.min.css'">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"
-onerror="var s=document.createElement('script');s.src='web/scripts/Otros/Swiper/8.4.5-bundle.min.js';document.head.appendChild(s);">
-</script>
-
-
-<script>function eN(n){const m=n.match(/NB=([^.]+)/);return m?m[1]:n;}
-
-function sN(p){return p.split('/').pop().replace(/\.[^.]+$/,'');}
-
-function lnk(p){return p.replace(/\.[^.]+$/,'.md');}
-
-async function lGD(j){
-try{const r=await fetch(j);if(!r.ok)throw 0;return(await r.json()).galleries;}
-catch{return null;}
-}
-
-function rI(g,k,f){
-const v=g[k];
-if(!v)return[];
-if(Array.isArray(v)){
-return f?v.filter(p=>p.includes('/'+f+'/') || p.includes('/'+f+'.')):v;
-}
-if(f&&v[f])return v[f];
-return Object.values(v).flat();
-}
-
-function cGI(p){
-const n=sN(p);
-return`<a href="${lnk(p)}" class="gallery-item"><img src="${p}" alt="${eN(n)}" loading="lazy"/><div class="menu-content"><h3>${eN(n)}</h3></div></a>`;
-}
-
-function cS(c,imgs){
-c.innerHTML=`<div class="swiper-wrapper">${imgs.map(p=>`<div class="swiper-slide">${cGI(p)}</div>`).join('')}</div>`;
-return new Swiper(c,{slidesPerView:'auto',spaceBetween:20,loop:true,centeredSlides:true,autoplay:{delay:3000,disableOnInteraction:false,pauseOnMouseEnter:true}});
-}
-
-function cG(c,imgs){c.innerHTML=imgs.map(cGI).join('');}
-
-async function pC(c,isSw){
-const j=c.dataset.jsonPath,k=c.dataset.galleryKey,f=c.dataset.pathFilter;
-if(!j){c.innerHTML='<p>No se especificó ruta JSON</p>';return;}
-const id=c.id.replace(/-gallery|-grid/g,'');
-const gd=await lGD(j);
-if(!gd){c.innerHTML='<p>Error al cargar datos</p>';return;}
-const imgs=rI(gd,k||id,f);
-if(!imgs.length){c.innerHTML='<p>Sin Elementos</p>';return;}
-if(isSw){c.classList.add('swiper');cS(c,imgs);}
-else cG(c,imgs);
-}
-
-async function iG(){
-const sE=document.querySelectorAll('.contenedor-imagenes-animado[data-json-path]');
-const gE=document.querySelectorAll('.grid-gallery[data-json-path]');
-if(sE.length>0&&typeof Swiper==='undefined'){setTimeout(iG,100);return;}
-for(const c of sE)await pC(c,true);
-for(const c of gE)await pC(c,false);
-}
-
-iG();
-</script>
 
 
 
