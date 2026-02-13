@@ -30,23 +30,22 @@ jobs:
 
           ST=200*1024
           AT=300*1024
-          B=[Path('web/Dinamico'), Path('web/otros/Archivos/Imagenes')]
+          B=Path('web/Dinamico')
 
           def necesita():
-            for base in B:
-              if not base.exists():
+            if not B.exists():
+              return False
+            for f in B.rglob('*'):
+              if not f.is_file():
                 continue
-              for f in base.rglob('*'):
-                if not f.is_file():
-                  continue
-                ext=f.suffix.lower()
-                s=f.stat().st_size
-                if ext in {'.jpg','.jpeg','.png'} and s>ST:
-                  return True
-                if ext=='.gif':
-                  return True
-                if ext=='.webp' and s>AT:
-                  return True
+              ext=f.suffix.lower()
+              s=f.stat().st_size
+              if ext in {'.jpg','.jpeg','.png'} and s>ST:
+                return True
+              if ext=='.gif':
+                return True
+              if ext=='.webp' and s>AT:
+                return True
             return False
 
           with open(os.environ['GITHUB_OUTPUT'],'a') as gh:
@@ -146,7 +145,6 @@ jobs:
 
           if TOOLS:
             proc(B1)
-            proc(B2)
 
           EX={'.webp','.jpg','.jpeg','.png','.gif','.avif','.svg','.bmp','.tiff','.tif','.ico'}
 
