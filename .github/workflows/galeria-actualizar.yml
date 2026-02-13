@@ -95,12 +95,12 @@ jobs:
                 else:
                   if nc: cv(img)
                   elif s>ST: cs(img)
-              elif ext in {'.jpg','.jpeg','.png','.avif','.svg','.bmp','.tiff','.tif','.ico'}:
+              elif ext in {'.jpg','.jpeg','.png'}:
                 if nc: cv(img)
                 elif s>ST: cs(img)
           proc(B1)
-          EX1={'.webp'}
           EX2={'.webp','.jpg','.jpeg','.png','.gif','.avif','.svg','.bmp','.tiff','.tif','.ico'}
+          EX1=EX2
           def bg(base,ex=EX1):
             g={}
             for r,d,f in os.walk(base):
