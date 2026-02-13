@@ -21,18 +21,6 @@ jobs:
         with:
           fetch-depth: 0
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-      # -------------------------------
-      # Detectar si hay camdidatos 
-      # -------------------------------
->>>>>>> Stashed changes
-=======
-      # -------------------------------
-      # Detectar si hay camdidatos 
-      # -------------------------------
->>>>>>> Stashed changes
       - name: Detectar trabajo pendiente
         id: detect
         run: |
@@ -42,8 +30,6 @@ jobs:
 
           ST=200*1024
           AT=300*1024
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
           B=Path('web/Dinamico')
 
           def necesita():
@@ -72,58 +58,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y webp
 
-=======
-=======
->>>>>>> Stashed changes
-
-          B=[Path('web/Dinamico'), Path('web/otros/Archivos/Imagenes')]
-
-          def necesita():
-            for base in B:
-              if not base.exists():
-                continue
-              for f in base.rglob('*'):
-                if not f.is_file():
-                  continue
-                ext=f.suffix.lower()
-                s=f.stat().st_size
-
-                if ext in {'.jpg','.jpeg','.png'} and s>ST:
-                  return True
-                if ext=='.gif':
-                  return True
-                if ext=='.webp' and s>AT:
-                  return True
-            return False
-
-          if necesita():
-            print("OPTIMIZE=true")
-            with open(os.environ['GITHUB_OUTPUT'],'a') as gh:
-              gh.write("optimize=true\n")
-          else:
-            print("OPTIMIZE=false")
-            with open(os.environ['GITHUB_OUTPUT'],'a') as gh:
-              gh.write("optimize=false\n")
-          EOF
-
-      # -------------------------------
-      # Instalar 
-      # -------------------------------
-      - name: Instalar herramientas
-        if: steps.detect.outputs.optimize == 'true'
-        run: |
-          which cwebp || sudo apt-get update && sudo apt-get install -y webp
-          which gif2webp || sudo apt-get install -y webp
-          which img2webp || sudo apt-get install -y webp
-          which webpmux || sudo apt-get install -y webp
-
-      # -------------------------------
-      # Procesar imágenes + JSON
-      # -------------------------------
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
       - name: Procesar Imagenes + Generar JSON
         run: |
           python3 << 'EOF'
@@ -202,7 +136,6 @@ jobs:
             for img in base.rglob('*'):
               if not img.is_file(): continue
               ext,s=img.suffix.lower(),sz(img)
-
               if ext=='.gif':
                 g2w(img)
               elif ext in {'.jpg','.jpeg','.png'} and s>ST:
@@ -212,19 +145,7 @@ jobs:
 
           if TOOLS:
             proc(B1)
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 
-=======
-            proc(B2)
-
-          # -------- JSON --------
->>>>>>> Stashed changes
-=======
-            proc(B2)
-
-          # -------- JSON --------
->>>>>>> Stashed changes
           EX={'.webp','.jpg','.jpeg','.png','.gif','.avif','.svg','.bmp','.tiff','.tif','.ico'}
 
           def bg(base):
@@ -261,18 +182,6 @@ jobs:
             wj(B2/'data.json',{'galleries':bg(B2)})
           EOF
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-      # -------------------------------
-      # Commit
-      # -------------------------------
->>>>>>> Stashed changes
-=======
-      # -------------------------------
-      # Commit
-      # -------------------------------
->>>>>>> Stashed changes
       - name: Commit cambios
         run: |
           git config user.email "action@github.com"
@@ -281,18 +190,6 @@ jobs:
           git diff --staged --quiet || git commit -m "Optimización imágenes + JSON"
           git push
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-      # -------------------------------
-      # Artifact Pages
-      # -------------------------------
->>>>>>> Stashed changes
-=======
-      # -------------------------------
-      # Artifact Pages
-      # -------------------------------
->>>>>>> Stashed changes
       - name: Preparar artifact Pages
         uses: actions/upload-pages-artifact@v3
         with:
