@@ -1,1 +1,115 @@
-minisearch
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+#sh-w{font-family:'OpenDyslexic','Fluent Emoji Color',sans-serif;color:white;padding:8px 0}
+#sh-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:10px 16px}
+#sh-bar span{font-size:1.4rem}
+#sh-inp{flex:1;background:none;border:none;outline:none;color:white;font-size:1rem;font-family:inherit}
+#sh-inp::placeholder{color:rgba(255,255,255,.4)}
+#sh-r{margin-top:4px}
+.sh-cat h1{border-bottom:2px solid #1a73e8;padding-bottom:.4rem;margin:24px 0 10px}
+.sh-sub h3{color:rgba(255,255,255,.7);margin:12px 0 6px;padding-left:6px;font-size:.95rem;border-left:3px solid #1a73e8}
+
+
+.sh-it{display:flex;align-items:center;gap:12px;padding:0 0px;border-radius:14px;text-decoration:none;color:white;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);margin-bottom:6px;transition:background .2s,transform .2s;height:53px}
+
+.sh-it img{width:50px;height:50px;object-fit:cover;border-radius:10px;flex-shrink:0;background:rgba(0,0,0,.3);aspect-ratio:1}
+
+
+.sh-it span{font-size:.95rem;line-height:1.3}
+.sh-mt{color:rgba(255,255,255,.4);font-size:.99rem;text-align:center;padding:0px}
+
+
+</style>
+
+<div id="sh-w">
+  <div id="sh-bar"><span>🔍</span><input id="sh-inp" type="search" placeholder="Buscar productos..." autocomplete="off"></div>
+  <div id="sh-r"></div>
+</div>
+
+<script>
+(function(){
+const DJ='web/Dinamico/data.json';
+const MS_CDN='https://cdn.jsdelivr.net/npm/minisearch@7/dist/umd/index.js';
+const MS_LOCAL='web/scripts/Otros/MiniSearch/index.js';
+
+let ms,allItems=[],ready=false;
+
+function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
+function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1].trim():n}
+function mL(p){return p.replace(/\.[^.]+$/,'.md')}
+
+function loadMS(cb){
+  const s=document.createElement('script');
+  s.src=MS_CDN;
+  s.onload=cb;
+  s.onerror=()=>{const f=document.createElement('script');f.src=MS_LOCAL;f.onload=cb;document.head.appendChild(f)};
+  document.head.appendChild(s);
+}
+
+function buildItems(galleries){
+  let id=0;
+  Object.entries(galleries).forEach(([cat,val])=>{
+    if(Array.isArray(val)){
+      val.forEach(p=>allItems.push({id:id++,name:nN(fN(p)),cat,sub:'',img:p,md:mL(p)}));
+    } else {
+      Object.entries(val).forEach(([sub,arr])=>{
+        arr.forEach(p=>allItems.push({id:id++,name:nN(fN(p)),cat,sub,img:p,md:mL(p)}));
+      });
+    }
+  });
+}
+
+function itemHTML(it){
+  return`<a class="sh-it" href="${it.md}"><img src="${it.img}" loading="lazy" alt="${it.name}"><span>${it.name}</span></a>`;
+}
+
+function renderItems(list){
+  const R=document.getElementById('sh-r');
+  if(!list.length){R.innerHTML='<div class="sh-mt">Sin resultados 🔍</div>';return;}
+  const cats={};
+  list.forEach(it=>{
+    if(!cats[it.cat])cats[it.cat]={};
+    const sk=it.sub||'__';
+    if(!cats[it.cat][sk])cats[it.cat][sk]=[];
+    cats[it.cat][sk].push(it);
+  });
+  let h='';
+  Object.entries(cats).forEach(([cat,subs])=>{
+    h+=`<div class="sh-cat"><h1>${cat}</h1>`;
+    Object.entries(subs).forEach(([sub,its])=>{
+      if(sub!=='__')h+=`<div class="sh-sub"><h3>${sub}</h3>`;
+      its.forEach(it=>{h+=itemHTML(it)});
+      if(sub!=='__')h+=`</div>`;
+    });
+    h+=`</div>`;
+  });
+  R.innerHTML=h;
+}
+
+function initMS(){
+  ms=new MiniSearch({fields:['name','cat','sub'],storeFields:['name','cat','sub','img','md'],searchOptions:{prefix:true,fuzzy:.2}});
+  ms.addAll(allItems);
+  ready=true;
+  renderItems(allItems);
+}
+
+async function init(){
+  try{
+    const r=await fetch(DJ);
+    const d=await r.json();
+    buildItems(d.galleries);
+  }catch(e){document.getElementById('sh-r').innerHTML='<div class="sh-mt">Error cargando datos</div>';return;}
+  loadMS(initMS);
+}
+
+document.getElementById('sh-inp').addEventListener('input',function(){
+  if(!ready)return;
+  const q=this.value.trim();
+  if(!q){renderItems(allItems);return;}
+  const ids=new Set(ms.search(q).map(r=>r.id));
+  renderItems(allItems.filter(it=>ids.has(it.id)));
+});
+
+init();
+})();
+</script>
