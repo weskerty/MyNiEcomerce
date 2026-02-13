@@ -1,37 +1,91 @@
-name: BOT Actualizador de Galeria Dinamica
-
+name: BOT Galeria + Optimizador + Pages
 on:
   push:
     paths:
       - 'web/Dinamico/**'
       - 'web/otros/Archivos/Imagenes/**'
   workflow_dispatch:
-
 permissions:
   contents: write
-
+  pages: write
+  id-token: write
 jobs:
-  update-json:
+  build:
     runs-on: ubuntu-slim
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: BOT Actualizador de Galeria Dinamica
+      - name: Instalar WebP tools
+        run: |
+          apt-get update
+          apt-get install -y webp python3
+      - name: Procesar Imagenes + Generar JSON
         run: |
           python3 << 'EOF'
-          import os,json
+          import os,json,subprocess,tempfile
           from pathlib import Path
-
-          EX={'.jpg','.jpeg','.png','.gif','.webp'}
-
-          def bG(b):
+          NORMAL_TRIGGER,NORMAL_TARGET,ANIM_TRIGGER,ANIM_TARGET=200*1024,100*1024,300*1024,200*1024
+          BASES=[Path('web/Dinamico'),Path('web/otros/Archivos/Imagenes')]
+          def size(p): return p.stat().st_size
+          def run_cmd(cmd): subprocess.run(cmd,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+          def is_anim_webp(p):
+            r=subprocess.run(['webpmux','-info',str(p)],capture_output=True,text=True)
+            return 'Number of frames: 1' not in r.stdout
+          def compress_static(img):
+            tmp=Path(tempfile.gettempdir())/(img.stem+'.webp')
+            for q in range(85,10,-5):
+              run_cmd(['cwebp','-q',str(q),'-m','6','-size',str(NORMAL_TARGET),str(img),'-o',str(tmp)])
+              if tmp.exists() and size(tmp)<=NORMAL_TARGET:
+                final=img.with_suffix('.webp')
+                tmp.replace(final)
+                if img!=final: img.unlink()
+                return
+            if tmp.exists():
+              final=img.with_suffix('.webp')
+              tmp.replace(final)
+              if img!=final: img.unlink()
+          def gif_to_webp(g):
+            tmp=Path(tempfile.gettempdir())/(g.stem+'.webp')
+            for q in range(80,10,-5):              run_cmd(['gif2webp','-lossy','-q',str(q),'-m','6','-size',str(ANIM_TARGET),str(g),'-o',str(tmp)])
+              if tmp.exists() and size(tmp)<=ANIM_TARGET:
+                final=g.with_suffix('.webp')
+                tmp.replace(final)
+                g.unlink()
+                return
+            if tmp.exists():
+              final=g.with_suffix('.webp')
+              tmp.replace(final)
+              g.unlink()
+          def recompress_anim(w):
+            tmp=Path(tempfile.gettempdir())/(w.stem+'_anim.webp')
+            for q in range(80,10,-5):
+              run_cmd(['gif2webp','-lossy','-q',str(q),'-m','6','-size',str(ANIM_TARGET),str(w),'-o',str(tmp)])
+              if tmp.exists() and size(tmp)<=ANIM_TARGET:
+                tmp.replace(w)
+                return
+            if tmp.exists():
+              tmp.replace(w)
+          for base in BASES:
+            if not base.exists(): continue
+            for img in base.rglob('*'):
+              if not img.is_file(): continue
+              ext,s=img.suffix.lower(),size(img)
+              if ext=='.gif' and s>ANIM_TRIGGER: gif_to_webp(img)
+              elif ext=='.webp':
+                if is_anim_webp(img):
+                  if s>ANIM_TRIGGER: recompress_anim(img)
+                else:
+                  if s>NORMAL_TRIGGER: compress_static(img)
+              elif ext in {'.jpg','.jpeg','.png'}:
+                if s>NORMAL_TRIGGER: compress_static(img)
+          EX={'.webp'}
+          def build_gallery(base):
             g={}
-            for r,d,f in os.walk(b):
+            for r,d,f in os.walk(base):
               im=sorted(x for x in f if Path(x).suffix.lower() in EX)
-              if not im:continue
-              rp=os.path.relpath(r,b)
+              if not im: continue
+              rp=os.path.relpath(r,base)
               ps=[os.path.join(r,x).replace(os.sep,'/') for x in im]
               if rp=='.':
                 g.setdefault('_root',[]).extend(ps)
@@ -42,30 +96,37 @@ jobs:
                 else:
                   sub=g.setdefault(parts[0],{})
                   sub.setdefault(parts[1],[]).extend(ps)
-            return g
-
-          def wJ(p,d):
+            return g          def write_json(p,d):
             with open(p,'w',encoding='utf-8') as f:
               json.dump(d,f,separators=(',',':'),ensure_ascii=False)
-
           b1=Path('web','Dinamico')
           if b1.exists():
             g={}
             for fd in b1.iterdir():
               if fd.is_dir():
-                r=bG(fd)
-                g[fd.name]=r.get('_root',r) if '_root' in r and len(r)==1 else ({k:v for k,v in r.items() if k!='_root'} if '_root' not in r else r)
-            wJ(b1/'data.json',{'galleries':g})
-
-          b2=Path('web','otros','Archivos','Imagenes')
+                r=build_gallery(fd)
+                g[fd.name]=r.get('_root',r)
+            write_json(b1/'data.json',{'galleries':g})
+          b2=Path('web','otros','Archivos/Imagenes')
           if b2.exists():
-            wJ(b2/'data.json',{'galleries':bG(b2)})
+            write_json(b2/'data.json',{'galleries':build_gallery(b2)})
           EOF
-
-      - name: Commit changes
+      - name: Commit cambios
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add web/Dinamico/data.json web/otros/Archivos/Imagenes/data.json
-          git diff --staged --quiet || git commit -m "Actualizado Galeria Dinamica"
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          git add .
+          git diff --staged --quiet || git commit -m "Optimización imágenes + JSON"
           git push
+      - name: Preparar artifact Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - name: Deploy Pages
+        uses: actions/deploy-pages@v4
