@@ -1,12 +1,17 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-#sh-w{font-family:'OpenDyslexic','Fluent Emoji Color',sans-serif;color:white;padding:8px 0}
-#sh-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:10px 16px}
+
+#sh-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:0px solid rgba(255,255,255,.2);border-radius:20px;padding:10px 16px}
+
 #sh-bar span{font-size:1.4rem}
+
 #sh-inp{flex:1;background:none;border:none;outline:none;color:white;font-size:1rem;font-family:inherit}
+
 #sh-inp::placeholder{color:rgba(255,255,255,.4)}
 #sh-r{margin-top:4px}
-.sh-cat h1{border-bottom:2px solid #1a73e8;padding-bottom:.4rem;margin:24px 0 10px}
+
+.sh-cat h2{border-bottom:2px solid #1a73e8;padding-bottom:.4rem;margin:0px 0 10px}
+
 .sh-sub h3{color:rgba(255,255,255,.7);margin:12px 0 6px;padding-left:6px;font-size:.95rem;border-left:3px solid #1a73e8}
 
 
@@ -75,7 +80,7 @@ function renderItems(list){
   });
   let h='';
   Object.entries(cats).forEach(([cat,subs])=>{
-    h+=`<div class="sh-cat"><h1>${cat}</h1>`;
+    h+=`<div class="sh-cat"><h2>${cat}</h2>`;
     Object.entries(subs).forEach(([sub,its])=>{
       if(sub!=='__')h+=`<div class="sh-sub"><h3>${sub}</h3>`;
       its.forEach(it=>{h+=itemHTML(it)});
