@@ -22,6 +22,12 @@ jobs:
           fetch-depth: 0
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+      # -------------------------------
+      # Detectar si hay camdidatos 
+      # -------------------------------
+>>>>>>> Stashed changes
 =======
       # -------------------------------
       # Detectar si hay camdidatos 
@@ -36,6 +42,7 @@ jobs:
 
           ST=200*1024
           AT=300*1024
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
           B=Path('web/Dinamico')
 
@@ -66,6 +73,8 @@ jobs:
           sudo apt-get install -y webp
 
 =======
+=======
+>>>>>>> Stashed changes
 
           B=[Path('web/Dinamico'), Path('web/otros/Archivos/Imagenes')]
 
@@ -111,6 +120,9 @@ jobs:
       # -------------------------------
       # Procesar imágenes + JSON
       # -------------------------------
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       - name: Procesar Imagenes + Generar JSON
         run: |
@@ -201,7 +213,13 @@ jobs:
           if TOOLS:
             proc(B1)
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+            proc(B2)
+
+          # -------- JSON --------
+>>>>>>> Stashed changes
 =======
             proc(B2)
 
@@ -244,6 +262,12 @@ jobs:
           EOF
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+      # -------------------------------
+      # Commit
+      # -------------------------------
+>>>>>>> Stashed changes
 =======
       # -------------------------------
       # Commit
@@ -258,6 +282,12 @@ jobs:
           git push
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+      # -------------------------------
+      # Artifact Pages
+      # -------------------------------
+>>>>>>> Stashed changes
 =======
       # -------------------------------
       # Artifact Pages
