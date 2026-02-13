@@ -29,7 +29,8 @@ jobs:
           NT=100*1024
           AT=300*1024
           AN=200*1024
-          BASES=[Path('web/Dinamico'),Path('web/otros/Archivos/Imagenes')]
+          B1=Path('web/Dinamico')
+          B2=Path('web/otros/Archivos/Imagenes')
           def sz(p): return p.stat().st_size
           def rc(cmd): subprocess.run(cmd,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
           def ia(p):
@@ -45,12 +46,22 @@ jobs:
               final=img.with_suffix('.webp')
               tmp.replace(final)
               if img!=final: img.unlink()
-          def g2w(g):
+          def cv(img):
+            tmp=Path(tempfile.gettempdir())/(img.stem+'.webp')
+            rc(['cwebp','-q','100','-m','6',str(img),'-o',str(tmp)])
+            if tmp.exists():
+              final=img.with_suffix('.webp')
+              tmp.replace(final)
+              if img!=final: img.unlink()
+          def g2w(g,nc=False):
             tmp=Path(tempfile.gettempdir())/(g.stem+'.webp')
-            for q in range(80,10,-5):
-              rc(['gif2webp','-lossy','-q',str(q),'-m','6','-size',str(AN),str(g),'-o',str(tmp)])
-              if tmp.exists() and sz(tmp)<=AN:
-                break
+            if nc:
+              rc(['gif2webp','-q','100','-m','6',str(g),'-o',str(tmp)])
+            else:
+              for q in range(80,10,-5):
+                rc(['gif2webp','-lossy','-q',str(q),'-m','6','-size',str(AN),str(g),'-o',str(tmp)])
+                if tmp.exists() and sz(tmp)<=AN:
+                  break
             if tmp.exists():
               g.with_suffix('.webp').write_bytes(tmp.read_bytes())
               tmp.unlink()
@@ -63,20 +74,24 @@ jobs:
                 break
             if tmp.exists():
               tmp.replace(w)
-          for base in BASES:
-            if not base.exists(): continue
+          def proc(base,nc=False):
+            if not base.exists(): return
             for img in base.rglob('*'):
               if not img.is_file(): continue
               ext,s=img.suffix.lower(),sz(img)
               if ext=='.gif':
-                g2w(img)
+                g2w(img,nc)
               elif ext=='.webp':
                 if ia(img):
-                  if s>AT: ra(img)
+                  if not nc and s>AT: ra(img)
                 else:
-                  if s>ST: cs(img)
+                  if nc: cv(img)
+                  elif s>ST: cs(img)
               elif ext in {'.jpg','.jpeg','.png'}:
-                if s>ST: cs(img)
+                if nc: cv(img)
+                elif s>ST: cs(img)
+          proc(B1)
+          proc(B2,nc=True)
           EX={'.webp'}
           def bg(base):
             g={}
@@ -98,17 +113,15 @@ jobs:
           def wj(p,d):
             with open(p,'w',encoding='utf-8') as f:
               json.dump(d,f,separators=(',',':'),ensure_ascii=False)
-          b1=Path('web','Dinamico')
-          if b1.exists():
+          if B1.exists():
             g={}
-            for fd in b1.iterdir():
+            for fd in B1.iterdir():
               if fd.is_dir():
                 r=bg(fd)
                 g[fd.name]=r.get('_root',r)
-            wj(b1/'data.json',{'galleries':g})
-          b2=Path('web','otros','Archivos/Imagenes')
-          if b2.exists():
-            wj(b2/'data.json',{'galleries':bg(b2)})
+            wj(B1/'data.json',{'galleries':g})
+          if B2.exists():
+            wj(B2/'data.json',{'galleries':bg(B2)})
           EOF
       - name: Commit cambios
         run: |
