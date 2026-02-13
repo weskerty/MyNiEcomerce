@@ -95,7 +95,7 @@ jobs:
                 else:
                   if nc: cv(img)
                   elif s>ST: cs(img)
-              elif ext in {'.jpg','.jpeg','.png'}:
+              elif ext in {'.jpg','.jpeg','.png','.avif','.svg','.bmp','.tiff','.tif','.ico'}:
                 if nc: cv(img)
                 elif s>ST: cs(img)
           proc(B1)
