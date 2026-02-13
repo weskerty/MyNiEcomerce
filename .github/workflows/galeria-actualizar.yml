@@ -99,12 +99,12 @@ jobs:
                 if nc: cv(img)
                 elif s>ST: cs(img)
           proc(B1)
-          proc(B2,nc=True)
-          EX={'.webp'}
-          def bg(base):
+          EX1={'.webp'}
+          EX2={'.webp','.jpg','.jpeg','.png','.gif','.avif','.svg','.bmp','.tiff','.tif','.ico'}
+          def bg(base,ex=EX1):
             g={}
             for r,d,f in os.walk(base):
-              im=sorted(x for x in f if Path(x).suffix.lower() in EX)
+              im=sorted(x for x in f if Path(x).suffix.lower() in ex)
               if not im: continue
               rp=os.path.relpath(r,base)
               ps=[os.path.join(r,x).replace(os.sep,'/') for x in im]
@@ -124,7 +124,7 @@ jobs:
               if fd.is_dir():
                 r=bg(fd);g[fd.name]=r.get('_root',r)
             wj(B1/'data.json',{'galleries':g})
-          if B2.exists(): wj(B2/'data.json',{'galleries':bg(B2)})
+          if B2.exists(): wj(B2/'data.json',{'galleries':bg(B2,EX2)})
           EOF
       - name: Commit cambios
         run: |
