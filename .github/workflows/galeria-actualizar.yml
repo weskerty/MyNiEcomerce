@@ -22,7 +22,11 @@ jobs:
           fetch-depth: 0
 
       # -------------------------------
+<<<<<<< Updated upstream
       # Detectar si hay imágenes que optimizar
+=======
+      # Detectar si hay camdidatos 
+>>>>>>> Stashed changes
       # -------------------------------
       - name: Detectar trabajo pendiente
         id: detect
@@ -65,7 +69,11 @@ jobs:
           EOF
 
       # -------------------------------
+<<<<<<< Updated upstream
       # Instalar herramientas SOLO si se necesitan
+=======
+      # Instalar 
+>>>>>>> Stashed changes
       # -------------------------------
       - name: Instalar herramientas
         if: steps.detect.outputs.optimize == 'true'
@@ -206,7 +214,11 @@ jobs:
           EOF
 
       # -------------------------------
+<<<<<<< Updated upstream
       # Commit si hubo cambios
+=======
+      # Commit
+>>>>>>> Stashed changes
       # -------------------------------
       - name: Commit cambios
         run: |
