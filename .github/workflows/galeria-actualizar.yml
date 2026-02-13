@@ -16,10 +16,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Instalar WebP tools
+      - name: Instalar herramientas
         run: |
-          sudo apt-get update
-          sudo apt-get install -y webp python3
+          which cwebp || sudo apt-get install -y webp
+          which gif2webp || sudo apt-get install -y webp
+          which img2webp || sudo apt-get install -y webp
+          which webpmux || sudo apt-get install -y webp
+          which python3 || sudo apt-get install -y python3
       - name: Procesar Imagenes + Generar JSON
         run: |
           python3 << 'EOF'
@@ -31,56 +34,61 @@ jobs:
           AN=200*1024
           B1=Path('web/Dinamico')
           B2=Path('web/otros/Archivos/Imagenes')
-          def sz(p): return p.stat().st_size
+          def sz(p): return p.stat().st_size if p.exists() else 0
+          def kb(b): return round(b/1024,1)
           def rc(cmd): subprocess.run(cmd,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
           def ia(p):
             r=subprocess.run(['webpmux','-info',str(p)],capture_output=True,text=True)
-            return 'Number of frames: 1' not in r.stdout
+            if 'Number of frames:' not in r.stdout: return False
+            for l in r.stdout.splitlines():
+              if 'Number of frames:' in l:
+                try: return int(l.split(':')[1].strip())>1
+                except: return False
+            return False
+          def lg(n,s,e): print(f"{n} | {kb(s)}kb → {kb(e)}kb")
           def cs(img):
-            tmp=Path(tempfile.gettempdir())/(img.stem+'.webp')
+            s=sz(img);tmp=Path(tempfile.gettempdir())/(img.stem+'.webp')
             for q in range(85,10,-5):
               rc(['cwebp','-q',str(q),'-m','6','-size',str(NT),str(img),'-o',str(tmp)])
-              if tmp.exists() and sz(tmp)<=NT:
-                break
+              if tmp.exists() and sz(tmp)<=NT: break
             if tmp.exists():
-              final=img.with_suffix('.webp')
-              tmp.replace(final)
+              final=img.with_suffix('.webp');tmp.replace(final)
               if img!=final: img.unlink()
+              lg(img.name,s,sz(final))
           def cv(img):
-            tmp=Path(tempfile.gettempdir())/(img.stem+'.webp')
+            s=sz(img);tmp=Path(tempfile.gettempdir())/(img.stem+'.webp')
             rc(['cwebp','-q','100','-m','6',str(img),'-o',str(tmp)])
             if tmp.exists():
-              final=img.with_suffix('.webp')
-              tmp.replace(final)
+              final=img.with_suffix('.webp');tmp.replace(final)
               if img!=final: img.unlink()
-          def g2w(g,nc=False):
-            tmp=Path(tempfile.gettempdir())/(g.stem+'.webp')
-            if nc:
-              rc(['gif2webp','-q','100','-m','6',str(g),'-o',str(tmp)])
-            else:
-              for q in range(80,10,-5):
-                rc(['gif2webp','-lossy','-q',str(q),'-m','6','-size',str(AN),str(g),'-o',str(tmp)])
-                if tmp.exists() and sz(tmp)<=AN:
-                  break
-            if tmp.exists():
-              g.with_suffix('.webp').write_bytes(tmp.read_bytes())
-              tmp.unlink()
-              g.unlink()
-          def ra(w):
-            tmp=Path(tempfile.gettempdir())/(w.stem+'_a.webp')
+              lg(img.name,s,sz(final))
+          def g2w(g):
+            s=sz(g);tmp=Path(tempfile.gettempdir())/(g.stem+'.webp')
             for q in range(80,10,-5):
-              rc(['gif2webp','-lossy','-q',str(q),'-m','6','-size',str(AN),str(w),'-o',str(tmp)])
-              if tmp.exists() and sz(tmp)<=AN:
-                break
+              rc(['gif2webp','-lossy','-q',str(q),'-m','6','-size',str(AN),str(g),'-o',str(tmp)])
+              if tmp.exists() and sz(tmp)<=AN: break
             if tmp.exists():
-              tmp.replace(w)
+              final=g.with_suffix('.webp');final.write_bytes(tmp.read_bytes());tmp.unlink();g.unlink()
+              lg(g.name,s,sz(final))
+          def g2w_nc(g):
+            s=sz(g);tmp=Path(tempfile.gettempdir())/(g.stem+'.webp')
+            rc(['gif2webp','-q','100','-m','6',str(g),'-o',str(tmp)])
+            if tmp.exists():
+              final=g.with_suffix('.webp');final.write_bytes(tmp.read_bytes());tmp.unlink();g.unlink()
+              lg(g.name,s,sz(final))
+          def ra(w):
+            s=sz(w);tmp=Path(tempfile.gettempdir())/(w.stem+'_a.webp')
+            for q in range(80,10,-5):
+              rc(['img2webp','-lossy','-q',str(q),'-size',str(AN),str(w),'-o',str(tmp)])
+              if tmp.exists() and sz(tmp)<=AN: break
+            if tmp.exists(): tmp.replace(w);lg(w.name,s,sz(w))
           def proc(base,nc=False):
             if not base.exists(): return
             for img in base.rglob('*'):
               if not img.is_file(): continue
               ext,s=img.suffix.lower(),sz(img)
               if ext=='.gif':
-                g2w(img,nc)
+                g2w_nc(img) if nc else g2w(img)
               elif ext=='.webp':
                 if ia(img):
                   if not nc and s>AT: ra(img)
@@ -104,24 +112,19 @@ jobs:
                 g.setdefault('_root',[]).extend(ps)
               else:
                 parts=Path(rp).parts
-                if len(parts)==1:
-                  g.setdefault(parts[0],[]).extend(ps)
+                if len(parts)==1: g.setdefault(parts[0],[]).extend(ps)
                 else:
-                  sub=g.setdefault(parts[0],{})
-                  sub.setdefault(parts[1],[]).extend(ps)
+                  sub=g.setdefault(parts[0],{});sub.setdefault(parts[1],[]).extend(ps)
             return g
           def wj(p,d):
-            with open(p,'w',encoding='utf-8') as f:
-              json.dump(d,f,separators=(',',':'),ensure_ascii=False)
+            with open(p,'w',encoding='utf-8') as f: json.dump(d,f,separators=(',',':'),ensure_ascii=False)
           if B1.exists():
             g={}
             for fd in B1.iterdir():
               if fd.is_dir():
-                r=bg(fd)
-                g[fd.name]=r.get('_root',r)
+                r=bg(fd);g[fd.name]=r.get('_root',r)
             wj(B1/'data.json',{'galleries':g})
-          if B2.exists():
-            wj(B2/'data.json',{'galleries':bg(B2)})
+          if B2.exists(): wj(B2/'data.json',{'galleries':bg(B2)})
           EOF
       - name: Commit cambios
         run: |
