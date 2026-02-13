@@ -71,12 +71,15 @@ hL()
 })
 }
 
+const ES=new Set();
 function eS(e){
 const s=e.querySelectorAll('script');
 s.forEach(o=>{
 if(o.dataset.executed)return;
+if(o.type==='module')return;
+if(o.src&&ES.has(o.src))return;
+if(o.src)ES.add(o.src);
 o.dataset.executed="1";
-
 const n=document.createElement('script');
 for(const a of o.attributes)n.setAttribute(a.name,a.value);
 if(o.src)n.src=o.src;
@@ -101,27 +104,38 @@ document.body.appendChild(s)
 }
 
 async function lX(p='web/scripts/'){
+if(window.__LX)return;
+window.__LX=true;
 try{
 const r=await fetch(p+'list.json');
 if(!r.ok)return;
 const x=await r.json();
-for(const f of x){
+await Promise.all(x.map(f=>new Promise(res=>{
 const s=document.createElement('script');
 s.src=p+f;
+s.onload=res;s.onerror=res;
 document.body.appendChild(s)
-}
+})));
 }catch(e){}
 }
 
+const CC={};
+let lCR=false;
 async function lC(u,h=!0,a=''){
-if(u===c)return;
+if(u===c||lCR)return;
+lCR=true;
 try{
+const d=document.getElementById('content');
+let t=CC[u];
+if(!t){
 const r=await fetch(u);
 if(!r.ok)throw new Error(`Error fetching ${u}: ${r.statusText}`);
-let t=await r.text();
-const d=document.getElementById('content');
-if(u.endsWith('.md'))t=`<div class="markdown-content">${md.render(t)}</div>`;
-d.innerHTML=t;
+t=await r.text();
+CC[u]=t;
+}
+let html=t;
+if(u.endsWith('.md'))html=`<div class="markdown-content">${md.render(t)}</div>`;
+d.innerHTML=html;
 eS(d);
 d.dispatchEvent(new CustomEvent('contentLoaded',{bubbles:true}));
 c=u;
@@ -130,14 +144,14 @@ const n=a?`${u}#${a}`:u;
 window.history.pushState({p:u,a:a},'',`#${n}`)
 }
 if(a){
-setTimeout(()=>{
+requestAnimationFrame(()=>requestAnimationFrame(()=>{
 const e=document.getElementById(a);
 if(e)e.scrollIntoView({behavior:'smooth',block:'start'})
-},100)
+}));
 }
 }catch(e){
 document.getElementById('content').innerHTML=`<p>Error Cargando: ${e.message}</p>`
-}
+}finally{lCR=false;}
 }
 
 function pH(h){
@@ -157,20 +171,20 @@ return
 }
 const{p,a}=pH(h);
 if(!p&&a){
-setTimeout(()=>{
+requestAnimationFrame(()=>requestAnimationFrame(()=>{
 const e=document.getElementById(a);
 if(e)e.scrollIntoView({behavior:'smooth',block:'start'})
-},100);
+}));
 return
 }
 if(p!==c){
 window.scrollTo({top:0,behavior:'smooth'});
 lC(p,!1,a)
 }else if(a){
-setTimeout(()=>{
+requestAnimationFrame(()=>requestAnimationFrame(()=>{
 const e=document.getElementById(a);
 if(e)e.scrollIntoView({behavior:'smooth',block:'start'})
-},100)
+}));
 }
 }
 
@@ -192,8 +206,9 @@ window.history.pushState({p:f,a:t},'',`#${f}${t?'#'+t:''}`)
 }else{
 await lC(D,!1)
 }
+await lX();
+await new Promise(r=>setTimeout(r,0));
 lD();
-lX();
 window.addEventListener('hashchange',()=>{hH()});
 window.addEventListener('popstate',(e)=>{
 if(e.state){
