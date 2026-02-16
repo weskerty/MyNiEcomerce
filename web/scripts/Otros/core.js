@@ -150,6 +150,8 @@ if(e)e.scrollIntoView({behavior:'smooth',block:'start'})
 }));
 }
 }catch(e){
+const is404=e.message&&e.message.includes('Not Found');
+if(is404&&u!=='web/404.html'){lCR=false;lC('web/404.html',false);return;}
 document.getElementById('content').innerHTML=`<p>Error Cargando: ${e.message}</p>`
 }finally{lCR=false;}
 }
