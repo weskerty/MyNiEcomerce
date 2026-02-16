@@ -9,7 +9,7 @@
 <div style="text-align:center;">
  
  
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -226,7 +226,7 @@ function mL(p){return p.replace(/\.[^.]+$/,'.md');}
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?decodeURIComponent(m[1]):n.replace(/-/g,' ');}
 function cat(k){return k.replace(/^BlogPath\/?/i,'').replace(/[_\-]/g,' ')||'Blog';}
 
-async function load(){
+async function fD(){
 const r=await fetch(DJ).catch(()=>null);
 if(!r||!r.ok)return[];
 const d=await r.json().catch(()=>null);
@@ -270,7 +270,7 @@ async function init(){
 const grid=document.getElementById('bl-grid');
 const load=document.getElementById('bl-load');
 const count=document.getElementById('bl-count');
-const items=await load();
+const items=await fD();
 load.style.display='none';
 grid.style.display='';
 if(!items.length){
@@ -291,3 +291,4 @@ if(content)content.addEventListener('contentLoaded',init);
 </script>
 </body>
 </html>
+
