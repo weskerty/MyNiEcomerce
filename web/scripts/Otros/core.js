@@ -135,7 +135,9 @@ CC[u]=t;
 }
 let html=t;
 if(u.endsWith('.md'))html=`<div class="markdown-content">${md.render(t)}</div>`;
+document.head.querySelectorAll('style[data-content]').forEach(s=>s.remove());
 d.innerHTML=html;
+d.querySelectorAll('style').forEach(s=>{s.dataset.content='1';document.head.appendChild(s);});
 eS(d);
 d.dispatchEvent(new CustomEvent('contentLoaded',{bubbles:true}));
 c=u;

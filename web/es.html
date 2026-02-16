@@ -54,7 +54,7 @@
 <div class="section">
     <h1>🌱 Plantas</h1>
     <div class="gallery-container">
-        <div id="Sorteos-gallery" 
+        <div id="Plantas-gallery" 
              class="contenedor-imagenes-animado">
         </div>
         <a href="web/Dinamico/Plantas/plantas.html" class="view-all-button">Ver Lista Completa</a>
@@ -74,9 +74,10 @@
 </br>
 
 
+
 <style>
 
-.menu-list {
+.btn-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -84,66 +85,24 @@
 }
 
 @media (min-width: 600px) {
-  .menu-list {
+  .btn-list {
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
 }
 
-.menu-item {
+.btn-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0;
-  padding: 7px 11px; 
+  padding: 7px 11px;
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.25) 0%,
     rgba(255, 255, 255, 0.05) 50%,
     rgba(255, 255, 255, 0.15) 100%
   );
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-  
-  /* backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8); */
->>>>>>> Stashed changes
-=======
-  
-  /* backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8); */
->>>>>>> Stashed changes
-=======
-  
-  /* backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8); */
->>>>>>> Stashed changes
-=======
-  
-  /* backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8); */
->>>>>>> Stashed changes
-=======
-  
-  /* backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8); */
->>>>>>> Stashed changes
-=======
-  
-  /* backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8); */
->>>>>>> Stashed changes
-=======
-  
-  /* backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8); */
->>>>>>> Stashed changes
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 24px;
@@ -159,7 +118,7 @@
   position: relative;
 }
 
-.menu-item::before {
+.btn-item::before {
   content: '';
   position: absolute;
   top: 0;
@@ -175,7 +134,7 @@
   z-index: 1;
 }
 
-.menu-item:hover {
+.btn-item:hover {
   transform: translateY(-3px);
   background: linear-gradient(
     135deg,
@@ -190,7 +149,7 @@
   text-decoration: none;
 }
 
-.menu-content {
+.btn-cnt {
   flex: 1;
   text-align: center;
   padding: 6px 8px;
@@ -198,14 +157,14 @@
   z-index: 2;
 }
 
-.menu-content h3 {
+.btn-cnt h3 {
   margin: 0 0 3px 0;
   font-size: 1.4em;
   color: white;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
-.menu-content p {
+.btn-cnt p {
   margin: 0;
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.95em;
@@ -214,7 +173,7 @@
 }
 
 @media (max-width: 600px) {
-  .menu-item {
+  .btn-item {
     flex-direction: column;
     text-align: center;
     text-decoration: none;
@@ -224,72 +183,140 @@
 </style>
 
 
-
-
 <div style="text-align:center;">
 <h1>🫂 Recursos Utiles</h1>
 <p>Selecciona a donde quieres ir 🤗</p>
 </div>
 
-<div class="menu-list">
-  <a href="web/otros/Archivos/MarkDowns/Garantia&Reparacion.md" class="menu-item">
+<div class="btn-list">
+  <a href="web/otros/Archivos/MarkDowns/Garantia&Reparacion.md" class="btn-item">
     <img src="">
-    <div class="menu-content">
-      <h3>❤️‍🩹 Garantia</h3>
-      <p>Reparar, no Tirar.</p>
-    </div>
+    <div class="btn-cnt"><h3>❤️‍🩹 Garantia</h3><p>Reparar, no Tirar.</p></div>
   </a>
-
-  <a href="web/otros/Archivos/MarkDowns/Desecho&Reciclaje.md" class="menu-item">
+  <a href="web/otros/Archivos/MarkDowns/Desecho&Reciclaje.md" class="btn-item">
     <img src="">
-    <div class="menu-content">
-      <h3>🌱 Donde Desechar</h3>
-      <p> Juntos por un Paraguay Limpio y Sano</p>
-    </div>
+    <div class="btn-cnt"><h3>🌱 Donde Desechar</h3><p>Juntos por un Paraguay Limpio y Sano</p></div>
   </a>
-
-  <a href="web/otros/Archivos/MarkDowns/SerParte.md" class="menu-item">
+  <a href="web/otros/Archivos/MarkDowns/SerParte.md" class="btn-item">
     <img src="">
-    <div class="menu-content">
-      <h3>🤝 Ser Parte</h3>
-      <p> Añade tus Productos a este Catalogo</p>
-    </div>
+    <div class="btn-cnt"><h3>🤝 Ser Parte</h3><p>Añade tus Productos a este Catalogo</p></div>
   </a>
-  
-   <a href="web/otros/Archivos/MarkDowns/TiendaSimilar.md" class="menu-item">
+  <a href="web/otros/Archivos/MarkDowns/TiendaSimilar.md" class="btn-item">
     <img src="">
-    <div class="menu-content">
-      <h3> 💞 Tiendas Similares </h3>
-      <p> Mas Tiendas locales con Conciencia Ambiental. </p>
-    </div>
+    <div class="btn-cnt"><h3>💞 Tiendas Similares</h3><p>Mas Tiendas locales con Conciencia Ambiental.</p></div>
   </a>
-
-  <a href="https://xurl.es/C" class="menu-item">
+  <a href="https://xurl.es/C" class="btn-item">
     <img src="">
-    <div class="menu-content">
-      <h3>🎳 Mas Utilidades</h3>
-      <p> Contenido Extra no Relacionado.</p>
-    </div>
+    <div class="btn-cnt"><h3>🎳 Mas Utilidades</h3><p>Contenido Extra no Relacionado.</p></div>
   </a>
-
-  
 </div>
-  
+
   
 <blockquote> <a href="web/otros/Archivos/MarkDowns/PoliticaPrivacidad.md">Acuerdo y Privacidad</a> </blockquote>
-
   
 
 
 
+
 </br>
-<h2>Agradecimientos</h2>
-</br>
-<a href="https://www.pexels.com/es-es/@marco-rota-1033995997/collections/" target="_blank" onclick="window.open('https://unsplash.com/es/descargas', '_blank')">Fondo</a> · <a href="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis" target="_blank" onclick="window.open('https://tetunori.github.io/fluent-emoji-webfont', '_blank')">Emojis</a> · <a href="https://github.com/markdown-it/markdown-it">MarkdownIt</a> · <a href="https://swiperjs.com/swiper-api#navigation">Galerias</a> · <a href="https://opendyslexic.org/about">Fuente</a> 
 
 
+
+
+
+<div class="social-icons">
+  <a href="#" aria-label="TikTok">
+    <img src="web/otros/Archivos/Imagenes/SVG/tiktok-svgrepo-com.svg" alt="TikTok">
+  </a>
+  <a href="#" aria-label="Facebook">
+    <img src="web/otros/Archivos/Imagenes/SVG/facebook-1-svgrepo-com.svg" alt="Facebook">
+  </a>
+  <a href="#" aria-label="Instagram">
+    <img src="web/otros/Archivos/Imagenes/SVG/instagram-2016-logo-svgrepo-com.svg" alt="Instagram">
+  </a>
+  
+  <input type="checkbox" id="gh-toggle">
+  <label for="gh-toggle" aria-label="Git">
+    <img src="web/otros/Archivos/Imagenes/SVG/git-svgrepo-com.svg" alt="Git">
+  </label>
+  
+  <div class="social-extras">
+    <a href="#" target="_blank" aria-label="GitHub">
+      <img src="web/otros/Archivos/Imagenes/SVG/github-svgrepo-com.svg" alt="GitHub">
+    </a>
+    <a href="https://github.com/markdown-it/markdown-it" target="_blank" aria-label="Markdown">
+      <img src="web/otros/Archivos/Imagenes/SVG/markdown-fill-svgrepo-com.svg" alt="Markdown">
+    </a>
+    <a href="https://www.pexels.com/es-es/@marco-rota-1033995997/collections/" target="_blank" onclick="window.open('https://unsplash.com/es/descargas', '_blank')" aria-label="Fondo">
+      <img src="web/otros/Archivos/Imagenes/SVG/photo-the-most-beautiful-travel-map-svgrepo-com.svg" alt="Fondo">
+    </a>
+    <a href="https://swiperjs.com/swiper-api#navigation" target="_blank" aria-label="Swiper">
+      <img src="web/otros/Archivos/Imagenes/SVG/swiper-studio-logo.svg" alt="Swiper">
+    </a>
+    <a href="https://opendyslexic.org/about" target="_blank" aria-label="Font">
+      <img src="web/otros/Archivos/Imagenes/SVG/farah.svg" alt="Fuente">
+    </a>
+    <a href="https://github.com/Tarikul-Islam-Anik/Telegram-Animated-Emojis" target="_blank" onclick="window.open('https://tetunori.github.io/fluent-emoji-webfont', '_blank')" aria-label="Emoji">
+      <img src="web/otros/Archivos/Imagenes/SVG/grinning_face_with_smiling_eyes_color.svg" alt="Emoji">
+    </a>
+  </div>
 </div>
 
+<style>
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  position: relative;
+}
 
+.social-icons img {
+  width: 24px;
+  height: 24px;
+  opacity: 0.6;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
 
+.social-icons img:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
 
+#gh-toggle {
+  display: none;
+}
+
+#gh-toggle + label {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#gh-toggle + label:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+#gh-toggle + label img {
+  width: 24px;
+  height: 24px;
+}
+
+.social-extras {
+  display: none;
+  flex-basis: 100%;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+#gh-toggle:checked ~ .social-extras {
+  display: flex;
+}
+</style>
