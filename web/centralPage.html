@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blur Test</title>
+
+<style>
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('https://images.pexels.com/photos/2098427/pexels-photo-2098427.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .glass {
+    width: 300px;
+    height: 200px;
+    background: rgba(41, 41, 41, 0.5);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .glass-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="glass">
+    <div class="glass-content">
+      <h1>Entrada 1</h1>
+      <p>hola</p>
+    </div>
+  </div>
+
+  <div class="glass">
+    <div class="glass-content">
+      <h1>Entrada 2</h1>
+      <p>hola</p>
+    </div>
+  </div>
+
+  <div class="glass">
+    <div class="glass-content">
+      <h1>Entrada 3</h1>
+      <p>hola</p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

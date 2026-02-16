@@ -1,29 +1,31 @@
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+#sh-w *{box-sizing:border-box}
 
-#sh-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:0px solid rgba(255,255,255,.2);border-radius:20px;padding:10px 16px}
+#sh-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:20px}
 
 #sh-bar span{font-size:1.4rem}
 
 #sh-inp{flex:1;background:none;border:none;outline:none;color:white;font-size:1rem;font-family:inherit}
 
 #sh-inp::placeholder{color:rgba(255,255,255,.4)}
+
 #sh-r{margin-top:4px}
 
-.sh-cat h2{border-bottom:2px solid #1a73e8;padding-bottom:.4rem;margin:0px 0 10px}
+.sh-cat{margin-bottom:20px}
 
-.sh-sub h3{color:rgba(255,255,255,.7);margin:12px 0 6px;padding-left:6px;font-size:.95rem;border-left:3px solid #1a73e8}
+.sh-cat>h2{display:inline-block;border-bottom:2px solid #1a73e8;padding-bottom:.4rem;margin:0 0 10px;font-family:'Libre Baskerville','Merriweather','Times New Roman','Georgia',serif}
 
+.sh-sub>h3{color:rgba(255,255,255,.7);margin:12px 0 6px;padding-left:6px;font-size:.95rem;border-left:3px solid #1a73e8}
 
-.sh-it{display:flex;align-items:center;gap:12px;padding:0 0px;border-radius:14px;text-decoration:none;color:white;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);margin-bottom:6px;transition:background .2s,transform .2s;height:53px}
+.sh-it{display:flex;align-items:center;gap:12px;padding:0;border-radius:14px;text-decoration:none;color:white;background:rgba(0,0,0,0.449) ;border:1px solid rgba(255,255,255,.1);margin-bottom:6px;transition:background .2s,transform .2s;height:53px;overflow:hidden}
 
-.sh-it img{width:50px;height:50px;object-fit:cover;border-radius:10px;flex-shrink:0;background:rgba(0,0,0,.3);aspect-ratio:1}
+.sh-it:hover{background:rgba(255,255,255,.13);transform:translateY(-2px);text-decoration:none}
 
+.sh-it img{width:50px;height:50px;object-fit:cover;border-radius:10px 0 0 10px;flex-shrink:0;background:rgba(0,0,0,.3);aspect-ratio:1}
 
-.sh-it span{font-size:.95rem;line-height:1.3}
-.sh-mt{color:rgba(255,255,255,.4);font-size:.99rem;text-align:center;padding:0px}
+.sh-it span{font-size:.95rem;line-height:1.3;padding-right:10px}
 
-
+.sh-mt{color:rgba(255,255,255,.4);font-size:.99rem;text-align:center;padding:12px 0}
 </style>
 
 <div id="sh-w">
