@@ -1,3 +1,7 @@
+
+ 
+ 
+<!DOCTYPE html>
 <style>
 ._nb{position:absolute;top:0;font-size:1.8rem;text-decoration:none;z-index:10}
 ._nb.l{left:0}
@@ -7,9 +11,7 @@
 <a class="_nb r" href="web/search.html">🔍</a>
 
 <div style="text-align:center;">
- 
- 
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -219,31 +221,27 @@ to{opacity:1;transform:translateY(0);}
 <script>
 (function(){
 const DJ='web/Dinamico/data.json';
-const BP=/^BlogPath\b/i;
-
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'');}
 function mL(p){return p.replace(/\.[^.]+$/,'.md');}
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?decodeURIComponent(m[1]):n.replace(/-/g,' ');}
-function cat(k){return k.replace(/^BlogPath\/?/i,'').replace(/[_\-]/g,' ')||'Blog';}
-
 async function fD(){
 const r=await fetch(DJ).catch(()=>null);
 if(!r||!r.ok)return[];
 const d=await r.json().catch(()=>null);
-if(!d||!d.galleries)return[];
+const blogs=d&&d.galleries&&d.galleries.Blogs;
+if(!blogs)return[];
 const items=[];
-Object.keys(d.galleries).forEach(k=>{
-if(!BP.test(k))return;
-const g=d.galleries[k];
-const imgs=Array.isArray(g)?g:Object.values(g||{}).flat();
-imgs.forEach(p=>{
-if(typeof p==='string')items.push({img:p,md:mL(p),name:nN(fN(p)),cat:cat(k)});
-else if(p&&p.image)items.push({img:p.image,md:mL(p.image),name:nN(fN(p.image)),cat:cat(k)});
+const sub=typeof blogs==='object'&&!Array.isArray(blogs)?blogs:{_root:Array.isArray(blogs)?blogs:[]};
+Object.keys(sub).forEach(function(cat){
+const arr=sub[cat];
+if(!Array.isArray(arr))return;
+arr.forEach(function(p){
+if(typeof p!=='string')return;
+items.push({img:p,md:mL(p),name:nN(fN(p)),cat:cat==='_root'?'Blog':cat});
 });
 });
 return items;
 }
-
 function card(item,idx){
 const a=document.createElement('a');
 a.href=item.md;
@@ -251,44 +249,36 @@ a.className='bl-card'+(idx===0?' bl-first-large':'');
 a.style.animationDelay=(idx*.06)+'s';
 const bg=document.createElement('div');
 bg.className='bl-card-bg'+(item.img?'':' bl-card-bg-none');
-if(item.img)bg.style.backgroundImage=`url(${item.img})`;
-const noise=document.createElement('div');
-noise.className='bl-card-noise';
-const gloss=document.createElement('div');
-gloss.className='bl-card-gloss';
-const body=document.createElement('div');
-body.className='bl-card-body';
-body.innerHTML=`<div class="bl-card-cat">${item.cat}</div><div class="bl-card-title">${item.name}</div>`;
-const arrow=document.createElement('div');
-arrow.className='bl-card-arrow';
-arrow.innerHTML='↗';
+if(item.img)bg.style.backgroundImage='url('+item.img+')';
+const noise=document.createElement('div');noise.className='bl-card-noise';
+const gloss=document.createElement('div');gloss.className='bl-card-gloss';
+const body=document.createElement('div');body.className='bl-card-body';
+body.innerHTML='<div class="bl-card-cat">'+item.cat+'</div><div class="bl-card-title">'+item.name+'</div>';
+const arrow=document.createElement('div');arrow.className='bl-card-arrow';arrow.textContent='↗';
 a.append(bg,noise,gloss,body,arrow);
 return a;
 }
-
 async function init(){
 const grid=document.getElementById('bl-grid');
-const load=document.getElementById('bl-load');
+const loader=document.getElementById('bl-load');
 const count=document.getElementById('bl-count');
+if(!grid)return;
 const items=await fD();
-load.style.display='none';
+if(loader)loader.style.display='none';
 grid.style.display='';
 if(!items.length){
 grid.innerHTML='<div class="bl-empty"><span>📭</span>Sin artículos por ahora</div>';
 return;
 }
-count.textContent=items.length+(items.length===1?' artículo':' artículos');
-items.forEach((item,i)=>grid.appendChild(card(item,i)));
+if(count)count.textContent=items.length+(items.length===1?' artículo':' artículos');
+items.forEach(function(item,i){grid.appendChild(card(item,i));});
 }
-
 if(document.readyState==='loading'){
 document.addEventListener('DOMContentLoaded',init);
 }else{init();}
-
 const content=document.getElementById('content');
 if(content)content.addEventListener('contentLoaded',init);
 })();
 </script>
 </body>
 </html>
-
