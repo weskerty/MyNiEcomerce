@@ -67,9 +67,15 @@ function mL(p){return p.replace(/\.[^.]+$/,'.md')}
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1].trim():n.replace(/-/g,' ')}
 
 async function fD(){
+const sk='__dj:'+DJ;
+let d=null;
+try{const sc=sessionStorage.getItem(sk);if(sc)d={galleries:JSON.parse(sc)};}catch(e){}
+if(!d){
 const r=await fetch(DJ).catch(()=>null);
 if(!r||!r.ok)return[];
-const d=await r.json().catch(()=>null);
+d=await r.json().catch(()=>null);
+if(d&&d.galleries){try{sessionStorage.setItem(sk,JSON.stringify(d.galleries));}catch(e){}}
+}
 const bl=d&&d.galleries&&d.galleries.Blogs;
 if(!bl)return[];
 const out=[];

@@ -224,9 +224,16 @@ function initMS(){
 
 async function init(){
   try{
-    const r=await fetch(DJ);
-    const d=await r.json();
-    buildItems(d.galleries);
+    const sk='__dj:'+DJ;
+    let g=null;
+    try{const sc=sessionStorage.getItem(sk);if(sc)g=JSON.parse(sc);}catch(e){}
+    if(!g){
+      const r=await fetch(DJ);
+      const d=await r.json();
+      g=d.galleries;
+      try{sessionStorage.setItem(sk,JSON.stringify(g));}catch(e){}
+    }
+    buildItems(g);
   }catch(e){document.getElementById('sh-r').innerHTML='<div class="sh-mt">Error cargando datos</div>';return;}
   loadMS(initMS);
 }
