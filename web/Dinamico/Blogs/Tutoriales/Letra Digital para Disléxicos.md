@@ -1,10 +1,18 @@
 # Fuentes digitales para dislexia
 
-Estas fuentes te ayudan a leer sin confusiones en pantallas.
+Fuentes que te ayudan a leer sin confusiones en pantallas.
 
 ## OpenDyslexic
 
-Fuente **libre y gratuita** diseñada para evitar errores de lectura causados por dislexia. 
+<div class="galeriaMD">
+
+![OpenDyslexic_specimen](web/otros/Archivos/Imagenes/Letra Digital para Disléxicos/1771296729430.svg)
+
+![OpenDyslexic3Regular-image](web/otros/Archivos/Imagenes/Letra Digital para Disléxicos/1771296729810.svg)
+
+</div>
+
+Esta Fuente es **libre y gratuita** 
 
 Abbie González la creó porque las fuentes similares eran caras e inaccesibles, así que la publicó bajo licencia open source para que todos puedan usarla.
 
@@ -14,6 +22,14 @@ Abbie González la creó porque las fuentes similares eran caras e inaccesibles,
 
 ## Lexie Readable
 
+<div class="galeriaMD">
+
+![1000296501](web/otros/Archivos/Imagenes/Letra Digital para Disléxicos/1771296853754.avif)
+
+![1000298450](web/otros/Archivos/Imagenes/Letra Digital para Disléxicos/1771296853942.png)
+
+</div>
+
 Diseñada pensando en accesibilidad y legibilidad. Captura la claridad de Comic Sans pero sin el estilo de cómic. Tiene características que ayudan a lectores disléxicos: b y d asimétricas, formas manuscritas de a y g.
 
 **Descarga:**
@@ -22,6 +38,8 @@ Diseñada pensando en accesibilidad y legibilidad. Captura la claridad de Comic 
 Gratis para uso personal, educativo y benéfico.
 
 ## Easy Reading
+
+![1000298455](web/otros/Archivos/Imagenes/Letra Digital para Disléxicos/1771296963481.png)
 
 Tipografía **paga** (gratis solo uso personal) para idiomas con alfabeto latino. Creada por Federico Alfonsetti con enfoque en [Diseño Universal](https://en.wikipedia.org/wiki/Universal_Design).
 
