@@ -30,6 +30,9 @@
 .bl-dot:nth-child(2){animation-delay:.15s}
 .bl-dot:nth-child(3){animation-delay:.3s}
 @keyframes blP{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+#nt-btn{display:none;margin:10px auto 0;padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);backdrop-filter:blur(8px);color:rgba(255,255,255,.85);font-size:.78rem;letter-spacing:.05em;cursor:pointer;transition:background .2s,transform .15s}
+#nt-btn:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
+#nt-btn:disabled{opacity:.5;cursor:default;transform:none}
 @media(max-width:480px){.bl-grid{grid-template-columns:1fr}.bl-wide{min-height:220px}}
 </style>
 
@@ -40,13 +43,11 @@
 <div id="bl-wrap">
 <div class="bl-head">
 <h1>Blog</h1>
+<button id="nt-btn"></button>
 <div class="section">
-    <div class="gallery-container">
-        <div id="BPinned-gallery" 
-             class="contenedor-imagenes-animado">
-        </div>
-        
-    </div>
+  <div class="gallery-container">
+    <div id="BPinned-gallery" class="contenedor-imagenes-animado"></div>
+  </div>
 </div>
 <p id="bl-cnt"></p>
 </div>
@@ -59,13 +60,10 @@
 (function(){
 const DJ='web/Dinamico/data.json';
 const PAGE=30;
-
 let curList=[],curOff=0,io=null,imgIO=null;
-
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 function mL(p){return p.replace(/\.[^.]+$/,'.md')}
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1].trim():n.replace(/-/g,' ')}
-
 async function fD(){
 const sk='__dj:'+DJ;
 let d=null;
@@ -84,12 +82,11 @@ Object.keys(sub).forEach(function(k){
 const arr=sub[k];if(!Array.isArray(arr))return;
 arr.forEach(function(p){
 if(typeof p!=='string')return;
-out.push({img:p,md:mL(p),name:nN(fN(p)),cat:k==='_r'?'Blog':k});
+out.push({img:p,md:mL(p),name:nN(fN(p)),cat:k==='_r'?'BLOG':k});
 });
 });
 return out;
 }
-
 function mk(item,idx){
 const a=document.createElement('a');
 a.href=item.md;
@@ -104,7 +101,6 @@ const ar=document.createElement('div');ar.className='bl-arr';ar.textContent='↗
 a.append(bg,gl,bd,ar);
 return a;
 }
-
 function setupImgIO(){
 if(imgIO)imgIO.disconnect();
 imgIO=new IntersectionObserver(entries=>{
@@ -112,23 +108,16 @@ entries.forEach(e=>{
 if(!e.isIntersecting)return;
 const bg=e.target;
 const url=bg.dataset.bg;
-if(url){
-bg.style.backgroundImage='url('+encodeURI(url)+')';
-delete bg.dataset.bg;
-}
+if(url){bg.style.backgroundImage='url('+encodeURI(url)+')';delete bg.dataset.bg;}
 imgIO.unobserve(bg);
 });
 },{rootMargin:'100px'});
 }
-
 function mkSentinel(){
 const d=document.createElement('div');
-d.id='bl-sentinel';
-d.style.height='1px';
-d.style.gridColumn='1/-1';
+d.id='bl-sentinel';d.style.height='1px';d.style.gridColumn='1/-1';
 return d;
 }
-
 function appendPage(gr,list,off){
 const slice=list.slice(off,off+PAGE);
 if(!slice.length)return off;
@@ -140,7 +129,6 @@ if(bg)imgIO.observe(bg);
 });
 return off+slice.length;
 }
-
 function setupIO(gr,list){
 if(io)io.disconnect();
 let sent=document.getElementById('bl-sentinel');
@@ -153,7 +141,6 @@ if(curOff>=list.length){io.disconnect();sent.remove();}
 },{rootMargin:'300px'});
 io.observe(sent);
 }
-
 async function init(){
 const gr=document.getElementById('bl-gr');
 const ld=document.getElementById('bl-ld');
@@ -174,5 +161,58 @@ curOff=appendPage(gr,items,curOff);
 if(curOff<items.length)setupIO(gr,items);
 }
 init();
+})();
+
+
+/////
+(function(){
+const W='url.dev';
+const VP='VAPID_PUBLIC_KEY';
+////////
+
+
+
+const SW_TO=3000;
+if(!('serviceWorker' in navigator)||!('PushManager' in window))return;
+if(Notification.permission==='denied')return;
+const btn=document.getElementById('nt-btn');
+function u8(s){
+const p=atob(s.replace(/-/g,'+').replace(/_/g,'/'));
+return Uint8Array.from(p,c=>c.charCodeAt(0));
+}
+function swReady(){
+return Promise.race([
+navigator.serviceWorker.ready,
+new Promise((_,rj)=>setTimeout(()=>rj(new Error('sw timeout')),SW_TO))
+]);
+}
+async function upd(sw){
+try{
+const s=await sw.pushManager.getSubscription();
+btn.textContent=s?'🔕 Desactivar Notificaciones':'🔔 Activar Notificaciones';
+btn.style.display='block';
+}catch(e){}
+}
+async function toggle(sw){
+btn.disabled=true;
+try{
+const s=await sw.pushManager.getSubscription();
+if(s){
+await fetch(W+'/unsubscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({endpoint:s.endpoint})}).catch(()=>{});
+await s.unsubscribe();
+}else{
+const p=await Notification.requestPermission();
+if(p!=='granted'){btn.disabled=false;return;}
+const ns=await sw.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(VP)});
+await fetch(W+'/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ns.toJSON())}).catch(()=>{});
+}
+await upd(sw);
+}catch(e){}
+btn.disabled=false;
+}
+swReady().then(sw=>{
+upd(sw);
+btn.addEventListener('click',()=>toggle(sw));
+}).catch(()=>{});
 })();
 </script>

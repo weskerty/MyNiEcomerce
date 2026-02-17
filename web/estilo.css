@@ -2,7 +2,7 @@
 
 @font-face {
     font-family: 'OpenDyslexic';
-    src: url('Fuentes/OpenDyslexic/OpenDyslexic-Regular.woff2') format('woff2');
+    src: url('otros/Archivos/Fuentes/OpenDyslexic/OpenDyslexic-Regular.woff2') format('woff2');
     font-display: swap;
 }
 
@@ -13,7 +13,7 @@ body {
     color: white;
     overflow-x: hidden;
     background-color: #000000;
-    background: url('otros/Archivos/Imagenes/pexels-dariuskrs-2609107.jpg') no-repeat center center fixed;
+    background: url('otros/Archivos/Imagenes/pexels-eberhardgross-2098428.jpg') no-repeat center center fixed;
     background-size: cover;
     -webkit-background-size: cover;
     -moz-background-size: cover;

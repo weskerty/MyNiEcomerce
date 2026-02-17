@@ -1,21 +1,32 @@
 (function(){
 const D='web/es.html';
+const CC_MAX=5;
 let c='';
 let bg={};
+const CC=[];
 
-const md = window.markdownit({
-  html: !0,
-  breaks: !0,
-  linkify: !0,
-  typographer: !0
-}).use(window.markdownItAnchor, { 
-  permalink: window.markdownItAnchor.permalink.headerLink(),  
-  slugify: s => s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s-]/g, '').replace(/\s+/g, '-')
+function ccG(u){
+const i=CC.findIndex(x=>x.k===u);
+if(i===-1)return null;
+const e=CC.splice(i,1)[0];
+CC.push(e);
+return e.v;
+}
+function ccS(u,v){
+const i=CC.findIndex(x=>x.k===u);
+if(i!==-1)CC.splice(i,1);
+if(CC.length>=CC_MAX)CC.shift();
+CC.push({k:u,v:v});
+}
+
+const md=window.markdownit({
+html:!0,breaks:!0,linkify:!0,typographer:!0
+}).use(window.markdownItAnchor,{
+permalink:window.markdownItAnchor.permalink.headerLink(),
+slugify:s=>s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^\w\s-]/g,'').replace(/\s+/g,'-')
 });
 
-function iM(){
-return window.matchMedia("(max-width: 768px)").matches
-}
+function iM(){return window.matchMedia("(max-width: 768px)").matches}
 
 function hL(){
 const l=document.getElementById('loading-screen');
@@ -25,16 +36,11 @@ if(l)l.classList.add('hide')
 async function lBG(){
 try{
 const r=await fetch('web/fondo.json');
-if(!r.ok){
-bg={type:'fallback'};
-return
-}
+if(!r.ok){bg={type:'fallback'};return}
 const d=await r.json();
 const m=new Date().getMonth();
 bg=d.backgrounds.find(b=>b.month===m)||d.backgrounds[0]||{type:'fallback'}
-}catch(e){
-bg={type:'fallback'}
-}
+}catch(e){bg={type:'fallback'}}
 }
 
 function aBG(){
@@ -50,25 +56,13 @@ document.body.style.backgroundSize='cover';
 document.body.style.backgroundPosition='center';
 document.body.style.backgroundAttachment='fixed'
 }
-hL();
-return
+hL();return
 }
-if(!v||!bg.src){
-hL();
-return
-}
+if(!v||!bg.src){hL();return}
 v.querySelector('source').src=bg.src;
 v.load();
-const t=setTimeout(()=>{
-v.pause();
-v.src='';
-v.load();
-hL()
-},5000);
-v.addEventListener('loadeddata',()=>{
-clearTimeout(t);
-hL()
-})
+const t=setTimeout(()=>{v.pause();v.src='';v.load();hL()},5000);
+v.addEventListener('loadeddata',()=>{clearTimeout(t);hL()})
 }
 
 const ES=new Set();
@@ -90,9 +84,14 @@ o.parentNode.replaceChild(n,o);
 
 function lD(){
 if(document.getElementById('disqus_thread'))return;
+const dc=document.getElementById('disqus-container');
+if(!dc)return;
+const ob=new IntersectionObserver(entries=>{
+if(!entries[0].isIntersecting)return;
+ob.disconnect();
 const d=document.createElement('div');
 d.id='disqus_thread';
-document.getElementById('disqus-container').appendChild(d);
+dc.appendChild(d);
 window.disqus_config=function(){
 this.page.url=window.location.href;
 this.page.identifier=document.title
@@ -101,6 +100,8 @@ const s=document.createElement('script');
 s.src='https://amigos-steam.disqus.com/embed.js';
 s.setAttribute('data-timestamp',+new Date());
 document.body.appendChild(s)
+},{rootMargin:'200px'});
+ob.observe(dc);
 }
 
 async function lX(p='web/scripts/'){
@@ -119,19 +120,18 @@ document.body.appendChild(s)
 }catch(e){}
 }
 
-const CC={};
 let lCR=false;
 async function lC(u,h=!0,a=''){
 if(u===c||lCR)return;
 lCR=true;
 try{
 const d=document.getElementById('content');
-let t=CC[u];
+let t=ccG(u);
 if(!t){
 const r=await fetch(u);
 if(!r.ok)throw new Error(`Error fetching ${u}: ${r.statusText}`);
 t=await r.text();
-CC[u]=t;
+ccS(u,t);
 }
 let html=t;
 if(u.endsWith('.md'))html=`<div class="markdown-content">${md.render(t)}</div>`;
@@ -167,10 +167,7 @@ return{p:'',a:h}
 
 function hH(){
 const h=window.location.hash;
-if(!h||h==='#'){
-window.location.hash=D;
-return
-}
+if(!h||h==='#'){window.location.hash=D;return}
 const{p,a}=pH(h);
 if(!p&&a){
 requestAnimationFrame(()=>requestAnimationFrame(()=>{
@@ -214,17 +211,10 @@ lD();
 window.addEventListener('hashchange',()=>{hH()});
 window.addEventListener('popstate',(e)=>{
 if(e.state){
-if(e.state.exit){
-window.location.href='https://xurl.es/C';
-return
-}
+if(e.state.exit){window.location.href='https://xurl.es/C';return}
 const a=e.state.a||'';
-if(e.state.p!==c){
-lC(e.state.p,!1,a)
-}else if(a){
-const t=document.getElementById(a);
-if(t)t.scrollIntoView({behavior:'smooth',block:'start'})
-}
+if(e.state.p!==c){lC(e.state.p,!1,a)}
+else if(a){const t=document.getElementById(a);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}
 }else{
 window.history.pushState({p:D},'',`#${D}`);
 if(c!==D)lC(D,!1)
@@ -236,9 +226,7 @@ document.addEventListener('click',(e)=>{
 const a=e.target.closest('a');
 if(!a)return;
 if(a.target==="_blank")return;
-
 const h=a.getAttribute('href');
-
 if(h&&h.startsWith('#')&&!h.includes('web/')){
 e.preventDefault();
 const i=h.substring(1);
@@ -250,22 +238,14 @@ t.scrollIntoView({behavior:'smooth',block:'start'})
 }
 return
 }
-
 const iE=a.href.startsWith('http://')||a.href.startsWith('https://');
 const iS=a.href.startsWith(window.location.origin);
 if(iE&&!iS)return;
-
 const spaExt=/\.(md|html)$/i;
-
-if(!spaExt.test(h)){
-return;
-}
-
+if(!spaExt.test(h))return;
 e.preventDefault();
-
 const url=new URL(a.href);
-let u=url.pathname.startsWith('/') ? url.pathname.slice(1) : url.pathname;
-
+let u=url.pathname.startsWith('/')?url.pathname.slice(1):url.pathname;
 window.scrollTo({top:0,behavior:'smooth'});
 lC(u)
 });

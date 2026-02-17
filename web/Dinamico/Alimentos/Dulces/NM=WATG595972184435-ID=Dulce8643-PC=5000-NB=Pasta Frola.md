@@ -11,6 +11,14 @@ Crocante y Rica para Acompañar siempre...
 
 </div>
 
+<div class="galeriaMD">
+
+![OpenDyslexic_specimen](web/otros/Archivos/Imagenes/Letra Digital para Disléxicos/1771296729430.svg)
+
+![OpenDyslexic3Regular-image](web/otros/Archivos/Imagenes/Letra Digital para Disléxicos/1771296729810.svg)
+
+</div>
+
 ## Ingredientes
 - Harina de trigo 
 - Margarina  
