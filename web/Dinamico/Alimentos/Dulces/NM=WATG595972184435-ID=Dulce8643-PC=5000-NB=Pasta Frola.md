@@ -3,10 +3,10 @@ Crocante y Rica para Acompañar siempre...
 
 <div class="galeriaMD">
 
-![IB](web/otros/Archivos/Imagenes/IB.jpg)
-
-![IvanBal](web/otros/Archivos/Imagenes/IvanBal.jpg)
-
+![1000292523](web/otros/Archivos/Imagenes/Dulce8643/1771308048223.jpg)
+	
+![1000249930](web/otros/Archivos/Imagenes/Dulce8643/1771307997205.jpg)
+	
 ![Pasta Frola](https://www.encasacookingspace.com/wp-content/uploads/2019/04/Pasta_Frola-from-Overhead.jpg)
 
 </div>
