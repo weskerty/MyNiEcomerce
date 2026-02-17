@@ -7,7 +7,7 @@
 .bl-head h1{font-size:clamp(1.6rem,5vw,2.8rem);font-weight:700;color:rgba(255,255,255,.95);letter-spacing:-.02em;text-shadow:0 2px 20px rgba(0,0,0,.3);line-height:1.1;border-bottom:2px solid #1a73e8;padding-bottom:.5rem;display:inline-block}
 .bl-head p{font-size:.8rem;color:rgba(255,255,255,.5);margin-top:5px;font-weight:300;letter-spacing:.06em;text-transform:uppercase}
 .bl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
-.bl-card{position:relative;border-radius:20px;overflow:hidden;cursor:pointer;text-decoration:none;display:block;min-height:200px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);box-shadow:0 4px 24px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.15);animation:blFU .5s cubic-bezier(.2,.8,.2,1) both;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease}
+.bl-card{position:relative;border-radius:20px;overflow:hidden;cursor:pointer;text-decoration:none;display:block;min-height:200px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);box-shadow:0 4px 24px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.15);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease;will-change:transform}
 .bl-card:hover{transform:translateY(-5px) scale(1.01);box-shadow:0 16px 40px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.2);text-decoration:none}
 .bl-card:active{transform:scale(.98)}
 .bl-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s cubic-bezier(.2,.8,.2,1),filter .3s ease;filter:brightness(.5) saturate(1.2)}
@@ -29,7 +29,6 @@
 .bl-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);animation:blP .8s ease-in-out infinite}
 .bl-dot:nth-child(2){animation-delay:.15s}
 .bl-dot:nth-child(3){animation-delay:.3s}
-@keyframes blFU{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes blP{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
 @media(max-width:480px){.bl-grid{grid-template-columns:1fr}.bl-wide{min-height:220px}}
 </style>
@@ -46,7 +45,7 @@
         <div id="BPinned-gallery" 
              class="contenedor-imagenes-animado">
         </div>
-        <a href="web/Dinamico/Alimentos/alimentos.html" class="view-all-button">Ver Lista Completa</a>
+        
     </div>
 </div>
 <p id="bl-cnt"></p>
@@ -59,9 +58,14 @@
 <script>
 (function(){
 const DJ='web/Dinamico/data.json';
+const PAGE=30;
+
+let curList=[],curOff=0,io=null,imgIO=null;
+
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 function mL(p){return p.replace(/\.[^.]+$/,'.md')}
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1].trim():n.replace(/-/g,' ')}
+
 async function fD(){
 const r=await fetch(DJ).catch(()=>null);
 if(!r||!r.ok)return[];
@@ -79,14 +83,14 @@ out.push({img:p,md:mL(p),name:nN(fN(p)),cat:k==='_r'?'Blog':k});
 });
 return out;
 }
+
 function mk(item,idx){
 const a=document.createElement('a');
 a.href=item.md;
 a.className='bl-card'+(idx===0?' bl-wide':'');
-a.style.animationDelay=(idx*.07)+'s';
 const bg=document.createElement('div');
 bg.className='bl-bg'+(item.img?'':' bl-bg-none');
-if(item.img)bg.style.backgroundImage='url('+encodeURI(item.img)+')';
+if(item.img)bg.dataset.bg=item.img;
 const gl=document.createElement('div');gl.className='bl-gloss';
 const bd=document.createElement('div');bd.className='bl-body';
 bd.innerHTML='<div class="bl-cat">'+item.cat+'</div><div class="bl-title">'+item.name+'</div>';
@@ -94,6 +98,56 @@ const ar=document.createElement('div');ar.className='bl-arr';ar.textContent='↗
 a.append(bg,gl,bd,ar);
 return a;
 }
+
+function setupImgIO(){
+if(imgIO)imgIO.disconnect();
+imgIO=new IntersectionObserver(entries=>{
+entries.forEach(e=>{
+if(!e.isIntersecting)return;
+const bg=e.target;
+const url=bg.dataset.bg;
+if(url){
+bg.style.backgroundImage='url('+encodeURI(url)+')';
+delete bg.dataset.bg;
+}
+imgIO.unobserve(bg);
+});
+},{rootMargin:'100px'});
+}
+
+function mkSentinel(){
+const d=document.createElement('div');
+d.id='bl-sentinel';
+d.style.height='1px';
+d.style.gridColumn='1/-1';
+return d;
+}
+
+function appendPage(gr,list,off){
+const slice=list.slice(off,off+PAGE);
+if(!slice.length)return off;
+slice.forEach((item,i)=>{
+const card=mk(item,off+i);
+gr.appendChild(card);
+const bg=card.querySelector('.bl-bg[data-bg]');
+if(bg)imgIO.observe(bg);
+});
+return off+slice.length;
+}
+
+function setupIO(gr,list){
+if(io)io.disconnect();
+let sent=document.getElementById('bl-sentinel');
+if(!sent){sent=mkSentinel();gr.appendChild(sent);}
+io=new IntersectionObserver(entries=>{
+if(!entries[0].isIntersecting)return;
+if(curOff>=list.length){io.disconnect();sent.remove();return;}
+curOff=appendPage(gr,list,curOff);
+if(curOff>=list.length){io.disconnect();sent.remove();}
+},{rootMargin:'300px'});
+io.observe(sent);
+}
+
 async function init(){
 const gr=document.getElementById('bl-gr');
 const ld=document.getElementById('bl-ld');
@@ -108,7 +162,10 @@ gr.innerHTML='<div class="bl-empty"><span>📭</span>Sin artículos por ahora</d
 return;
 }
 if(cnt)cnt.textContent=items.length+(items.length===1?' artículo':' artículos');
-items.forEach(function(item,i){gr.appendChild(mk(item,i));});
+curList=items;curOff=0;
+setupImgIO();
+curOff=appendPage(gr,items,curOff);
+if(curOff<items.length)setupIO(gr,items);
 }
 init();
 })();
