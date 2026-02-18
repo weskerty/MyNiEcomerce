@@ -9,7 +9,8 @@ const PRE=[
 'web/favicon.ico',
 'web/ICON.png',
 'web/404.html',
-'web/centralPage.html',
+'web/otros/Archivos/HTML/centralPage.html',
+'web/otros/Archivos/Imagenes/Permanente/404.avif',
 'web/otros/Archivos/Imagenes/pexels-eberhardgross-2098428.jpg',
 'web/otros/Archivos/Fuentes/OpenDyslexic/OpenDyslexic-Regular.woff2',
 'web/scripts/SwiperGallerys.js',
@@ -64,7 +65,7 @@ return r;
 });
 
 self.addEventListener('push',e=>{
-let d={title:'🛍️ Yo Gano PY',body:'Hay Novedades 🤗!',icon:'web/ICON.png'};
+let d={title:'🛍️ Yo Gano PY',body:'Hay Novedades! 🤗',icon:'web/ICON.png'};
 try{d={...d,...e.data.json()};}catch(err){}
 e.waitUntil(
 self.registration.showNotification(d.title,{
