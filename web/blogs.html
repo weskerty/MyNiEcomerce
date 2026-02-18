@@ -163,15 +163,9 @@ if(curOff<items.length)setupIO(gr,items);
 init();
 })();
 
-
-/////
 (function(){
-const W='url.dev';
-const VP='VAPID_PUBLIC_KEY';
-////////
-
-
-
+const W='https://yoganopy-push.marcoygor0.workers.dev';
+const VP='BHhzutw-yWrRIzIXr3NS1VlY9Z0ryqQ5FRm-W-p3lBN6wj9jePY7tBqatF_OUkMWJcobIpzucuqqgkV159lC_Mk';
 const SW_TO=3000;
 if(!('serviceWorker' in navigator)||!('PushManager' in window))return;
 if(Notification.permission==='denied')return;
