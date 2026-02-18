@@ -6,8 +6,8 @@ Fuentes que te ayudan a leer sin confusiones en pantallas.
 
 <div class="galeriaMD">
 
-![OpenDyslexic_specimen](web/otros/Archivos/Imagenes/Letra Digital para Disléxicos/1771296729430.svg)
-![OpenDyslexic3Regular-image](web/otros/Archivos/Imagenes/Letra Digital para Disléxicos/1771296729810.svg)
+![OpenDyslexic_specimen](web/otros/Archivos/Imagenes/LetraDigitalParaDislexicos/1771296729430.svg)
+![OpenDyslexic3Regular-image](web/otros/Archivos/Imagenes/LetraDigitalParaDislexicos/1771296729810.svg)
 
 </div>
 
@@ -23,8 +23,8 @@ Abbie González la creó porque las fuentes similares eran caras e inaccesibles,
 
 <div class="galeriaMD">
 
-![1000296501](web/otros/Archivos/Imagenes/Letra Digital para Disléxicos/1771296853754.avif)
-![1000298450](web/otros/Archivos/Imagenes/Letra Digital para Disléxicos/1771296853942.png)
+![1000296501](web/otros/Archivos/Imagenes/LetraDigitalParaDislexicos/1771296853754.avif)
+![1000298450](web/otros/Archivos/Imagenes/LetraDigitalParaDislexicos/1771296853942.png)
 
 </div>
 
@@ -37,7 +37,7 @@ Gratis para uso personal, educativo y benéfico.
 
 ## Easy Reading
 
-![1000298455](web/otros/Archivos/Imagenes/Letra Digital para Disléxicos/1771296963481.png)
+![1000298455](web/otros/Archivos/Imagenes/LetraDigitalParaDislexicos/1771296963481.png)
 
 Tipografía **paga** (gratis solo uso personal) para idiomas con alfabeto latino. Creada por Federico Alfonsetti con enfoque en [Diseño Universal](https://en.wikipedia.org/wiki/Universal_Design).
 

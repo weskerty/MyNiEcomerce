@@ -94,7 +94,7 @@ if(!r||r.status!==200||r.type==='opaque')return r;
 const rc=r.clone();
 caches.open(V).then(c=>c.put(e.request,rc));
 return r;
-}).catch(()=>caches.match('web/404.html'));
+}).catch(()=>caches.match(new URL('web/404.html',self.location).href));
 })
 );
 });
