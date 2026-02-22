@@ -120,18 +120,16 @@ document.body.appendChild(s)
 }catch(e){}
 }
 
-const OV=document.getElementById('lc-ov');
 let lCR=false;
 async function lC(u,h=!0,a=''){
 if(u===c||lCR)return;
 lCR=true;
-if(OV)OV.classList.add('lc-act');
 try{
 const d=document.getElementById('content');
 let t=ccG(u);
 if(!t){
 const r=await fetch(u);
-if(!r.ok)throw new Error(`${r.status} ${r.statusText}`);
+if(!r.ok)throw new Error(`Error fetching ${u}: ${r.statusText}`);
 t=await r.text();
 ccS(u,t);
 }
@@ -155,10 +153,7 @@ if(e)e.scrollIntoView({behavior:'smooth',block:'start'})
 }
 }catch(e){
 document.getElementById('content').innerHTML=`<p>Error Cargando: ${e.message}</p>`
-}finally{
-lCR=false;
-if(OV)OV.classList.remove('lc-act');
-}
+}finally{lCR=false;}
 }
 
 function pH(h){
