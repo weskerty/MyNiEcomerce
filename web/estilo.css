@@ -103,6 +103,11 @@ a:hover {
     text-decoration: underline;
 }
 
+.gallery-item, .gallery-item:hover {
+    text-decoration: none;
+    color: white;
+}
+
 a::after {
     content: '';
     opacity: 0;
@@ -237,12 +242,17 @@ code {
     width: 100%;
 }
 
-.gallery-item .menu-content h3 {
+.gallery-item .menu-content p {
     margin: 0;
     font-size: 1.1em;
     color: white;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
     line-height: 1.3;
+    text-decoration: none;
+}
+
+.gallery-item:hover .menu-content p {
+    text-decoration: none;
 }
 
 .contenedor-imagenes-animado {
@@ -529,6 +539,18 @@ h2 {
         transition-duration: 0.01ms !important;
     }
 
+    .content {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: rgba(20, 20, 20, 0.82) !important;
+    }
+
+    #disqus-container {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background-color: rgba(0, 0, 0, 0.85) !important;
+    }
+
     .gallery-item,
     .view-all-button,
     .back-button,
@@ -569,8 +591,6 @@ h2 {
     .cb-btn {
         animation-duration: 0.8s !important;
         transition-duration: 0.3s !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
     }
     .cb-modal {
         backdrop-filter: blur(8px) !important;
@@ -583,8 +603,8 @@ h2 {
 }
 
 /* === Chat Banner Cart === */
-.cb-btn{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.18);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:9999;font-size:30px;color:#fff;transition:all 0.3s ease}
-.cb-btn.cb-exp{left:50%;right:auto;transform:translateX(-50%);width:300px;height:60px;border-radius:30px;font-size:18px}
+.cb-btn{position:fixed;bottom:20px;right:20px;width:60px;height:60px;border-radius:50%;background:rgba(0,0,0,0.85);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:9999;font-size:30px;color:#fff;transition:all 0.3s ease}
+.cb-btn.cb-exp{left:50%;right:auto;transform:translateX(-50%);width:300px;height:60px;border-radius:30px;font-size:18px;background:rgba(0,0,0,0.9);border:1px solid rgba(255,255,255,0.15)}
 .cb-btn.cb-ab{animation:cb-ab 0.8s cubic-bezier(0.68,-0.55,0.265,1.55)}
 @keyframes cb-ab{0%{transform:rotate(0deg) translateY(0)}15%{transform:rotate(-8deg) translateY(0)}30%{transform:rotate(-15deg) translateY(12px)}50%{transform:rotate(-12deg) translateY(18px)}70%{transform:rotate(-6deg) translateY(10px)}85%{transform:rotate(-2deg) translateY(4px)}100%{transform:rotate(0deg) translateY(0)}}
 .cb-btn.cb-exp.cb-ab{animation:cb-abe 0.8s cubic-bezier(0.68,-0.55,0.265,1.55)}
@@ -644,31 +664,3 @@ h2 {
 #cs .cb-s2{font-size:16px;color:#fff}
 #cs .cb-er{font-size:22px;font-weight:bold;color:#fbbf24}
 
-#lc-ov {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 900;
-    justify-content: center;
-    align-items: center;
-    font-size: 3rem;
-    background: rgba(0,0,0,0.35);
-}
-
-#lc-ov.lc-act {
-    display: flex;
-}
-
-@supports (backdrop-filter: blur(1px)) {
-    #lc-ov.lc-act {
-        background: rgba(0,0,0,0.15);
-        -webkit-backdrop-filter: blur(6px);
-        backdrop-filter: blur(6px);
-    }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    #lc-ov {
-        transition: opacity 0.15s ease;
-    }
-}
