@@ -644,3 +644,31 @@ h2 {
 #cs .cb-s2{font-size:16px;color:#fff}
 #cs .cb-er{font-size:22px;font-weight:bold;color:#fbbf24}
 
+#lc-ov {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    background: rgba(0,0,0,0.35);
+}
+
+#lc-ov.lc-act {
+    display: flex;
+}
+
+@supports (backdrop-filter: blur(1px)) {
+    #lc-ov.lc-act {
+        background: rgba(0,0,0,0.15);
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    #lc-ov {
+        transition: opacity 0.15s ease;
+    }
+}
