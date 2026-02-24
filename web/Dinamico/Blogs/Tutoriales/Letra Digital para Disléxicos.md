@@ -4,12 +4,11 @@ Fuentes que te ayudan a leer sin confusiones en pantallas.
 
 ## OpenDyslexic
 
-<div class="galeriaMD">
 
 ![OpenDyslexic_specimen](web/otros/Archivos/Imagenes/LetraDigitalParaDislexicos/1771296729430.svg)
-![OpenDyslexic3Regular-image](web/otros/Archivos/Imagenes/LetraDigitalParaDislexicos/1771296729810.svg)
 
-</div>
+
+
 
 Esta Fuente es **libre y gratuita** 
 
@@ -21,12 +20,10 @@ Abbie González la creó porque las fuentes similares eran caras e inaccesibles,
 
 ## Lexie Readable
 
-<div class="galeriaMD">
 
 ![1000296501](web/otros/Archivos/Imagenes/LetraDigitalParaDislexicos/1771296853754.avif)
-![1000298450](web/otros/Archivos/Imagenes/LetraDigitalParaDislexicos/1771296853942.png)
 
-</div>
+
 
 Diseñada pensando en accesibilidad y legibilidad. Captura la claridad de Comic Sans pero sin el estilo de cómic. Tiene características que ayudan a lectores disléxicos: b y d asimétricas, formas manuscritas de a y g.
 
@@ -48,24 +45,34 @@ Es la única fuente certificada científicamente como herramienta válida para p
 
 Requiere llenar formulario. Gratis solo para uso personal.
 
+
 ---
+
 
 ## Cómo usarlas
 
 ### Navegador
 
-1. Instalá la extensión
-2. Agregá la regla CSS específica
-3. Todas las webs usarán tu fuente preferida
+1. Instala la Fuente deseada en tu Sistema.
+
+2. Instalá la extensión Stylus desde Aqui
+https://chromewebstore.google.com/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne
+
+
+2. Agregá esta regla CSS específica;
+3. Ajusta desde el Menu que Fuente y Emoji Quieres 
+
+3. Todas las webs usarán tu fuente preferida 🤗
 
 ### Linux KDE
 
-1. Andate a **Ajustes del Sistema** → **Fuentes** → **Instalar Fuente**
+1. Instala la Fuente deseada en tu Sistema.
+2. Andate a **Ajustes del Sistema** → **Fuentes** → **Instalar Fuente**
 2. Seleccioná la fuente e instalala como "Fuente del Sistema"
 3. Cerrá sesión y volvé a iniciar
 4. Abrí Ajustes → **Temas y estilos** → ajustá la fuente con el tamaño que prefieras
 
-Listo, todas las apps tendrán esa fuente.
+Listo, todas las apps tendrán esa fuente 😍
 
 
 ### Telefonos

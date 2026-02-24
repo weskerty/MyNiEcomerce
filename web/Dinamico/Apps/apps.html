@@ -1,0 +1,215 @@
+<style>
+._nb{position:absolute;top:0;font-size:1.8rem;text-decoration:none;z-index:10}
+._nb.l{left:0}
+._nb.r{right:0}
+</style>
+<a class="_nb l" href="web/blogs.html">🔔</a>
+<a class="_nb r" href="web/Dinamico/Apps/search.html">🔍</a>
+<div style="text-align:center;">
+
+<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Alien%20Monster.png" alt="Alien Monster" width="50" height="50" />
+
+
+<h1>Ñembosarái Ava’ẽ</h1>
+<p>Lugra para Hacer Amigos. Todos los Juegos Tienen Chat de Voz</p>
+
+
+<div class="section">
+    <h1>🐍 Arcade</h1>
+    <div class="gallery-container">
+        <div id="Alimentos-gallery" 
+             class="contenedor-imagenes-animado">
+        </div>
+        <a href="web/Dinamico/Alimentos/alimentos.html" class="view-all-button">Ver Lista Completa</a>
+    </div>
+</div>
+<!--
+</br>
+
+<div class="section">
+    <h1>🫕 Accesorios</h1>
+    <div class="gallery-container">
+        <div id="Accesorios-gallery" 
+             class="contenedor-imagenes-animado">
+        </div>
+        <a href="web/Dinamico/Accesorios/accesorios.html" class="view-all-button">Ver Lista Completa</a>
+    </div>
+</div>
+
+</br>
+
+
+<div class="section">
+    <h1>👒 Prendas</h1>
+    <div class="gallery-container">
+        <div id="Prendas-gallery" 
+             class="contenedor-imagenes-animado">
+        </div>
+        <a href="web/Dinamico/Prendas/prendas.html" class="view-all-button">Ver Lista Completa</a>
+    </div>
+</div>
+
+
+</br>
+
+<div class="section">
+    <h1>🌱 Plantas</h1>
+    <div class="gallery-container">
+        <div id="Plantas-gallery" 
+             class="contenedor-imagenes-animado">
+        </div>
+        <a href="web/Dinamico/Plantas/plantas.html" class="view-all-button">Ver Lista Completa</a>
+    </div>
+</div>
+</br>
+
+<div class="section">
+    <h1>🎁️ Sorteos</h1>
+    <div class="gallery-container">
+        <div id="Sorteos-gallery" 
+             class="contenedor-imagenes-animado">
+        </div>
+        <a href="web/Dinamico/Sorteos/sorteos.html" class="view-all-button">Ver Lista Completa</a>
+    </div>
+</div>
+</br>
+-->
+
+
+<style>
+
+.btn-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+@media (min-width: 600px) {
+  .btn-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.btn-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 7px 11px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.15) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  text-decoration: none;
+  color: white;
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.btn-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.btn-item:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.25) 100%
+  );
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+}
+
+.btn-cnt {
+  flex: 1;
+  text-align: center;
+  padding: 6px 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.btn-cnt h3 {
+  margin: 0 0 3px 0;
+  font-size: 1.4em;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.btn-cnt p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95em;
+  line-height: 1.4;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 600px) {
+  .btn-item {
+    flex-direction: column;
+    text-align: center;
+    text-decoration: none;
+  }
+}
+
+</style>
+
+
+
+<h1>🫂 Recursos Utiles</h1>
+<p>Selecciona a donde quieres ir 🤗</p>
+</div>
+
+  </a>
+  <a href="web/otros/Archivos/MarkDowns/SerParte.md" class="btn-item">
+    <img src="">
+    <div class="btn-cnt"><h3>🤝 Ser Parte</h3><p>Añade tus Juegos a este Catalogo</p></div>
+
+  </a>
+  <a href="web/otros/Archivos/HTML/centralPage.html" class="btn-item">
+    <img src="">
+    <div class="btn-cnt"><h3>🎳 Mas Utilidades</h3><p>Contenido Extra no Relacionado.</p></div>
+  </a>
+
+
+  
+<blockquote> <a href="web/otros/Archivos/MarkDowns/PoliticaPrivacidad.md">Acuerdo y Privacidad</a> </blockquote>
+  
+
+
+
+
+</br>
+
+
+
+
