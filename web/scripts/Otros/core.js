@@ -1,5 +1,6 @@
 (function(){
 const D='web/es.html';
+const CP='web/otros/Archivos/HTML/centralPage.html';
 const CC_MAX=5;
 let c='';
 let bg={};
@@ -193,7 +194,7 @@ aBG();
 const h=window.location.hash;
 const{p:s,a:t}=pH(h);
 const f=s||D;
-window.history.replaceState({p:D,i:0,exit:!0},'',`#${D}`);
+window.history.replaceState({p:CP,i:0,exit:!0},'',`#${D}`);
 for(let i=1;i<=5;i++){
 await new Promise(r=>setTimeout(r,0));
 window.history.pushState({p:D,i:i},'',`#${D}`)
@@ -211,7 +212,7 @@ lD();
 window.addEventListener('hashchange',()=>{hH()});
 window.addEventListener('popstate',(e)=>{
 if(e.state){
-if(e.state.exit){window.location.href='https://xurl.es/C';return}
+if(e.state.exit){lC(CP,false);return}
 const a=e.state.a||'';
 if(e.state.p!==c){lC(e.state.p,!1,a)}
 else if(a){const t=document.getElementById(a);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})}
