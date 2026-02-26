@@ -246,7 +246,7 @@ const spaExt=/\.(md|html)$/i;
 if(!spaExt.test(h))return;
 e.preventDefault();
 const url=new URL(a.href);
-let u=url.pathname.startsWith('/')?url.pathname.slice(1):url.pathname;
+const p=url.pathname;const w=p.indexOf('web/');const u=w!==-1?p.slice(w):p.slice(1);
 window.scrollTo({top:0,behavior:'smooth'});
 lC(u)
 });
