@@ -1,8 +1,11 @@
 (function(){
-const W={p:'Vengo%20de%20YoGano%20y%20quiero%20Comprar%20estos%20Productos%20LISTA%3D',d:'https://wa.me/595972184435?text=Hola%2C%20Quiero%20saber%20mas%20de%20la%20Tienda%20YoGano%0A%0A'};
+const YG_NUMS=['595972184436'];
+const MSG_INT=p=>'Vengo%20de%20YoGano%20y%20quiero%20Comprar%20estos%20Productos%20LISTA%3D'+encodeURIComponent(p);
+const MSG_EXT=items=>'Hola%2C%20vengo%20de%20YoGano%20y%20quiero%20comprar%20estos%20Productos%0A'+items.map(i=>`Quiero%20${i.d}%20de%20${encodeURIComponent(i.b)}`).join('%0A');
+const W={d:'https://wa.me/595972184435?text=Hola%2C%20Quiero%20saber%20mas%20de%20la%20Tienda%20YoGano%0A%0A'};
 let S={c:[],r:false},A={b:false},L={s:null,a:false};
 
-const B=document.createElement('div');B.className='cb-btn';B.innerHTML='💬';B.style.boxShadow='0 8px 32px rgba(34,197,94,0.3)';
+const B=document.createElement('div');B.className='cb-btn';B.innerHTML='✉️';B.style.boxShadow='0 8px 32px rgba(34,197,94,0.3)';
 const F=document.createElement('div');F.className='cb-fng';F.innerHTML='👇';
 const Q=document.createElement('div');Q.className='cb-bdg';
 const P=document.createElement('div');P.className='cb-pk';P.innerHTML='📦';
@@ -12,8 +15,6 @@ const M=document.createElement('div');
 M.className='cb-modal';
 M.innerHTML='<div class="cb-mc"><div class="cb-mh">🛒 Carrito<span class="cb-mx">✕</span></div><div class="cb-mb"></div></div>';
 document.body.appendChild(M);
-
-
 
 function N(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
 
@@ -105,7 +106,7 @@ UB();if(m==='add'&&d>0)AB();
 }
 
 function V(){
-if(!S.c.length){M.querySelector('.cb-mb').innerHTML='<div class="cb-em">🛒 Carrito vacío</div>';return;}
+if(!S.c.length){M.querySelector('.cb-mb').innerHTML='<div class="cb-em">🛒 Carrito vacio</div>';return;}
 const g={};
 S.c.forEach(x=>{const k=x.t+'-'+x.n;if(!g[k])g[k]={t:x.t,n:x.n,items:[]};g[k].items.push(x);});
 let h='',total=0;
@@ -116,8 +117,14 @@ grp.items.forEach(i=>{
 const tp=i.p*i.d;total+=tp;
 h+=`<div class="cb-ci" data-key="${i.t}-${i.n}-${i.i}"><div class="cb-ct">${i.b}</div><div class="cb-cr"><span>👛 ${N(i.p)}Gs</span><span>💰 ${N(tp)}Gs</span></div><div class="cb-cr"><span>🛒</span><div class="cb-cc"><button data-t="${i.t}" data-n="${i.n}" data-i="${i.i}" data-a="-">−</button><span>${i.d}</span><button data-t="${i.t}" data-n="${i.n}" data-i="${i.i}" data-a="+">+</button></div></div></div>`;
 });
-let msg='';grp.items.forEach(i=>msg+=`CD=${i.d}-ID=${i.i};`);msg=msg.slice(0,-1);
-const me=W.p+encodeURIComponent(msg);
+const isInt=YG_NUMS.includes(grp.n);
+let me;
+if(isInt){
+let p='';grp.items.forEach(i=>p+=`CD=${i.d}-ID=${i.i};`);p=p.slice(0,-1);
+me=MSG_INT(p);
+}else{
+me=MSG_EXT(grp.items);
+}
 h+=`<div class="cb-ca">`;
 if(grp.t==='wt'){h+=`<button class="cb-bt cb-wa" data-l="https://wa.me/${grp.n}?text=${me}">📱 WhatsApp</button><button class="cb-bt cb-tg" data-l="https://t.me/+${grp.n}?text=${me}">✈️ Telegram</button>`;}
 else if(grp.t==='w'){h+=`<button class="cb-bt cb-wa" data-l="https://wa.me/${grp.n}?text=${me}">📱 WhatsApp</button>`;}
@@ -183,10 +190,10 @@ bp.onclick=()=>{if(q<mx){q++;qv.value=q;pt.textContent=N(pc*q);sv();}};
 ba.onclick=()=>{
 if(lk)return;
 let x=parseInt(qv.value);
-if(isNaN(x)||x<mn){e.innerHTML=`<div class="cb-er">⚠️ El Mínimo es ${mn}</div>`;setTimeout(()=>{q=mn;rW();},3000);return;}
-if(x>mx){e.innerHTML=`<div class="cb-er">⚠️ Máximo Disponible: ${mx}</div>`;setTimeout(()=>{q=mx;rW();},3000);return;}
+if(isNaN(x)||x<mn){e.innerHTML=`<div class="cb-er">⚠️ El Minimo es ${mn}</div>`;setTimeout(()=>{q=mn;rW();},3000);return;}
+if(x>mx){e.innerHTML=`<div class="cb-er">⚠️ Maximo Disponible: ${mx}</div>`;setTimeout(()=>{q=mx;rW();},3000);return;}
 q=x;C(tp,tn,id,q,pc,nb);lk=true;
-e.innerHTML='<div class="cb-s">✅ Añadido a la Lista</div><div class="cb-s2">Continúa la Compra en el Carrito 👇</div>';
+e.innerHTML='<div class="cb-s">✅ Añadido a la Lista</div><div class="cb-s2">Continua la Compra en el Carrito 👇</div>';
 };
 }
 rW();
