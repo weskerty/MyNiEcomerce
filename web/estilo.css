@@ -169,7 +169,7 @@ code {
     align-items: center;
     gap: 0;
     padding: 0 0 10px 0;
-    min-height: 260px;
+    min-height: 190px;
     background: linear-gradient(
         135deg,
         rgba(255, 255, 255, 0.25) 0%,
@@ -223,7 +223,7 @@ code {
 
 .gallery-item img {
     width: 100%;
-    height: 200px;
+    height: 140px;
     aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: 24px 24px 0 0;
@@ -249,6 +249,10 @@ code {
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
     line-height: 1.3;
     text-decoration: none;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    white-space: normal;
 }
 
 .gallery-item:hover .menu-content p {
@@ -267,15 +271,26 @@ code {
     padding: 20px;
 }
 
+.grid-gallery .gallery-item {
+    min-height: 0;
+    height: auto;
+    overflow: hidden;
+}
+
+.grid-gallery .gallery-item .menu-content {
+    height: auto;
+    flex-shrink: 0;
+}
+
 .swiper {
     width: 100%;
-    padding: 40px 0;
+    padding: 20px 0;
     overflow: visible;
     position: relative;
 }
 
 .swiper-slide {
-    width: 250px !important;
+    width: 195px !important;
 }
 
 .swiper-slide .gallery-item {
@@ -287,7 +302,7 @@ code {
 }
 
 .swiper-slide:not(.swiper-slide-active) .gallery-item {
-    transform: scale(0.9);
+    transform: scale(0.95);
     opacity: 0.7;
 }
 
@@ -409,7 +424,6 @@ code {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(7px);
 }
-
 
 .mariposas-section {
     margin: 30px 0;
@@ -657,4 +671,3 @@ h2 {
         -webkit-backdrop-filter: blur(20px) !important;
     }
 }
-
