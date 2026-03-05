@@ -1,7 +1,7 @@
 (function(){
 const YG_NUMS=['595972184436'];
 const MSG_INT=p=>'Vengo%20de%20YoGano%20y%20quiero%20Comprar%20estos%20Productos%20LISTA%3D'+encodeURIComponent(p);
-const MSG_EXT=items=>'Hola%2C%20vengo%20de%20YoGano%20y%20quiero%20comprar%20estos%20Productos%0A'+items.map(i=>`Quiero%20${i.d}%20de%20${encodeURIComponent(i.b)}`).join('%0A');
+const MSG_EXT=items=>'Hola%2C%20quiero%20comprar%20estos%20Productos%0A'+items.map(i=>`${i.d}%20de%20${encodeURIComponent(i.b)}`).join('%0A');
 const W={d:'https://wa.me/595972184435?text=Hola%2C%20Quiero%20saber%20mas%20de%20la%20Tienda%20YoGano%0A%0A'};
 let S={c:[],r:false},A={b:false},L={s:null,a:false};
 
