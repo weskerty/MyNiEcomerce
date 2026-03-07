@@ -1,11 +1,11 @@
 (function(){
 const YG_NUMS=['595972184436'];
-const MSG_INT=p=>'Vengo%20de%20YoGano%20y%20quiero%20Comprar%20estos%20Productos%20LISTA%3D'+encodeURIComponent(p);
+const MSG_INT=p=>'Hola%20quiero%20comprar%20estos%20Productos%20LISTA%3D'+encodeURIComponent(p);
 const MSG_EXT=items=>'Hola%2C%20quiero%20comprar%20estos%20Productos%0A'+items.map(i=>`${i.d}%20de%20${encodeURIComponent(i.b)}`).join('%0A');
-const W={d:'https://wa.me/595972184435?text=Hola%2C%20Quiero%20saber%20mas%20de%20la%20Tienda%20YoGano%0A%0A'};
+const W={d:'https://wa.me/595972184435?text=Hola%2C%20Quiero%20saber%20mas%20de%20la%20Tienda%20CheAgana%0A%0A'};
 let S={c:[],r:false},A={b:false},L={s:null,a:false};
 
-const B=document.createElement('div');B.className='cb-btn';B.innerHTML='✉️';B.style.boxShadow='0 8px 32px rgba(34,197,94,0.3)';
+const B=document.createElement('div');B.className='cb-btn';B.innerHTML='📩';B.style.boxShadow='0 8px 32px rgba(34,197,94,0.3)';
 const F=document.createElement('div');F.className='cb-fng';F.innerHTML='👇';
 const Q=document.createElement('div');Q.className='cb-bdg';
 const P=document.createElement('div');P.className='cb-pk';P.innerHTML='📦';
@@ -29,7 +29,7 @@ if(S.c.length>0){
 if(B.classList.contains('cb-exp')){B.innerHTML='🛒 Finalizar compra';B.classList.add('cb-c');}
 else{B.innerHTML='🛒';B.classList.remove('cb-c');}
 }else{
-if(B.classList.contains('cb-exp')){B.innerHTML='💬 Clic para chatear';B.classList.add('cb-c');}
+if(B.classList.contains('cb-exp')){B.innerHTML='📩 Clic para chatear';B.classList.add('cb-c');}
 else{B.innerHTML='💬';B.classList.remove('cb-c');}
 }
 B.appendChild(F);B.appendChild(Q);B.appendChild(P);UQ();

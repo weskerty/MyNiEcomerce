@@ -56,7 +56,7 @@ await c.put(DJ_CK,new Response(txt));
 await c.put(TS_CK,new Response(String(Date.now())));
 if(prevTxt===null)return;
 if(txt!==prevTxt){
-await self.registration.showNotification('🛍️ Yo Gano PY',{
+await self.registration.showNotification('Che Agana',{
 body:'¡Hay Novedades 🤗!',
 icon:'web/ICON.png',
 badge:'web/ICON.png',
@@ -100,7 +100,7 @@ return r;
 });
 
 self.addEventListener('push',e=>{
-let d={title:'🛍️ Yo Gano PY',body:'Hay Novedades! 🤗',icon:'web/ICON.png'};
+let d={title:'Che Agana',body:'Hay Novedades! 🤗',icon:'web/ICON.png'};
 try{d={...d,...e.data.json()};}catch(err){}
 e.waitUntil(
 self.registration.showNotification(d.title,{

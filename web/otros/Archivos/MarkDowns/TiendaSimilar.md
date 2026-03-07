@@ -114,7 +114,7 @@
 
 <div style="text-align:center;">
 <h1>💞 Tiendas Similares</h1>
-<p>Se listan por su prácticas ecológicas. No estan Relacionadas a YoGano</p>
+<p>Se listan por su prácticas ecológicas. No estan Relacionadas a CheAgana</p>
 </div>
 
 <div class="menu-list">

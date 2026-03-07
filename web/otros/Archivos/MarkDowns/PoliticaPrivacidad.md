@@ -1,5 +1,5 @@
 ## 1. Responsable del Tratamiento
-YoGano, contacto en:  
+CheAgana, contacto en:  
 [![WhatsApp](https://img.shields.io/badge/WhatsApp-25D366?style=flat&logo=whatsapp&logoColor=white)](https://wa.me/595972184435)  
 
 ---
@@ -69,7 +69,7 @@ Esta política puede actualizarse; los cambios se publicarán en esta página co
 
 <h3>Última actualización: <span id="f">Cargando...</span></3>
 <script>
-const a='web/otros/MarkDowns/PoliticaPrivacidad.md',r='weskerty/YoGano',b='main';
+const a='web/otros/MarkDowns/PoliticaPrivacidad.md',r='weskerty/CheAgana',b='main';
 async function h(){try{const x=await fetch(a,{method:'HEAD'});if(!x.ok)throw 0;return new Date(x.headers.get('Last-Modified'))}catch(e){return null}}
 async function g(){try{const x=await fetch(a);if(!x.ok)throw 0;return new Date(x.headers.get('Last-Modified'))}catch(e){return null}}
 async function gh(){try{const x=await fetch(`https://api.github.com/repos/${r}/commits?path=${a}&sha=${b}&per_page=1`);if(!x.ok)throw 0;const c=await x.json();return c.length?new Date(c[0].commit.author.date):null}catch(e){return null}}
