@@ -1,7 +1,7 @@
 # Pasta Frola
 Crocante y Rica para Acompañar siempre...
 
-<div class="galeriaMD">
+
 
 
 
