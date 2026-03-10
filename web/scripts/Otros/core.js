@@ -47,15 +47,15 @@ bg=d.backgrounds.find(b=>b.month===m)||d.backgrounds[0]||{type:'fallback'}
 function aBG(){
 const rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const v=document.getElementById('bg-video');
+const b=document.getElementById('bg');
 if(iM()||rm||!bg||bg.type!=='video'){
 if(v)v.remove();
 if(bg&&bg.type==='css'){
-document.body.style.background=bg.css
+b.style.background=bg.css
 }else if(bg&&bg.type==='image'){
-document.body.style.backgroundImage=`url(${bg.src})`;
-document.body.style.backgroundSize='cover';
-document.body.style.backgroundPosition='center';
-document.body.style.backgroundAttachment='fixed'
+b.style.backgroundImage=`url(${bg.src})`;
+b.style.backgroundSize='cover';
+b.style.backgroundPosition='center'
 }
 hL();return
 }
@@ -130,7 +130,7 @@ const d=document.getElementById('content');
 let t=ccG(u);
 if(!t){
 const r=await fetch(u);
-if(!r.ok)throw new Error(`Error fetching ${u}: ${r.statusText}`);
+if(!r.ok){d.innerHTML=await fetch('web/404.html').then(r=>r.text()).catch(()=>'404');lCR=false;return}
 t=await r.text();
 ccS(u,t);
 }
@@ -153,7 +153,7 @@ if(e)e.scrollIntoView({behavior:'smooth',block:'start'})
 }));
 }
 }catch(e){
-document.getElementById('content').innerHTML=`<p>Error Cargando: ${e.message}</p>`
+fetch('web/404.html').then(r=>r.text()).then(h=>{document.getElementById('content').innerHTML=h}).catch(()=>{document.getElementById('content').innerHTML='404'});
 }finally{lCR=false;}
 }
 
