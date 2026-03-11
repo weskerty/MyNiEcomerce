@@ -13,19 +13,14 @@ body {
     color: white;
     overflow-x: hidden;
     background-color: #000000;
-    background: url('otros/Archivos/Imagenes/pexels-eberhardgross-2098428.jpg') no-repeat center center fixed;
-    background-size: cover;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
 }
 
 #bg {
     position: fixed;
     inset: 0;
     min-height: 100dvh;
+    background: url('otros/Archivos/Imagenes/pexels-eberhardgross-2098428.jpg') no-repeat center center;
     background-size: cover;
-    background-position: center;
     z-index: -1;
 }
 
