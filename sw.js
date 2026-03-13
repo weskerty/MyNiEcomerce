@@ -11,7 +11,7 @@ const PRE=[
 'web/404.html',
 'web/otros/Archivos/HTML/centralPage.html',
 'web/otros/Archivos/Imagenes/Permanente/404.avif',
-'web/otros/Archivos/Imagenes/pexels-eberhardgross-2098428.jpg',
+'web/otros/Archivos/Imagenes/pexels-cody-king-433493-1118667.jpg',
 'web/otros/Archivos/Fuentes/OpenDyslexic/OpenDyslexic-Regular.woff2',
 'web/scripts/SwiperGallerys.js',
 'web/scripts/chat-banner.js',
@@ -20,8 +20,8 @@ const PRE=[
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
 'web/scripts/Otros/MarkDownIT/markdownItAnchor.umd.min.js',
 'web/scripts/Otros/MiniSearch/index.js',
-'web/scripts/Otros/Swiper/swiper-bundle.min.css',
-'web/scripts/Otros/Swiper/swiper-bundle.min.js'
+'web/scripts/Otros/Swiper/swiper12-bundle.min.css',
+'web/scripts/Otros/Swiper/swiper12-bundle.min.js'
 ];
 
 const DJ=/\/data\.json(\?|$)/;

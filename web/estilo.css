@@ -78,7 +78,9 @@ blockquote.gold {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #232323;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     z-index: 1000;
 }
 
