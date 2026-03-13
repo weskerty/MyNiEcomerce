@@ -2,38 +2,38 @@
   "backgrounds": [
     {
       "month": 0,
-      "type": "video",
-      "src": "https://videos.pexels.com/video-files/5834608/5834608-hd_1280_720_25fps.mp4",
+      "type": "image",
+      "src": "web/otros/Archivos/Imagenes/pexels5834608AñoNuevo.avif",
       "comment": "Enero Año Nuvo"
     },
     {
       "month": 1,
       "type": "image",
-      "src": "",
+      "src": "web/otros/Archivos/Imagenes/pexels-henkephotoart-29775986.jpg",
       "comment": "Febrero"
     },
     {
       "month": 2,
       "type": "image",
-      "src": "",
+      "src": "web/otros/Archivos/Imagenes/",
       "comment": "Marzo"
     },
     {
       "month": 3,
       "type": "image",
-      "src": "",
+      "src": "web/otros/Archivos/Imagenes/7964907-hd_1920_1080_25fps.avif",
       "comment": "Abril"
     },
     {
       "month": 4,
       "type": "image",
-      "src": "",
+      "src": "web/otros/Archivos/Imagenes/",
       "comment": "Mayo"
     },
     {
       "month": 5,
       "type": "image",
-      "src": "",
+      "src": "web/otros/Archivos/Imagenes/7964907-hd_1920_1080_25fps.avif",
       "comment": "Junio"
     },
     {
@@ -45,25 +45,25 @@
     {
       "month": 7,
       "type": "image",
-      "src": "",
+      "src": "web/otros/Archivos/Imagenes/benjamin-shurance-dUcQLRcZpmk-unsplash.jpg",
       "comment": "Agosto"
     },
     {
       "month": 8,
       "type": "image",
-      "src": "",
+      "src": "web/otros/Archivos/Imagenes/",
       "comment": "Septiembre"
     },
     {
       "month": 9,
       "type": "image",
-      "src": "",
+      "src": "web/otros/Archivos/Imagenes/pexels-vilas-5688958.jpg",
       "comment": "Octubre"
     },
     {
       "month": 10,
       "type": "image",
-      "src": "",
+      "src": "web/otros/Archivos/Imagenes/benjamin-shurance-W7zJGqbp6Xw-unsplash.jpg",
       "comment": "Noviembre"
     },
     {
