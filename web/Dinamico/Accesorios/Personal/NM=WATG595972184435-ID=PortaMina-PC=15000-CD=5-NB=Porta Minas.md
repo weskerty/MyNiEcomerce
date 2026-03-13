@@ -18,4 +18,4 @@
 
 Cuidemos el Ambiente, dejemos a los árboles tranquilos.
 Ahora solo falta el papel... Que se puede reutilizar 
-Mas info en el Blog; [Papel Reciclado](web/Dinamico/Blogs/Ambiente/Papel Reciclado ♻️.md)
+Mas info en el Blog; [Papel Reciclado](web/Dinamico/Blogs/Ambiente/Papel%20Reciclado%20♻️.md)
