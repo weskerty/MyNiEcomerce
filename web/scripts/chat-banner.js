@@ -1,1 +1,214 @@
-!function(){const t=["595972184436"],e="https://wa.me/595972184435?text=Hola%2C%20Quiero%20saber%20mas%20de%20la%20Tienda%20CheAgana%0A%0A";let s={c:[],r:!1},n={b:!1},c={s:null,a:!1};const a=document.createElement("div");a.className="cb-btn",a.innerHTML="📩",a.style.boxShadow="0 8px 32px rgba(34,197,94,0.3)";const i=document.createElement("div");i.className="cb-fng",i.innerHTML="👇";const o=document.createElement("div");o.className="cb-bdg";const d=document.createElement("div");d.className="cb-pk",d.innerHTML="📦",a.appendChild(i),a.appendChild(o),a.appendChild(d),document.body.appendChild(a);const l=document.createElement("div");function r(t){return t.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".")}function b(){s.c.length>0?a.classList.contains("cb-exp")?(a.innerHTML="🛒 Finalizar compra",a.classList.add("cb-c")):(a.innerHTML="🛒",a.classList.remove("cb-c")):a.classList.contains("cb-exp")?(a.innerHTML="📩 Clic para chatear",a.classList.add("cb-c")):(a.innerHTML="💬",a.classList.remove("cb-c")),a.appendChild(i),a.appendChild(o),a.appendChild(d),function(){const t=s.c.reduce((t,e)=>t+e.d,0);t>1?(o.textContent=t,o.classList.add("cb-v")):o.classList.remove("cb-v")}()}function p(){i.classList.remove("cb-v"),b()}function m(){n.b||(n.b=!0,a.classList.add("cb-ab"),d.classList.remove("cb-dr"),d.offsetWidth,d.classList.add("cb-dr"),setTimeout(()=>{d.classList.remove("cb-dr")},1200),a.classList.contains("cb-exp")||(a.classList.add("cb-exp"),b(),c.a=!0,clearTimeout(c.s)),setTimeout(()=>{a.classList.remove("cb-ab"),n.b=!1},800))}function u(){if(!s.r)return;const t=document.getElementById("disqus-container");if(!t)return;const e=t.offsetTop,n=window.pageYOffset+window.innerHeight;if(n>=e?a.classList.contains("cb-exp")||c.a||(a.classList.add("cb-exp"),b()):a.classList.contains("cb-exp")&&!c.a&&(a.classList.remove("cb-exp"),a.style.position="fixed",a.style.bottom="20px",a.style.top="",p()),a.classList.contains("cb-exp")){const c=e+t.offsetHeight;n>=c-20?"absolute"!==a.style.position&&(a.style.position="absolute",a.style.bottom="",a.style.top=c-80+"px",function(){if(0===s.c.length)return void i.classList.remove("cb-v");i.classList.remove("cb-v");const t=document.createElement("span");t.className="cb-fz",t.innerHTML="🫵",a.innerHTML="",a.appendChild(t),a.appendChild(i),a.appendChild(o),a.appendChild(d),setTimeout(()=>{b(),setTimeout(()=>{i.classList.add("cb-v")},100)},1200)}()):"absolute"===a.style.position&&(a.style.position="fixed",a.style.top="",a.style.bottom="20px",p())}c.a&&(clearTimeout(c.s),c.s=setTimeout(()=>{if(a.classList.contains("cb-exp")&&!l.classList.contains("cb-v")){const t=document.getElementById("disqus-container");(!t||window.pageYOffset+window.innerHeight<t.offsetTop)&&(a.classList.remove("cb-exp"),a.style.position="fixed",a.style.bottom="20px",a.style.top="",p(),c.a=!1)}},1500))}function v(t,e,n,c,a,i,o="add"){const d=s.c.findIndex(s=>s.i===n&&s.t===t&&s.n===e);"set"===o?d>-1&&(s.c[d].d=c,s.c[d].d<=0&&s.c.splice(d,1)):d>-1?(s.c[d].d+=c,s.c[d].d<=0&&s.c.splice(d,1)):c>0&&s.c.push({t:t,n:e,i:n,d:c,p:a,b:i}),b(),"add"===o&&c>0&&m()}function f(){if(!s.c.length)return void(l.querySelector(".cb-mb").innerHTML='<div class="cb-em">🛒 Carrito vacio</div>');const e={};s.c.forEach(t=>{const s=t.t+"-"+t.n;e[s]||(e[s]={t:t.t,n:t.n,items:[]}),e[s].items.push(t)});let n="",c=0;Object.keys(e).forEach(s=>{const a=e[s];n+=`<div class="cb-cp"><div class="cb-cn">📦 ${a.n}</div>`,a.items.forEach(t=>{const e=t.p*t.d;c+=e,n+=`<div class="cb-ci" data-key="${t.t}-${t.n}-${t.i}"><div class="cb-ct">${t.b}</div><div class="cb-cr"><span>👛 ${r(t.p)}Gs</span><span>💰 ${r(e)}Gs</span></div><div class="cb-cr"><span>🛒</span><div class="cb-cc"><button data-t="${t.t}" data-n="${t.n}" data-i="${t.i}" data-a="-">−</button><span>${t.d}</span><button data-t="${t.t}" data-n="${t.n}" data-i="${t.i}" data-a="+">+</button></div></div></div>`});let i;if(t.includes(a.n)){let t="";a.items.forEach(e=>t+=`CD=${e.d}-ID=${e.i};`),t=t.slice(0,-1),i=(t=>"Hola%20quiero%20comprar%20estos%20Productos%20LISTA%3D"+encodeURIComponent(t))(t)}else i="Hola%2C%20quiero%20comprar%20estos%20Productos%0A"+a.items.map(t=>`${t.d}%20de%20${encodeURIComponent(t.b)}`).join("%0A");n+='<div class="cb-ca">',"wt"===a.t?n+=`<button class="cb-bt cb-wa" data-l="https://wa.me/${a.n}?text=${i}">📱 WhatsApp</button><button class="cb-bt cb-tg" data-l="https://t.me/+${a.n}?text=${i}">✈️ Telegram</button>`:"w"===a.t?n+=`<button class="cb-bt cb-wa" data-l="https://wa.me/${a.n}?text=${i}">📱 WhatsApp</button>`:"t"===a.t&&(n+=`<button class="cb-bt cb-tg" data-l="https://t.me/+${a.n}?text=${i}">✈️ Telegram</button>`),n+="</div></div>"}),n+=`<div class="cb-to">💸 Total: ${r(c)}Gs</div>`,l.querySelector(".cb-mb").innerHTML=n}function L(){l.classList.toggle("cb-v"),l.classList.contains("cb-v")&&f()}function h(){const t=document.getElementById("cs");if(!t)return;const e=location.hash;if(!e)return;let s;try{s=decodeURIComponent(e)}catch(t){s=e}const n=s.match(/ID=([^-\s]+)/),c=s.match(/PC=([^-\s]+)/),a=s.match(/NB=([^.]+)/),i=s.match(/NM=([^-\s]+)/),o=s.match(/CD=([^-\s]+)/);if(!(n&&c&&a&&i))return;const d=n[1],l=parseInt(c[1]),b=a[1],p=i[1],m=o?parseInt(o[1]):null;let u,f;if(p.startsWith("WATG"))u="wt",f=p.substring(4);else if(p.startsWith("WA"))u="w",f=p.substring(2);else{if(!p.startsWith("TG"))return;u="t",f=p.substring(2)}const L=parseInt(t.getAttribute("min"))||1,h=null!==m?m:999;if(0===m)return void(t.innerHTML='<img src="web/otros/Archivos/Imagenes/Permanente/404.avif" style="max-width:100%;max-height:180px;object-fit:contain;display:block;margin:auto">');let g=L,x=!1;!function e(){t.innerHTML=(null!==m?`<div class="cb-dsp">Disponible: ${m} unidades</div>`:"")+`<div class="cb-p">Precio: <span class="cb-t" id="cpt">${r(l*g)}</span>Gs</div>`+`<div class="cb-o"><span>Cantidad:</span><button class="cb-k" id="cbm">−</button><input type="number" class="cb-qv" id="cqv" value="${g}" min="${L}" max="${h}"><button class="cb-k" id="cbp">+</button></div><button class="cb-a" id="cba">🛍️ Añadir al Carrito</button>`;const s=document.getElementById("cqv"),n=document.getElementById("cpt"),c=document.getElementById("cbm"),a=document.getElementById("cbp"),i=document.getElementById("cba");function o(){let t=parseInt(s.value);isNaN(t)||(t>h&&(t=h),t<L&&(t=L),g=t,n.textContent=r(l*g),c.disabled=g<=L,a.disabled=g>=h)}o(),s.addEventListener("input",o),c.onclick=()=>{g>L&&(g--,s.value=g,n.textContent=r(l*g),o())},a.onclick=()=>{g<h&&(g++,s.value=g,n.textContent=r(l*g),o())},i.onclick=()=>{if(x)return;let n=parseInt(s.value);return isNaN(n)||n<L?(t.innerHTML=`<div class="cb-er">⚠️ El Minimo es ${L}</div>`,void setTimeout(()=>{g=L,e()},3e3)):n>h?(t.innerHTML=`<div class="cb-er">⚠️ Maximo Disponible: ${h}</div>`,void setTimeout(()=>{g=h,e()},3e3)):(g=n,v(u,f,d,g,l,b),x=!0,void(t.innerHTML='<div class="cb-s">✅ Añadido a la Lista</div><div class="cb-s2">Continua la Compra en el Carrito 👇</div>'))}}()}l.className="cb-modal",l.innerHTML='<div class="cb-mc"><div class="cb-mh">🛒 Carrito<span class="cb-mx">✕</span></div><div class="cb-mb"></div></div>',document.body.appendChild(l),a.addEventListener("click",()=>{s.c.length>0?L():window.open(e,"_blank")}),l.addEventListener("click",t=>{(t.target===l||t.target.classList.contains("cb-mx"))&&L();const e=t.target.closest("button");if(e)if(e.dataset.l)window.open(e.dataset.l,"_blank"),L();else if(e.dataset.a){const t=e.dataset.t,n=e.dataset.n,c=e.dataset.i,a=s.c.find(e=>e.i===c&&e.t===t&&e.n===n);if(!a)return;const i="+"===e.dataset.a?a.d+1:a.d-1;if(i<=0){const e=l.querySelector(`.cb-ci[data-key="${t}-${n}-${c}"]`);e&&function(t){t.classList.add("cb-rm"),setTimeout(()=>t.remove(),400)}(e),setTimeout(()=>{v(t,n,c,i,a.p,a.b,"set"),f()},400)}else v(t,n,c,i,a.p,a.b,"set"),f()}}),window.addEventListener("cartAdd",t=>{const{type:e,num:s,id:n,q:c,pc:a,nb:i}=t.detail;v(e,s,n,c,a,i)}),window.addEventListener("scroll",u),window.addEventListener("resize",u);const g=document.getElementById("content");g?g.addEventListener("contentLoaded",()=>{s.r=!0,setTimeout(()=>{u(),requestAnimationFrame(h)},1e3)}):(s.r=!0,u()),s.r=!0,u(),requestAnimationFrame(h)}();
+!function(){
+const WA_NUMS=["595972184436"],WA_BASE="https://wa.me/595972184435?text=";
+const IMG_BASE="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/";
+const night=(h=>h>=19||h<5)(new Date().getHours());
+const grSrc=IMG_BASE+(night?"Last%20Quarter%20Moon%20Face.png":"Sun%20with%20Face.png");
+
+const css=document.createElement("style");
+css.textContent=`.cb-gr-tip{position:fixed;bottom:88px;right:20px;background:#ffffffee;color:#333;padding:7px 13px;border-radius:18px 18px 4px 18px;font-size:.85rem;font-weight:500;box-shadow:0 4px 16px #0002;white-space:nowrap;z-index:9999;pointer-events:none;opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s}.cb-gr-tip.on{opacity:1;transform:translateY(0)}@media(prefers-color-scheme:dark){.cb-gr-tip{background:#1e1e1eee;color:#eee}}`;
+document.head.appendChild(css);
+
+let st={c:[],r:!1},ab={b:!1},exp={s:null,a:!1};
+
+const btn=document.createElement("div");
+btn.className="cb-btn";
+btn.style.boxShadow="0 8px 32px rgba(34,197,94,0.3)";
+
+const fng=document.createElement("div");fng.className="cb-fng";fng.innerHTML="👇";
+const bdg=document.createElement("div");bdg.className="cb-bdg";
+const pk=document.createElement("div");pk.className="cb-pk";pk.innerHTML="📦";
+
+btn.appendChild(fng);btn.appendChild(bdg);btn.appendChild(pk);
+document.body.appendChild(btn);
+
+const tip=document.createElement("div");tip.className="cb-gr-tip";
+tip.textContent=night?"Buenas noches":"Buenos dias";
+document.body.appendChild(tip);
+setTimeout(()=>{
+  tip.classList.add("on");
+  setTimeout(()=>tip.textContent="Preguntame lo que quieras",2200);
+  setTimeout(()=>{tip.classList.remove("on");setTimeout(()=>tip.remove(),600)},5000);
+},300);
+
+const modal=document.createElement("div");
+
+function fmt(t){return t.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".")}
+
+function syncBtn(){
+  if(st.c.length>0){
+    btn.classList.contains("cb-exp")
+      ?(btn.innerHTML="🛒 Finalizar compra",btn.classList.add("cb-c"))
+      :(btn.innerHTML="🛒",btn.classList.remove("cb-c"));
+  } else {
+    btn.classList.contains("cb-exp")
+      ?(btn.innerHTML="📩 Clic para chatear",btn.classList.add("cb-c"))
+      :(btn.innerHTML=`<img src="${grSrc}" style="width:40px;height:40px;display:block;margin:auto">`,btn.classList.remove("cb-c"));
+  }
+  btn.appendChild(fng);btn.appendChild(bdg);btn.appendChild(pk);
+  const tot=st.c.reduce((a,b)=>a+b.d,0);
+  tot>1?(bdg.textContent=tot,bdg.classList.add("cb-v")):bdg.classList.remove("cb-v");
+}
+syncBtn();
+
+function clrFng(){fng.classList.remove("cb-v");syncBtn()}
+
+function bounce(){
+  if(ab.b)return;ab.b=!0;
+  btn.classList.add("cb-ab");
+  pk.classList.remove("cb-dr");pk.offsetWidth;pk.classList.add("cb-dr");
+  setTimeout(()=>pk.classList.remove("cb-dr"),1200);
+  if(!btn.classList.contains("cb-exp")){btn.classList.add("cb-exp");syncBtn();exp.a=!0;clearTimeout(exp.s)}
+  setTimeout(()=>{btn.classList.remove("cb-ab");ab.b=!1},800);
+}
+
+function onScroll(){
+  if(!st.r)return;
+  const dc=document.getElementById("disqus-container");
+  if(!dc)return;
+  const dcTop=dc.offsetTop,scrollBot=window.pageYOffset+window.innerHeight;
+  if(scrollBot>=dcTop){
+    if(!btn.classList.contains("cb-exp")&&!exp.a){btn.classList.add("cb-exp");syncBtn()}
+  } else {
+    if(btn.classList.contains("cb-exp")&&!exp.a){btn.classList.remove("cb-exp");btn.style.position="fixed";btn.style.bottom="20px";btn.style.top="";clrFng()}
+  }
+  if(btn.classList.contains("cb-exp")){
+    const dcBot=dcTop+dc.offsetHeight;
+    if(scrollBot>=dcBot-20){
+      if("absolute"!==btn.style.position){
+        btn.style.position="absolute";btn.style.bottom="";btn.style.top=dcBot-80+"px";
+        if(st.c.length>0){
+          fng.classList.remove("cb-v");
+          const fz=document.createElement("span");fz.className="cb-fz";fz.innerHTML="🫵";
+          btn.innerHTML="";btn.appendChild(fz);btn.appendChild(fng);btn.appendChild(bdg);btn.appendChild(pk);
+          setTimeout(()=>{syncBtn();setTimeout(()=>fng.classList.add("cb-v"),100)},1200);
+        }
+      }
+    } else if("absolute"===btn.style.position){
+      btn.style.position="fixed";btn.style.top="";btn.style.bottom="20px";clrFng();
+    }
+  }
+  if(exp.a){
+    clearTimeout(exp.s);
+    exp.s=setTimeout(()=>{
+      if(btn.classList.contains("cb-exp")&&!modal.classList.contains("cb-v")){
+        const dc2=document.getElementById("disqus-container");
+        if(!dc2||window.pageYOffset+window.innerHeight<dc2.offsetTop){
+          btn.classList.remove("cb-exp");btn.style.position="fixed";btn.style.bottom="20px";btn.style.top="";clrFng();exp.a=!1;
+        }
+      }
+    },1500);
+  }
+}
+
+function addItem(tp,num,id,q,pc,nb,mode="add"){
+  const idx=st.c.findIndex(x=>x.i===id&&x.t===tp&&x.n===num);
+  if("set"===mode){
+    if(idx>-1){st.c[idx].d=q;if(st.c[idx].d<=0)st.c.splice(idx,1)}
+  } else {
+    if(idx>-1){st.c[idx].d+=q;if(st.c[idx].d<=0)st.c.splice(idx,1)}
+    else if(q>0)st.c.push({t:tp,n:num,i:id,d:q,p:pc,b:nb});
+  }
+  syncBtn();
+  if("add"===mode&&q>0)bounce();
+}
+
+function renderCart(){
+  if(!st.c.length)return void(modal.querySelector(".cb-mb").innerHTML='<div class="cb-em">🛒 Carrito vacio</div>');
+  const groups={};
+  st.c.forEach(x=>{const k=x.t+"-"+x.n;groups[k]||(groups[k]={t:x.t,n:x.n,items:[]});groups[k].items.push(x)});
+  let html="",total=0;
+  Object.keys(groups).forEach(k=>{
+    const g=groups[k];
+    html+=`<div class="cb-cp"><div class="cb-cn">📦 ${g.n}</div>`;
+    g.items.forEach(x=>{
+      const sub=x.p*x.d;total+=sub;
+      html+=`<div class="cb-ci" data-key="${x.t}-${x.n}-${x.i}"><div class="cb-ct">${x.b}</div><div class="cb-cr"><span>👛 ${fmt(x.p)}Gs</span><span>💰 ${fmt(sub)}Gs</span></div><div class="cb-cr"><span>🛒</span><div class="cb-cc"><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="-">−</button><span>${x.d}</span><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="+">+</button></div></div></div>`;
+    });
+    let msg;
+    if(WA_NUMS.includes(g.n)){let l="";g.items.forEach(x=>l+=`CD=${x.d}-ID=${x.i};`);l=l.slice(0,-1);msg="Hola%20quiero%20comprar%20estos%20Productos%20LISTA%3D"+encodeURIComponent(l)}
+    else msg="Hola%2C%20quiero%20comprar%20estos%20Productos%0A"+g.items.map(x=>`${x.d}%20de%20${encodeURIComponent(x.b)}`).join("%0A");
+    html+='<div class="cb-ca">';
+    if("wt"===g.t)html+=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}">📱 WhatsApp</button><button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}">✈️ Telegram</button>`;
+    else if("w"===g.t)html+=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}">📱 WhatsApp</button>`;
+    else if("t"===g.t)html+=`<button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}">✈️ Telegram</button>`;
+    html+="</div></div>";
+  });
+  html+=`<div class="cb-to">💸 Total: ${fmt(total)}Gs</div>`;
+  modal.querySelector(".cb-mb").innerHTML=html;
+}
+
+function toggleModal(){modal.classList.toggle("cb-v");if(modal.classList.contains("cb-v"))renderCart()}
+
+function initProduct(){
+  const cs=document.getElementById("cs");if(!cs)return;
+  const hash=location.hash;if(!hash)return;
+  let dec;try{dec=decodeURIComponent(hash)}catch(e){dec=hash}
+  const mID=dec.match(/ID=([^-\s]+)/),mPC=dec.match(/PC=([^-\s]+)/),mNB=dec.match(/NB=([^.]+)/),mNM=dec.match(/NM=([^-\s]+)/),mCD=dec.match(/CD=([^-\s]+)/);
+  if(!(mID&&mPC&&mNB&&mNM))return;
+  const id=mID[1],pc=parseInt(mPC[1]),nb=mNB[1],nm=mNM[1],avail=mCD?parseInt(mCD[1]):null;
+  let tp,num;
+  if(nm.startsWith("WATG")){tp="wt";num=nm.substring(4)}
+  else if(nm.startsWith("WA")){tp="w";num=nm.substring(2)}
+  else if(nm.startsWith("TG")){tp="t";num=nm.substring(2)}
+  else return;
+  const minQ=parseInt(cs.getAttribute("min"))||1,maxQ=null!==avail?avail:999;
+  if(avail===0)return void(cs.innerHTML='<img src="web/otros/Archivos/Imagenes/Permanente/404.avif" style="max-width:100%;max-height:180px;object-fit:contain;display:block;margin:auto">');
+  let qty=minQ,locked=!1;
+  !function render(){
+    cs.innerHTML=(null!==avail?`<div class="cb-dsp">Disponible: ${avail} unidades</div>`:"")+
+    `<div class="cb-p">Precio: <span class="cb-t" id="cpt">${fmt(pc*qty)}</span>Gs</div>`+
+    `<div class="cb-o"><span>Cantidad:</span><button class="cb-k" id="cbm">−</button><input type="number" class="cb-qv" id="cqv" value="${qty}" min="${minQ}" max="${maxQ}"><button class="cb-k" id="cbp">+</button></div><button class="cb-a" id="cba">🛍️ Añadir al Carrito</button>`;
+    const inp=document.getElementById("cqv"),priceEl=document.getElementById("cpt"),btnM=document.getElementById("cbm"),btnP=document.getElementById("cbp"),btnA=document.getElementById("cba");
+    function clamp(){let v=parseInt(inp.value);isNaN(v)||(v>maxQ&&(v=maxQ),v<minQ&&(v=minQ),qty=v,priceEl.textContent=fmt(pc*qty),btnM.disabled=qty<=minQ,btnP.disabled=qty>=maxQ)}
+    clamp();
+    inp.addEventListener("input",clamp);
+    btnM.onclick=()=>{if(qty>minQ){qty--;inp.value=qty;priceEl.textContent=fmt(pc*qty);clamp()}};
+    btnP.onclick=()=>{if(qty<maxQ){qty++;inp.value=qty;priceEl.textContent=fmt(pc*qty);clamp()}};
+    btnA.onclick=()=>{
+      if(locked)return;
+      const v=parseInt(inp.value);
+      if(isNaN(v)||v<minQ)return void(cs.innerHTML=`<div class="cb-er">⚠️ El Minimo es ${minQ}</div>`,setTimeout(()=>{qty=minQ;render()},3e3));
+      if(v>maxQ)return void(cs.innerHTML=`<div class="cb-er">⚠️ Maximo Disponible: ${maxQ}</div>`,setTimeout(()=>{qty=maxQ;render()},3e3));
+      qty=v;addItem(tp,num,id,qty,pc,nb);locked=!0;
+      cs.innerHTML='<div class="cb-s">✅ Añadido a la Lista</div><div class="cb-s2">Continua la Compra en el Carrito 👇</div>';
+    };
+  }();
+}
+
+modal.className="cb-modal";
+modal.innerHTML='<div class="cb-mc"><div class="cb-mh">🛒 Carrito<span class="cb-mx">✕</span></div><div class="cb-mb"></div></div>';
+document.body.appendChild(modal);
+
+btn.addEventListener("click",()=>{
+  if(st.c.length>0)return toggleModal();
+  const txt=encodeURIComponent("Hola, Quisiera saber mas sobre esto "+window.location.href);
+  window.open(WA_BASE+txt,"_blank");
+});
+
+modal.addEventListener("click",ev=>{
+  if(ev.target===modal||ev.target.classList.contains("cb-mx"))toggleModal();
+  const b=ev.target.closest("button");
+  if(!b)return;
+  if(b.dataset.l){window.open(b.dataset.l,"_blank");toggleModal();return}
+  if(b.dataset.a){
+    const tp=b.dataset.t,nm=b.dataset.n,id=b.dataset.i;
+    const item=st.c.find(x=>x.i===id&&x.t===tp&&x.n===nm);if(!item)return;
+    const nq="+"===b.dataset.a?item.d+1:item.d-1;
+    if(nq<=0){
+      const el=modal.querySelector(`.cb-ci[data-key="${tp}-${nm}-${id}"]`);
+      if(el){el.classList.add("cb-rm");setTimeout(()=>el.remove(),400)}
+      setTimeout(()=>{addItem(tp,nm,id,nq,item.p,item.b,"set");renderCart()},400);
+    } else {addItem(tp,nm,id,nq,item.p,item.b,"set");renderCart()}
+  }
+});
+
+window.addEventListener("cartAdd",ev=>{const{type:tp,num,id,q,pc,nb}=ev.detail;addItem(tp,num,id,q,pc,nb)});
+window.addEventListener("scroll",onScroll);
+window.addEventListener("resize",onScroll);
+
+const content=document.getElementById("content");
+content
+  ?content.addEventListener("contentLoaded",()=>{st.r=!0;setTimeout(()=>{onScroll();requestAnimationFrame(initProduct)},1e3)})
+  :(st.r=!0,onScroll());
+st.r=!0;onScroll();requestAnimationFrame(initProduct);
+}();

@@ -1,10 +1,11 @@
 <style>
+:root{--font-h:'Libre Baskerville','Merriweather','Times New Roman','Georgia','Fluent Emoji Color',serif}
 #bl-wrap *{box-sizing:border-box}
 .bl-nb{position:absolute;top:0;font-size:1.8rem;text-decoration:none;z-index:10}
 .bl-nb-l{left:0}
 .bl-nb-r{right:0}
 .bl-head{margin-bottom:clamp(16px,3vw,32px)}
-.bl-head h1{font-size:clamp(1.6rem,5vw,2.8rem);font-weight:700;color:rgba(255,255,255,.95);letter-spacing:-.02em;text-shadow:0 2px 20px rgba(0,0,0,.3);line-height:1.1;border-bottom:2px solid #1a73e8;padding-bottom:.5rem;display:inline-block}
+.bl-head h1{font-size:clamp(1.6rem,5vw,2.8rem);font-weight:700;color:rgba(255,255,255,.95);letter-spacing:-.02em;text-shadow:0 2px 20px rgba(0,0,0,.3);line-height:1.1;border-bottom:2px solid #1a73e8;padding-bottom:.5rem;display:inline-block;font-family:var(--font-h)}
 .bl-head p{font-size:.8rem;color:rgba(255,255,255,.5);margin-top:5px;font-weight:300;letter-spacing:.06em;text-transform:uppercase}
 .bl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
 .bl-card{position:relative;border-radius:20px;overflow:hidden;cursor:pointer;text-decoration:none;display:block;min-height:200px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);box-shadow:0 4px 24px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.15);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease;will-change:transform}
@@ -17,7 +18,7 @@
 .bl-body{position:relative;z-index:2;padding:20px 18px 18px;display:flex;flex-direction:column;justify-content:flex-end;min-height:200px}
 .bl-cat{font-size:.68rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:7px;display:flex;align-items:center;gap:5px}
 .bl-cat::before{content:'';display:inline-block;width:14px;height:1px;background:rgba(255,255,255,.35)}
-.bl-title{font-family:'Libre Baskerville','Merriweather','Times New Roman','Georgia',serif;font-size:clamp(1rem,2.5vw,1.3rem);font-weight:700;color:rgba(255,255,255,.95);line-height:1.25;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.bl-title{font-family:var(--font-h);font-size:clamp(1rem,2.5vw,1.3rem);font-weight:700;color:rgba(255,255,255,.95);line-height:1.25;text-shadow:0 2px 10px rgba(0,0,0,.4)}
 .bl-arr{position:absolute;bottom:18px;right:18px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-size:13px;transition:transform .25s cubic-bezier(.2,.8,.2,1),background .25s ease}
 .bl-card:hover .bl-arr{transform:translate(2px,-2px);background:rgba(255,255,255,.22)}
 .bl-wide{grid-column:1/-1;min-height:260px}
@@ -42,7 +43,7 @@
 <div style="text-align:center">
 <div id="bl-wrap">
 <div class="bl-head">
-<h1>BLOG</h1>
+<h2>BLOG</h2>
 <button id="nt-btn"></button>
 <div class="section">
   <div class="gallery-container">
