@@ -89,6 +89,8 @@
   font-size: 1.4em;
   color: white;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 .menu-content p {
@@ -170,8 +172,8 @@
   
   
  <div class="menu-list">
-  <a href="https://www.solucionesecologicas.com.py/" class="menu-item">
-    <img src="https://scontent.cdninstagram.com/v/t51.2885-19/464148632_853209509969338_3845869228375076497_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=106&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=-XZhBHhjA1UQ7kNvwHGqCZ8&_nc_oc=AdnDJy-3-ulhzEw-z1JzlGb1Dj0JDtIydAGPIKIiL2mZdvC-hd4D1pFsxWyYz1FF9tM&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&oh=00_Afu6Aukee8-eJhVSeK4V5FoNXkTytYdvEhRtUzfk0ns_hg&oe=698DB7E8">
+  <a href="https://www.instagram.com/atrevidos.py/" class="menu-item">
+    <img src="web/otros/Archivos/Imagenes/Permanente/AtrevidosAmbiental.avif">
     <div class="menu-content">
       <h3>Atrevidos Paraguay</h3>
       <p> Voluntariado de Limpieza y Concientización Ambiental.</p>

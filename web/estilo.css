@@ -1,15 +1,20 @@
 @import url('https://tetunori.github.io/fluent-emoji-webfont/dist/FluentEmojiColor.css');
 
 @font-face {
-    font-family: 'OpenDyslexic';
-    src: url('otros/Archivos/Fuentes/OpenDyslexic/OpenDyslexic-Regular.woff2') format('woff2');
+    font-family: 'Comfortaa';
+    src: url('otros/Archivos/Fuentes/Comfortaa/font.woff2') format('woff2');
     font-display: swap;
+}
+
+:root {
+    --font: 'Comfortaa', 'Fluent Emoji Color', sans-serif;
+    --font-h: 'Libre Baskerville', 'Merriweather', 'Times New Roman', 'Georgia', 'Fluent Emoji Color', serif;
 }
 
 body {
     margin: 0;
     padding: 0;
-    font-family: 'OpenDyslexic', 'Fluent Emoji Color', sans-serif;
+    font-family: var(--font);
     color: white;
     overflow-x: hidden;
     background-color: #000000;
@@ -86,7 +91,7 @@ blockquote.gold {
 
 .loading-screen p {
     font-size: 2em;
-    font-family: 'OpenDyslexic', 'Fluent Emoji Color', sans-serif;
+    font-family: var(--font);
 }
 
 .hide {
@@ -530,18 +535,10 @@ code {
     }
 }
 
-h1 {
+h1, h2, h3, h4, h5, h6 {
     border-bottom: 2px solid #1a73e8;
     padding-bottom: 0.5rem;
-    font-family: 'Libre Baskerville', 'Merriweather', 'Times New Roman', 'Georgia', serif;
-}
-
-h2 {
-    display: inline-block;
-    border-bottom: 2px solid #1a73e8;
-    padding-bottom: 0.5rem;
-    margin-bottom: 0;
-    font-family: 'Libre Baskerville', 'Merriweather', 'Times New Roman', 'Georgia', serif;
+    font-family: var(--font-h);
 }
 
 /* === Chat Banner Cart === */
