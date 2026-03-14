@@ -49,7 +49,7 @@ No se permite relicenciar bajo otra licencia.
 ## 5. Sin garantía
 
 Este software se proporciona "tal cual", sin garantía de ningún tipo.
-El autor no se responsabiliza por daños derivados del uso.
+El autor no se responsabiliza por daños derivados o provocados por el uso.
 
 
 Util para Ti 
