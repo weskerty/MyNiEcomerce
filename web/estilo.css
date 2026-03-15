@@ -111,8 +111,9 @@ video#bg-video {
 }
 
 a {
-    color: lightblue;
+ color: lightblue;
     cursor: pointer;
+    text-decoration: none;
 }
 
 a:hover {
