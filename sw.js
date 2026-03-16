@@ -12,7 +12,7 @@ const PRE=[
 'web/otros/Archivos/HTML/centralPage.html',
 'web/otros/Archivos/Imagenes/Permanente/404.avif',
 'web/otros/Archivos/Imagenes/pexels-cody-king-433493-1118667.jpg',
-'web/otros/Archivos/Fuentes/OpenDyslexic/OpenDyslexic-Regular.woff2',
+'web/otros/Archivos/Fuentes/Comfortaa/font.woff2',
 'web/scripts/SwiperGallerys.js',
 'web/scripts/chat-banner.js',
 'web/scripts/list.json',
