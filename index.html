@@ -1,65 +1,894 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-
-  <title>Che Agana</title>
-
-  <meta name="description" content="Yo Gano PY: Tienda online de alimentos, accesorios y boletos. Compra facil y seguro en Paraguay.">
-  <meta name="mobile-web-app-capable" content="yes">
-
-  <meta property="og:title" content="🛍️Che Agana">
-  <meta property="og:description" content="Che Agana: Tienda online de alimentos, accesorios y boletos. Compra facil y seguro en Paraguay.">
-  <meta property="og:url" content="https://cheagana.pages.dev">
-  <meta property="og:image" content="https://i.ibb.co/SXxfntPW/869636.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:type" content="website">
-
-  <link rel="canonical" href="https://cheagana.pages.dev">
-  <link rel="icon" type="image/x-icon" href="web/favicon.ico">
-  <link rel="apple-touch-icon" href="web/ICON.png">
-  <link rel="manifest" href="manifest.json">
-
-  <meta name="theme-color" content="#000000">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="CheAgana">
-
-  <link rel="preload" href="web/estilo.css" as="style">
-  <link rel="preload" href="web/scripts/Otros/core.js" as="script">
-  <link rel="stylesheet" href="web/estilo.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor de Productos</title>
+<script src="https://cdn.jsdelivr.net/npm/minisearch@7.2.0/dist/umd/index.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<link rel="stylesheet" href="estilo.css">
 </head>
-
 <body>
+<div id="lgn" style="display:none;position:fixed;inset:0;background:#111;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+<div style="color:#fff;font-size:22px;font-weight:700;margin-bottom:8px">🔐 POS Login</div>
+<input id="lusr" type="text" placeholder="Usuario" style="padding:10px 16px;border-radius:8px;border:none;font-size:16px;width:220px">
+<input id="lpwd" type="password" placeholder="Contraseña" style="padding:10px 16px;border-radius:8px;border:none;font-size:16px;width:220px">
+<button id="lbtn" style="padding:10px 32px;background:#3b82f6;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;font-weight:700">Entrar</button>
+</div>
+<div id="app">
+<div class="h">
+<button class="b" id="an">➕Nuevo</button>
+<button class="b" id="av" style="margin-left:10px">💰Venta</button>
+<button class="b" id="avc" style="margin-left:10px;display:none;background:#ef4444">🗑️ Vaciar</button>
+<a href="blog.html" class="b" style="margin-left:10px;background:#8b5cf6;text-decoration:none;display:inline-flex;align-items:center">📝Blog</a>
+<button class="b" id="adv" style="display:none;background:#6b7280">↩️ Devolución</button>
+<div class="sb" id="sb1">
+<input type="text" id="bus" placeholder="🔍 Buscar productos...">
+<button class="bx" id="clb">✖</button>
+<button class="bcam" id="esn">📷</button>
+</div>
+<div class="sb" id="sb2" style="display:none">
+<input type="number" id="cv" placeholder="Cant" class="cvi">
+<input type="text" id="bv" placeholder="🔍 ID Producto">
+<button class="bx" id="clbv">✖</button>
+<button class="bcam" id="esnv">📷</button>
+</div>
+</div>
+<div id="lt"></div>
+<div id="lv" style="display:none"></div>
+<div id="pv" style="display:none;padding:20px;text-align:center">
+<button class="bs" id="bp" style="font-size:18px;padding:15px 30px">💳 Pagar: <span id="tv">0</span> Gs</button>
+</div>
+<div id="sc">
+<div id="qr"></div>
+<div style="display:flex;gap:10px">
+<button class="cl" id="tl1">💡</button>
+<button class="cl" id="csc">✖ Cerrar</button>
+</div>
+</div>
+<div id="scm">
+<div id="qrm"></div>
+<div style="display:flex;gap:10px">
+<button class="cl" id="tl2">💡</button>
+<button class="cl" id="cscm">✖ Cerrar</button>
+</div>
+</div>
+<div id="scv">
+<div id="qrv"></div>
+<div style="display:flex;gap:10px">
+<button class="cl" id="tl3">💡</button>
+<button class="cl" id="cscv">✖ Cerrar</button>
+</div>
+</div>
+<div id="mdl" class="m">
+<div class="mc">
+<div class="mt" id="mtt">Editar Producto</div>
+<div class="f">
+<div class="fg">
+<label>Categoría</label>
+<select id="ect"></select>
+</div>
+<div class="fg">
+<label>Subcategoría</label>
+<select id="esc"></select>
+</div>
+<div class="fg">
+<label>Tipo (NM)</label>
+<select id="enm">
+<option value="WATG">WhatsApp y Telegram</option>
+<option value="WA">Solo WhatsApp</option>
+<option value="TG">Solo Telegram</option>
+</select>
+</div>
+<div class="fg">
+<label>Número</label>
+<input type="text" id="enu" placeholder="59597xxx...">
+</div>
+<div class="fg">
+<label>Código ID</label>
+<div class="fgi">
+<input type="text" id="eid" placeholder="Codigo de Barras">
+<button class="bcam" id="esnm">📷</button>
+</div>
+</div>
+<div class="fg">
+<label>Nombre</label>
+<input type="text" id="enb" placeholder="Nombre del producto">
+</div>
+<div class="fg">
+<label>Precio</label>
+<input type="text" id="epc" placeholder="5.000">
+</div>
+<div class="fg">
+<label>Cantidad</label>
+<input type="number" id="ecd">
+</div>
+<div class="fg">
+<label>Tiempo Limite (TM)</label>
+<input type="text" id="etm" placeholder="DD.MM.YYYY.HH.MM">
+</div>
+<div class="fg">
+<label>Imagen</label>
+<input type="file" id="eimg" accept="image/*,.gif,.avif">
+<label for="eimg" class="b" style="display:inline-block;text-align:center;margin-top:5px;background:#3b82f6">📷 Cambiar Imagen</label>
+<div id="imgnm" style="color:#666;font-size:12px;margin-top:5px"></div>
+</div>
+<div class="fa">
+<button class="bs" id="grd">💾 Guardar</button>
+<button class="bc" id="cnc">Cancelar</button>
+</div>
+</div>
+</div>
+</div>
+<div id="mmd" class="mmd">
+<div class="mmdc">
+<div class="mmdt"><span>✏️ Editar MD</span></div>
+<div class="mmdw"><textarea id="tmd"></textarea></div>
+<div class="mmda">
+<button class="bs" id="gmd">💾 Guardar</button>
+<button class="bc" id="cmd">Cerrar</button>
+</div>
+</div>
+</div>
+<div id="merr" class="me">
+<div class="mec">
+<div class="met">❌ Error</div>
+<div class="mee" id="mtxt"></div>
+<div class="mea">
+<button class="cp2" id="cpe">📋 Copiar</button>
+<button class="bc" id="cme">Cerrar</button>
+</div>
+</div>
+</div>
+<input type="file" id="mimg" accept="image/*,.gif,.avif" multiple style="display:none">
+<script>
+const U=window.location.origin;
+let TK=localStorage.getItem('tk')||'',CM='browser';
+let D=[],M,S,SM=null,SV=null,E=null,NI=null,CH=false,OD={},MD=null,CA={},NW=false,ED=null,MV=false,VT=[],DV=false;
+function AH(){return TK?{'x-token':TK,'Content-Type':'application/json'}:{'Content-Type':'application/json'};}
+function AHF(){return TK?{'x-token':TK}:{};}
+async function initApp(){
+  const cfg=await fetch(`${U}/api/config`).then(r=>r.json()).catch(()=>({}));
+  CM=cfg.convertMode||'browser';
+  console.log('[CFG] authRequired:',cfg.authRequired,'convertMode:',CM);
+  if(cfg.authRequired&&!TK){showLogin();return;}
+  if(cfg.authRequired&&TK){
+    const ok=await fetch(`${U}/api/scan?path=web/Dinamico`,{headers:AHF()}).then(r=>r.ok).catch(()=>false);
+    if(!ok){TK='';localStorage.removeItem('tk');showLogin();return;}
+  }
+  startApp();
+}
+function showLogin(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('lgn').style.display='flex';
+}
+function startApp(){LD();}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('lbtn').onclick=async function(){
+    const u=document.getElementById('lusr').value.trim();
+    const p=document.getElementById('lpwd').value;
+    if(!u||!p)return;
+    const r=await fetch(`${U}/api/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:u,pass:p})});
+    const d=await r.json();
+    if(!r.ok)return PT(`❌ ${d.error}`);
+    TK=d.token;localStorage.setItem('tk',TK);
+    document.getElementById('lgn').style.display='none';
+    document.getElementById('app').style.display='block';
+    startApp();
+  };
+  document.getElementById('lpwd').onkeydown=e=>{if(e.key==='Enter')document.getElementById('lbtn').click();};
+  initApp();
+});
+const IO=new IntersectionObserver(es=>{
+es.forEach(e=>{
+if(e.isIntersecting){
+const el=e.target;
+const img=el.querySelector('img[data-src]');
+if(img){img.src=img.dataset.src;img.removeAttribute('data-src');}
+IO.unobserve(el);
+}
+});
+},{rootMargin:'200px'});
 
-  <div class="loading-screen" id="loading-screen">
-    <p>⌛Cargando⏳</p>
-  </div>
+function FP(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
+function ME(err){
+const txt=`ERROR: ${err.message}\n\nSTACK:\n${err.stack||'No disponible'}\n\nTIPO: ${typeof D}\nARRAY: ${Array.isArray(D)}\nDATA: ${JSON.stringify(D,null,2)}`;
+document.getElementById('mtxt').textContent=txt;
+document.getElementById('merr').classList.add('a');
+}
+document.getElementById('cpe').onclick=()=>navigator.clipboard.writeText(document.getElementById('mtxt').textContent).then(()=>PT('📋 Copiado'));
+document.getElementById('cme').onclick=()=>document.getElementById('merr').classList.remove('a');
+function PT(t,d=3000){
+const m=document.createElement('div');
+m.className='msg';m.textContent=t;
+document.body.appendChild(m);
+setTimeout(()=>m.remove(),d);
+}
+function PN(n){
+const mNM=n.match(/NM=([^-\s]+)/);
+const mID=n.match(/ID=([^-\s]+)/);
+const mPC=n.match(/PC=([^-\s]+)/);
+const mNB=n.match(/NB=(.+)$/);
+const mCD=n.match(/CD=([^-\s]+)/);
+const mTM=n.match(/TM=(\d{2}\.\d{2}\.\d{4}\.\d{2}\.\d{2})/);
+if(!mID||!mPC||!mNB||!mNM)return null;
+return{NM:mNM[1],ID:mID[1],PC:parseInt(mPC[1]),NB:mNB[1],CD:mCD?parseInt(mCD[1]):null,TM:mTM?mTM[1]:null};
+}
+function GN(o){
+const p=o.NM||'';
+let b='',n='';
+const m=p.match(/^(WATG|WA|TG)(.*)$/);
+if(m){b=m[1];n=m[2]}
+return{b:b||'N/A',n:n||''};
+}
+function BN2(p){
+let n=`NM=${p.NM}-ID=${p.ID}-PC=${p.PC}`;
+if(p.CD)n+=`-CD=${p.CD}`;
+if(p.TM)n+=`-TM=${p.TM}`;
+n+=`-NB=${SF(p.NB)}`;
+return n;
+}
+function SN(s){return s.replace(/[/\\:*?"<>|\x00\s]/g,'').trim();}
+function SF(s){return s.replace(/[/\\:*?"<>|\x00]/g,'').trim();}
+function USC(){
+const c=document.getElementById('ect').value;
+const sc=document.getElementById('esc');
+sc.innerHTML='<option value="">General</option>';
+if(CA[c]){
+CA[c].forEach(s=>{
+const o=document.createElement('option');
+o.value=s;o.textContent=s;
+sc.appendChild(o);
+});
+}
+const nso=document.createElement('option');
+nso.value='__nueva__';nso.textContent='+ Nueva subcategoría...';
+sc.appendChild(nso);
+sc.onchange=PSub;
+}
+function GRP(items){
+const cat={};
+items.forEach(({o,i})=>{
+const g=o.gallery||'Sin Categoría';
+const p=o.path||'General';
+if(!cat[g])cat[g]={};
+if(!cat[g][p])cat[g][p]=[];
+cat[g][p].push({o,i});
+});
+return cat;
+}
+function RD(items){
+const cat=GRP(items);
+const frag=document.createDocumentFragment();
+Object.keys(cat).sort().forEach(g=>{
+const gd=document.createElement('div');
+gd.className='cg';
+gd.innerHTML=`<div class="ct">${g}</div>`;
+Object.keys(cat[g]).sort().forEach(p=>{
+const pd=document.createElement('div');
+pd.className='cp';
+pd.textContent=p;
+gd.appendChild(pd);
+cat[g][p].forEach(({o,i})=>{
+const el=document.createElement('div');
+el.className='i';
+const im=o.image||'';
+el.innerHTML=`<img data-src="${im}" src="" alt="" style="min-height:60px;background:#eee"><div class="inf"><div class="n">${o.NB||'Sin nombre'}</div><div>ID: ${o.ID||'N/A'}</div><div>Precio: ${FP(o.PC||0)} Gs</div><div>Cantidad: ${o.CD??'Sin'}</div></div><div class="ba"><button class="be" onclick="AE(${i})">✏️ Editar</button><button class="bm" onclick="EM(${i})">📝 MD</button><button class="bd" onclick="DL(${i})">🗑️</button></div>`;
+gd.appendChild(el);
+IO.observe(el);
+});
+});
+frag.appendChild(gd);
+});
+const lt=document.getElementById('lt');
+lt.innerHTML='';
+lt.appendChild(frag);
+}
+function R(){
+try{
+RD(D.map((o,i)=>({o,i})));
+}catch(err){ME(err)}
+}
+document.getElementById('an').onclick=function(){
+if(MV){
+MV=false;DV=false;
+document.getElementById('sb1').style.display='flex';
+document.getElementById('sb2').style.display='none';
+document.getElementById('lt').style.display='block';
+document.getElementById('lv').style.display='none';
+document.getElementById('pv').style.display='none';
+document.getElementById('av').style.display='inline-block';
+document.getElementById('avc').style.display='none';
+document.getElementById('an').style.background='#3b82f6';
+document.getElementById('adv').style.display='none';
+}else{AN();}
+};
+function RV(){
+const lv=document.getElementById('lv');
+lv.innerHTML='';
+[...VT].reverse().forEach((v,ri)=>{
+const i=VT.length-1-ri;
+const el=document.createElement('div');
+el.className='i';
+el.innerHTML=`<img src="${v.image||''}" alt=""><div class="inf"><div class="n">${v.NB||'Sin nombre'}</div><div>Precio: ${FP(v.PC||0)} Gs</div></div><div class="ba" style="flex-direction:row;align-items:center;gap:6px"><button onclick="QV(${i},-1)" style="background:#ef4444;border:none;color:#fff;border-radius:6px;width:32px;height:32px;font-size:18px;cursor:pointer;font-weight:700">−</button><span style="min-width:24px;text-align:center;font-weight:700">${v.Q}</span><button onclick="QV(${i},1)" style="background:#10b981;border:none;color:#fff;border-radius:6px;width:32px;height:32px;font-size:18px;cursor:pointer;font-weight:700">+</button></div>`;
+lv.appendChild(el);
+});
+CT();
+}
+function QV(i,d){
+if(d>0&&!DV){
+const o=D[VT[i].IX];
+if(o.CD!==null&&VT[i].Q>=o.CD){PT('⚠️ Stock máximo: '+o.CD,2000);return;}
+}
+VT[i].Q+=d;
+if(VT[i].Q<=0)VT.splice(i,1);
+RV();
+}
+function CT(){
+const t=VT.reduce((s,v)=>s+(v.PC*v.Q),0);
+const tv=document.getElementById('tv');
+if(tv)tv.textContent=FP(t);
+}
+function AV(id,q){
+const x=D.findIndex(o=>o.ID===id);
+if(x<0){PT('❌ Producto no encontrado');return}
+const o=D[x];
+const c=q||1;
+if(!DV&&o.CD!==null&&o.CD<c){PT('⚠️ Stock insuficiente');return}
+const ex=VT.findIndex(v=>v.ID===id);
+if(ex>=0){VT[ex].Q+=c;}
+else{VT.push({ID:o.ID,NB:o.NB,PC:o.PC,image:o.image,Q:c,IX:x});}
+RV();
+PT(`✅ ${o.NB} x${c}`);
+}
+document.getElementById('av').onclick=function(){
+MV=true;DV=false;
+document.getElementById('sb1').style.display='none';
+document.getElementById('sb2').style.display='flex';
+document.getElementById('lt').style.display='none';
+document.getElementById('lv').style.display='block';
+document.getElementById('pv').style.display='block';
+document.getElementById('av').style.display='none';
+document.getElementById('avc').style.display='inline-block';
+document.getElementById('an').style.background='#6b7280';
+document.getElementById('adv').style.display='inline-block';
+document.getElementById('adv').style.background='#6b7280';
+document.getElementById('bp').innerHTML='💳 Pagar: <span id="tv">0</span> Gs';
+RV();
+};
+document.getElementById('avc').onclick=function(){
+if(!confirm('¿Vaciar carrito?'))return;
+VT=[];RV();PT('🗑️ Carrito vaciado',2000);
+};
+document.getElementById('adv').onclick=function(){
+DV=!DV;
+if(DV){
+if(!confirm('Esto Aumenta los Artículos')){{DV=false;return;}}
+document.getElementById('adv').style.background='#f59e0b';
+document.getElementById('bp').textContent='↩️ Devolver';
+}else{
+document.getElementById('adv').style.background='#6b7280';
+document.getElementById('bp').innerHTML='💳 Pagar: <span id="tv">0</span> Gs';
+CT();
+}
+};
+document.getElementById('bv').addEventListener('keydown',function(e){
+if(e.key==='Enter'){
+const id=this.value.trim();
+const q=parseInt(document.getElementById('cv').value)||1;
+if(id){AV(id,q);this.value='';document.getElementById('cv').value='';}
+}
+});
+document.getElementById('clbv').onclick=()=>{document.getElementById('bv').value='';document.getElementById('cv').value='';};
+document.getElementById('esnv').onclick=function(){
+document.getElementById('scv').classList.add('a');
+SV=new Html5Qrcode('qrv');
+SV.start({facingMode:'environment'},{fps:20,qrbox:{width:220,height:120},formatsToSupport:[Html5QrcodeSupportedFormats.EAN_13,Html5QrcodeSupportedFormats.EAN_8,Html5QrcodeSupportedFormats.UPC_A,Html5QrcodeSupportedFormats.UPC_E,Html5QrcodeSupportedFormats.CODE_128],experimentalFeatures:{useBarCodeDetectorIfSupported:true}},
+t=>{
+SV.stop();
+document.getElementById('scv').classList.remove('a');
+const m=t.match(/ID=([^-\s]+)/);
+const id=m?m[1]:t.trim();
+const q=parseInt(document.getElementById('cv').value)||1;
+AV(id,q);
+document.getElementById('bv').value='';
+document.getElementById('cv').value='';
+},()=>{}
+).catch(()=>{PT('❌ Sin cámara');document.getElementById('scv').classList.remove('a');SV=null;});
+};
+document.getElementById('cscv').onclick=function(){
+if(SV){SV.stop().catch(()=>{});SV=null;}
+document.getElementById('scv').classList.remove('a');
+window.T3=false;
+};
+document.getElementById('bp').onclick=async function(){
+if(VT.length===0){PT('⚠️ Lista vacía');return;}
+try{
+for(const v of VT){
+const o=D[v.IX];
+if(o.CD!==null){
+const r=await fetch(`${U}/api/stock`,{method:'POST',headers:AH(),body:JSON.stringify({imgPath:o.image,mdPath:o.link,delta:v.Q,devolucion:DV})});
+const d=await r.json();
+if(!r.ok)throw new Error(d.error||'Error stock');
+o.image=d.newImgPath;
+if(d.newMdPath)o.link=d.newMdPath;
+o.CD=d.cdNuevo;
+}
+}
+VT=[];RV();IM();R();
+PT(DV?'✅ Devolución realizada':'✅ Venta realizada');
+}catch(err){HP();PT(`❌ ${err.message}`);}
+};
+async function GFI(p){
+try{
+const dir=p.split('/').slice(0,-1).join('/');
+const nm=p.split('/').pop();
+const r=await fetch(`${U}/api/list?path=${encodeURIComponent(dir)}`,{headers:AHF()});
+const d=await r.json();
+const f=d.files?.find(x=>x.name===nm);
+if(!f)return nm;
+const kb=(f.size/1024).toFixed(1);
+return `${nm} (${kb}KB)`;
+}catch{return p.split('/').pop();}
+}
+function AE(x){
+NW=false;E=x;
+const o=D[x];
+const{b,n}=GN(o);
+document.getElementById('mtt').textContent='Editar Producto';
+const ct=document.getElementById('ect');
+ct.innerHTML='';
+Object.keys(CA).sort().forEach(c=>{
+const op=document.createElement('option');
+op.value=c;op.textContent=c;
+ct.appendChild(op);
+});
+const nco=document.createElement('option');
+nco.value='__nueva__';nco.textContent='+ Nueva categoría...';
+ct.appendChild(nco);
+ct.value=o.gallery||'';
+USC();
+document.getElementById('esc').value=o.path||'';
+document.getElementById('enm').value=b||'WATG';
+document.getElementById('enu').value=n||'';
+document.getElementById('eid').value=o.ID||'';
+document.getElementById('enb').value=o.NB||'';
+document.getElementById('epc').value=o.PC?FP(o.PC):'';
+document.getElementById('ecd').value=o.CD||'';
+document.getElementById('etm').value=o.TM||'';
+document.getElementById('imgnm').textContent=o.image?`Actual: ${o.image.split('/').pop()}`:'Sin imagen';
+if(o.image)GFI(o.image).then(s=>document.getElementById('imgnm').textContent=`Actual: ${s}`);
+NI=null;
+OD={ct:o.gallery||'',sc:o.path||'',nm:b||'WATG',nu:n||'',id:o.ID||'',nb:o.NB||'',pc:o.PC?FP(o.PC):'',cd:o.CD||'',tm:o.TM||'',img:o.image||''};
+CH=false;
+document.getElementById('mdl').classList.add('a');
+}
+function AN(){
+NW=true;E=null;
+document.getElementById('mtt').textContent='➕ Nuevo Artículo';
+const ct=document.getElementById('ect');
+ct.innerHTML='';
+Object.keys(CA).sort().forEach(c=>{
+const op=document.createElement('option');
+op.value=c;op.textContent=c;
+ct.appendChild(op);
+});
+const nco=document.createElement('option');
+nco.value='__nueva__';nco.textContent='+ Nueva categoría...';
+ct.appendChild(nco);
+if(Object.keys(CA).length>0)ct.value=Object.keys(CA).sort()[0];
+USC();
+['esc','enu','eid','enb','epc','ecd','etm'].forEach(id=>document.getElementById(id).value='');
+document.getElementById('enm').value='WATG';
+document.getElementById('imgnm').textContent='';
+NI=null;
+OD={ct:'',sc:'',nm:'WATG',nu:'',id:'',nb:'',pc:'',cd:'',tm:'',img:''};
+CH=false;
+document.getElementById('mdl').classList.add('a');
+}
+function PCat(){
+const ct=document.getElementById('ect');
+if(ct.value==='__nueva__'){
+const nc=prompt('Nueva categoría:');
+if(nc&&nc.trim()){
+const v=nc.trim();
+if(!CA[v])CA[v]=[];
+if(![...ct.options].find(o=>o.value===v)){
+const op=document.createElement('option');
+op.value=v;op.textContent=v;
+ct.insertBefore(op,ct.lastElementChild);
+}
+ct.value=v;
+}else{
+ct.value=Object.keys(CA).sort()[0]||'';
+}
+}
+USC();
+}
+function PSub(){
+const sc=document.getElementById('esc');
+if(sc.value==='__nueva__'){
+const ns=prompt('Nueva subcategoría:');
+if(ns&&ns.trim()){
+const v=ns.trim();
+const ct=document.getElementById('ect').value;
+if(ct&&ct!=='__nueva__'){
+if(!CA[ct])CA[ct]=[];
+if(!CA[ct].includes(v))CA[ct].push(v);
+if(![...sc.options].find(o=>o.value===v)){
+const op=document.createElement('option');
+op.value=v;op.textContent=v;
+sc.insertBefore(op,sc.lastElementChild);
+}
+sc.value=v;
+}
+}else{
+sc.value='';
+}
+}
+}
+document.getElementById('ect').onchange=PCat;
+let PG=null;
+function SP(t){
+if(PG)PG.remove();
+PG=document.createElement('div');
+PG.className='msg';PG.style.cssText='bottom:60px;background:#1d4ed8;pointer-events:none';
+PG.textContent=t;document.body.appendChild(PG);
+}
+function HP(){if(PG){PG.remove();PG=null;}}
+function WA(ab){
+const u8=new Uint8Array(ab);
+if(u8[0]!==0x52||u8[1]!==0x49||u8[2]!==0x46||u8[3]!==0x46)return false;
+if(u8[8]!==0x57||u8[9]!==0x45||u8[10]!==0x42||u8[11]!==0x50)return false;
+for(let i=12;i<u8.length-4;i++){
+if(u8[i]===0x41&&u8[i+1]===0x4E&&u8[i+2]===0x49&&u8[i+3]===0x4D)return true;
+}
+return false;
+}
+function isGIF(f){return /\.gif$/i.test(f.name);}
+function isAVIF(f){return /\.avif$/i.test(f.name);}
+function destExt(f,ab){if(CM==='server')return f.name.match(/\.[^.]+$/)?.[0]||'.bin';if(isGIF(f)||isAVIF(f)||WA(ab))return f.name.match(/\.[^.]+$/)?.[0]||'.webp';return '.webp';}
 
-  <div id="bg"></div>
-
-  <video autoplay muted loop id="bg-video" preload="auto">
-    <source src="" type="video/mp4">
-  </video>
-
-  <div class="content" id="content"></div>
-
-  <div id="disqus-container"></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js"
-          onerror="this.src='web/scripts/Otros/MarkDownIT/markdown-it.min.js'"></script>
-  <script src="https://cdn.jsdelivr.net/npm/markdown-it-anchor@9/dist/markdownItAnchor.umd.min.js"
-          onerror="this.src='web/scripts/Otros/MarkDownIT/markdownItAnchor.umd.min.js'"></script>
-
-  <script src="web/scripts/Otros/core.js"></script>
-
-  <script>
-    if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js');
-  </script>
-
-  <noscript>Activa JavaScript o no podras ver esta pagina 😔</noscript>
-
+async function canvasToWebp(f,q,mx){
+return new Promise((res,rej)=>{
+const img=new Image();
+const url=URL.createObjectURL(f);
+img.onload=function(){
+const cv=document.createElement('canvas');
+cv.width=img.naturalWidth;cv.height=img.naturalHeight;
+cv.getContext('2d').drawImage(img,0,0);
+URL.revokeObjectURL(url);
+if(!mx){
+cv.toBlob(b=>{b?res(b):rej(new Error('webp fail'));},'image/webp',q);
+return;
+}
+let cq=q,mn=0.02,at=0;
+const TR=()=>{
+SP(`🔄 Intento ${at+1} — ${Math.round(cq*100)}% → objetivo ≤${Math.round(mx/1024)}KB`);
+cv.toBlob(b=>{
+if(!b)return rej(new Error('webp fail'));
+at++;
+if(b.size<=mx||cq<=mn||at>25){res(b);}
+else{cq=Math.max(mn,cq-0.04);setTimeout(TR,0);}
+},'image/webp',cq);
+};
+TR();
+};
+img.onerror=rej;img.src=url;
+});
+}
+async function writeFile(pt,blob){
+SP('📡 Guardando...');
+const fd=new FormData();
+const fname=pt.split('/').pop();
+fd.append('file',blob instanceof File?blob:new File([blob],fname,{type:blob.type||'image/webp'}));
+fd.append('destPath',pt);
+const r=await fetch(`${U}/api/upload`,{method:'POST',headers:AHF(),body:fd});
+if(!r.ok){const e=await r.json().catch(()=>({error:r.statusText}));throw new Error(e.error||r.statusText);}
+HP();
+}
+async function uploadRaw(f,pt){
+SP(`📤 Subiendo al servidor: ${f.name}...`);
+const fd=new FormData();
+fd.append('file',f);
+fd.append('destPath',pt);                                                                                                                                                 const r=await fetch(`${U}/api/upload`,{method:'POST',headers:AHF(),body:fd});                                                                                             if(!r.ok){const e=await r.json().catch(()=>({error:r.statusText}));throw new Error(e.error||r.statusText);}                                                               HP();                                                                                                                                                                     }                                                                                                                                                                         async function UF(f,pt,ab){                                                                                                                                               if(CM==='server'){await uploadRaw(f,pt);return;}                                                                                                                          const LIM=10*1024*1024;                                                                                                                                                   if(f.size>LIM)throw new Error(`Archivo muy pesado: ${(f.size/1024/1024).toFixed(1)}MB > 10MB`);                                                                           if(!ab)ab=await f.arrayBuffer();                                                                                                                                          if(isGIF(f)||isAVIF(f)||WA(ab)){
+SP('📤 Subiendo sin cambios...');                                                                                                                                         await writeFile(pt,f);                                                                                                                                                    return;                                                                                                                                                                   }                                                                                                                                                                         SP('🔄 Convirtiendo a WebP...');                                                                                                                                          const blob=await canvasToWebp(f,0.1,100*1024);
+await writeFile(pt,blob);
+}
+async function UFMD(f,pt,ab){
+if(CM==='server'){await uploadRaw(f,pt);return;}
+const LIM=10*1024*1024;
+if(f.size>LIM)throw new Error(`Archivo muy pesado: ${(f.size/1024/1024).toFixed(1)}MB > 10MB`);
+if(!ab)ab=await f.arrayBuffer();
+if(isGIF(f)||isAVIF(f)||WA(ab)){
+SP('📤 Subiendo sin cambios...');
+await writeFile(pt,f);
+return;
+}
+SP('🔄 Comprimiendo para MD...');
+const blob=await canvasToWebp(f,0.7,null);
+if(blob.size>LIM)throw new Error(`Resultado muy grande: ${(blob.size/1024/1024).toFixed(1)}MB > 10MB`);
+await writeFile(pt,blob);
+}
+document.getElementById('eimg').onchange=async function(e){
+const f=e.target.files[0];
+if(!f)return;
+const ab=await f.arrayBuffer();
+const passthru=isGIF(f)||isAVIF(f)||WA(ab);
+let lbl;
+if(CM==='server')lbl=`${f.name} → subida directa (servidor convierte)`;
+else if(passthru)lbl=`${f.name} (animado/avif, sin compresión, máx 300KB)`;
+else lbl=`${f.name.replace(/\.[^.]+$/,'.webp')} (comprimirá ≤100KB)`;
+NI=f;document.getElementById('imgnm').textContent=lbl;DC();
+};
+document.getElementById('grd').onclick=async function(){
+const ct=document.getElementById('ect').value;
+const sc=document.getElementById('esc').value;
+const nm=document.getElementById('enm').value;
+const nu=document.getElementById('enu').value;
+const id=document.getElementById('eid').value;
+const nb=document.getElementById('enb').value;
+const pc=document.getElementById('epc').value.replace(/\./g,'');
+const cd=document.getElementById('ecd').value;
+const tm=document.getElementById('etm').value.trim();
+if(!ct||!id||!nb||!pc){PT('⚠️ Completa Datos',2000);return;}
+if(NW&&!NI){PT('⚠️ Falta Imagen',2000);return;}
+const nmnm=nm+(nu||'595972184435');
+const p={NM:nmnm,ID:id,NB:nb,PC:parseInt(pc),CD:cd?parseInt(cd):null,TM:tm||null};
+const nn=BN2(p);
+const bp=`web/Dinamico/${ct}${sc?'/'+sc:''}`;
+const _niAb=NI?await NI.arrayBuffer():null;
+const _niExt=NI?destExt(NI,_niAb):'.webp';
+if(NW){
+const ip=`${bp}/${nn}${_niExt}`;
+const lp=`${bp}/${nn}.md`;
+try{
+await UF(NI,ip,_niAb);
+await fetch(`${U}/api/write`,{method:'POST',headers:AH(),body:JSON.stringify({path:lp,content:''})});
+PT('✅ Creado');
+document.getElementById('mdl').classList.remove('a');
+await LD();
+}catch(err){HP();PT(`❌ ${err.message}`);}
+}else{
+const old=D[E];
+const oi=old.image,ol=old.link;
+const oe=oi?oi.match(/\.[^.]+$/)?.[0]||'.webp':'.webp';
+const ni=`${bp}/${nn}${NI?_niExt:oe}`;
+const nl=`${bp}/${nn}.md`;
+try{
+if(NI){
+await UF(NI,ni,_niAb);
+if(oi&&oi!==ni)await fetch(`${U}/api/delete?path=${oi}`,{method:'DELETE',headers:AHF()});
+await RNL(ol,nl,old,p,ni,nl);
+}else{
+if(oi!==ni)await fetch(`${U}/api/rename`,{method:'POST',headers:AH(),body:JSON.stringify({old:oi,new:ni})});
+await RNL(ol,nl,old,p,ni,nl);
+}
+}catch(err){HP();PT(`❌ ${err.message}`);}
+}
+};
+async function RNL(ol,nl,old,p,ni,nln){
+if(ol!==nln)await fetch(`${U}/api/rename`,{method:'POST',headers:AH(),body:JSON.stringify({old:ol,new:nln})});
+p.image=ni;p.link=nln;
+p.gallery=document.getElementById('ect').value;
+p.path=document.getElementById('esc').value;
+D[E]=p;CH=false;
+document.getElementById('mdl').classList.remove('a');
+IM();R();
+PT('✅ Guardado');
+}
+document.getElementById('cnc').onclick=()=>{CH=false;document.getElementById('mdl').classList.remove('a');};
+window.addEventListener('popstate',function(e){
+const mdl=document.getElementById('mdl');
+if(mdl.classList.contains('a')){
+e.preventDefault();
+if(CH){PT('⚠️ Cambios sin guardar',4000);history.pushState(null,null,location.href);}
+else{mdl.classList.remove('a');history.pushState(null,null,location.href);}
+}
+});
+history.pushState(null,null,location.href);
+function IM(){
+M=new MiniSearch({fields:['NB','ID','NM'],storeFields:['NB','ID','PC','CD','NM']});
+M.addAll(D.map((o,i)=>({id:i,NB:o.NB||'',ID:o.ID||'',NM:o.NM||'',PC:o.PC||0,CD:o.CD||0})));
+}
+let BT=null;
+document.getElementById('bus').oninput=function(e){
+clearTimeout(BT);
+BT=setTimeout(()=>{
+const q=e.target.value.trim();
+if(!q){R();return;}
+const ids=new Set(M.search(q,{prefix:true,fuzzy:0.2}).map(r=>r.id));
+RD(D.map((o,i)=>({o,i})).filter(({i})=>ids.has(i)));
+},120);
+};
+document.getElementById('clb').onclick=()=>{document.getElementById('bus').value='';R();};
+document.getElementById('esn').onclick=function(){
+document.getElementById('sc').classList.add('a');
+S=new Html5Qrcode('qr');
+S.start({facingMode:'environment'},{fps:10,qrbox:{width:150,height:100},formatsToSupport:[Html5QrcodeSupportedFormats.EAN_13],aspectRatio:1.0,disableFlip:false},
+t=>{
+S.stop();
+document.getElementById('sc').classList.remove('a');
+const m=t.match(/ID=([^-\s]+)/);
+const id=m?m[1]:t.trim();
+document.getElementById('bus').value=id;
+document.getElementById('bus').dispatchEvent(new Event('input'));
+const ex=D.findIndex(o=>o.ID===id);
+if(ex>=0)AE(ex);else PT('🔍 '+id);
+},()=>{}
+).catch(()=>{PT('❌ Sin cámara');document.getElementById('sc').classList.remove('a');S=null;});
+};
+document.getElementById('csc').onclick=function(){
+if(S){S.stop().catch(()=>{});S=null;}
+document.getElementById('sc').classList.remove('a');
+window.T1=false;
+};
+function TL(n,sc){
+if(!sc)return;
+sc.applyVideoConstraints({advanced:[{torch:!window['T'+n]}]}).then(()=>{
+window['T'+n]=!window['T'+n];
+const b=document.getElementById('tl'+n);
+if(b)b.textContent=window['T'+n]?'🔦':'💡';
+PT(window['T'+n]?'🔦 ON':'💡 OFF',1000);
+}).catch(()=>{PT('❌ Linterna no disponible');});
+}
+document.getElementById('tl1').onclick=()=>TL(1,S);
+document.getElementById('tl2').onclick=()=>TL(2,SM);
+document.getElementById('tl3').onclick=()=>TL(3,SV);
+document.getElementById('esnm').onclick=function(){
+document.getElementById('scm').classList.add('a');
+SM=new Html5Qrcode('qrm');
+SM.start({facingMode:'environment'},{fps:10,qrbox:{width:150,height:100},formatsToSupport:[Html5QrcodeSupportedFormats.EAN_13],aspectRatio:1.0,disableFlip:false},
+t=>{
+SM.stop();
+document.getElementById('scm').classList.remove('a');
+const m=t.match(/ID=([^-\s]+)/);
+const id=m?m[1]:t.trim();
+document.getElementById('eid').value=id;
+DC();PT('✅ '+id);
+},()=>{}
+).catch(()=>{PT('❌ Sin cámara');document.getElementById('scm').classList.remove('a');SM=null;});
+};
+document.getElementById('cscm').onclick=function(){
+if(SM){SM.stop().catch(()=>{});SM=null;}
+document.getElementById('scm').classList.remove('a');
+window.T2=false;
+};
+async function LD(){
+try{
+const r=await fetch(`${U}/api/scan?path=web/Dinamico`,{headers:AHF()});
+const dt=await r.json();
+D=[];CA={};
+if(dt.galleries){
+Object.keys(dt.galleries).forEach(gk=>{
+const gal=dt.galleries[gk];
+if(gal.images&&Array.isArray(gal.images)){
+gal.images.forEach(itm=>{
+const pd=PN(itm.name);
+if(pd){
+pd.image=itm.image;
+pd.link=itm.link;
+const ps=(itm.path||'').split('/');
+pd.gallery=ps[0]||gk;
+pd.path=ps.slice(1).join('/')||'';
+if(!CA[pd.gallery])CA[pd.gallery]=[];
+if(pd.path&&!CA[pd.gallery].includes(pd.path))CA[pd.gallery].push(pd.path);
+D.push(pd);
+}
+});
+}
+});
+}
+Object.keys(CA).forEach(c=>CA[c].sort());
+IM();R();
+PT('✅ '+D.length+' productos');
+}catch(err){HP();PT(`❌ ${err.message}`);}
+}
+function DC(){
+const ct=document.getElementById('ect').value;
+const sc=document.getElementById('esc').value;
+const nm=document.getElementById('enm').value;
+const nu=document.getElementById('enu').value;
+const id=document.getElementById('eid').value;
+const nb=document.getElementById('enb').value;
+const pc=document.getElementById('epc').value;
+const cd=document.getElementById('ecd').value;
+const tm=document.getElementById('etm').value;
+const im=NI?NI.name:OD.img;
+CH=(ct!==OD.ct||sc!==OD.sc||nm!==OD.nm||nu!==OD.nu||id!==OD.id||nb!==OD.nb||pc!==OD.pc||cd!==OD.cd||tm!==OD.tm||im!==OD.img);
+}
+['esc','enm','enu','eid','enb','ecd','etm'].forEach(id=>{
+const el=document.getElementById(id);
+el[id==='esc'||id==='enm'?'onchange':'oninput']=DC;
+});
+document.getElementById('epc').oninput=function(e){
+let v=e.target.value.replace(/\D/g,'');
+if(v)e.target.value=FP(parseInt(v));
+DC();
+};
+async function UIM(ed){
+const inp=document.getElementById('mimg');
+inp.onchange=async function(ev){
+const fs=Array.from(ev.target.files);
+if(!fs.length)return;
+const o=D[MD];
+const cm=ed.codemirror;
+const cur=cm.getDoc().getCursor();
+try{
+if(fs.length===1){
+const f=fs[0];
+SP(`📷 Procesando MD (1/1): ${f.name}...`);
+const ab2=await f.arrayBuffer();
+const ext2=destExt(f,ab2);
+const pt=`web/otros/Archivos/Imagenes/${SN(o.ID)}/${Date.now()}${ext2}`;
+await UFMD(f,pt,ab2);
+const nm=f.name.replace(/\.[^.]+$/,'').slice(0,30);
+cm.getDoc().replaceRange(`![${nm}](${pt})`,cur);
+}else{
+const lines=['<div class="galeriaMD">',''];
+for(let k=0;k<fs.length;k++){
+SP(`📷 Procesando MD (${k+1}/${fs.length}): ${fs[k].name}...`);
+const f=fs[k];
+const ab4=await f.arrayBuffer();
+const ext4=destExt(f,ab4);
+const pt=`web/otros/Archivos/Imagenes/${SN(o.ID)}/${Date.now()+k}${ext4}`;
+await UFMD(f,pt,ab4);
+const nm=f.name.replace(/\.[^.]+$/,'').slice(0,30);
+lines.push(`![${nm}](${pt})`);
+lines.push('');
+}
+lines.push('</div>');
+cm.getDoc().replaceRange(lines.join('\n'),cur);
+}
+HP();cm.focus();
+PT('✅ Imagen(es) subida(s)');
+}catch(err){HP();PT(`❌ ${err.message}`);}
+inp.value='';
+};
+inp.click();
+}
+async function EM(x){
+MD=x;
+const o=D[x];
+if(!o.link){PT('⚠️ Sin MD',2000);return;}
+try{
+const r=await fetch(`${U}/api/read?path=${o.link}`,{headers:AHF()});
+const dt=await r.json();
+if(ED){ED.toTextArea();ED=null;}
+ED=new EasyMDE({
+element:document.getElementById('tmd'),
+spellChecker:false,
+autofocus:true,
+status:false,
+initialValue:dt.content||'',
+toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|',{name:'upload-img',action:function(e){UIM(e)},className:'fa fa-picture-o',title:'Subir Imagen'},'link','|','preview','side-by-side','fullscreen','|','guide']
+});
+document.getElementById('gmd').onclick=async function(){
+const c=ED.value();
+try{
+await fetch(`${U}/api/write`,{method:'POST',headers:AH(),body:JSON.stringify({path:D[MD].link,content:c})});
+PT('✅ MD Guardado');document.getElementById('mmd').classList.remove('a');
+}catch(err){PT(`❌ ${err.message}`);}
+};
+document.getElementById('mmd').classList.add('a');
+}catch(err){PT(`❌ ${err.message}`);}
+}
+document.getElementById('cmd').onclick=()=>document.getElementById('mmd').classList.remove('a');
+async function DL(x){
+if(!confirm('¿Eliminar Artículo?'))return;
+const o=D[x];
+try{
+if(o.image)await fetch(`${U}/api/delete?path=${o.image}`,{method:'DELETE',headers:AHF()});
+if(o.link)await fetch(`${U}/api/delete?path=${o.link}`,{method:'DELETE',headers:AHF()});
+if(o.ID)await fetch(`${U}/api/delete?path=web/otros/Archivos/Imagenes/${o.ID}`,{method:'DELETE',headers:AHF()});
+D.splice(x,1);
+IM();R();
+PT('✅ Eliminado');
+}catch(err){PT(`❌ ${err.message}`);}
+}
+</script>
+</div>
 </body>
 </html>

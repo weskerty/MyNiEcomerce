@@ -143,9 +143,11 @@ function initProduct(){
   const cs=document.getElementById("cs");if(!cs)return;
   const hash=location.hash;if(!hash)return;
   let dec;try{dec=decodeURIComponent(hash)}catch(e){dec=hash}
-  const mID=dec.match(/ID=([^-\s]+)/),mPC=dec.match(/PC=([^-\s]+)/),mNB=dec.match(/NB=([^.]+)/),mNM=dec.match(/NM=([^-\s]+)/),mCD=dec.match(/CD=([^-\s]+)/);
+  const mID=dec.match(/ID=([^-\s]+)/),mPC=dec.match(/PC=([^-\s]+)/),mNB=dec.match(/NB=([^.]+)/),mNM=dec.match(/NM=([^-\s]+)/),mCD=dec.match(/CD=([^-\s]+)/),mTM=dec.match(/TM=(\d{2}\.\d{2}\.\d{4}\.\d{2}\.\d{2})/);
   if(!(mID&&mPC&&mNB&&mNM))return;
   const id=mID[1],pc=parseInt(mPC[1]),nb=mNB[1],nm=mNM[1],avail=mCD?parseInt(mCD[1]):null;
+  if(mTM){const[d,mo,y,h,mi]=mTM[1].split('.').map(Number);const exp=new Date(y,mo-1,d,h,mi);if(exp<=new Date())return void(cs.innerHTML='<img src="web/otros/Archivos/Imagenes/Permanente/404.avif" style="max-width:100%;max-height:180px;object-fit:contain;display:block;margin:auto">');}
+  
   let tp,num;
   if(nm.startsWith("WATG")){tp="wt";num=nm.substring(4)}
   else if(nm.startsWith("WA")){tp="w";num=nm.substring(2)}
@@ -154,8 +156,14 @@ function initProduct(){
   const minQ=parseInt(cs.getAttribute("min"))||1,maxQ=null!==avail?avail:999;
   if(avail===0)return void(cs.innerHTML='<img src="web/otros/Archivos/Imagenes/Permanente/404.avif" style="max-width:100%;max-height:180px;object-fit:contain;display:block;margin:auto">');
   let qty=minQ,locked=!1;
+  let tmExp=null,tmInt=null;
+  if(mTM){const[d,mo,y,h,mi]=mTM[1].split('.').map(Number);tmExp=new Date(y,mo-1,d,h,mi);}
+  function fmtTM(){if(!tmExp)return'';const diff=tmExp-new Date();if(diff<=0)return null;const td=Math.floor(diff/864e5),th=Math.floor((diff%864e5)/36e5),tm=Math.floor((diff%36e5)/6e4);return td>0?`${td} dia${td>1?'s':''} y ${th} hora${th!==1?'s':''}`:`${th} hora${th!==1?'s':''} ${tm} min`;}
   !function render(){
-    cs.innerHTML=(null!==avail?`<div class="cb-dsp">Disponible: ${avail} unidades</div>`:"")+
+    const tmStr=tmExp?fmtTM():null;
+    if(tmExp&&tmStr===null)return void(cs.innerHTML='<img src="web/otros/Archivos/Imagenes/Permanente/404.avif" style="max-width:100%;max-height:180px;object-fit:contain;display:block;margin:auto">');
+    cs.innerHTML=(tmStr?`<div class="cb-dsp">⏳ Se Acaba En: ${tmStr}</div>`:"")+
+    (null!==avail?`<div class="cb-dsp">Disponible: ${avail} unidades</div>`:"")+
     `<div class="cb-p">Precio: <span class="cb-t" id="cpt">${fmt(pc*qty)}</span>Gs</div>`+
     `<div class="cb-o"><span>Cantidad:</span><button class="cb-k" id="cbm">−</button><input type="number" class="cb-qv" id="cqv" value="${qty}" min="${minQ}" max="${maxQ}"><button class="cb-k" id="cbp">+</button></div><button class="cb-a" id="cba">🛍️ Añadir al Carrito</button>`;
     const inp=document.getElementById("cqv"),priceEl=document.getElementById("cpt"),btnM=document.getElementById("cbm"),btnP=document.getElementById("cbp"),btnA=document.getElementById("cba");
@@ -172,6 +180,7 @@ function initProduct(){
       qty=v;addItem(tp,num,id,qty,pc,nb);locked=!0;
       cs.innerHTML='<div class="cb-s">✅ Añadido a la Lista</div><div class="cb-s2">Continua la Compra en el Carrito 👇</div>';
     };
+    if(tmExp&&!tmInt){tmInt=setInterval(()=>{const s=fmtTM();if(s===null){clearInterval(tmInt);cs.innerHTML='<img src="web/otros/Archivos/Imagenes/Permanente/404.avif" style="max-width:100%;max-height:180px;object-fit:contain;display:block;margin:auto">';return;}const el=cs.querySelector('.cb-dsp');if(el)el.textContent='⏳ Se Acaba En: '+s;},6e4);}
   }();
 }
 
