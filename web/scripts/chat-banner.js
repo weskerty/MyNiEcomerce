@@ -1,5 +1,5 @@
 !function(){
-const WA_NUMS=["595972184436"],WA_BASE="https://wa.me/595972184435?text=";
+const WA_BASE="https://wa.me/595972184435?text=";
 const IMG_BASE="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/";
 const night=(h=>h>=19||h<5)(new Date().getHours());
 const grSrc=IMG_BASE+(night?"Last%20Quarter%20Moon%20Face.png":"Sun%20with%20Face.png");
@@ -119,19 +119,19 @@ function renderCart(){
   let html="",total=0;
   Object.keys(groups).forEach(k=>{
     const g=groups[k];
-    html+=`<div class="cb-cp"><div class="cb-cn">📦 ${g.n}</div>`;
+    html+=`<div class="cb-cp" data-gk="${k}"><div class="cb-cn">📦 ${g.n}</div>`;
     g.items.forEach(x=>{
       const sub=x.p*x.d;total+=sub;
-      html+=`<div class="cb-ci" data-key="${x.t}-${x.n}-${x.i}"><div class="cb-ct">${x.b}</div><div class="cb-cr"><span>👛 ${fmt(x.p)}Gs</span><span>💰 ${fmt(sub)}Gs</span></div><div class="cb-cr"><span>🛒</span><div class="cb-cc"><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="-">−</button><span>${x.d}</span><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="+">+</button></div></div></div>`;
+      html+=`<div class="cb-ci" data-key="${x.t}-${x.n}-${x.i}"><span class="cb-ct">${x.b}</span><span class="cb-cs">💰 ${fmt(sub)}Gs</span><div class="cb-cc"><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="-">−</button><span>${x.d}</span><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="+">+</button></div></div>`;
     });
-    let msg;
-    if(WA_NUMS.includes(g.n)){let l="";g.items.forEach(x=>l+=`CD=${x.d}-ID=${x.i};`);l=l.slice(0,-1);msg="Hola%20quiero%20comprar%20estos%20Productos%20LISTA%3D"+encodeURIComponent(l)}
-    else msg="Hola%2C%20quiero%20comprar%20estos%20Productos%0A"+g.items.map(x=>`${x.d}%20de%20${encodeURIComponent(x.b)}`).join("%0A");
-    html+='<div class="cb-ca">';
-    if("wt"===g.t)html+=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}">📱 WhatsApp</button><button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}">✈️ Telegram</button>`;
-    else if("w"===g.t)html+=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}">📱 WhatsApp</button>`;
-    else if("t"===g.t)html+=`<button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}">✈️ Telegram</button>`;
-    html+="</div></div>";
+    const msg="Hola quiero%0A"+g.items.map(x=>`[${x.d}] de ${encodeURIComponent(x.b)} [ID=${x.i}]`).join("%0A");
+    const svgWA=`<img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg" style="width:20px;height:20px;vertical-align:middle;margin-right:6px">`;
+    const svgTG=`<img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg" style="width:20px;height:20px;vertical-align:middle;margin-right:6px">`;
+    let btns="";
+    if("wt"===g.t)btns=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}WhatsApp</button><button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}Telegram</button>`;
+    else if("w"===g.t)btns=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}WhatsApp</button>`;
+    else if("t"===g.t)btns=`<button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}Telegram</button>`;
+    html+=`<h5 class="cb-ch">Termina la Compra en</h5><div class="cb-ca">${btns}</div></div>`;
   });
   html+=`<div class="cb-to">💸 Total: ${fmt(total)}Gs</div>`;
   modal.querySelector(".cb-mb").innerHTML=html;
@@ -198,7 +198,18 @@ modal.addEventListener("click",ev=>{
   if(ev.target===modal||ev.target.classList.contains("cb-mx"))toggleModal();
   const b=ev.target.closest("button");
   if(!b)return;
-  if(b.dataset.l){window.open(b.dataset.l,"_blank");toggleModal();return}
+  if(b.dataset.l){
+    window.open(b.dataset.l,"_blank");
+    const gk=b.dataset.gk,lbl=b.dataset.lbl;
+    if(gk){
+      st.c=st.c.filter(x=>x.t+"-"+x.n!==gk);
+      syncBtn();
+      const grpEl=modal.querySelector(`.cb-cp[data-gk="${gk}"]`);
+      if(grpEl)grpEl.outerHTML=`<div class="cb-s">✅ Completa la Compra en ${lbl} 👆</div>`;
+      if(!st.c.length)setTimeout(toggleModal,2e3);
+    }
+    return;
+  }
   if(b.dataset.a){
     const tp=b.dataset.t,nm=b.dataset.n,id=b.dataset.i;
     const item=st.c.find(x=>x.i===id&&x.t===tp&&x.n===nm);if(!item)return;
@@ -206,8 +217,24 @@ modal.addEventListener("click",ev=>{
     if(nq<=0){
       const el=modal.querySelector(`.cb-ci[data-key="${tp}-${nm}-${id}"]`);
       if(el){el.classList.add("cb-rm");setTimeout(()=>el.remove(),400)}
-      setTimeout(()=>{addItem(tp,nm,id,nq,item.p,item.b,"set");renderCart()},400);
-    } else {addItem(tp,nm,id,nq,item.p,item.b,"set");renderCart()}
+      setTimeout(()=>{addItem(tp,nm,id,nq,item.p,item.b,"set");
+        const tot=st.c.reduce((a,b)=>a+b.d,0);
+        const toEl=modal.querySelector(".cb-to");
+        if(toEl)toEl.textContent="💸 Total: "+fmt(tot>0?st.c.reduce((a,b)=>a+b.p*b.d,0):0)+"Gs";
+        if(!st.c.length)renderCart();
+      },400);
+    } else {
+      addItem(tp,nm,id,nq,item.p,item.b,"set");
+      const ciEl=modal.querySelector(`.cb-ci[data-key="${tp}-${nm}-${id}"]`);
+      if(ciEl){
+        const sub=item.p*nq;
+        ciEl.querySelector(".cb-cc span").textContent=nq;
+        ciEl.querySelector(".cb-cs").textContent="💰 "+fmt(sub)+"Gs";
+      }
+      const tot=st.c.reduce((a,b)=>a+b.p*b.d,0);
+      const toEl=modal.querySelector(".cb-to");
+      if(toEl)toEl.textContent="💸 Total: "+fmt(tot)+"Gs";
+    }
   }
 });
 
