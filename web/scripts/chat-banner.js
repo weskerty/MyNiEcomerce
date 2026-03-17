@@ -227,10 +227,16 @@ modal.addEventListener("click",ev=>{
       addItem(tp,nm,id,nq,item.p,item.b,"set");
       const ciEl=modal.querySelector(`.cb-ci[data-key="${tp}-${nm}-${id}"]`);
       if(ciEl){
-        const sub=item.p*nq;
         ciEl.querySelector(".cb-cc span").textContent=nq;
-        ciEl.querySelector(".cb-cs").textContent="💰 "+fmt(sub)+"Gs";
+        ciEl.querySelector(".cb-cs").textContent="💰 "+fmt(item.p*nq)+"Gs";
       }
+      const gk=tp+"-"+nm;
+      const grp=st.c.filter(x=>x.t+"-"+x.n===gk);
+      const newMsg="Hola quiero%0A"+grp.map(x=>`[${x.d}] de ${encodeURIComponent(x.b)} [ID=${x.i}]`).join("%0A");
+      modal.querySelectorAll(`.cb-cp[data-gk="${gk}"] button[data-gk]`).forEach(btn=>{
+        const base=btn.dataset.l.split("?text=")[0];
+        btn.dataset.l=base+"?text="+newMsg;
+      });
       const tot=st.c.reduce((a,b)=>a+b.p*b.d,0);
       const toEl=modal.querySelector(".cb-to");
       if(toEl)toEl.textContent="💸 Total: "+fmt(tot)+"Gs";
