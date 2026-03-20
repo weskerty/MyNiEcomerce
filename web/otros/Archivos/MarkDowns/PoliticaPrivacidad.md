@@ -10,9 +10,11 @@ CheAgana, contacto en:
 
 [🖥 Que son las Cookies ↗️]()
 
-Esta Web puede guardar cookies por la caja de comentarios [Disqus](https://help.disqus.com/en/articles/1717155-use-of-cookies) que encontras al final de la pagina.
+CheAgana por si misma no guarda cookies ni rastrea usuarios.
+Aunque esta Web puede generar cookies por la caja de comentarios [Disqus](https://help.disqus.com/en/articles/1717155-use-of-cookies) que encontras al final de la pagina.
 
-Para deshabilitar tienes Multiples Opciones;
+
+Para deshabilitar las cookies de Disqus tienes Multiples Opciones;
 1. "Bloquear Cookies de Terceros" (esta activado por defecto) 
 2. Borrar datos del Sitio.
 3. Instalar uBlock o demas Extensiones que Bloqueen estas Cookies.
@@ -46,19 +48,17 @@ Si se detecta fraude o errores en el sistema CheAgana se reserva el derecho a ca
 
 ## 2. Datos Personales Recopilados
 Recopilamos los siguientes datos cuando interactúas con nosotros en las Plataformas:  
-- **Nombre completo**.  
+- **Nombre del Perfil Publico en WhatsApp o Telegram**.  
 - **Número de teléfono** (WhatsApp) o **@Alias ID** (Telegram).  
-- **Foto de perfil** (opcional, solo para mostrar a los ganadores en los Sorteos.)
 
 ---
 
 ## 8. Uso de la Foto de Perfil
-La foto de perfil **no es obligatoria**. Solo se utiliza para mostrar a los ganadores de rifas y puede solicitarse su eliminación en cualquier momento.
-Solo se utiliza la foto en caso de que esta sea Publica en tu Perfil de WhatsApp o Telegram.
+Al ganar el premio solicitamos una foto con el ganador, Solo se utiliza para mostrar a los ganadores de rifas y puede solicitarse su eliminación en cualquier momento en el futuro.
 
 ---
 
-## 3. Finalidades del Tratamiento
+## 3. Finalidad
 - Gestionar participaciones en rifas.  
 - Procesar y verificar compras/ventas.  
 - Comunicar información necesaria para la ejecución de servicios.  
@@ -73,6 +73,7 @@ Tus datos se almacenan de forma segura y no se comparten con terceros, salvo cua
 
 ## 6. Conservación de los Datos
 Tus datos se conservarán **hasta 1 año después de tu última interacción**.
+Pero puedes solicitar eliminarlos Antes.
 
 ---
 
