@@ -1,4 +1,4 @@
-const V='v2';
+const V='v3';
 const PRE=[
 'index.html',
 'web/es.html',
