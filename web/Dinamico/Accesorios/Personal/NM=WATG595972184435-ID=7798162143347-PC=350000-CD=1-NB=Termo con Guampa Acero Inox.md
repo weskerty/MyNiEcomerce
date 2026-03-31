@@ -6,7 +6,7 @@
 
 ![85803](web/otros/Archivos/Imagenes/7798162143347/1774962889859.avif)
 
-![85804](web/otros/Archivos/Imagenes/7798162143347/1774962890158.png)
+![85804](web/otros/Archivos/Imagenes/7798162143347/1774962890158.avif)
 
 ![85805](web/otros/Archivos/Imagenes/7798162143347/1774962890465.jpg)
 
