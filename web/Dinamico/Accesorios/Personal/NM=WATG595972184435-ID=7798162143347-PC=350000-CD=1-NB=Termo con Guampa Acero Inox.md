@@ -1,16 +1,29 @@
 ## Termo 1.4 Litros con Guampa y Bombilla
 
+<div class="galeriaMD">
 
-#### Caracteristicas
-###### Termo
+![85802](web/otros/Archivos/Imagenes/7798162143347/1774962889731.avif)
+
+![85803](web/otros/Archivos/Imagenes/7798162143347/1774962889859.avif)
+
+![85804](web/otros/Archivos/Imagenes/7798162143347/1774962890158.png)
+
+![85805](web/otros/Archivos/Imagenes/7798162143347/1774962890465.jpg)
+
+</div>
+
+<div id="cs"></div>
+
+### Caracteristicas
+#### Termo
 > Capacidad 1.4 Litros
 Material Interior es de Acero Inoxidable [18/8](https://steelprogroup.com/es/stainless-steel/grades/18-8/) (Grado Alimenticio Premium)
 Aislamiento de Dole pared al Vacio (Vaccum Tube)
 Mantiene el calor o frio por 1 dia entero (temperatura va decayendo hasta llegar) 
 Tapa a Rosca a prueba de Fugas
-Sin BPA (Bisfenol A, explicado mas abajo.)
+Sin BPA [(Bisfenol A, explicado mas abajo.)](#-sin-dano-a-la-salud)
 
-###### Guampa
+#### Guampa
 > Capacidad 236ml - 10,5 x 8cm
 Mismas propiedades que el termo
 Mantiene temperatura por 30 minutos
@@ -22,9 +35,9 @@ Tecnologia "Hands Protected" la temperatura no afecta a tu mano.
 - El acero inoxidable se puede reciclar muchas veces sin perder calidad  
 - Aguanta ritmo a full, para el trabajo, viaje, todo terreno.
 
-### 🚫 Sin microplásticos
-Este termo no tiene BisfenolA, quimico usado en plasticos que afecta la testosterona en Hombres entre otros problemas hormonales. 
-Ademas, los termos de plastico total [(no los que tienen vidrio adentro)](https://www.youtube.com/watch?v=0bZ0lBu-GQI) se degradan con cada uso liberando microplasticos que son nocivos para la salud. 
+### 🚫 Sin Daño a la Salud
+Este termo no tiene BisfenolA, quimico usado en plasticos que puede afectar la testosterona en Hombres entre otros problemas hormonales. 
+Ademas, los plasticos al estar en calor se degradan con cada uso liberando microplasticos que son nocivos. 
 
 Para mas info sobre esto puedes pasar a ver este [Video ↗️](https://youtu.be/RTRxZvVcjfM?t=265)
 
