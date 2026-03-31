@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editor de Blog</title>
+<script src="https://cdn.jsdelivr.net/npm/minisearch@7.2.0/dist/umd/index.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div id="lgn" style="display:none;position:fixed;inset:0;background:#111;z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+<div style="color:#fff;font-size:22px;font-weight:700;margin-bottom:8px">📝 Blog Login</div>
+<input id="lusr" type="text" placeholder="Usuario" style="padding:10px 16px;border-radius:8px;border:none;font-size:16px;width:220px">
+<input id="lpwd" type="password" placeholder="Contraseña" style="padding:10px 16px;border-radius:8px;border:none;font-size:16px;width:220px">
+<button id="lbtn" style="padding:10px 32px;background:#8b5cf6;color:#fff;border:none;border-radius:8px;font-size:16px;cursor:pointer;font-weight:700">Entrar</button>
+</div>
+<div id="app">
+<div class="h">
+<button class="b" id="an" style="background:#8b5cf6">➕ Nuevo</button>
+<a href="index.html" class="b" style="margin-left:10px;background:#3b82f6;text-decoration:none;display:inline-flex;align-items:center">🏪 POS</a>
+<div class="sb" id="sb1">
+<input type="text" id="bus" placeholder="🔍 Buscar blogs...">
+<button class="bx" id="clb">✖</button>
+</div>
+</div>
+<div id="lt"></div>
+<div id="merr" class="me">
+<div class="mec">
+<div class="met">❌ Error</div>
+<div class="mee" id="mtxt"></div>
+<div class="mea">
+<button class="cp2" id="cpe">📋 Copiar</button>
+<button class="bc" id="cme">Cerrar</button>
+</div>
+</div>
+</div>
+<div id="mdl" class="m">
+<div class="mc">
+<div class="mt" id="mtt">➕ Nuevo Blog</div>
+<div class="f">
+<div class="fg">
+<label>Categoría</label>
+<select id="ect"></select>
+</div>
+<div class="fg">
+<label>Subcategoría</label>
+<select id="esc"></select>
+</div>
+<div class="fg">
+<label>Nombre</label>
+<input type="text" id="enb" placeholder="Nombre del artículo">
+</div>
+<div class="fg">
+<label>Imagen</label>
+<input type="file" id="eimg" accept="image/*,.gif,.avif">
+<label for="eimg" class="b" style="display:inline-block;text-align:center;margin-top:5px;background:#3b82f6">📷 Seleccionar</label>
+<div id="imgnm" style="color:#666;font-size:12px;margin-top:5px"></div>
+</div>
+<div class="fa">
+<button class="bs" id="grd">💾 Guardar</button>
+<button class="bc" id="cnc">Cancelar</button>
+</div>
+</div>
+</div>
+</div>
+<div id="mmd" class="mmd">
+<div class="mmdc">
+<div class="mmdt"><span>✏️ Editar MD</span></div>
+<div class="mmdw"><textarea id="tmd"></textarea></div>
+<div class="mmda">
+<button class="bs" id="gmd">💾 Guardar</button>
+<button class="bc" id="cmd">Cerrar</button>
+</div>
+</div>
+</div>
+<input type="file" id="mimg" accept="image/*,.gif,.avif" multiple style="display:none">
+</div>
+<script>
+const U=window.location.origin;
+let TK=localStorage.getItem('tk')||'',CM='browser';
+let D=[],M,NI=null,ED=null,MD=null,NW=false,E=null,CA={};
+function AH(){return TK?{'x-token':TK,'Content-Type':'application/json'}:{'Content-Type':'application/json'};}
+function AHF(){return TK?{'x-token':TK}:{};}
+async function initApp(){
+const cfg=await fetch(`${U}/api/config`).then(r=>r.json()).catch(()=>({}));
+CM=cfg.convertMode||'browser';
+if(cfg.authRequired&&!TK){showLogin();return;}
+if(cfg.authRequired&&TK){
+const ok=await fetch(`${U}/api/scan?path=web/Dinamico`,{headers:AHF()}).then(r=>r.ok).catch(()=>false);
+if(!ok){TK='';localStorage.removeItem('tk');showLogin();return;}
+}
+LD();
+}
+function showLogin(){
+document.getElementById('app').style.display='none';
+document.getElementById('lgn').style.display='flex';
+}
+document.addEventListener('DOMContentLoaded',()=>{
+document.getElementById('lbtn').onclick=async function(){
+const u=document.getElementById('lusr').value.trim();
+const p=document.getElementById('lpwd').value;
+if(!u||!p)return;
+const r=await fetch(`${U}/api/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:u,pass:p})});
+const d=await r.json();
+if(!r.ok)return PT(`❌ ${d.error}`);
+TK=d.token;localStorage.setItem('tk',TK);
+document.getElementById('lgn').style.display='none';
+document.getElementById('app').style.display='block';
+LD();
+};
+document.getElementById('lpwd').onkeydown=e=>{if(e.key==='Enter')document.getElementById('lbtn').click();};
+initApp();
+});
+const IO=new IntersectionObserver(es=>{
+es.forEach(e=>{
+if(e.isIntersecting){
+const el=e.target;
+const img=el.querySelector('img[data-src]');
+if(img){img.src=img.dataset.src;img.removeAttribute('data-src');}
+IO.unobserve(el);
+}
+});
+},{rootMargin:'200px'});
+function PT(t,d=3000){
+const m=document.createElement('div');
+m.className='msg';m.textContent=t;
+document.body.appendChild(m);
+setTimeout(()=>m.remove(),d);
+}
+function ME(err){
+const txt=`ERROR: ${err.message}\n\nSTACK:\n${err.stack||'No disponible'}`;
+document.getElementById('mtxt').textContent=txt;
+document.getElementById('merr').classList.add('a');
+}
+document.getElementById('cpe').onclick=()=>navigator.clipboard.writeText(document.getElementById('mtxt').textContent).then(()=>PT('📋 Copiado'));
+document.getElementById('cme').onclick=()=>document.getElementById('merr').classList.remove('a');
+let PG=null;
+function SP(t){
+if(PG)PG.remove();
+PG=document.createElement('div');
+PG.className='msg';PG.style.cssText='bottom:60px;background:#1d4ed8;pointer-events:none';
+PG.textContent=t;document.body.appendChild(PG);
+}
+function HP(){if(PG){PG.remove();PG=null;}}
+function GRP(items){
+const cat={};
+items.forEach(({o,i})=>{
+const g=o.gallery||'Sin Categoria';
+const p=o.path||'General';
+if(!cat[g])cat[g]={};
+if(!cat[g][p])cat[g][p]=[];
+cat[g][p].push({o,i});
+});
+return cat;
+}
+function RD(items){
+const cat=GRP(items);
+const frag=document.createDocumentFragment();
+Object.keys(cat).sort().forEach(g=>{
+const gd=document.createElement('div');
+gd.className='cg';
+gd.innerHTML=`<div class="ct">${g}</div>`;
+Object.keys(cat[g]).sort().forEach(p=>{
+const pd=document.createElement('div');
+pd.className='cp';
+pd.textContent=p;
+gd.appendChild(pd);
+cat[g][p].forEach(({o,i})=>{
+const el=document.createElement('div');
+el.className='i';
+el.innerHTML=`<img data-src="${o.image||''}" src="" alt="" style="min-height:60px;background:#eee"><div class="inf"><div class="n">${o.NB||'Sin nombre'}</div></div><div class="ba"><button class="be" onclick="AE(${i})">✏️ Editar</button><button class="bm" onclick="EM(${i})">📝 MD</button><button class="bd" onclick="DL(${i})">🗑️</button></div>`;
+gd.appendChild(el);
+IO.observe(el);
+});
+});
+frag.appendChild(gd);
+});
+const lt=document.getElementById('lt');
+lt.innerHTML='';
+lt.appendChild(frag);
+}
+function R(){
+try{RD(D.map((o,i)=>({o,i})));}catch(err){ME(err);}
+}
+function USC(){
+const c=document.getElementById('ect').value;
+const sc=document.getElementById('esc');
+sc.innerHTML='<option value="">General</option>';
+if(CA[c]){
+CA[c].forEach(s=>{
+const o=document.createElement('option');
+o.value=s;o.textContent=s;
+sc.appendChild(o);
+});
+}
+const nso=document.createElement('option');
+nso.value='__nueva__';nso.textContent='+ Nueva subcategoria...';
+sc.appendChild(nso);
+sc.onchange=PSub;
+}
+function PSub(){
+const sc=document.getElementById('esc');
+if(sc.value==='__nueva__'){
+const ns=prompt('Nueva subcategoria:');
+if(ns&&ns.trim()){
+const v=ns.trim();
+const ct=document.getElementById('ect').value;
+if(ct&&ct!=='__nueva__'){
+if(!CA[ct])CA[ct]=[];
+if(!CA[ct].includes(v))CA[ct].push(v);
+if(![...sc.options].find(o=>o.value===v)){
+const op=document.createElement('option');
+op.value=v;op.textContent=v;
+sc.insertBefore(op,sc.lastElementChild);
+}
+sc.value=v;
+}
+}else{sc.value='';}
+}
+}
+function SN(s){return s.replace(/[/\\:*?"<>|\x00\s]/g,'').trim();}
+function SF(s){return s.replace(/[/\\:*?"<>|\x00]/g,'').trim();}
+function PN(n){
+return !!(n.match(/NM=([^-\s]+)/)&&n.match(/ID=([^-\s]+)/)&&n.match(/PC=([^-\s]+)/)&&n.match(/NB=(.+)$/));
+}
+async function LD(){
+try{
+const r=await fetch(`${U}/api/scan?path=web/Dinamico`,{headers:AHF()});
+const dt=await r.json();
+D=[];CA={};
+if(dt.galleries){
+Object.keys(dt.galleries).forEach(gk=>{
+const gal=dt.galleries[gk];
+if(gal.images&&Array.isArray(gal.images)){
+gal.images.forEach(itm=>{
+if(PN(itm.name))return;
+const ps=(itm.path||'').split('/');
+const gallery=ps[0]||gk;
+const subpath=ps.slice(1).join('/')||'';
+const nb=itm.name.replace(/\.[^.]+$/,'');
+if(!CA[gallery])CA[gallery]=[];
+if(subpath&&!CA[gallery].includes(subpath))CA[gallery].push(subpath);
+D.push({NB:nb,image:itm.image,link:itm.link,gallery,path:subpath});
+});
+}
+});
+}
+Object.keys(CA).forEach(c=>CA[c].sort());
+IM();R();
+PT('✅ '+D.length+' items');
+}catch(err){ME(err);PT(`❌ ${err.message}`);}
+}
+function IM(){
+M=new MiniSearch({fields:['NB'],storeFields:['NB']});
+M.addAll(D.map((o,i)=>({id:i,NB:o.NB||''})));
+}
+let BT=null;
+document.getElementById('bus').oninput=function(e){
+clearTimeout(BT);
+BT=setTimeout(()=>{
+const q=e.target.value.trim();
+if(!q){R();return;}
+const ids=new Set(M.search(q,{prefix:true,fuzzy:0.2}).map(r=>r.id));
+RD(D.map((o,i)=>({o,i})).filter(({i})=>ids.has(i)));
+},120);
+};
+document.getElementById('clb').onclick=()=>{document.getElementById('bus').value='';R();};
+function WA(ab){
+const u8=new Uint8Array(ab);
+if(u8[0]!==0x52||u8[1]!==0x49||u8[2]!==0x46||u8[3]!==0x46)return false;
+if(u8[8]!==0x57||u8[9]!==0x45||u8[10]!==0x42||u8[11]!==0x50)return false;
+for(let i=12;i<u8.length-4;i++){
+if(u8[i]===0x41&&u8[i+1]===0x4E&&u8[i+2]===0x49&&u8[i+3]===0x4D)return true;
+}
+return false;
+}
+function isGIF(f){return /\.gif$/i.test(f.name);}
+function isAVIF(f){return /\.avif$/i.test(f.name);}
+function destExt(f,ab){if(CM==='server')return f.name.match(/\.[^.]+$/)?.[0]||'.bin';if(isGIF(f)||isAVIF(f)||WA(ab))return f.name.match(/\.[^.]+$/)?.[0]||'.webp';return '.webp';}
+async function canvasToWebp(f,q,mx){
+return new Promise((res,rej)=>{
+const img=new Image();
+const url=URL.createObjectURL(f);
+img.onload=function(){
+const cv=document.createElement('canvas');
+cv.width=img.naturalWidth;cv.height=img.naturalHeight;
+cv.getContext('2d').drawImage(img,0,0);
+URL.revokeObjectURL(url);
+if(!mx){cv.toBlob(b=>{b?res(b):rej(new Error('webp fail'));},'image/webp',q);return;}
+let cq=q,mn=0.02,at=0;
+const TR=()=>{
+cv.toBlob(b=>{
+if(!b)return rej(new Error('webp fail'));
+at++;
+if(b.size<=mx||cq<=mn||at>25){res(b);}
+else{cq=Math.max(mn,cq-0.04);setTimeout(TR,0);}
+},'image/webp',cq);
+};
+TR();
+};
+img.onerror=rej;img.src=url;
+});
+}
+async function writeFile(pt,blob){
+SP('📡 Guardando...');
+const fd=new FormData();
+const fname=pt.split('/').pop();
+fd.append('file',blob instanceof File?blob:new File([blob],fname,{type:blob.type||'image/webp'}));
+fd.append('destPath',pt);
+const r=await fetch(`${U}/api/upload`,{method:'POST',headers:AHF(),body:fd});
+if(!r.ok){const e=await r.json().catch(()=>({error:r.statusText}));throw new Error(e.error||r.statusText);}
+HP();
+}
+async function uploadRaw(f,pt){
+SP(`📤 Subiendo: ${f.name}...`);
+const fd=new FormData();
+fd.append('file',f);fd.append('destPath',pt);
+const r=await fetch(`${U}/api/upload`,{method:'POST',headers:AHF(),body:fd});
+if(!r.ok){const e=await r.json().catch(()=>({error:r.statusText}));throw new Error(e.error||r.statusText);}
+HP();
+}
+async function UF(f,pt,ab){
+if(CM==='server'){await uploadRaw(f,pt);return;}
+const LIM=10*1024*1024;
+if(f.size>LIM)throw new Error(`Archivo muy pesado: ${(f.size/1024/1024).toFixed(1)}MB > 10MB`);
+if(!ab)ab=await f.arrayBuffer();
+if(isGIF(f)||isAVIF(f)||WA(ab)){SP('📤 Subiendo sin cambios...');await writeFile(pt,f);return;}
+SP('🔄 Convirtiendo a WebP...');
+const blob=await canvasToWebp(f,0.1,100*1024);
+await writeFile(pt,blob);
+}
+async function UFMD(f,pt,ab){
+if(CM==='server'){await uploadRaw(f,pt);return;}
+const LIM=10*1024*1024;
+if(f.size>LIM)throw new Error(`Archivo muy pesado: ${(f.size/1024/1024).toFixed(1)}MB > 10MB`);
+if(!ab)ab=await f.arrayBuffer();
+if(isGIF(f)||isAVIF(f)||WA(ab)){SP('📤 Subiendo sin cambios...');await writeFile(pt,f);return;}
+SP('🔄 Comprimiendo para MD...');
+const blob=await canvasToWebp(f,0.7,null);
+if(blob.size>LIM)throw new Error(`Resultado muy grande: ${(blob.size/1024/1024).toFixed(1)}MB > 10MB`);
+await writeFile(pt,blob);
+}
+document.getElementById('eimg').onchange=async function(e){
+const f=e.target.files[0];
+if(!f)return;
+const ab=await f.arrayBuffer();
+const passthru=isGIF(f)||isAVIF(f)||WA(ab);
+let lbl;
+if(CM==='server')lbl=`${f.name} → servidor convierte`;
+else if(passthru)lbl=`${f.name} (animado/avif, sin compresion)`;
+else lbl=`${f.name.replace(/\.[^.]+$/,'.webp')} (comprimira ≤100KB)`;
+NI=f;document.getElementById('imgnm').textContent=lbl;
+};
+async function GFI(p){
+try{
+const dir=p.split('/').slice(0,-1).join('/');
+const nm=p.split('/').pop();
+const r=await fetch(`${U}/api/list?path=${encodeURIComponent(dir)}`,{headers:AHF()});
+const d=await r.json();
+const f=d.files?.find(x=>x.name===nm);
+if(!f)return nm;
+return `${nm} (${(f.size/1024).toFixed(1)}KB)`;
+}catch{return p.split('/').pop();}
+}
+function AN(){
+NW=true;E=null;NI=null;
+document.getElementById('mtt').textContent='➕ Nuevo Blog';
+const ct=document.getElementById('ect');
+ct.innerHTML='';
+Object.keys(CA).sort().forEach(c=>{
+const op=document.createElement('option');
+op.value=c;op.textContent=c;
+ct.appendChild(op);
+});
+const newOpt=document.createElement('option');
+newOpt.value='__nueva__';newOpt.textContent='+ Nueva categoria...';
+ct.appendChild(newOpt);
+if(Object.keys(CA).length>0)ct.value=Object.keys(CA).sort()[0];
+USC();
+document.getElementById('enb').value='';
+document.getElementById('imgnm').textContent='';
+document.getElementById('mdl').classList.add('a');
+}
+function AE(x){
+NW=false;E=x;NI=null;
+const o=D[x];
+document.getElementById('mtt').textContent='✏️ Editar Blog';
+const ct=document.getElementById('ect');
+ct.innerHTML='';
+Object.keys(CA).sort().forEach(c=>{
+const op=document.createElement('option');
+op.value=c;op.textContent=c;
+ct.appendChild(op);
+});
+const newOpt=document.createElement('option');
+newOpt.value='__nueva__';newOpt.textContent='+ Nueva categoria...';
+ct.appendChild(newOpt);
+ct.value=o.gallery||'';
+USC();
+document.getElementById('esc').value=o.path||'';
+document.getElementById('enb').value=o.NB||'';
+document.getElementById('imgnm').textContent=o.image?`Actual: ${o.image.split('/').pop()}`:'Sin imagen';
+if(o.image)GFI(o.image).then(s=>document.getElementById('imgnm').textContent=`Actual: ${s}`);
+document.getElementById('mdl').classList.add('a');
+}
+function PCat(){
+const ct=document.getElementById('ect');
+if(ct.value==='__nueva__'){
+const nc=prompt('Nueva categoria:');
+if(nc&&nc.trim()){
+const v=nc.trim();
+if(!CA[v])CA[v]=[];
+if(![...ct.options].find(o=>o.value===v)){
+const op=document.createElement('option');
+op.value=v;op.textContent=v;
+ct.insertBefore(op,ct.lastElementChild);
+}
+ct.value=v;
+}else{ct.value=Object.keys(CA).sort()[0]||'';}
+}
+USC();
+}
+document.getElementById('ect').onchange=PCat;
+document.getElementById('an').onclick=AN;
+document.getElementById('cnc').onclick=()=>document.getElementById('mdl').classList.remove('a');
+document.getElementById('grd').onclick=async function(){
+let ct=document.getElementById('ect').value;
+const sc=document.getElementById('esc').value;
+const nb=document.getElementById('enb').value.trim();
+if(!ct||ct==='__nueva__'||!nb){PT('⚠️ Completa Datos',2000);return;}
+if(NW&&!NI){PT('⚠️ Falta Imagen',2000);return;}
+const nbs=SF(nb);
+if(!nbs){PT('⚠️ Nombre invalido',2000);return;}
+const bp=`web/Dinamico/${ct}${sc?'/'+sc:''}`;
+const _niAb=NI?await NI.arrayBuffer():null;
+const _niExt=NI?destExt(NI,_niAb):'.webp';
+if(NW){
+const ip=`${bp}/${nbs}${_niExt}`;
+const lp=`${bp}/${nbs}.md`;
+try{
+await UF(NI,ip,_niAb);
+await fetch(`${U}/api/write`,{method:'POST',headers:AH(),body:JSON.stringify({path:lp,content:''})});
+PT('✅ Blog creado');
+document.getElementById('mdl').classList.remove('a');
+await LD();
+}catch(err){HP();PT(`❌ ${err.message}`);}
+}else{
+const old=D[E];
+const oi=old.image,ol=old.link;
+const oe=oi?oi.match(/\.[^.]+$/)?.[0]||'.webp':'.webp';
+const ni=`${bp}/${nbs}${NI?_niExt:oe}`;
+const nl=`${bp}/${nbs}.md`;
+try{
+if(NI){
+await UF(NI,ni,_niAb);
+if(oi&&oi!==ni)await fetch(`${U}/api/delete?path=${encodeURIComponent(oi)}`,{method:'DELETE',headers:AHF()});
+}else{
+if(oi!==ni)await fetch(`${U}/api/rename`,{method:'POST',headers:AH(),body:JSON.stringify({old:oi,new:ni})});
+}
+if(ol!==nl)await fetch(`${U}/api/rename`,{method:'POST',headers:AH(),body:JSON.stringify({old:ol,new:nl})});
+old.image=ni;old.link=nl;old.gallery=ct;old.path=sc;
+old.NB=nbs;D[E]=old;
+document.getElementById('mdl').classList.remove('a');
+IM();R();PT('✅ Guardado');
+}catch(err){HP();PT(`❌ ${err.message}`);}
+}
+};
+async function UIM(ed,o){
+const inp=document.getElementById('mimg');
+inp.onchange=async function(ev){
+const fs=Array.from(ev.target.files);
+if(!fs.length)return;
+const cm=ed.codemirror;
+const cur=cm.getDoc().getCursor();
+try{
+if(fs.length===1){
+const f=fs[0];
+SP(`📷 Procesando (1/1): ${f.name}...`);
+const ab=await f.arrayBuffer();
+const ext=destExt(f,ab);
+const pt=`web/otros/Archivos/Imagenes/${SN(o.NB)}/${Date.now()}${ext}`;
+await UFMD(f,pt,ab);
+cm.getDoc().replaceRange(`![${f.name.replace(/\.[^.]+$/,'').slice(0,30)}](${pt})`,cur);
+}else{
+const lines=['<div class="galeriaMD">',''];
+for(let k=0;k<fs.length;k++){
+const f=fs[k];
+SP(`📷 Procesando (${k+1}/${fs.length}): ${f.name}...`);
+const ab=await f.arrayBuffer();
+const ext=destExt(f,ab);
+const pt=`web/otros/Archivos/Imagenes/${SN(o.NB)}/${Date.now()+k}${ext}`;
+await UFMD(f,pt,ab);
+lines.push(`![${f.name.replace(/\.[^.]+$/,'').slice(0,30)}](${pt})`);lines.push('');
+}
+lines.push('</div>');
+cm.getDoc().replaceRange(lines.join('\n'),cur);
+}
+HP();cm.focus();PT('✅ Imagen(es) subida(s)');
+}catch(err){HP();PT(`❌ ${err.message}`);}
+inp.value='';
+};
+inp.click();
+}
+async function EM(x){
+MD=x;
+const o=D[x];
+if(!o.link){PT('⚠️ Sin MD',2000);return;}
+try{
+const r=await fetch(`${U}/api/read?path=${o.link}`,{headers:AHF()});
+const dt=await r.json();
+if(ED){ED.toTextArea();ED=null;}
+ED=new EasyMDE({
+element:document.getElementById('tmd'),
+spellChecker:false,autofocus:true,status:false,
+initialValue:dt.content||'',
+toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|',{name:'upload-img',action:function(e){UIM(e,o)},className:'fa fa-picture-o',title:'Subir Imagen'},'link','|','preview','side-by-side','fullscreen','|','guide']
+});
+document.getElementById('gmd').onclick=async function(){
+const c=ED.value();
+try{
+await fetch(`${U}/api/write`,{method:'POST',headers:AH(),body:JSON.stringify({path:o.link,content:c})});
+PT('✅ MD Guardado');document.getElementById('mmd').classList.remove('a');
+}catch(err){PT(`❌ ${err.message}`);}
+};
+document.getElementById('mmd').classList.add('a');
+}catch(err){PT(`❌ ${err.message}`);}
+}
+document.getElementById('cmd').onclick=()=>document.getElementById('mmd').classList.remove('a');
+async function DL(x){
+if(!confirm('¿Eliminar articulo de blog?'))return;
+const o=D[x];
+try{
+if(o.image)await fetch(`${U}/api/delete?path=${encodeURIComponent(o.image)}`,{method:'DELETE',headers:AHF()});
+if(o.link)await fetch(`${U}/api/delete?path=${encodeURIComponent(o.link)}`,{method:'DELETE',headers:AHF()});
+D.splice(x,1);
+IM();R();
+PT('✅ Eliminado');
+}catch(err){PT(`❌ ${err.message}`);}
+}
+</script>
+</div>
+</body>
+</html>
