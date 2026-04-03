@@ -1,1 +1,0 @@
-![87702](web/otros/Archivos/Imagenes/7803403004131/1775027867210.avif)

@@ -2,13 +2,13 @@
 
 <div class="galeriaMD">
 
-![85802](web/otros/Archivos/Imagenes/7798162143347/1774962889731.avif)
+![Producto](web/otros/Archivos/Imagenes/7798162143347/1774962889731.avif)
 
-![85803](web/otros/Archivos/Imagenes/7798162143347/1774962889859.avif)
+![Ejemplo Real](web/otros/Archivos/Imagenes/7798162143347/1774962889859.avif)
 
-![85804](web/otros/Archivos/Imagenes/7798162143347/1774962890158.avif)
+![Modelo Similar](web/otros/Archivos/Imagenes/7798162143347/1774962890158.avif)
 
-![85805](web/otros/Archivos/Imagenes/7798162143347/1774962890465.jpg)
+![](web/otros/Archivos/Imagenes/7798162143347/1774962890465.jpg)
 
 </div>
 
