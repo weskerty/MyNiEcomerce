@@ -1,32 +1,40 @@
-### SPA Sencillo pero Veloz
+### SPA sencillo pero veloz
 
-Uso Actual: Expositor de Articulos 
+**Uso actual:** expositor de artículos.
 
-Esto es un Single Page Application o Aplicación de una Sola Página veloz para agregar entradas facilmente en Markdown, ejemplo para tener un blog de facil mantenimiento.
+Es una *Single Page Application* (SPA) rápida para agregar entradas en Markdown. Ideal para un blog de Facil mantenimiento.
 
-Puede cargar JS y CSS dinamicamente desde cada articulo (util para incrustar videos de tiktok), Tambien puede tener scrips centrales que estan presentes en todo momento (list.json)
+Puede cargar JS y CSS dinámicamente desde cada artículo (útil para incrustar contenido como TikTok). También admite scripts globales especificados en `list.json`.
 
-Si quieres replicar te Interesa;
+Si querés replicarlo:
 
-SPA web/otros/scripts/Otros/core.js
+**SPA:**  
+[core.js](web/otros/scripts/Otros/core.js)
 
-### Funcionamiento Minimo:
+---
 
-/index.html (carga core.js, mdi y demas)
+### Funcionamiento mínimo
 
-/web/otros/scripts/Otros/core.js (se puede cambiar en el index)
+- `/index.html` → carga `core.js`, MDI, etc.  
+- `/web/otros/scripts/Otros/core.js` → configurable desde `index`  
+- `/web/es.html` → primera página que carga `core.js`  
 
-/web/es.html (primera pagina que carga core.js)
+Con solo esos 3 archivos ya tenés una página dinámica funcional. Desde `es.html` podés navegar a `.md` o `.html` y se cargan rápidamente.
 
-Con solo esos 3 Archivos ya tienes una pagina dinamica funcional, desde es.html puedes ir a otras secciones .md o .html y se cargaran rapidamente 🤗
+---
 
+### Uso avanzado
 
-#### Uso Avanzado
+En `web/otros/scripts/` existe `list.json`, donde se define la lista de plugins que se cargan junto a `core.js`. Estos scripts permanecen en toda la navegacion. 
 
-En web/otros/scripts/ exite list.json, ahi se añade la lista de plugins de la misma ruta que core.js
+Ejemplo: galerías con Swiper. Permite agrupar imágenes Markdown dentro de:
 
-Un ejemplo de eso son las galerias Swiper, que carga las imagenes markdown agrupadas dentro de ˋ<div class="galeriaMD"></div>ˋ o desde data.json (ver POS/scripts/converter.js o workflow galerias)
+`<div class="galeriaMD"></div>`
 
-Espero te sea util, si lo mejoras me gustaria que lo compartieras tambien 🥺👉👈
+O cargarlas desde `data.json` (ver `POS/scripts/converter.js` o workflow de galerías).
 
-Respeta la licencia por favor, libre para usar, no para revender.
+---
+
+Espero que te sea útil. Si lo mejorás, compartilo.
+
+Respetá la licencia: libre para usar, no para revender.
