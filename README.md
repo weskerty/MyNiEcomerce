@@ -36,6 +36,6 @@ O cargarlas desde `data.json` (ver `POS/scripts/converter.js` o workflow de gale
 
 ---
 
-Espero que te sea útil. Si lo mejorás, compartilo.
+Espero que te sea útil. Si lo mejorás me gustaria ver tambien 🥺👉👈
 
 Respetá la licencia: libre para usar, no para revender.
