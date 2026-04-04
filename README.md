@@ -9,7 +9,7 @@ Puede cargar JS y CSS dinámicamente desde cada artículo (útil para incrustar 
 Si querés replicarlo:
 
 **SPA:**  
-[core.js](web/otros/scripts/Otros/core.js)
+[core.js](web/scripts/Otros/core.js)
 
 ---
 
