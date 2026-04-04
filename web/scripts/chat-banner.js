@@ -117,7 +117,7 @@ function renderCart(){
   const groups={};
   st.c.forEach(x=>{const k=x.t+"-"+x.n;groups[k]||(groups[k]={t:x.t,n:x.n,items:[]});groups[k].items.push(x)});
   const gks=Object.keys(groups),multi=gks.length>1;
-  let html=multi?'<div style="text-align:center;margin-bottom:8px"><a href="web/otros/Archivos/MarkDows/Ser parte.md" style="color:#facc15;font-weight:600;font-size:.85rem">Varios Proveedores</a></div>':"",total=0;
+  let html=multi?'<div style="text-align:center;margin-bottom:8px"><a href="web/otros/Archivos/MarkDowns/SerParte.md" style="color:#facc15;font-weight:600;font-size:.85rem">⚠️ Varios Proveedores ↗️</a></div>':"",total=0;
   gks.forEach(k=>{
     const g=groups[k];
     html+=`<div class="cb-cp" data-gk="${k}">${multi?`<p class="cb-cn">📦 ${g.n}</p>`:""}`;
@@ -206,7 +206,7 @@ modal.addEventListener("click",ev=>{
       st.c=st.c.filter(x=>x.t+"-"+x.n!==gk);
       syncBtn();
       const grpEl=modal.querySelector(`.cb-cp[data-gk="${gk}"]`);
-      if(grpEl)grpEl.outerHTML=`<div class="cb-s">✅ Completa la Compra en ${lbl} 👆</div>`;
+      if(grpEl)grpEl.outerHTML=`<div class="cb-s">✅ Completa la Compra Anterior en ${lbl}</div>`;
       if(!st.c.length)setTimeout(toggleModal,2e3);
     }
     return;

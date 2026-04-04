@@ -54,7 +54,7 @@
 </div>
 <div class="fg">
 <label>Imagen</label>
-<input type="file" id="eimg" accept="image/*,.gif,.avif">
+<input type="file" id="eimg" accept="image/*,.avif">
 <label for="eimg" class="b" style="display:inline-block;text-align:center;margin-top:5px;background:#3b82f6">📷 Seleccionar</label>
 <div id="imgnm" style="color:#666;font-size:12px;margin-top:5px"></div>
 </div>
@@ -75,12 +75,13 @@
 </div>
 </div>
 </div>
-<input type="file" id="mimg" accept="image/*,.gif,.avif" multiple style="display:none">
+<input type="file" id="mimg" accept="image/*,.avif" multiple style="display:none">
 </div>
 <script>
-const U=window.location.origin;
+const U=window.location.origin+window.location.pathname.replace(/\/[^/]*$/,'').replace(/\/$/,'');
 let TK=localStorage.getItem('tk')||'',CM='browser';
 let D=[],M,NI=null,ED=null,MD=null,NW=false,E=null,CA={};
+const LIM=10*1024*1024;
 function AH(){return TK?{'x-token':TK,'Content-Type':'application/json'}:{'Content-Type':'application/json'};}
 function AHF(){return TK?{'x-token':TK}:{};}
 async function initApp(){
@@ -222,51 +223,17 @@ sc.value=v;
 }
 function SN(s){return s.replace(/[/\\:*?"<>|\x00\s]/g,'').trim();}
 function SF(s){return s.replace(/[/\\:*?"<>|\x00]/g,'').trim();}
+function FN(f){return SN(f.name.replace(/\.[^.]+$/,'')).slice(0,10);}
 function PN(n){
 return !!(n.match(/NM=([^-\s]+)/)&&n.match(/ID=([^-\s]+)/)&&n.match(/PC=([^-\s]+)/)&&n.match(/NB=(.+)$/));
 }
-async function LD(){
-try{
-const r=await fetch(`${U}/api/scan?path=web/Dinamico`,{headers:AHF()});
-const dt=await r.json();
-D=[];CA={};
-if(dt.galleries){
-Object.keys(dt.galleries).forEach(gk=>{
-const gal=dt.galleries[gk];
-if(gal.images&&Array.isArray(gal.images)){
-gal.images.forEach(itm=>{
-if(PN(itm.name))return;
-const ps=(itm.path||'').split('/');
-const gallery=ps[0]||gk;
-const subpath=ps.slice(1).join('/')||'';
-const nb=itm.name.replace(/\.[^.]+$/,'');
-if(!CA[gallery])CA[gallery]=[];
-if(subpath&&!CA[gallery].includes(subpath))CA[gallery].push(subpath);
-D.push({NB:nb,image:itm.image,link:itm.link,gallery,path:subpath});
-});
+function isGIF(f){return /\.gif$/i.test(f.name);}
+function isAVIF(f){return /\.avif$/i.test(f.name);}
+function chkGif(f){
+if(isGIF(f)){PT('Solo se admite Avif o Webp Animado',3000);return false;}
+return true;
 }
-});
-}
-Object.keys(CA).forEach(c=>CA[c].sort());
-IM();R();
-PT('✅ '+D.length+' items');
-}catch(err){ME(err);PT(`❌ ${err.message}`);}
-}
-function IM(){
-M=new MiniSearch({fields:['NB'],storeFields:['NB']});
-M.addAll(D.map((o,i)=>({id:i,NB:o.NB||''})));
-}
-let BT=null;
-document.getElementById('bus').oninput=function(e){
-clearTimeout(BT);
-BT=setTimeout(()=>{
-const q=e.target.value.trim();
-if(!q){R();return;}
-const ids=new Set(M.search(q,{prefix:true,fuzzy:0.2}).map(r=>r.id));
-RD(D.map((o,i)=>({o,i})).filter(({i})=>ids.has(i)));
-},120);
-};
-document.getElementById('clb').onclick=()=>{document.getElementById('bus').value='';R();};
+function destExt(f,ab){if(CM==='server')return f.name.match(/\.[^.]+$/)?.[0]||'.bin';if(isAVIF(f)||WA(ab))return f.name.match(/\.[^.]+$/)?.[0]||'.webp';return '.webp';}
 function WA(ab){
 const u8=new Uint8Array(ab);
 if(u8[0]!==0x52||u8[1]!==0x49||u8[2]!==0x46||u8[3]!==0x46)return false;
@@ -276,9 +243,6 @@ if(u8[i]===0x41&&u8[i+1]===0x4E&&u8[i+2]===0x49&&u8[i+3]===0x4D)return true;
 }
 return false;
 }
-function isGIF(f){return /\.gif$/i.test(f.name);}
-function isAVIF(f){return /\.avif$/i.test(f.name);}
-function destExt(f,ab){if(CM==='server')return f.name.match(/\.[^.]+$/)?.[0]||'.bin';if(isGIF(f)||isAVIF(f)||WA(ab))return f.name.match(/\.[^.]+$/)?.[0]||'.webp';return '.webp';}
 async function canvasToWebp(f,q,mx){
 return new Promise((res,rej)=>{
 const img=new Image();
@@ -314,6 +278,7 @@ if(!r.ok){const e=await r.json().catch(()=>({error:r.statusText}));throw new Err
 HP();
 }
 async function uploadRaw(f,pt){
+if(f.size>LIM)throw new Error(`Archivo muy pesado: ${(f.size/1024/1024).toFixed(1)}MB > 10MB`);
 SP(`📤 Subiendo: ${f.name}...`);
 const fd=new FormData();
 fd.append('file',f);fd.append('destPath',pt);
@@ -322,21 +287,21 @@ if(!r.ok){const e=await r.json().catch(()=>({error:r.statusText}));throw new Err
 HP();
 }
 async function UF(f,pt,ab){
+if(!chkGif(f))return;
 if(CM==='server'){await uploadRaw(f,pt);return;}
-const LIM=10*1024*1024;
 if(f.size>LIM)throw new Error(`Archivo muy pesado: ${(f.size/1024/1024).toFixed(1)}MB > 10MB`);
 if(!ab)ab=await f.arrayBuffer();
-if(isGIF(f)||isAVIF(f)||WA(ab)){SP('📤 Subiendo sin cambios...');await writeFile(pt,f);return;}
+if(isAVIF(f)||WA(ab)){SP('📤 Subiendo sin cambios...');await writeFile(pt,f);return;}
 SP('🔄 Convirtiendo a WebP...');
 const blob=await canvasToWebp(f,0.1,100*1024);
 await writeFile(pt,blob);
 }
 async function UFMD(f,pt,ab){
+if(!chkGif(f))return;
 if(CM==='server'){await uploadRaw(f,pt);return;}
-const LIM=10*1024*1024;
 if(f.size>LIM)throw new Error(`Archivo muy pesado: ${(f.size/1024/1024).toFixed(1)}MB > 10MB`);
 if(!ab)ab=await f.arrayBuffer();
-if(isGIF(f)||isAVIF(f)||WA(ab)){SP('📤 Subiendo sin cambios...');await writeFile(pt,f);return;}
+if(isAVIF(f)||WA(ab)){SP('📤 Subiendo sin cambios...');await writeFile(pt,f);return;}
 SP('🔄 Comprimiendo para MD...');
 const blob=await canvasToWebp(f,0.7,null);
 if(blob.size>LIM)throw new Error(`Resultado muy grande: ${(blob.size/1024/1024).toFixed(1)}MB > 10MB`);
@@ -345,8 +310,9 @@ await writeFile(pt,blob);
 document.getElementById('eimg').onchange=async function(e){
 const f=e.target.files[0];
 if(!f)return;
+if(!chkGif(f)){e.target.value='';return;}
 const ab=await f.arrayBuffer();
-const passthru=isGIF(f)||isAVIF(f)||WA(ab);
+const passthru=isAVIF(f)||WA(ab);
 let lbl;
 if(CM==='server')lbl=`${f.name} → servidor convierte`;
 else if(passthru)lbl=`${f.name} (animado/avif, sin compresion)`;
@@ -477,22 +443,26 @@ const cur=cm.getDoc().getCursor();
 try{
 if(fs.length===1){
 const f=fs[0];
+if(!chkGif(f)){inp.value='';return;}
 SP(`📷 Procesando (1/1): ${f.name}...`);
 const ab=await f.arrayBuffer();
 const ext=destExt(f,ab);
-const pt=`web/otros/Archivos/Imagenes/${SN(o.NB)}/${Date.now()}${ext}`;
+const nm=FN(f);
+const pt=`web/otros/Archivos/Imagenes/${SN(o.NB)}/${nm}${ext}`;
 await UFMD(f,pt,ab);
-cm.getDoc().replaceRange(`![${f.name.replace(/\.[^.]+$/,'').slice(0,30)}](${pt})`,cur);
+cm.getDoc().replaceRange(`![${nm}](${pt})`,cur);
 }else{
 const lines=['<div class="galeriaMD">',''];
 for(let k=0;k<fs.length;k++){
 const f=fs[k];
+if(!chkGif(f))continue;
 SP(`📷 Procesando (${k+1}/${fs.length}): ${f.name}...`);
 const ab=await f.arrayBuffer();
 const ext=destExt(f,ab);
-const pt=`web/otros/Archivos/Imagenes/${SN(o.NB)}/${Date.now()+k}${ext}`;
+const nm=FN(f);
+const pt=`web/otros/Archivos/Imagenes/${SN(o.NB)}/${nm}${ext}`;
 await UFMD(f,pt,ab);
-lines.push(`![${f.name.replace(/\.[^.]+$/,'').slice(0,30)}](${pt})`);lines.push('');
+lines.push(`![${nm}](${pt})`);lines.push('');
 }
 lines.push('</div>');
 cm.getDoc().replaceRange(lines.join('\n'),cur);
@@ -511,6 +481,7 @@ try{
 const r=await fetch(`${U}/api/read?path=${o.link}`,{headers:AHF()});
 const dt=await r.json();
 if(ED){ED.toTextArea();ED=null;}
+document.getElementById('tmd').value='';
 ED=new EasyMDE({
 element:document.getElementById('tmd'),
 spellChecker:false,autofocus:true,status:false,
@@ -538,6 +509,48 @@ D.splice(x,1);
 IM();R();
 PT('✅ Eliminado');
 }catch(err){PT(`❌ ${err.message}`);}
+}
+function IM(){
+M=new MiniSearch({fields:['NB'],storeFields:['NB']});
+M.addAll(D.map((o,i)=>({id:i,NB:o.NB||''})));
+}
+let BT=null;
+document.getElementById('bus').oninput=function(e){
+clearTimeout(BT);
+BT=setTimeout(()=>{
+const q=e.target.value.trim();
+if(!q){R();return;}
+const ids=new Set(M.search(q,{prefix:true,fuzzy:0.2}).map(r=>r.id));
+RD(D.map((o,i)=>({o,i})).filter(({i})=>ids.has(i)));
+},120);
+};
+document.getElementById('clb').onclick=()=>{document.getElementById('bus').value='';R();};
+async function LD(){
+try{
+const r=await fetch(`${U}/api/scan?path=web/Dinamico`,{headers:AHF()});
+const dt=await r.json();
+D=[];CA={};
+if(dt.galleries){
+Object.keys(dt.galleries).forEach(gk=>{
+const gal=dt.galleries[gk];
+if(gal.images&&Array.isArray(gal.images)){
+gal.images.forEach(itm=>{
+if(PN(itm.name))return;
+const ps=(itm.path||'').split('/');
+const gallery=ps[0]||gk;
+const subpath=ps.slice(1).join('/')||'';
+const nb=itm.name.replace(/\.[^.]+$/,'');
+if(!CA[gallery])CA[gallery]=[];
+if(subpath&&!CA[gallery].includes(subpath))CA[gallery].push(subpath);
+D.push({NB:nb,image:itm.image,link:itm.link,gallery,path:subpath});
+});
+}
+});
+}
+Object.keys(CA).forEach(c=>CA[c].sort());
+IM();R();
+PT('✅ '+D.length+' items');
+}catch(err){ME(err);PT(`❌ ${err.message}`);}
 }
 </script>
 </div>

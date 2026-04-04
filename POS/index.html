@@ -85,7 +85,7 @@
 </div>
 <div class="fg">
 <label>Número</label>
-<input type="text" id="enu" placeholder="59597xxx...">
+<input type="text" id="enu" placeholder="59597xxx..." inputmode="numeric">
 </div>
 <div class="fg">
 <label>Código ID</label>
@@ -104,7 +104,7 @@
 </div>
 <div class="fg">
 <label>Cantidad</label>
-<input type="number" id="ecd">
+<input type="number" id="ecd" inputmode="numeric">
 </div>
 <div class="fg">
 <label>Tiempo Limite (TM)</label>
@@ -112,7 +112,7 @@
 </div>
 <div class="fg">
 <label>Imagen</label>
-<input type="file" id="eimg" accept="image/*,.gif,.avif">
+<input type="file" id="eimg" accept="image/*,.avif">
 <label for="eimg" class="b" style="display:inline-block;text-align:center;margin-top:5px;background:#3b82f6">📷 Cambiar Imagen</label>
 <div id="imgnm" style="color:#666;font-size:12px;margin-top:5px"></div>
 </div>
@@ -143,17 +143,17 @@
 </div>
 </div>
 </div>
-<input type="file" id="mimg" accept="image/*,.gif,.avif" multiple style="display:none">
+<input type="file" id="mimg" accept="image/*,.avif" multiple style="display:none">
 <script>
-const U=window.location.origin;
+const U=window.location.origin+window.location.pathname.replace(/\/[^/]*$/,'').replace(/\/$/,'');
 let TK=localStorage.getItem('tk')||'',CM='browser';
 let D=[],M,S,SM=null,SV=null,E=null,NI=null,CH=false,OD={},MD=null,CA={},NW=false,ED=null,MV=false,VT=[],DV=false;
+const LIM=10*1024*1024;
 function AH(){return TK?{'x-token':TK,'Content-Type':'application/json'}:{'Content-Type':'application/json'};}
 function AHF(){return TK?{'x-token':TK}:{};}
 async function initApp(){
   const cfg=await fetch(`${U}/api/config`).then(r=>r.json()).catch(()=>({}));
   CM=cfg.convertMode||'browser';
-  console.log('[CFG] authRequired:',cfg.authRequired,'convertMode:',CM);
   if(cfg.authRequired&&!TK){showLogin();return;}
   if(cfg.authRequired&&TK){
     const ok=await fetch(`${U}/api/scan?path=web/Dinamico`,{headers:AHF()}).then(r=>r.ok).catch(()=>false);
@@ -192,7 +192,6 @@ IO.unobserve(el);
 }
 });
 },{rootMargin:'200px'});
-
 function FP(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
 function ME(err){
 const txt=`ERROR: ${err.message}\n\nSTACK:\n${err.stack||'No disponible'}\n\nTIPO: ${typeof D}\nARRAY: ${Array.isArray(D)}\nDATA: ${JSON.stringify(D,null,2)}`;
@@ -226,13 +225,16 @@ return{b:b||'N/A',n:n||''};
 }
 function BN2(p){
 let n=`NM=${p.NM}-ID=${p.ID}-PC=${p.PC}`;
-if(p.CD)n+=`-CD=${p.CD}`;
+if(p.CD!=null)n+=`-CD=${p.CD}`;
 if(p.TM)n+=`-TM=${p.TM}`;
 n+=`-NB=${SF(p.NB)}`;
 return n;
 }
 function SN(s){return s.replace(/[/\\:*?"<>|\x00\s]/g,'').trim();}
 function SF(s){return s.replace(/[/\\:*?"<>|\x00]/g,'').trim();}
+function FN(f){return SN(f.name.replace(/\.[^.]+$/,'')).slice(0,10);}
+function isGIF(f){return /\.gif$/i.test(f.name);}
+function isAVIF(f){return /\.avif$/i.test(f.name);}
 function USC(){
 const c=document.getElementById('ect').value;
 const sc=document.getElementById('esc');
@@ -245,14 +247,14 @@ sc.appendChild(o);
 });
 }
 const nso=document.createElement('option');
-nso.value='__nueva__';nso.textContent='+ Nueva subcategoría...';
+nso.value='__nueva__';nso.textContent='+ Nueva subcategoria...';
 sc.appendChild(nso);
 sc.onchange=PSub;
 }
 function GRP(items){
 const cat={};
 items.forEach(({o,i})=>{
-const g=o.gallery||'Sin Categoría';
+const g=o.gallery||'Sin Categoria';
 const p=o.path||'General';
 if(!cat[g])cat[g]={};
 if(!cat[g][p])cat[g][p]=[];
@@ -321,7 +323,7 @@ CT();
 function QV(i,d){
 if(d>0&&!DV){
 const o=D[VT[i].IX];
-if(o.CD!==null&&VT[i].Q>=o.CD){PT('⚠️ Stock máximo: '+o.CD,2000);return;}
+if(o.CD!==null&&VT[i].Q>=o.CD){PT('⚠️ Stock maximo: '+o.CD,2000);return;}
 }
 VT[i].Q+=d;
 if(VT[i].Q<=0)VT.splice(i,1);
@@ -366,7 +368,7 @@ VT=[];RV();PT('🗑️ Carrito vaciado',2000);
 document.getElementById('adv').onclick=function(){
 DV=!DV;
 if(DV){
-if(!confirm('Esto Aumenta los Artículos')){{DV=false;return;}}
+if(!confirm('Esto Aumenta los Articulos')){{DV=false;return;}}
 document.getElementById('adv').style.background='#f59e0b';
 document.getElementById('bp').textContent='↩️ Devolver';
 }else{
@@ -397,7 +399,7 @@ AV(id,q);
 document.getElementById('bv').value='';
 document.getElementById('cv').value='';
 },()=>{}
-).catch(()=>{PT('❌ Sin cámara');document.getElementById('scv').classList.remove('a');SV=null;});
+).catch(()=>{PT('❌ Sin camara');document.getElementById('scv').classList.remove('a');SV=null;});
 };
 document.getElementById('cscv').onclick=function(){
 if(SV){SV.stop().catch(()=>{});SV=null;}
@@ -405,7 +407,7 @@ document.getElementById('scv').classList.remove('a');
 window.T3=false;
 };
 document.getElementById('bp').onclick=async function(){
-if(VT.length===0){PT('⚠️ Lista vacía');return;}
+if(VT.length===0){PT('⚠️ Lista vacia');return;}
 try{
 for(const v of VT){
 const o=D[v.IX];
@@ -419,7 +421,7 @@ o.CD=d.cdNuevo;
 }
 }
 VT=[];RV();IM();R();
-PT(DV?'✅ Devolución realizada':'✅ Venta realizada');
+PT(DV?'✅ Devolucion realizada':'✅ Venta realizada');
 }catch(err){HP();PT(`❌ ${err.message}`);}
 };
 async function GFI(p){
@@ -447,7 +449,7 @@ op.value=c;op.textContent=c;
 ct.appendChild(op);
 });
 const nco=document.createElement('option');
-nco.value='__nueva__';nco.textContent='+ Nueva categoría...';
+nco.value='__nueva__';nco.textContent='+ Nueva categoria...';
 ct.appendChild(nco);
 ct.value=o.gallery||'';
 USC();
@@ -468,7 +470,7 @@ document.getElementById('mdl').classList.add('a');
 }
 function AN(){
 NW=true;E=null;
-document.getElementById('mtt').textContent='➕ Nuevo Artículo';
+document.getElementById('mtt').textContent='➕ Nuevo Articulo';
 const ct=document.getElementById('ect');
 ct.innerHTML='';
 Object.keys(CA).sort().forEach(c=>{
@@ -477,7 +479,7 @@ op.value=c;op.textContent=c;
 ct.appendChild(op);
 });
 const nco=document.createElement('option');
-nco.value='__nueva__';nco.textContent='+ Nueva categoría...';
+nco.value='__nueva__';nco.textContent='+ Nueva categoria...';
 ct.appendChild(nco);
 if(Object.keys(CA).length>0)ct.value=Object.keys(CA).sort()[0];
 USC();
@@ -492,7 +494,7 @@ document.getElementById('mdl').classList.add('a');
 function PCat(){
 const ct=document.getElementById('ect');
 if(ct.value==='__nueva__'){
-const nc=prompt('Nueva categoría:');
+const nc=prompt('Nueva categoria:');
 if(nc&&nc.trim()){
 const v=nc.trim();
 if(!CA[v])CA[v]=[];
@@ -511,7 +513,7 @@ USC();
 function PSub(){
 const sc=document.getElementById('esc');
 if(sc.value==='__nueva__'){
-const ns=prompt('Nueva subcategoría:');
+const ns=prompt('Nueva subcategoria:');
 if(ns&&ns.trim()){
 const v=ns.trim();
 const ct=document.getElementById('ect').value;
@@ -548,10 +550,7 @@ if(u8[i]===0x41&&u8[i+1]===0x4E&&u8[i+2]===0x49&&u8[i+3]===0x4D)return true;
 }
 return false;
 }
-function isGIF(f){return /\.gif$/i.test(f.name);}
-function isAVIF(f){return /\.avif$/i.test(f.name);}
-function destExt(f,ab){if(CM==='server')return f.name.match(/\.[^.]+$/)?.[0]||'.bin';if(isGIF(f)||isAVIF(f)||WA(ab))return f.name.match(/\.[^.]+$/)?.[0]||'.webp';return '.webp';}
-
+function destExt(f,ab){if(CM==='server')return f.name.match(/\.[^.]+$/)?.[0]||'.bin';if(isAVIF(f)||WA(ab))return f.name.match(/\.[^.]+$/)?.[0]||'.webp';return '.webp';}
 async function canvasToWebp(f,q,mx){
 return new Promise((res,rej)=>{
 const img=new Image();
@@ -561,13 +560,9 @@ const cv=document.createElement('canvas');
 cv.width=img.naturalWidth;cv.height=img.naturalHeight;
 cv.getContext('2d').drawImage(img,0,0);
 URL.revokeObjectURL(url);
-if(!mx){
-cv.toBlob(b=>{b?res(b):rej(new Error('webp fail'));},'image/webp',q);
-return;
-}
+if(!mx){cv.toBlob(b=>{b?res(b):rej(new Error('webp fail'));},'image/webp',q);return;}
 let cq=q,mn=0.02,at=0;
 const TR=()=>{
-SP(`🔄 Intento ${at+1} — ${Math.round(cq*100)}% → objetivo ≤${Math.round(mx/1024)}KB`);
 cv.toBlob(b=>{
 if(!b)return rej(new Error('webp fail'));
 at++;
@@ -591,23 +586,34 @@ if(!r.ok){const e=await r.json().catch(()=>({error:r.statusText}));throw new Err
 HP();
 }
 async function uploadRaw(f,pt){
-SP(`📤 Subiendo al servidor: ${f.name}...`);
+if(f.size>LIM)throw new Error(`Archivo muy pesado: ${(f.size/1024/1024).toFixed(1)}MB > 10MB`);
+SP(`📤 Subiendo: ${f.name}...`);
 const fd=new FormData();
-fd.append('file',f);
-fd.append('destPath',pt);                                                                                                                                                 const r=await fetch(`${U}/api/upload`,{method:'POST',headers:AHF(),body:fd});                                                                                             if(!r.ok){const e=await r.json().catch(()=>({error:r.statusText}));throw new Error(e.error||r.statusText);}                                                               HP();                                                                                                                                                                     }                                                                                                                                                                         async function UF(f,pt,ab){                                                                                                                                               if(CM==='server'){await uploadRaw(f,pt);return;}                                                                                                                          const LIM=10*1024*1024;                                                                                                                                                   if(f.size>LIM)throw new Error(`Archivo muy pesado: ${(f.size/1024/1024).toFixed(1)}MB > 10MB`);                                                                           if(!ab)ab=await f.arrayBuffer();                                                                                                                                          if(isGIF(f)||isAVIF(f)||WA(ab)){
-SP('📤 Subiendo sin cambios...');                                                                                                                                         await writeFile(pt,f);                                                                                                                                                    return;                                                                                                                                                                   }                                                                                                                                                                         SP('🔄 Convirtiendo a WebP...');                                                                                                                                          const blob=await canvasToWebp(f,0.1,100*1024);
+fd.append('file',f);fd.append('destPath',pt);
+const r=await fetch(`${U}/api/upload`,{method:'POST',headers:AHF(),body:fd});
+if(!r.ok){const e=await r.json().catch(()=>({error:r.statusText}));throw new Error(e.error||r.statusText);}
+HP();
+}
+function chkGif(f){
+if(isGIF(f)){PT('Solo se admite Avif o Webp Animado',3000);return false;}
+return true;
+}
+async function UF(f,pt,ab){
+if(!chkGif(f))return;
+if(CM==='server'){await uploadRaw(f,pt);return;}
+if(f.size>LIM)throw new Error(`Archivo muy pesado: ${(f.size/1024/1024).toFixed(1)}MB > 10MB`);
+if(!ab)ab=await f.arrayBuffer();
+if(isAVIF(f)||WA(ab)){SP('📤 Subiendo sin cambios...');await writeFile(pt,f);return;}
+SP('🔄 Convirtiendo a WebP...');
+const blob=await canvasToWebp(f,0.1,100*1024);
 await writeFile(pt,blob);
 }
 async function UFMD(f,pt,ab){
+if(!chkGif(f))return;
 if(CM==='server'){await uploadRaw(f,pt);return;}
-const LIM=10*1024*1024;
 if(f.size>LIM)throw new Error(`Archivo muy pesado: ${(f.size/1024/1024).toFixed(1)}MB > 10MB`);
 if(!ab)ab=await f.arrayBuffer();
-if(isGIF(f)||isAVIF(f)||WA(ab)){
-SP('📤 Subiendo sin cambios...');
-await writeFile(pt,f);
-return;
-}
+if(isAVIF(f)||WA(ab)){SP('📤 Subiendo sin cambios...');await writeFile(pt,f);return;}
 SP('🔄 Comprimiendo para MD...');
 const blob=await canvasToWebp(f,0.7,null);
 if(blob.size>LIM)throw new Error(`Resultado muy grande: ${(blob.size/1024/1024).toFixed(1)}MB > 10MB`);
@@ -616,12 +622,13 @@ await writeFile(pt,blob);
 document.getElementById('eimg').onchange=async function(e){
 const f=e.target.files[0];
 if(!f)return;
+if(!chkGif(f)){e.target.value='';return;}
 const ab=await f.arrayBuffer();
-const passthru=isGIF(f)||isAVIF(f)||WA(ab);
+const passthru=isAVIF(f)||WA(ab);
 let lbl;
-if(CM==='server')lbl=`${f.name} → subida directa (servidor convierte)`;
-else if(passthru)lbl=`${f.name} (animado/avif, sin compresión, máx 300KB)`;
-else lbl=`${f.name.replace(/\.[^.]+$/,'.webp')} (comprimirá ≤100KB)`;
+if(CM==='server')lbl=`${f.name} → servidor convierte`;
+else if(passthru)lbl=`${f.name} (animado/avif, sin compresion)`;
+else lbl=`${f.name.replace(/\.[^.]+$/,'.webp')} (comprimira ≤100KB)`;
 NI=f;document.getElementById('imgnm').textContent=lbl;DC();
 };
 document.getElementById('grd').onclick=async function(){
@@ -637,7 +644,7 @@ const tm=document.getElementById('etm').value.trim();
 if(!ct||!id||!nb||!pc){PT('⚠️ Completa Datos',2000);return;}
 if(NW&&!NI){PT('⚠️ Falta Imagen',2000);return;}
 const nmnm=nm+(nu||'595972184435');
-const p={NM:nmnm,ID:id,NB:nb,PC:parseInt(pc),CD:cd?parseInt(cd):null,TM:tm||null};
+const p={NM:nmnm,ID:id,NB:nb,PC:parseInt(pc),CD:cd!==''?parseInt(cd):null,TM:tm||null};
 const nn=BN2(p);
 const bp=`web/Dinamico/${ct}${sc?'/'+sc:''}`;
 const _niAb=NI?await NI.arrayBuffer():null;
@@ -719,7 +726,7 @@ document.getElementById('bus').dispatchEvent(new Event('input'));
 const ex=D.findIndex(o=>o.ID===id);
 if(ex>=0)AE(ex);else PT('🔍 '+id);
 },()=>{}
-).catch(()=>{PT('❌ Sin cámara');document.getElementById('sc').classList.remove('a');S=null;});
+).catch(()=>{PT('❌ Sin camara');document.getElementById('sc').classList.remove('a');S=null;});
 };
 document.getElementById('csc').onclick=function(){
 if(S){S.stop().catch(()=>{});S=null;}
@@ -750,7 +757,7 @@ const id=m?m[1]:t.trim();
 document.getElementById('eid').value=id;
 DC();PT('✅ '+id);
 },()=>{}
-).catch(()=>{PT('❌ Sin cámara');document.getElementById('scm').classList.remove('a');SM=null;});
+).catch(()=>{PT('❌ Sin camara');document.getElementById('scm').classList.remove('a');SM=null;});
 };
 document.getElementById('cscm').onclick=function(){
 if(SM){SM.stop().catch(()=>{});SM=null;}
@@ -834,6 +841,12 @@ for(let s=0;s<seg.length;s++){if(i>=v.length)break;r+=v.slice(i,i+seg[s]);i+=seg
 e.target.value=r;
 DC();
 };
+document.getElementById('eid').addEventListener('input',function(){
+const p=this.selectionStart;
+this.value=this.value.replace(/\s/g,'');
+this.setSelectionRange(p,p);
+DC();
+});
 async function UIM(ed){
 const inp=document.getElementById('mimg');
 inp.onchange=async function(ev){
@@ -845,23 +858,23 @@ const cur=cm.getDoc().getCursor();
 try{
 if(fs.length===1){
 const f=fs[0];
-SP(`📷 Procesando MD (1/1): ${f.name}...`);
+if(!chkGif(f)){inp.value='';return;}
 const ab2=await f.arrayBuffer();
 const ext2=destExt(f,ab2);
-const pt=`web/otros/Archivos/Imagenes/${SN(o.ID)}/${Date.now()}${ext2}`;
+const nm=FN(f);
+const pt=`web/otros/Archivos/Imagenes/${SN(o.ID)}/${nm}${ext2}`;
 await UFMD(f,pt,ab2);
-const nm=f.name.replace(/\.[^.]+$/,'').slice(0,30);
 cm.getDoc().replaceRange(`![${nm}](${pt})`,cur);
 }else{
 const lines=['<div class="galeriaMD">',''];
 for(let k=0;k<fs.length;k++){
-SP(`📷 Procesando MD (${k+1}/${fs.length}): ${fs[k].name}...`);
 const f=fs[k];
+if(!chkGif(f))continue;
 const ab4=await f.arrayBuffer();
 const ext4=destExt(f,ab4);
-const pt=`web/otros/Archivos/Imagenes/${SN(o.ID)}/${Date.now()+k}${ext4}`;
+const nm=FN(f);
+const pt=`web/otros/Archivos/Imagenes/${SN(o.ID)}/${nm}${ext4}`;
 await UFMD(f,pt,ab4);
-const nm=f.name.replace(/\.[^.]+$/,'').slice(0,30);
 lines.push(`![${nm}](${pt})`);
 lines.push('');
 }
@@ -883,13 +896,15 @@ try{
 const r=await fetch(`${U}/api/read?path=${o.link}`,{headers:AHF()});
 const dt=await r.json();
 if(ED){ED.toTextArea();ED=null;}
+document.getElementById('tmd').value='';
 ED=new EasyMDE({
 element:document.getElementById('tmd'),
 spellChecker:false,
 autofocus:true,
 status:false,
 initialValue:dt.content||'',
-toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|',{name:'upload-img',action:function(e){UIM(e)},className:'fa fa-picture-o',title:'Subir Imagen'},'link','|','preview','side-by-side','fullscreen','|','guide']
+toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|',{name:'upload-img',action:function(e){UIM(e)},className:'fa fa-picture-o',title:'Subir Imagen'},
+'link','|','preview','side-by-side','fullscreen','|','guide']
 });
 document.getElementById('gmd').onclick=async function(){
 const c=ED.value();
@@ -903,7 +918,7 @@ document.getElementById('mmd').classList.add('a');
 }
 document.getElementById('cmd').onclick=()=>document.getElementById('mmd').classList.remove('a');
 async function DL(x){
-if(!confirm('¿Eliminar Artículo?'))return;
+if(!confirm('¿Eliminar Articulo?'))return;
 const o=D[x];
 try{
 if(o.image)await fetch(`${U}/api/delete?path=${o.image}`,{method:'DELETE',headers:AHF()});
