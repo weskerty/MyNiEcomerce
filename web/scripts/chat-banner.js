@@ -46,7 +46,7 @@ function syncBtn(){
   }
   btn.appendChild(fng);btn.appendChild(bdg);btn.appendChild(pk);
   const tot=st.c.reduce((a,b)=>a+b.d,0);
-  tot>1?(bdg.textContent=tot,bdg.classList.add("cb-v")):bdg.classList.remove("cb-v");
+  tot>=1?(bdg.textContent=tot,bdg.classList.add("cb-v")):bdg.classList.remove("cb-v");
 }
 syncBtn();
 
@@ -116,10 +116,11 @@ function renderCart(){
   if(!st.c.length)return void(modal.querySelector(".cb-mb").innerHTML='<div class="cb-em">🛒 Carrito vacio</div>');
   const groups={};
   st.c.forEach(x=>{const k=x.t+"-"+x.n;groups[k]||(groups[k]={t:x.t,n:x.n,items:[]});groups[k].items.push(x)});
-  let html="",total=0;
-  Object.keys(groups).forEach(k=>{
+  const gks=Object.keys(groups),multi=gks.length>1;
+  let html=multi?'<div style="text-align:center;margin-bottom:8px"><a href="web/otros/Archivos/MarkDows/Ser parte.md" style="color:#facc15;font-weight:600;font-size:.85rem">Varios Proveedores</a></div>':"",total=0;
+  gks.forEach(k=>{
     const g=groups[k];
-    html+=`<div class="cb-cp" data-gk="${k}"><div class="cb-cn">📦 ${g.n}</div>`;
+    html+=`<div class="cb-cp" data-gk="${k}">${multi?`<p class="cb-cn">📦 ${g.n}</p>`:""}`;
     g.items.forEach(x=>{
       const sub=x.p*x.d;total+=sub;
       html+=`<div class="cb-ci" data-key="${x.t}-${x.n}-${x.i}"><span class="cb-ct">${x.b}</span><span class="cb-cs">💰 ${fmt(sub)}Gs</span><div class="cb-cc"><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="-">−</button><span>${x.d}</span><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="+">+</button></div></div>`;
