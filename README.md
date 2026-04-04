@@ -15,9 +15,10 @@ Si querés replicarlo:
 
 ### Funcionamiento mínimo
 
-- `/index.html` → carga `core.js`, MDI, etc.  
-- `/web/otros/scripts/Otros/core.js` → configurable desde `index`  
-- `/web/es.html` → primera página que carga `core.js`  
+- [index.html](/index.html) → carga `core.js`, MDI, etc.  
+- [core.js](/web/scripts/Otros/core.js) → SPA, ruta configurable desde `index`  
+- [es.html](/web/es.html) → primera página que carga `core.js`  
+- [estilo.css](/web/estilo.css) → tema de la web
 
 Con solo esos 3 archivos ya tenés una página dinámica funcional. Desde `es.html` podés navegar a `.md` o `.html` y se cargan rápidamente.
 
