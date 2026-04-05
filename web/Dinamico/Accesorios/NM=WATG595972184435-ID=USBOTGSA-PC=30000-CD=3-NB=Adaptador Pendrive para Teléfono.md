@@ -1,7 +1,11 @@
 ## USB OTG Tipo C
 
+<div class="galeriaMD">
+
 ![Ejemplo](web/otros/Archivos/Imagenes/USBOTGSA/90757.avif)
 
+</div>	
+	
 <div id="cs"></div>
 
 #### Para que Sirve?

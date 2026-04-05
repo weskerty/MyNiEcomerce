@@ -196,7 +196,7 @@ btn.addEventListener("click",()=>{
 });
 
 modal.addEventListener("click",ev=>{
-  if(ev.target===modal||ev.target.classList.contains("cb-mx"))toggleModal();
+  if(ev.target===modal||ev.target.classList.contains("cb-mx")||ev.target.closest("a[href]"))toggleModal();
   const b=ev.target.closest("button");
   if(!b)return;
   if(b.dataset.l){
@@ -251,7 +251,7 @@ window.addEventListener("resize",onScroll);
 
 const content=document.getElementById("content");
 content
-  ?content.addEventListener("contentLoaded",()=>{st.r=!0;setTimeout(()=>{onScroll();requestAnimationFrame(initProduct)},1e3)})
+  ?content.addEventListener("contentLoaded",()=>{st.r=!0;setTimeout(()=>{onScroll();requestAnimationFrame(initProduct)},100)})
   :(st.r=!0,onScroll());
 st.r=!0;onScroll();requestAnimationFrame(initProduct);
 }();
