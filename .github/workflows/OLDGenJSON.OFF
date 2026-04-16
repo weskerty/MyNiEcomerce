@@ -1,0 +1,71 @@
+name: BOT Actualizador de Galeria Dinamica
+
+on:
+  push:
+    paths:
+      - 'web/Dinamico/**'
+      - 'web/otros/Archivos/Imagenes/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-json:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: BOT Actualizador de Galeria Dinamica
+        run: |
+          python3 << 'EOF'
+          import os,json
+          from pathlib import Path
+
+          EX={'.jpg','.jpeg','.png','.gif','.webp'}
+
+          def bG(b):
+            g={}
+            for r,d,f in os.walk(b):
+              im=sorted(x for x in f if Path(x).suffix.lower() in EX)
+              if not im:continue
+              rp=os.path.relpath(r,b)
+              ps=[os.path.join(r,x).replace(os.sep,'/') for x in im]
+              if rp=='.':
+                g.setdefault('_root',[]).extend(ps)
+              else:
+                parts=Path(rp).parts
+                if len(parts)==1:
+                  g.setdefault(parts[0],[]).extend(ps)
+                else:
+                  sub=g.setdefault(parts[0],{})
+                  sub.setdefault(parts[1],[]).extend(ps)
+            return g
+
+          def wJ(p,d):
+            with open(p,'w',encoding='utf-8') as f:
+              json.dump(d,f,separators=(',',':'),ensure_ascii=False)
+
+          b1=Path('web','Dinamico')
+          if b1.exists():
+            g={}
+            for fd in b1.iterdir():
+              if fd.is_dir():
+                r=bG(fd)
+                g[fd.name]=r.get('_root',r) if '_root' in r and len(r)==1 else ({k:v for k,v in r.items() if k!='_root'} if '_root' not in r else r)
+            wJ(b1/'data.json',{'galleries':g})
+
+          b2=Path('web','otros','Archivos','Imagenes')
+          if b2.exists():
+            wJ(b2/'data.json',{'galleries':bG(b2)})
+          EOF
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add web/Dinamico/data.json web/otros/Archivos/Imagenes/data.json
+          git diff --staged --quiet || git commit -m "Actualizado Galeria Dinamica"
+          git push

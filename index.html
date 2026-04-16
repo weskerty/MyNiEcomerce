@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+
+  <title>Che Agana</title>
+
+  <meta name="description" content="Tienda Ambientalista donde encontrarás de todo y más. Compra facil y seguro en Paraguay.">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <meta property="og:title" content="Che Agana | Tienda Ambientalista">
+  <meta property="og:description" content="Tienda Ambientalista donde encontrarás de todo y más. Compra facil y seguro en Paraguay.">
+  <meta property="og:url" content="https://cheagana.com">
+  <meta property="og:image" content="https://raw.githubusercontent.com/weskerty/MyNiEcomerce/main/web/ICON.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:type" content="website">
+
+  <link rel="canonical" href="https://cheagana.com">
+  <link rel="icon" type="image/x-icon" href="web/favicon.ico">
+  <link rel="apple-touch-icon" href="web/ICON.png">
+  <link rel="manifest" href="manifest.json">
+
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Che Agana">
+  <meta name="color-scheme" content="only dark">
+
+
+  <link rel="preload" href="web/scripts/Otros/core.js" as="script">
+  <link rel="stylesheet" href="web/estilo.css">
+</head>
+
+<body>
+
+  <div class="loading-screen" id="loading-screen">
+    <p>⌛Cargando⏳</p>
+  </div>
+
+  <div id="bg"></div>
+
+  <video autoplay muted loop id="bg-video" preload="auto">
+    <source src="" type="video/mp4">
+  </video>
+
+  <div class="content" id="content"></div>
+
+  <div id="disqus-container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it@14/dist/markdown-it.min.js"
+          onerror="this.src='web/scripts/Otros/MarkDownIT/markdown-it.min.js'"></script>
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it-anchor@9/dist/markdownItAnchor.umd.min.js"
+          onerror="this.src='web/scripts/Otros/MarkDownIT/markdownItAnchor.umd.min.js'"></script>
+
+  <script src="web/scripts/Otros/core.js"></script>
+
+  <script>
+    if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js');
+  </script>
+
+  <noscript>Activa JavaScript o no podras ver esta pagina 😔</noscript>
+
+</body>
+</html>

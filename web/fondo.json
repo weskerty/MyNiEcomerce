@@ -1,0 +1,76 @@
+{
+  "backgrounds": [
+    {
+      "month": 0,
+      "type": "image",
+      "src": "web/otros/Archivos/Imagenes/pexels5834608AñoNuevo.avif",
+      "comment": "Enero Año Nuvo"
+    },
+    {
+      "month": 1,
+      "type": "image",
+      "src": "web/otros/Archivos/Imagenes/pexels-henkephotoart-29775986.jpg",
+      "comment": "Febrero"
+    },
+    {
+      "month": 2,
+      "type": "image",
+      "src": "web/otros/Archivos/Imagenes/",
+      "comment": "Marzo"
+    },
+    {
+      "month": 3,
+      "type": "image",
+      "src": "",
+      "comment": "Abril Recordatorio Ambiente"
+    },
+    {
+      "month": 4,
+      "type": "image",
+      "src": "web/otros/Archivos/Imagenes/",
+      "comment": "Mayo Independencia Paraguay"
+    },
+    {
+      "month": 5,
+      "type": "image",
+      "src": "",
+      "comment": "Junio"
+    },
+    {
+      "month": 6,
+      "type": "image",
+      "src": "",
+      "comment": "Julio Recordatorio Ambiente"
+    },
+    {
+      "month": 7,
+      "type": "image",
+      "src": "web/otros/Archivos/Imagenes/benjamin-shurance-dUcQLRcZpmk-unsplash.jpg",
+      "comment": "Agosto"
+    },
+    {
+      "month": 8,
+      "type": "image",
+      "src": "web/otros/Archivos/Imagenes/",
+      "comment": "Septiembre"
+    },
+    {
+      "month": 9,
+      "type": "image",
+      "src": "web/otros/Archivos/Imagenes/pexels-vilas-5688958.jpg",
+      "comment": "Octubre"
+    },
+    {
+      "month": 10,
+      "type": "image",
+      "src": "web/otros/Archivos/Imagenes/benjamin-shurance-W7zJGqbp6Xw-unsplash.jpg",
+      "comment": "Noviembre"
+    },
+    {
+      "month": 11,
+      "type": "video",
+      "src": "https://github.com/user-attachments/assets/b746d91d-55ae-4679-add6-fcf71e05dcd4",
+      "comment": "Diciembre - Video navideño"
+    }
+  ]
+}

@@ -1,0 +1,280 @@
+<style>
+._nb{position:absolute;top:0;font-size:1.8rem;text-decoration:none;z-index:10}
+._nb.l{left:0}
+._nb.r{right:0}
+</style>
+<a class="_nb l" href="web/blogs.html">🔔</a>
+<a class="_nb r" href="web/search.html">🔍</a>
+
+
+<div style="text-align:center;">
+
+
+<img src="web/ICON.png" width="90px" />
+
+
+<div class="section">
+    <a href="web/Dinamico/Alimentos/alimentos.html"><h2>🍰 Comestibles ➡️</h2></a>
+
+    <div class="gallery-container">
+        <div id="Alimentos-gallery" 
+             class="contenedor-imagenes-animado">
+        </div>
+        <!-- <a href="web/Dinamico/Alimentos/alimentos.html" class="view-all-button">Ver Lista Completa</a> -->
+    </div>
+</div>
+
+</br>
+
+<div class="section">
+    <a href="web/Dinamico/Accesorios/accesorios.html"><h2>🫕 Utilidades ➡️</h2></a>
+    <div class="gallery-container">
+        <div id="Accesorios-gallery" 
+             class="contenedor-imagenes-animado">
+        </div>
+        <!-- <a href="web/Dinamico/Accesorios/accesorios.html" class="view-all-button">Ver Lista Completa</a> -->
+    </div>
+</div>
+
+</br>
+
+<div class="section">
+  <a href="web/Dinamico/Dispositivos/es.html"><h2>👩🏻‍💻 Dispositivos ➡️</h2></a>
+    <div class="gallery-container">
+        <div id="Dispositivos-gallery" 
+             class="contenedor-imagenes-animado">
+        </div>
+        <!-- <a href="web/Dinamico/Dispositivos/es.html" class="view-all-button">Ver Lista Completa</a> -->
+    </div>
+</div>
+
+</br>
+
+<div class="section">
+  <a href="web/Dinamico/Prendas/prendas.html"><h2>👒 Prendas ➡️</h2></a>
+
+    <div class="gallery-container">
+        <div id="Prendas-gallery" 
+             class="contenedor-imagenes-animado">
+        </div>
+        <!-- <a href="web/Dinamico/Prendas/prendas.html" class="view-all-button">Ver Lista Completa</a> -->
+    </div>
+</div>
+
+</br>
+
+<div class="section">
+  <a href="web/Dinamico/Plantas/Plantas.html"><h2>🌱 Plantas ➡️</h2></a>
+    <div class="gallery-container">
+        <div id="Plantas-gallery" 
+             class="contenedor-imagenes-animado">
+        </div>
+        <!-- <a href="web/Dinamico/Plantas/Plantas.html" class="view-all-button">Ver Lista Completa</a> -->
+    </div>
+</div>
+
+</br>
+
+<!--
+   
+<div class="section">
+  <a href="web/Dinamico/Sorteos/sorteos.html"><h2>🏆 Sorteos ➡️</h2></a>
+
+    <div class="gallery-container">
+        <div id="Sorteos-gallery" 
+             class="contenedor-imagenes-animado">
+        </div>
+    </div>
+</div>
+</br> 
+
+-->
+
+
+
+
+<style>
+
+.btn-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+@media (min-width: 600px) {
+  .btn-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.btn-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 7px 11px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.25) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0.15) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  text-decoration: none;
+  color: white;
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+
+.btn-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 50%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.btn-item:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.25) 100%
+  );
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  text-decoration: none;
+}
+
+.btn-cnt {
+  flex: 1;
+  text-align: center;
+  padding: 6px 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.btn-cnt h3 {
+  margin: 0 0 3px 0;
+  font-size: 1.4em;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.btn-cnt p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95em;
+  line-height: 1.4;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 600px) {
+  .btn-item {
+    flex-direction: column;
+    text-align: center;
+    text-decoration: none;
+  }
+}
+
+</style>
+
+
+
+<h2>🫂 Recursos Utiles</h2>
+<p>Selecciona a donde quieres ir 🤗</p>
+
+<div class="btn-list">
+  <a href="web/otros/Archivos/MarkDowns/Garantia&Reparacion.md" class="btn-item">
+    <img src="">
+    <div class="btn-cnt"><h3>❤️‍🩹 Garantia</h3><p>Reparar, no Tirar.</p></div>
+  </a>
+  <a href="web/otros/Archivos/MarkDowns/Desecho&Reciclaje.md" class="btn-item">
+    <img src="">
+    <div class="btn-cnt"><h3>🌱 Donde Desechar</h3><p>Juntos por un Paraguay Limpio y Sano</p></div>
+  </a>
+  <a href="web/otros/Archivos/MarkDowns/SerParte.md" class="btn-item">
+    <img src="">
+    <div class="btn-cnt"><h3>🤝 Ser Parte</h3><p>Añade tus Productos Aqui</p></div>
+  </a>
+  <a href="web/otros/Archivos/MarkDowns/TiendaSimilar.md" class="btn-item">
+    <img src="">
+    <div class="btn-cnt"><h3>💞 Actividades Similares</h3><p>Mas Proyectos con Conciencia Ambiental.</p></div>
+  </a>
+  <a href="web/otros/Archivos/HTML/centralPage.html" class="btn-item">
+    <img src="">
+    <div class="btn-cnt"><h3>🎳 Mas Utilidades</h3><p>Contenido Extra no Relacionado.</p></div>
+  </a>
+</div>
+
+  
+<blockquote> <a href="web/otros/Archivos/MarkDowns/PoliticaPrivacidad.md">Acuerdo y Privacidad</a> </blockquote>
+  
+
+
+
+
+</br>
+
+
+
+
+<div class="social-icons">
+  <a href="https://www.tiktok.com/@cheagana" aria-label="TikTok">
+    <img src="web/otros/Archivos/Imagenes/Permanente/SVG/tiktok-svgrepo-com.svg" alt="TikTok">
+  </a>
+  <a href="#" aria-label="Facebook">
+    <img src="web/otros/Archivos/Imagenes/Permanente/SVG/facebook-1-svgrepo-com.svg" alt="Facebook">
+  </a>
+  <a href="https://www.instagram.com/cheagana" aria-label="Instagram">
+    <img src="web/otros/Archivos/Imagenes/Permanente/SVG/instagram-2016-logo-svgrepo-com.svg" alt="Instagram">
+  </a>
+  <a href="web/otros/Archivos/HTML/About.html" aria-label="Git">
+    <img src="web/otros/Archivos/Imagenes/Permanente/SVG/git-svgrepo-com.svg" alt="Git">
+  </a>
+
+</div>
+
+<style>
+.social-icons{
+display:flex;
+justify-content:center;
+gap:12px;
+align-items:center;
+flex-wrap:wrap;
+margin-top:20px;
+}
+.social-icons img{
+width:24px;
+height:24px;
+opacity:.6;
+transition:opacity .2s ease,transform .2s ease;
+}
+.social-icons img:hover{
+opacity:1;
+transform:scale(1.7);
+}
+</style>

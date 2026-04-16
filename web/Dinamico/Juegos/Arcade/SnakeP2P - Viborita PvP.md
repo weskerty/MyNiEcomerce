@@ -1,0 +1,1 @@
+<meta http-equiv="refresh" content="0; https://weskerty.github.io/SnakeP2P/">
