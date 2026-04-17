@@ -1,7 +1,8 @@
-<div style="text-align:center">
+<div style="text-align:center;position:relative">
 <style>
 ._nb{position:absolute;top:0;font-size:1.8rem;text-decoration:none;z-index:10}
 ._nb.l{left:0}._nb.r{right:0}
+._ic{display:block;margin:0 auto 8px}
 .sk-wrap{padding:12px;max-width:100%}
 .sk-bar{display:flex;gap:8px;margin-bottom:14px}
 .sk-bar input{flex:1;padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:white;font-size:.9em;outline:none}
@@ -46,40 +47,28 @@
 .sc-fr{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);cursor:grab;touch-action:none;flex-shrink:0}
 .sc-fr img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .sc-fr .sc-rm{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.7);border:none;color:white;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
-.sc-fr .sc-dl{position:absolute;bottom:2px;left:0;right:0;text-align:center;display:none}
-.sc-fr .sc-dl input{width:50px;font-size:.7em;background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.2);border-radius:4px;color:white;text-align:center;padding:1px 2px}
-.sc-fr .sc-dl input::placeholder{color:rgba(255,255,255,.5)}
-.sc-fr.drag-over{border-color:#4ade80;box-shadow:0 0 0 2px #4ade8055}
-.sc-fr.dragging{opacity:.4}
-.sc-opts{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
-.sc-mode{display:flex;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.2)}
-.sc-mode button{padding:6px 14px;background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:.82em;transition:background .2s,color .2s}
-.sc-mode button.active{background:rgba(255,255,255,.22);color:white}
+.sc-fr.sc-done{border-color:#4ade80}
 .sc-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:12px}
 .sc-modal.open{display:flex}
-.sc-modal.z3{z-index:300}
-.sc-crop-bg{background:rgba(0,0,0,.85)}
-.sc-proc-bg,.sc-prev-bg{background:rgba(0,0,0,.88)}
+.sc-crop-bg{background:rgba(0,0,0,.88)}
+.sc-proc-bg{background:rgba(0,0,0,.88)}
 .sc-crop-wrap{position:relative;max-width:min(90vw,420px);max-height:60vh;overflow:hidden}
 .sc-crop-wrap img{display:block;max-width:100%;max-height:60vh}
+.sc-crop-info{color:rgba(255,255,255,.55);font-size:.8em;margin-top:4px}
 .sc-pbar-w{width:240px;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}
-.sc-pbar{height:100%;background:#4ade80;width:0%;transition:width .2s}
+.sc-pbar{height:100%;background:#4ade80;width:0%;transition:width .3s}
 .sc-plbl{color:rgba(255,255,255,.8);font-size:.9em}
-.sc-prev-modal img{max-width:256px;max-height:256px;border-radius:12px;image-rendering:pixelated}
-.sc-prev-list{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:400px}
-.sc-prev-list img{width:80px;height:80px;border-radius:8px;object-fit:cover;image-rendering:pixelated}
-.sc-sz{color:rgba(255,255,255,.5);font-size:.78em}
 </style>
 
 <a class="_nb l" href="web/blogs.html">🔔</a>
 <a class="_nb r" href="web/search.html">🔍</a>
-<img src="web/ICON.png" width="90px">
+<img class="_ic" src="web/ICON.png" width="90px">
 
 <div class="sk-wrap" id="sk-search">
   <div class="sk-bar">
     <input id="sk-q" type="text" placeholder="Buscar stickers...">
     <button id="sk-btn">Buscar</button>
-    <button id="sk-crear" onclick="document.getElementById('sk-search').style.display='none';document.getElementById('sk-creator').style.display='';document.getElementById('sk-creator').scrollIntoView({behavior:'smooth',block:'start'})">Crear</button>
+    <button id="sk-crear" onclick="document.getElementById('sk-search').style.display='none';document.getElementById('sk-creator').style.display=''">Crear</button>
   </div>
   <div id="sk-grid" class="sk-grid"></div>
   <div id="sk-pg" class="gi-pg"></div>
@@ -93,18 +82,12 @@
     <button class="sc-btn" onclick="document.getElementById('sk-creator').style.display='none';document.getElementById('sk-search').style.display=''">← Buscar</button>
   </div>
   <div class="sc-dz" id="sc-dz">
-    <input type="file" id="sc-in" accept="image/*,video/mp4,.gif" multiple>
-    <div>Subir imagenes, GIF o MP4<br><small style="opacity:.6">Max 5MB por archivo - Max 50</small></div>
+    <input type="file" id="sc-in" accept="image/*" multiple>
+    <div>Subir imagenes<br><small style="opacity:.6">Max 5MB - Max 50 archivos</small></div>
   </div>
   <div class="sc-frames" id="sc-frames"></div>
-  <div class="sc-opts" id="sc-opts" style="display:none">
-    <div class="sc-mode" id="sc-mode">
-      <button class="active" data-m="sep">Stickers separados</button>
-      <button data-m="anim">Sticker animado</button>
-    </div>
-  </div>
   <div class="sk-foot" id="sc-foot">
-    <button class="sc-btn" id="sc-cf" disabled>Procesar</button>
+    <button class="sc-btn" id="sc-cf" disabled>Enviar</button>
   </div>
 </div>
 
@@ -112,27 +95,17 @@
 
 <div class="sc-modal sc-crop-bg" id="sc-crop-modal">
   <div class="sc-crop-wrap"><img id="sc-crop-img" src=""></div>
-  <div style="display:flex;gap:10px">
+  <div class="sc-crop-info" id="sc-crop-info"></div>
+  <div style="display:flex;gap:10px;margin-top:8px">
     <button class="sc-btn" id="sc-crop-ok">Recortar</button>
     <button class="sc-btn" id="sc-crop-skip">Saltar</button>
   </div>
 </div>
 
-<div class="sc-modal sc-proc-bg z3" id="sc-prog-modal">
+<div class="sc-modal sc-proc-bg" id="sc-prog-modal">
   <div style="font-size:2rem">⚙</div>
-  <div class="sc-plbl" id="sc-prog-lbl">Iniciando...</div>
+  <div class="sc-plbl" id="sc-prog-lbl">Subiendo...</div>
   <div class="sc-pbar-w"><div class="sc-pbar" id="sc-pbar"></div></div>
-  <div class="sc-sz" id="sc-prog-sz"></div>
-</div>
-
-<div class="sc-modal sc-prev-bg z3 sc-prev-modal" id="sc-prev-modal">
-  <div style="color:white;font-size:1em;margin-bottom:4px">Vista previa</div>
-  <div id="sc-prev-cont"></div>
-  <div class="sc-sz" id="sc-prev-sz"></div>
-  <div style="display:flex;gap:10px;margin-top:4px">
-    <button class="sc-btn" id="sc-prev-ok">Confirmar</button>
-    <button class="sc-btn" id="sc-prev-cancel">Cancelar</button>
-  </div>
 </div>
 
 <script>
@@ -142,7 +115,6 @@
   const wEl=document.getElementById('sk-search'),gEl=document.getElementById('sk-grid'),pgEl=document.getElementById('sk-pg'),tEl=document.getElementById('sk-toast');
   let _tt;
   function toast(m){tEl.textContent=m;tEl.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>tEl.classList.remove('show'),2200);}
-  function getCf(){return document.getElementById('sk-cf-search')||document.getElementById('sk-cf');}
   function startCD(){
     cdEnd=Date.now()+CD_MS;const btn=document.getElementById('sk-btn');btn.disabled=true;btn.classList.add('sk-cd');
     function tick(){const rem=cdEnd-Date.now();if(rem<=0){btn.disabled=false;btn.classList.remove('sk-cd');btn.style.removeProperty('--sk-cd-p');btn.textContent='Buscar';cdRaf=null;return;}
@@ -196,204 +168,149 @@
 })();
 
 (function(){
-  const MAX_F=50,MAX_SZ=5*1024*1024,TARGET=950*1024,DIM=256;
-  const FF_URL='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js';
-  const FC_ST='https://cdn.jsdelivr.net/npm/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js';
-  let frames=[],cropQ=[],cropper=null,mode='sep',_ff=null,_ffP=null,_progCb=null;
-  const frEl=document.getElementById('sc-frames'),optsEl=document.getElementById('sc-opts'),cfEl=document.getElementById('sc-cf'),
-        dzEl=document.getElementById('sc-dz'),inEl=document.getElementById('sc-in'),modeEl=document.getElementById('sc-mode'),
+  const MAX_F=50,MAX_SZ=5*1024*1024,DIM=256,TARGET=950*1024;
+  let frames=[],cropQ=[],cropper=null;
+  const frEl=document.getElementById('sc-frames'),cfEl=document.getElementById('sc-cf'),
+        dzEl=document.getElementById('sc-dz'),inEl=document.getElementById('sc-in'),
         cropM=document.getElementById('sc-crop-modal'),cropImg=document.getElementById('sc-crop-img'),
+        cropInfo=document.getElementById('sc-crop-info'),
         cropOk=document.getElementById('sc-crop-ok'),cropSkip=document.getElementById('sc-crop-skip'),
-        progM=document.getElementById('sc-prog-modal'),pBar=document.getElementById('sc-pbar'),pLbl=document.getElementById('sc-prog-lbl'),pSz=document.getElementById('sc-prog-sz'),
-        prevM=document.getElementById('sc-prev-modal'),prevCont=document.getElementById('sc-prev-cont'),prevSz=document.getElementById('sc-prev-sz'),
-        prevOk=document.getElementById('sc-prev-ok'),prevCancel=document.getElementById('sc-prev-cancel');
-  function isA(f){return f.type==='image/gif'||f.type==='video/mp4'||f.name?.endsWith('.mp4');}
+        progM=document.getElementById('sc-prog-modal'),pBar=document.getElementById('sc-pbar'),pLbl=document.getElementById('sc-prog-lbl');
+
   function toast(m){const t=document.getElementById('sk-toast');if(!t)return;t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
-  function setProg(p,l,s){pBar.style.width=p+'%';if(l!=null)pLbl.textContent=l;if(s!=null)pSz.textContent=s;}
-  function loadFFScript(){
-    return new Promise((res,rej)=>{
-      if(window.FFmpeg){res();return;}
-      const s=document.createElement('script');s.src=FF_URL;s.onload=res;s.onerror=rej;document.head.appendChild(s);
-    });
-  }
-  function loadFF(){
-    if(!_ffP)_ffP=(async()=>{
-      await loadFFScript();
-      const {createFFmpeg,fetchFile}=window.FFmpeg;
-      _ff=createFFmpeg({mainName:'main',corePath:FC_ST,progress:({ratio})=>{if(_progCb)_progCb(Math.round(Math.max(0,Math.min(1,ratio||0))*100));}});
-      _ff._fetchFile=fetchFile;
-      await _ff.load();
-    })();
-    return _ffP;
-  }
-  async function _run(args){await _ff.run(...args);}
-  async function _write(name,blob){_ff.FS('writeFile',name,await _ff._fetchFile(blob));}
-  function _read(name){return new Blob([_ff.FS('readFile',name)],{type:'image/webp'});}
-  function _rm(name){try{_ff.FS('unlink',name);}catch(_){}}
-  async function ffToWebp(blob,name,cb){
-    await loadFF();_progCb=cb||null;
-    await _write(name,blob);
-    await _run(['-i',name,'-vf','scale='+DIM+':'+DIM+':force_original_aspect_ratio=decrease,pad='+DIM+':'+DIM+':(ow-iw)/2:(oh-ih)/2','-quality','40','-loop','0','o.webp']);
-    let r=_read('o.webp');_rm(name);_rm('o.webp');
-    if(r.size>TARGET){
-      await _write(name,r);
-      await _run(['-i',name,'-vf','scale='+DIM+':'+DIM+':force_original_aspect_ratio=decrease,pad='+DIM+':'+DIM+':(ow-iw)/2:(oh-ih)/2','-quality','10','-loop','0','o.webp']);
-      r=_read('o.webp');_rm(name);_rm('o.webp');
-    }
-    _progCb=null;return r;
-  }
-  async function ffAnim(blobs,delays,cb){
-    await loadFF();_progCb=cb||null;
-    for(let i=0;i<blobs.length;i++)await _write('f'+i+'.webp',blobs[i]);
-    let txt='';for(let i=0;i<blobs.length;i++)txt+="file 'f"+i+".webp'\nduration "+((delays[i]||200)/1000).toFixed(3)+'\n';
-    txt+="file 'f"+(blobs.length-1)+".webp'\n";
-    _ff.FS('writeFile','c.txt',new TextEncoder().encode(txt));
-    const run=async(sc,q)=>{
-      await _run(['-f','concat','-safe','0','-i','c.txt','-vf','scale='+sc+':'+sc+':force_original_aspect_ratio=decrease,pad='+sc+':'+sc+':(ow-iw)/2:(oh-ih)/2','-quality',String(q),'-loop','0','a.webp']);
-      const r=_read('a.webp');_rm('a.webp');return r;
-    };
-    let r=await run(DIM,40);if(r.size>TARGET)r=await run(DIM,10);if(r.size>TARGET)r=await run(128,10);
-    for(let i=0;i<blobs.length;i++)_rm('f'+i+'.webp');
-    _rm('c.txt');_progCb=null;return r;
-  }
-  async function imgFrom(blob){return new Promise(res=>{const u=URL.createObjectURL(blob);const img=new Image();img.onload=()=>res({img,u});img.src=u;});}
-  async function toWebpCanvas(blob,q,dim){
-    const d=dim||DIM,{img,u}=await imgFrom(blob),c=document.createElement('canvas');
-    c.width=d;c.height=d;c.getContext('2d').drawImage(img,0,0,d,d);URL.revokeObjectURL(u);
-    return new Promise(res=>c.toBlob(res,'image/webp',q));
-  }
-  async function compress(blob){
-    for(const q of[.4,.2,.1,.09,.08,.07,.06,.05,.04,.03,.02,.01]){const o=await toWebpCanvas(blob,q);if(o.size<=TARGET)return o;}
-    return toWebpCanvas(blob,.1,128);
-  }
-  function syncDL(){const show=mode==='anim';frEl.querySelectorAll('.sc-dl').forEach(e=>e.style.display=show?'block':'none');}
+  function setProg(p,l){pBar.style.width=p+'%';if(l!=null)pLbl.textContent=l;}
+
   function renderFrames(){
     frEl.innerHTML='';
     frames.forEach((f,i)=>{
-      const d=document.createElement('div');d.className='sc-fr';d.draggable=true;
+      const d=document.createElement('div');
+      d.className='sc-fr'+(f.croppedBlob?' sc-done':'');
       const img=document.createElement('img');img.src=f.preview;
       const rm=document.createElement('button');rm.className='sc-rm';rm.textContent='x';
-      rm.onclick=e=>{e.stopPropagation();frames.splice(i,1);renderFrames();syncOpts();};
+      rm.onclick=e=>{e.stopPropagation();URL.revokeObjectURL(f.preview);frames.splice(i,1);renderFrames();cfEl.disabled=frames.length===0;};
       d.appendChild(img);d.appendChild(rm);
-      if(!isA(f.file)){
-        const dd=document.createElement('div');dd.className='sc-dl';dd.style.display=mode==='anim'?'block':'none';
-        const inp=document.createElement('input');inp.type='tel';inp.inputMode='numeric';inp.pattern='[0-9]*';inp.placeholder='Tiempo';
-        if(f.delay)inp.value=f.delay;inp.title='ms';
-        inp.oninput=e=>{frames[i].delay=parseInt(e.target.value.replace(/\D/g,''))||null;};
-        inp.onclick=e=>e.stopPropagation();dd.appendChild(inp);d.appendChild(dd);
-      }
-      d.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',String(i));d.classList.add('dragging');});
-      d.addEventListener('dragend',()=>d.classList.remove('dragging'));
-      d.addEventListener('dragover',e=>{e.preventDefault();d.classList.add('drag-over');});
-      d.addEventListener('dragleave',()=>d.classList.remove('drag-over'));
-      d.addEventListener('drop',e=>{e.preventDefault();d.classList.remove('drag-over');const from=parseInt(e.dataTransfer.getData('text/plain'));if(from!==i){[frames[from],frames[i]]=[frames[i],frames[from]];renderFrames();}});
+      d.onclick=()=>{cropQ=[f];nextCrop();};
       frEl.appendChild(d);
     });
     cfEl.disabled=frames.length===0;
   }
-  function syncOpts(){
-    const sc=frames.filter(f=>!isA(f.file)).length;optsEl.style.display=sc>1?'flex':'none';
-    if(sc<=1&&mode==='anim'){mode='sep';modeEl.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.m==='sep'));}
-    cfEl.disabled=frames.length===0;
-  }
-  function videoThumb(file){
-    return new Promise(res=>{
-      const v=document.createElement('video');v.muted=true;v.playsInline=true;
-      const u=URL.createObjectURL(file);
-      v.onloadeddata=()=>{v.currentTime=0;};
-      v.onseeked=()=>{
-        const c=document.createElement('canvas');c.width=80;c.height=80;
-        c.getContext('2d').drawImage(v,0,0,80,80);
-        URL.revokeObjectURL(u);res(c.toDataURL('image/webp',.7));
-      };
-      v.onerror=()=>{URL.revokeObjectURL(u);res('');};
-      v.src=u;v.load();
-    });
-  }
-  async function addFiles(list){
-    const valid=[...list].filter(f=>{if(f.size>MAX_SZ){toast('Max 5MB: '+f.name);return false;}return true;});
-    if(frames.length+valid.length>MAX_F){toast('Max '+MAX_F+' archivos');valid.length=Math.max(0,MAX_F-frames.length);}
-    const nf=await Promise.all(valid.map(async f=>{
-      const preview=isA(f)?await videoThumb(f):URL.createObjectURL(f);
-      return {file:f,preview,delay:null,croppedBlob:null};
-    }));
-    frames.push(...nf);renderFrames();syncOpts();
-    const st=nf.filter(f=>!isA(f.file));
-    if(st.length){cropQ.push(...st);if(cropQ.length===st.length)nextCrop();}
-  }
-  function nextCrop(){
-    if(!cropQ.length){cropM.classList.remove('open');return;}
-    const fr=cropQ[0];cropImg.src=fr.preview;cropM.classList.add('open');
-    if(cropper){cropper.destroy();cropper=null;}
-    cropImg.onload=()=>{if(!window.Cropper)loadCropperJS().then(initCropper);else initCropper();};
-  }
-  function initCropper(){cropper=new Cropper(cropImg,{aspectRatio:1,viewMode:1,dragMode:'move',background:false,autoCropArea:.9});}
+
   function loadCropperJS(){
     return new Promise((res,rej)=>{
+      if(window.Cropper){res();return;}
       const l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css';document.head.appendChild(l);
       const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s);
     });
   }
+
+  function nextCrop(){
+    if(!cropQ.length){cropM.classList.remove('open');return;}
+    const fr=cropQ[0];
+    const idx=frames.indexOf(fr)+1;
+    cropInfo.textContent=idx+' / '+frames.length;
+    cropImg.src=fr.croppedBlob?URL.createObjectURL(fr.croppedBlob):fr.preview;
+    cropM.classList.add('open');
+    if(cropper){cropper.destroy();cropper=null;}
+    cropImg.onload=()=>loadCropperJS().then(()=>{
+      cropper=new Cropper(cropImg,{viewMode:1,dragMode:'move',background:false,autoCropArea:.9});
+    });
+  }
+
   cropOk.onclick=()=>{
     if(!cropper)return;
-    cropper.getCroppedCanvas({width:DIM,height:DIM,imageSmoothingQuality:'high'}).toBlob(blob=>{
-      const fr=cropQ.shift();const idx=frames.indexOf(fr);
-      if(idx>-1){URL.revokeObjectURL(fr.preview);fr.preview=URL.createObjectURL(blob);fr.croppedBlob=blob;const img=frEl.children[idx]?.querySelector('img');if(img)img.src=fr.preview;}
-      if(cropper){cropper.destroy();cropper=null;}nextCrop();
-    },'image/webp',.9);
+    cropper.getCroppedCanvas({imageSmoothingQuality:'high'}).toBlob(blob=>{
+      const fr=cropQ.shift();
+      if(fr.croppedBlob)URL.revokeObjectURL(fr.croppedBlob);
+      fr.croppedBlob=blob;
+      fr.preview=URL.createObjectURL(blob);
+      const idx=frames.indexOf(fr);
+      const el=frEl.children[idx];
+      if(el){el.querySelector('img').src=fr.preview;el.classList.add('sc-done');}
+      if(cropper){cropper.destroy();cropper=null;}
+      if(!cropQ.length&&frames.indexOf(fr)<frames.length-1){
+        const next=frames[frames.indexOf(fr)+1];
+        if(next)cropQ.push(next);
+      }
+      nextCrop();
+    },'image/webp',.92);
   };
-  cropSkip.onclick=()=>{cropQ.shift();if(cropper){cropper.destroy();cropper=null;}nextCrop();};
-  modeEl.querySelectorAll('button').forEach(btn=>{btn.onclick=()=>{modeEl.querySelectorAll('button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');mode=btn.dataset.m;syncDL();};});
+
+  cropSkip.onclick=()=>{
+    const fr=cropQ.shift();
+    if(cropper){cropper.destroy();cropper=null;}
+    if(!cropQ.length&&frames.indexOf(fr)<frames.length-1){
+      const next=frames[frames.indexOf(fr)+1];
+      if(next)cropQ.push(next);
+    }
+    nextCrop();
+  };
+
+  async function addFiles(list){
+    const valid=[...list].filter(f=>{
+      if(!f.type.startsWith('image/')){toast('Solo imagenes: '+f.name);return false;}
+      if(f.size>MAX_SZ){toast('Max 5MB: '+f.name);return false;}
+      return true;
+    });
+    if(frames.length+valid.length>MAX_F){toast('Max '+MAX_F+' archivos');valid.length=Math.max(0,MAX_F-frames.length);}
+    const nf=valid.map(f=>({file:f,preview:URL.createObjectURL(f),croppedBlob:null}));
+    frames.push(...nf);renderFrames();
+    if(nf.length){cropQ.push(...nf);if(cropQ.length===nf.length)nextCrop();}
+  }
+
+  async function toWebp(blob){
+    const q_list=[.92,.7,.5,.3,.15,.08,.04,.02,.01];
+    for(const q of q_list){
+      const out=await new Promise(res=>{
+        const u=URL.createObjectURL(blob);const img=new Image();
+        img.onload=()=>{
+          const c=document.createElement('canvas');c.width=DIM;c.height=DIM;
+          c.getContext('2d').drawImage(img,0,0,DIM,DIM);
+          URL.revokeObjectURL(u);c.toBlob(res,'image/webp',q);
+        };img.src=u;
+      });
+      if(out.size<=TARGET)return out;
+    }
+    return new Promise(res=>{
+      const u=URL.createObjectURL(blob);const img=new Image();
+      img.onload=()=>{
+        const c=document.createElement('canvas');c.width=128;c.height=128;
+        c.getContext('2d').drawImage(img,0,0,128,128);
+        URL.revokeObjectURL(u);c.toBlob(res,'image/webp',.05);
+      };img.src=u;
+    });
+  }
+
+  cfEl.onclick=async()=>{
+    cfEl.disabled=true;progM.classList.add('open');setProg(0,'Procesando...');
+    try{
+      const form=new FormData();
+      for(let i=0;i<frames.length;i++){
+        setProg(Math.round(i/frames.length*80),'Procesando '+(i+1)+'/'+frames.length);
+        const src=frames[i].croppedBlob||frames[i].file;
+        const webp=await toWebp(src);
+        form.append('files',webp,frames[i].file.name.replace(/\.[^.]+$/,'.webp'));
+      }
+      setProg(85,'Subiendo...');
+      const res=await fetch('/api/stickers',{method:'POST',body:form});
+      const {sid}=await res.json();
+      setProg(100,'Listo');
+      progM.classList.remove('open');
+      const foot=document.getElementById('sc-foot');
+      foot.innerHTML='<a class="sk-wa" href="https://wa.me/595972184435?text=CALS='+sid+'" target="_blank">Agregar a WhatsApp</a>';
+      setTimeout(()=>{
+        frames.forEach(f=>{URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);});
+        frames=[];cropQ=[];renderFrames();
+        foot.innerHTML='<button class="sc-btn" id="sc-cf" disabled>Enviar</button>';
+        document.getElementById('sc-cf').onclick=cfEl.onclick;
+      },15000);
+    }catch(e){progM.classList.remove('open');toast('Error: '+e.message);cfEl.disabled=false;}
+  };
+
   dzEl.onclick=()=>inEl.click();
   inEl.onchange=e=>{addFiles(e.target.files);inEl.value='';};
   dzEl.addEventListener('dragover',e=>{e.preventDefault();dzEl.classList.add('over');});
   dzEl.addEventListener('dragleave',()=>dzEl.classList.remove('over'));
   dzEl.addEventListener('drop',e=>{e.preventDefault();dzEl.classList.remove('over');addFiles(e.dataTransfer.files);});
-  cfEl.onclick=processAll;
-  async function processAll(){
-    cfEl.disabled=true;progM.classList.add('open');setProg(0,'Preparando...');
-    try{
-      const results=[],animF=frames.filter(f=>isA(f.file)),statF=frames.filter(f=>!isA(f.file));
-      for(let i=0;i<animF.length;i++){
-        const fr=animF[i];
-        const out=await ffToWebp(fr.file,fr.file.name,p=>setProg(p,'Convirtiendo '+fr.file.name));
-        results.push({blob:out,name:fr.file.name.replace(/\.[^.]+$/,'.webp')});
-      }
-      if(statF.length){
-        if(mode==='sep'||statF.length===1){
-          for(let i=0;i<statF.length;i++){
-            setProg(Math.round(i/statF.length*100),'Frame '+(i+1)+'/'+statF.length);
-            const out=await compress(statF[i].croppedBlob||statF[i].file);
-            results.push({blob:out,name:statF[i].file.name.replace(/\.[^.]+$/,'.webp')});
-          }
-        }else{
-          const out=await ffAnim(statF.map(f=>f.croppedBlob||f.file),statF.map(f=>f.delay||200),p=>setProg(p,'Generando sticker animado...'));
-          results.push({blob:out,name:'sticker_animado.webp'});
-        }
-      }
-      setProg(100,'Listo');progM.classList.remove('open');showPreview(results);
-    }catch(e){progM.classList.remove('open');toast('Error: '+e.message);cfEl.disabled=false;}
-  }
-  let _pend=[];
-  function showPreview(results){
-    _pend=results;prevCont.innerHTML='';let kb=0;
-    if(results.length===1){const img=document.createElement('img');img.src=URL.createObjectURL(results[0].blob);prevCont.appendChild(img);kb=results[0].blob.size/1024;}
-    else{const w=document.createElement('div');w.className='sc-prev-list';results.forEach(r=>{const img=document.createElement('img');img.src=URL.createObjectURL(r.blob);w.appendChild(img);kb+=r.blob.size/1024;});prevCont.appendChild(w);}
-    prevSz.textContent=results.length+' sticker'+(results.length>1?'s':'')+' - '+kb.toFixed(0)+'kb total';
-    prevM.classList.add('open');
-  }
-  prevCancel.onclick=()=>{prevM.classList.remove('open');_pend=[];cfEl.disabled=false;};
-  prevOk.onclick=async()=>{
-    prevM.classList.remove('open');progM.classList.add('open');setProg(0,'Subiendo...');
-    try{
-      const form=new FormData();_pend.forEach((r,i)=>form.append('files',r.blob,r.name||'sticker_'+i+'.webp'));
-      const res=await fetch('/api/stickers',{method:'POST',body:form});
-      const {sid}=await res.json();progM.classList.remove('open');
-      const foot=document.getElementById('sc-foot');
-      foot.innerHTML='<a class="sk-wa" href="https://wa.me/595972184435?text=CALS='+sid+'" target="_blank">Agregar a WhatsApp</a>';
-      setTimeout(()=>{frames=[];_pend=[];cropQ=[];mode='sep';renderFrames();syncOpts();foot.innerHTML='<button class="sc-btn" id="sc-cf" disabled>Procesar</button>';document.getElementById('sc-cf').onclick=processAll;},15000);
-    }catch(e){progM.classList.remove('open');toast('Error subida: '+e.message);cfEl.disabled=false;}
-  };
 })();
 </script>
 </div>
