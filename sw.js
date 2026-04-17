@@ -90,7 +90,10 @@ return;
 
 if(DJ.test(url.pathname)){
 e.respondWith(
-fetch(e.request).catch(()=>caches.match(e.request))
+fetch(e.request).then(r=>{
+if(r&&r.ok)caches.open(V).then(c=>c.put(e.request,r.clone()));
+return r;
+}).catch(()=>caches.match(e.request))
 );
 return;
 }
