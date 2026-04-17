@@ -217,10 +217,10 @@
       _fetch=fetchFile;_ff=new FFmpeg();
       _ff.on('progress',({progress})=>{if(_progCb)_progCb(Math.round(Math.max(0,Math.min(1,progress||0))*100));});
       await _ff.load({
-  workerURL:'/web/scripts/Otros/ffmpeg/worker.js',
-  coreURL:'/web/scripts/Otros/ffmpeg/ffmpeg-core.js',
-  wasmURL:'/web/scripts/Otros/ffmpeg/ffmpeg-core.wasm'
-});
+        workerURL:await toBlobURL(FF_URL.replace('index.js','worker.js'),'text/javascript'),
+        coreURL:await toBlobURL(FC_BASE+'/ffmpeg-core.js','text/javascript'),
+        wasmURL:await toBlobURL(FC_BASE+'/ffmpeg-core.wasm','application/wasm')
+      });
     })();
     return _ffP;
   }
