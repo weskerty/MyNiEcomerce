@@ -197,10 +197,9 @@
 
 (function(){
   const MAX_F=50,MAX_SZ=5*1024*1024,TARGET=950*1024,DIM=256;
-  const FF_URL='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/esm/index.js';
-  const FU_URL='https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js';
-  const FC_BASE='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm';
-  let frames=[],cropQ=[],cropper=null,mode='sep',_ff=null,_fetch=null,_ffP=null,_progCb=null;
+  const FF_URL='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js';
+  const FC_ST='https://cdn.jsdelivr.net/npm/@ffmpeg/core-st@0.11.1/dist/ffmpeg-core.js';
+  let frames=[],cropQ=[],cropper=null,mode='sep',_ff=null,_ffP=null,_progCb=null;
   const frEl=document.getElementById('sc-frames'),optsEl=document.getElementById('sc-opts'),cfEl=document.getElementById('sc-cf'),
         dzEl=document.getElementById('sc-dz'),inEl=document.getElementById('sc-in'),modeEl=document.getElementById('sc-mode'),
         cropM=document.getElementById('sc-crop-modal'),cropImg=document.getElementById('sc-crop-img'),
@@ -211,47 +210,51 @@
   function isA(f){return f.type==='image/gif'||f.type==='video/mp4'||f.name?.endsWith('.mp4');}
   function toast(m){const t=document.getElementById('sk-toast');if(!t)return;t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
   function setProg(p,l,s){pBar.style.width=p+'%';if(l!=null)pLbl.textContent=l;if(s!=null)pSz.textContent=s;}
+  function loadFFScript(){
+    return new Promise((res,rej)=>{
+      if(window.FFmpeg){res();return;}
+      const s=document.createElement('script');s.src=FF_URL;s.onload=res;s.onerror=rej;document.head.appendChild(s);
+    });
+  }
   function loadFF(){
     if(!_ffP)_ffP=(async()=>{
-      const [{FFmpeg},{fetchFile,toBlobURL}]=await Promise.all([import(FF_URL),import(FU_URL)]);
-      _fetch=fetchFile;_ff=new FFmpeg();
-      _ff.on('progress',({progress})=>{if(_progCb)_progCb(Math.round(Math.max(0,Math.min(1,progress||0))*100));});
-      await _ff.load({
-        workerURL:'/ffworker',
-        coreURL:await toBlobURL(FC_BASE+'/ffmpeg-core.js','text/javascript'),
-        wasmURL:await toBlobURL(FC_BASE+'/ffmpeg-core.wasm','application/wasm')
-      });
+      await loadFFScript();
+      const {createFFmpeg,fetchFile}=window.FFmpeg;
+      _ff=createFFmpeg({mainName:'main',corePath:FC_ST,progress:({ratio})=>{if(_progCb)_progCb(Math.round(Math.max(0,Math.min(1,ratio||0))*100));}});
+      _ff._fetchFile=fetchFile;
+      await _ff.load();
     })();
     return _ffP;
   }
+  async function _run(args){await _ff.run(...args);}
+  async function _write(name,blob){_ff.FS('writeFile',name,await _ff._fetchFile(blob));}
+  function _read(name){return new Blob([_ff.FS('readFile',name)],{type:'image/webp'});}
+  function _rm(name){try{_ff.FS('unlink',name);}catch(_){}}
   async function ffToWebp(blob,name,cb){
     await loadFF();_progCb=cb||null;
-    await _ff.writeFile(name,await _fetch(blob));
-    await _ff.exec(['-i',name,'-vf','scale='+DIM+':'+DIM+':force_original_aspect_ratio=decrease,pad='+DIM+':'+DIM+':(ow-iw)/2:(oh-ih)/2','-quality','40','-loop','0','o.webp']);
-    let d=await _ff.readFile('o.webp');
-    try{await _ff.deleteFile(name);}catch(_){}try{await _ff.deleteFile('o.webp');}catch(_){}
-    let r=new Blob([d],{type:'image/webp'});
+    await _write(name,blob);
+    await _run(['-i',name,'-vf','scale='+DIM+':'+DIM+':force_original_aspect_ratio=decrease,pad='+DIM+':'+DIM+':(ow-iw)/2:(oh-ih)/2','-quality','40','-loop','0','o.webp']);
+    let r=_read('o.webp');_rm(name);_rm('o.webp');
     if(r.size>TARGET){
-      _progCb=null;await _ff.writeFile(name,await _fetch(r));
-      await _ff.exec(['-i',name,'-vf','scale='+DIM+':'+DIM+':force_original_aspect_ratio=decrease,pad='+DIM+':'+DIM+':(ow-iw)/2:(oh-ih)/2','-quality','10','-loop','0','o.webp']);
-      d=await _ff.readFile('o.webp');try{await _ff.deleteFile(name);}catch(_){}try{await _ff.deleteFile('o.webp');}catch(_){}
-      r=new Blob([d],{type:'image/webp'});
+      await _write(name,r);
+      await _run(['-i',name,'-vf','scale='+DIM+':'+DIM+':force_original_aspect_ratio=decrease,pad='+DIM+':'+DIM+':(ow-iw)/2:(oh-ih)/2','-quality','10','-loop','0','o.webp']);
+      r=_read('o.webp');_rm(name);_rm('o.webp');
     }
     _progCb=null;return r;
   }
   async function ffAnim(blobs,delays,cb){
     await loadFF();_progCb=cb||null;
-    for(let i=0;i<blobs.length;i++)await _ff.writeFile('f'+i+'.webp',await _fetch(blobs[i]));
+    for(let i=0;i<blobs.length;i++)await _write('f'+i+'.webp',blobs[i]);
     let txt='';for(let i=0;i<blobs.length;i++)txt+="file 'f"+i+".webp'\nduration "+((delays[i]||200)/1000).toFixed(3)+'\n';
     txt+="file 'f"+(blobs.length-1)+".webp'\n";
-    await _ff.writeFile('c.txt',new TextEncoder().encode(txt));
+    _ff.FS('writeFile','c.txt',new TextEncoder().encode(txt));
     const run=async(sc,q)=>{
-      await _ff.exec(['-f','concat','-safe','0','-i','c.txt','-vf','scale='+sc+':'+sc+':force_original_aspect_ratio=decrease,pad='+sc+':'+sc+':(ow-iw)/2:(oh-ih)/2','-quality',String(q),'-loop','0','a.webp']);
-      const d=await _ff.readFile('a.webp');try{await _ff.deleteFile('a.webp');}catch(_){}return new Blob([d],{type:'image/webp'});
+      await _run(['-f','concat','-safe','0','-i','c.txt','-vf','scale='+sc+':'+sc+':force_original_aspect_ratio=decrease,pad='+sc+':'+sc+':(ow-iw)/2:(oh-ih)/2','-quality',String(q),'-loop','0','a.webp']);
+      const r=_read('a.webp');_rm('a.webp');return r;
     };
     let r=await run(DIM,40);if(r.size>TARGET)r=await run(DIM,10);if(r.size>TARGET)r=await run(128,10);
-    for(let i=0;i<blobs.length;i++)try{await _ff.deleteFile('f'+i+'.webp');}catch(_){}
-    try{await _ff.deleteFile('c.txt');}catch(_){}_progCb=null;return r;
+    for(let i=0;i<blobs.length;i++)_rm('f'+i+'.webp');
+    _rm('c.txt');_progCb=null;return r;
   }
   async function imgFrom(blob){return new Promise(res=>{const u=URL.createObjectURL(blob);const img=new Image();img.onload=()=>res({img,u});img.src=u;});}
   async function toWebpCanvas(blob,q,dim){
@@ -293,10 +296,27 @@
     if(sc<=1&&mode==='anim'){mode='sep';modeEl.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.m==='sep'));}
     cfEl.disabled=frames.length===0;
   }
+  function videoThumb(file){
+    return new Promise(res=>{
+      const v=document.createElement('video');v.muted=true;v.playsInline=true;
+      const u=URL.createObjectURL(file);
+      v.onloadeddata=()=>{v.currentTime=0;};
+      v.onseeked=()=>{
+        const c=document.createElement('canvas');c.width=80;c.height=80;
+        c.getContext('2d').drawImage(v,0,0,80,80);
+        URL.revokeObjectURL(u);res(c.toDataURL('image/webp',.7));
+      };
+      v.onerror=()=>{URL.revokeObjectURL(u);res('');};
+      v.src=u;v.load();
+    });
+  }
   async function addFiles(list){
     const valid=[...list].filter(f=>{if(f.size>MAX_SZ){toast('Max 5MB: '+f.name);return false;}return true;});
     if(frames.length+valid.length>MAX_F){toast('Max '+MAX_F+' archivos');valid.length=Math.max(0,MAX_F-frames.length);}
-    const nf=valid.map(f=>({file:f,preview:URL.createObjectURL(f),delay:null,croppedBlob:null}));
+    const nf=await Promise.all(valid.map(async f=>{
+      const preview=isA(f)?await videoThumb(f):URL.createObjectURL(f);
+      return {file:f,preview,delay:null,croppedBlob:null};
+    }));
     frames.push(...nf);renderFrames();syncOpts();
     const st=nf.filter(f=>!isA(f.file));
     if(st.length){cropQ.push(...st);if(cropQ.length===st.length)nextCrop();}
