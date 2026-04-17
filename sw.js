@@ -1,4 +1,4 @@
-const V='v11';
+const V='v12';
 const PRE=[
 'index.html',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
@@ -6,7 +6,6 @@ const PRE=[
 'web/scripts/Otros/MiniSearch/index.js',
 'web/scripts/Otros/core.js',
 'web/scripts/list.json',
-
 'web/es.html',
 'web/estilo.css',
 'web/otros/Archivos/Fuentes/Comfortaa/font.woff2',
@@ -16,24 +15,17 @@ const PRE=[
 'web/ICON.png',
 'web/404.html',
 'web/otros/Archivos/HTML/centralPage.html',
-
 'web/fondo.json',
 'web/otros/Archivos/Imagenes/pexels-cody-king-433493-1118667.jpg',
-
 'web/otros/Archivos/Imagenes/Permanente/404.avif',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/man_factory_worker_animated.avif',
-
-
 'web/scripts/my.js',
 'web/scripts/chat-banner.js',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/first_quarter_moon_face_animated.avif',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/sun_with_face_animated.avif',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg'
-
-
 ];
-
 const DJ=/\/data\.json(\?|$)/;
 const DJ_URL='web/Dinamico/data.json';
 const DJ_CK='__dj_snap';
@@ -87,24 +79,34 @@ await chkDJ();
 }
 
 self.addEventListener('fetch',e=>{
-const u=e.request.url;
+const url=new URL(e.request.url);
+
 if(e.request.method!=='GET')return;
-if(DJ.test(u)){
+
+/* 🔥 NO interceptar externos */
+if(url.origin!==self.location.origin){
+return;
+}
+
+if(DJ.test(url.pathname)){
 e.respondWith(
 fetch(e.request).catch(()=>caches.match(e.request))
 );
 return;
 }
+
 e.waitUntil(maybeCHK());
+
 e.respondWith(
 caches.match(e.request).then(h=>{
 if(h)return h;
 return fetch(e.request).then(r=>{
-if(!r||r.status!==200||r.type==='opaque')return r;
+if(r && r.status===200){
 const rc=r.clone();
 caches.open(V).then(c=>c.put(e.request,rc));
+}
 return r;
-}).catch(()=>caches.match(new URL('web/404.html',self.location).href));
+}).catch(()=>caches.match('web/404.html'));
 })
 );
 });
