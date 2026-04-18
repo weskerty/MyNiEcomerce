@@ -1,5 +1,3 @@
-google.com, pub-1352368083950482, DIRECT, f08c47fec0942fa0
-
 # KLIPY Start
 inventorypartnerdomain=klipy.com
 klipy.com, 7115583, DIRECT
