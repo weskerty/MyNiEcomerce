@@ -74,6 +74,7 @@
   <div id="sk-pg" class="gi-pg"></div>
   <div class="sk-foot">
     <button id="sk-cf" class="sk-cf" disabled>Confirmar (<span id="sk-n">0</span>)</button>
+    <a id="sk-wa-btn" class="sk-wa" style="display:none" href="#" target="_blank">Agrega los Stickers a WhatsApp</a>
   </div>
 </div>
 
@@ -88,6 +89,7 @@
   <div class="sc-frames" id="sc-frames"></div>
   <div class="sk-foot" id="sc-foot">
     <button class="sc-btn" id="sc-cf" disabled>Enviar</button>
+    <a id="sc-wa" class="sk-wa" style="display:none" href="#" target="_blank">Agregar a WhatsApp</a>
   </div>
 </div>
 
@@ -113,6 +115,7 @@
   const PG=18,MAX_SEL=50,CD_MS=10000;
   let R=[],S=new Set(),pg=0,cdEnd=0,cdRaf=null;
   const wEl=document.getElementById('sk-search'),gEl=document.getElementById('sk-grid'),pgEl=document.getElementById('sk-pg'),tEl=document.getElementById('sk-toast');
+  const cfEl=document.getElementById('sk-cf'),waBtn=document.getElementById('sk-wa-btn');
   let _tt;
   function toast(m){tEl.textContent=m;tEl.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>tEl.classList.remove('show'),2200);}
   function startCD(){
@@ -122,8 +125,9 @@
     cdRaf=requestAnimationFrame(tick);
   }
   function reset(){R=[];S.clear();pg=0;gEl.innerHTML='';pgEl.innerHTML='';document.getElementById('sk-q').value='';
-    document.querySelector('#sk-search .sk-foot').innerHTML='<button id="sk-cf" class="sk-cf" disabled>Confirmar (<span id="sk-n">0</span>)</button>';
-    document.getElementById('sk-cf').onclick=confirm;}
+    cfEl.innerHTML='Confirmar (<span id="sk-n">0</span>)';cfEl.disabled=true;cfEl.style.display='';
+    waBtn.style.display='none';waBtn.href='#';
+  }
   function renderPage(p){
     pg=p;const sl=p*PG,chunk=R.slice(sl,sl+PG);gEl.innerHTML='';
     chunk.forEach(item=>{
@@ -152,17 +156,19 @@
     catch(e){gEl.innerHTML='<p class="sk-msg">Error '+e.message+'</p>';}
   }
   async function confirm(){
-    const cf=document.getElementById('sk-cf');if(cf){cf.disabled=true;cf.textContent='Procesando...';}
+    cfEl.disabled=true;cfEl.textContent='Procesando...';
     try{
       const res=await fetch('/api/stickers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({urls:[...S]})});
       const {sid}=await res.json();
-      document.querySelector('#sk-search .sk-foot').innerHTML='<a class="sk-wa" id="sk-wa-btn" href="https://wa.me/595972184435?text=CALS='+sid+'" target="_blank">Agrega los Stickers a WhatsApp</a>';
-      document.getElementById('sk-wa-btn').addEventListener('click',()=>setTimeout(reset,300));
-    }catch(e){const cf2=document.getElementById('sk-cf');if(cf2){cf2.innerHTML='Confirmar (<span id="sk-n">'+S.size+'</span>)';cf2.disabled=false;}}
+      cfEl.style.display='none';
+      waBtn.href='https://wa.me/595972184435?text=CALS='+sid;
+      waBtn.style.display='';
+      waBtn.onclick=()=>setTimeout(reset,300);
+    }catch(e){cfEl.innerHTML='Confirmar (<span id="sk-n">'+S.size+'</span>)';cfEl.disabled=false;}
   }
   document.getElementById('sk-btn').onclick=search;
   document.getElementById('sk-q').addEventListener('keydown',e=>{if(e.key==='Enter')search();});
-  document.getElementById('sk-cf').onclick=confirm;
+  cfEl.onclick=confirm;
   const cont=document.getElementById('content');
   if(cont)cont.addEventListener('contentUnload',()=>{R=[];S.clear();if(cdRaf)cancelAnimationFrame(cdRaf);},{once:true});
 })();
@@ -170,7 +176,9 @@
 (function(){
   const MAX_F=50,MAX_SZ=5*1024*1024,DIM=256,TARGET=950*1024;
   let frames=[],cropQ=[],cropper=null;
-  const frEl=document.getElementById('sc-frames'),cfEl=document.getElementById('sc-cf'),
+  const frEl=document.getElementById('sc-frames'),
+        cfEl=document.getElementById('sc-cf'),
+        waEl=document.getElementById('sc-wa'),
         dzEl=document.getElementById('sc-dz'),inEl=document.getElementById('sc-in'),
         cropM=document.getElementById('sc-crop-modal'),cropImg=document.getElementById('sc-crop-img'),
         cropInfo=document.getElementById('sc-crop-info'),
@@ -203,17 +211,24 @@
     });
   }
 
+  function initCropper(){
+    loadCropperJS().then(()=>{
+      if(cropper){cropper.destroy();cropper=null;}
+      cropper=new Cropper(cropImg,{viewMode:1,dragMode:'move',background:false,autoCropArea:.9});
+    });
+  }
+
   function nextCrop(){
     if(!cropQ.length){cropM.classList.remove('open');return;}
     const fr=cropQ[0];
     const idx=frames.indexOf(fr)+1;
     cropInfo.textContent=idx+' / '+frames.length;
-    cropImg.src=fr.croppedBlob?URL.createObjectURL(fr.croppedBlob):fr.preview;
     cropM.classList.add('open');
     if(cropper){cropper.destroy();cropper=null;}
-    cropImg.onload=()=>loadCropperJS().then(()=>{
-      cropper=new Cropper(cropImg,{viewMode:1,dragMode:'move',background:false,autoCropArea:.9});
-    });
+    const src=fr.croppedBlob?URL.createObjectURL(fr.croppedBlob):fr.preview;
+    cropImg.onload=initCropper;
+    cropImg.src=src;
+    if(cropImg.complete&&cropImg.naturalWidth)initCropper();
   }
 
   cropOk.onclick=()=>{
@@ -295,13 +310,14 @@
       const {sid}=await res.json();
       setProg(100,'Listo');
       progM.classList.remove('open');
-      const foot=document.getElementById('sc-foot');
-      foot.innerHTML='<a class="sk-wa" href="https://wa.me/595972184435?text=CALS='+sid+'" target="_blank">Agregar a WhatsApp</a>';
+      cfEl.style.display='none';
+      waEl.href='https://wa.me/595972184435?text=CALS='+sid;
+      waEl.style.display='';
       setTimeout(()=>{
         frames.forEach(f=>{URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);});
         frames=[];cropQ=[];renderFrames();
-        foot.innerHTML='<button class="sc-btn" id="sc-cf" disabled>Enviar</button>';
-        document.getElementById('sc-cf').onclick=cfEl.onclick;
+        waEl.style.display='none';waEl.href='#';
+        cfEl.style.display='';cfEl.disabled=true;
       },15000);
     }catch(e){progM.classList.remove('open');toast('Error: '+e.message);cfEl.disabled=false;}
   };
