@@ -1,4 +1,4 @@
-const V='v22';
+const V='v24';
 const PRE=[
 'index.html',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
@@ -15,6 +15,7 @@ const PRE=[
 'web/ICON.png',
 'web/404.html',
 'web/otros/Archivos/HTML/centralPage.html',
+'web/otros/Archivos/HTML/apps.html',
 'web/fondo.json',
 'web/otros/Archivos/Imagenes/pexels-cody-king-433493-1118667.jpg',
 'web/otros/Archivos/Imagenes/Permanente/404.avif',
