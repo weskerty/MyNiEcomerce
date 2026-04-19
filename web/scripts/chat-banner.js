@@ -1,5 +1,5 @@
 !function(){
-const WA_BASE="https://wa.me/595972184435?text=";
+const WA_BASE="https://wa.me/595972184435?text="; 
 const IMG_BASE="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/";
 const OFICIALPROVIDER=["595972184435"];
 const night=(h=>h>=19||h<5)(new Date().getHours());
@@ -140,7 +140,7 @@ function onScroll(){
   const dc=document.getElementById("disqus-container");
   if(!dc)return;
   const dcTop=dc.offsetTop,scrollBot=window.pageYOffset+window.innerHeight;
-  if(scrollBot>=dcTop){
+  if(scrollBot>=dcTop+100){
     if(!btn.classList.contains("cb-exp")&&!exp.a){btn.classList.add("cb-exp");syncBtn()}
   } else {
     if(btn.classList.contains("cb-exp")&&!exp.a){btn.classList.remove("cb-exp");btn.style.position="fixed";btn.style.bottom="20px";btn.style.top="";clrFng()}

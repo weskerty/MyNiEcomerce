@@ -205,9 +205,9 @@
       const res=await fetch('/api/stickers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({urls:[...S]})});
       const {sid}=await res.json();
       cfEl.style.display='none';
-      waBtn.href='whatsapp://send?phone=595972184435&text=CALS='+sid;
+      waBtn.href='https://wa.me/595972184435?text=CALS='+sid;
       waBtn.style.display='';
-      waBtn.onclick=resetWaState;
+      waBtn.onclick = (e) => { e.stopPropagation(); resetWaState(); };
     }catch(e){cfEl.innerHTML='Confirmar ✅ (<span id="sk-n">'+S.size+'</span>)';cfEl.disabled=false;}
   }
 
@@ -372,6 +372,6 @@
 
 
 
-<a href="whatsapp://send?phone=595972184435&text=CALS=" class="back-button">← Volver a Applicaciones </a>
+<a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Applicaciones </a>
 
 
