@@ -64,7 +64,7 @@
 
 <a class="_nb l" href="web/blogs.html">🔔</a>
 <a class="_nb r" href="web/search.html">🔍</a>
-<img class="_ic" src="web/otros/Archivos/Imagenes/Permanente/ICONKlipy.avif" width="90px">
+<img class="_ic" src="web/otros/Archivos/Imagenes/Permanente/ICON-Klipy.avif" width="90px">
 
 <div class="sk-wrap" id="sk-search">
   <div class="sk-bar">
@@ -75,8 +75,8 @@
   <div id="sk-grid" class="sk-grid"></div>
   <div id="sk-pg" class="gi-pg"></div>
   <div class="sk-foot">
-    <button id="sk-cf" class="sk-cf" disabled>Confirmar (<span id="sk-n">0</span>)</button>
-    <a id="sk-wa-btn" class="sk-wa" style="display:none" href="#" target="_blank">Agrega los Stickers a WhatsApp</a>
+    <button id="sk-cf" class="sk-cf" disabled>Confirmar ✅ (<span id="sk-n">0</span>)</button>
+    <a id="sk-wa-btn" class="sk-wa" style="display:none" href="#" target="_blank">Agregar a WhatsApp</a>
   </div>
 </div>
 
@@ -86,7 +86,7 @@
   </div>
   <div class="sc-dz" id="sc-dz">
     <input type="file" id="sc-in" accept="image/*" multiple>
-    <div>Subir imagenes<br><small style="opacity:.6">Max 5MB - Max 50 archivos</small></div>
+    <div>Subir imagenes<br><small style="opacity:.6">Max 50F-5MB </small></div>
   </div>
   <div class="sc-frames" id="sc-frames"></div>
   <div class="sk-foot" id="sc-foot">
@@ -108,7 +108,7 @@
 
 <div class="sc-modal sc-proc-bg" id="sc-prog-modal">
   <div style="font-size:2rem">⚙</div>
-  <div class="sc-plbl" id="sc-prog-lbl">Subiendo...</div>
+  <div class="sc-plbl" id="sc-prog-lbl">📤 Subiendo...</div>
   <div class="sc-pbar-w"><div class="sc-pbar" id="sc-pbar"></div></div>
 </div>
 
@@ -366,4 +366,13 @@
   dzEl.addEventListener('drop',e=>{e.preventDefault();dzEl.classList.remove('over');addFiles(e.dataTransfer.files);});
 })();
 </script>
+</div>
+
+
+</br>
+</br>
+</br>
+
+</div>
+    <a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver al Inicio</a>
 </div>
