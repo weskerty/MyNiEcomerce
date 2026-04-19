@@ -207,7 +207,7 @@
       cfEl.style.display='none';
       waBtn.href='https://wa.me/595972184435?text=CALS='+sid;
       waBtn.style.display='';
-      waBtn.onclick = (e) => { e.stopPropagation(); resetWaState(); };
+      waBtn.onclick=(e)=>{e.preventDefault();window.open(waBtn.href,'_blank');resetWaState()};
     }catch(e){cfEl.innerHTML='Confirmar ✅ (<span id="sk-n">'+S.size+'</span>)';cfEl.disabled=false;}
   }
 
@@ -317,8 +317,11 @@
       scCf.style.display='none';
       scWa.href='https://wa.me/595972184435?text=CALS='+sid;
       scWa.style.display='';
-      scWa.onclick=()=>{
+      scWa.onclick=(e)=>{
+        e.preventDefault();
+        const url=scWa.href;
         if(scWaTimer){clearTimeout(scWaTimer);scWaTimer=null;}
+        window.open(url,'_blank');
         frames.forEach(f=>{URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);});
         frames=[];cropQ=[];
         scWa.style.display='none';scWa.href='#';
