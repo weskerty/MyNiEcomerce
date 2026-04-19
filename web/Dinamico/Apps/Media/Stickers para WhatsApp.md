@@ -114,7 +114,7 @@
 
 <script>
 (function(){
-  const PG=18,MAX_SEL=50,CD_MS=10000,ADS=true;
+  const PG=18,MAX_SEL=50,CD_MS=10000,ADS=false;
   let R=[],S=new Set(),pg=0,cdEnd=0,cdRaf=null;
   const gEl=document.getElementById('sk-grid'),pgEl=document.getElementById('sk-pg'),tEl=document.getElementById('sk-toast');
   const cfEl=document.getElementById('sk-cf'),waBtn=document.getElementById('sk-wa-btn');
