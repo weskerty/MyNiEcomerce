@@ -114,7 +114,7 @@
 
 <script>
 (function(){
-  const PG=18,MAX_SEL=50,CD_MS=10000;
+  const PG=18,MAX_SEL=50,CD_MS=10000,ADS=true;
   let R=[],S=new Set(),pg=0,cdEnd=0,cdRaf=null;
   const gEl=document.getElementById('sk-grid'),pgEl=document.getElementById('sk-pg'),tEl=document.getElementById('sk-toast');
   const cfEl=document.getElementById('sk-cf'),waBtn=document.getElementById('sk-wa-btn');
@@ -143,8 +143,11 @@
     pg=p;const sl=p*PG,chunk=R.slice(sl,sl+PG);gEl.innerHTML='';
     chunk.forEach(item=>{
       if(item.type==='ad'){
-        if(!item.content)return;
-        const d=document.createElement('div');d.className='sk-ad';d.innerHTML=item.content;gEl.appendChild(d);return;
+        if(!item.content||!ADS)return;
+        const d=document.createElement('div');d.className='sk-ad';d.innerHTML=item.content;
+        const vis=[...d.querySelectorAll('*')].some(el=>el.style.display!=='none'&&el.style.opacity!=='0'&&el.style.visibility!=='hidden');
+        if(vis)gEl.appendChild(d);
+        return;
       }
       const url=item.url;if(!url)return;
       const sel=S.has(url),atMax=!sel&&S.size>=MAX_SEL;
