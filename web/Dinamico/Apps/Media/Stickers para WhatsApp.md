@@ -18,15 +18,7 @@
 .sk-it img{width:100%;height:100%;object-fit:fill;display:block}
 .sk-it:hover{transform:scale(1.05)}
 .sk-it.sk-on{border-color:#4ade80;box-shadow:0 0 0 2px #4ade8055}
-.sk-it.sk-on::after {
-  content: '✅'; 
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  font-size: 1.2em; 
-  text-shadow: none; 
-}
-
+.sk-it.sk-on::after{content:'✅';position:absolute;top:4px;right:6px;font-size:1.1em}
 .sk-it.sk-max{opacity:.45;cursor:not-allowed}
 .sk-it.sk-max:hover{transform:none}
 .sk-ad{grid-column:1/-1;display:flex;justify-content:center;overflow:hidden}
