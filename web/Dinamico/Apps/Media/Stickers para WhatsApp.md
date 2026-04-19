@@ -20,7 +20,7 @@
 .sk-it.sk-on::after{content:'✓';position:absolute;top:4px;right:6px;color:#4ade80;font-size:1.1em;font-weight:bold;text-shadow:0 1px 4px rgba(0,0,0,.9)}
 .sk-it.sk-max{opacity:.45;cursor:not-allowed}
 .sk-it.sk-max:hover{transform:none}
-.sk-ad{grid-column:1/-1;display:flex;justify-content:center;overflow:hidden;margin:4px 0}
+.sk-ad{grid-column:1/-1;display:flex;justify-content:center;overflow:hidden}
 .gi-pg{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:4px}
 .gi-pg button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:white;padding:6px 18px;cursor:pointer;font-size:.85em;transition:background .2s}
 .gi-pg button:hover{background:rgba(255,255,255,.22)}
@@ -115,7 +115,7 @@
 <script>
 (function(){
   const PG=18,MAX_SEL=50,CD_MS=10000;
-  let R=[],S=new Set(),pg=0,hasNext=false,apiPg=1,curQ='',cdEnd=0,cdRaf=null;
+  let R=[],S=new Set(),pg=0,cdEnd=0,cdRaf=null;
   const gEl=document.getElementById('sk-grid'),pgEl=document.getElementById('sk-pg'),tEl=document.getElementById('sk-toast');
   const cfEl=document.getElementById('sk-cf'),waBtn=document.getElementById('sk-wa-btn');
   let _tt;
@@ -131,7 +131,7 @@
   }
 
   function reset(){
-    R=[];S.clear();pg=0;hasNext=false;apiPg=1;curQ='';
+    R=[];S.clear();pg=0;
     gEl.innerHTML='';pgEl.innerHTML='';document.getElementById('sk-q').value='';
     cfEl.innerHTML='Confirmar (<span id="sk-n">0</span>)';cfEl.disabled=true;cfEl.style.display='';
     waBtn.style.display='none';waBtn.href='#';
@@ -143,7 +143,8 @@
     pg=p;const sl=p*PG,chunk=R.slice(sl,sl+PG);gEl.innerHTML='';
     chunk.forEach(item=>{
       if(item.type==='ad'){
-        const d=document.createElement('div');d.className='sk-ad';d.innerHTML=item.content||'';gEl.appendChild(d);return;
+        if(!item.content)return;
+        const d=document.createElement('div');d.className='sk-ad';d.innerHTML=item.content;gEl.appendChild(d);return;
       }
       const url=item.url;if(!url)return;
       const sel=S.has(url),atMax=!sel&&S.size>=MAX_SEL;
@@ -163,30 +164,26 @@
   }
 
   function renderPg(){
-    pgEl.innerHTML='';
-    const total=Math.ceil(R.length/PG);
-    if(total<=1&&!hasNext)return;
+    pgEl.innerHTML='';const total=Math.ceil(R.length/PG);if(total<=1)return;
     const bP=document.createElement('button');bP.textContent='Anterior';bP.disabled=pg===0;bP.onclick=()=>renderPage(pg-1);
-    const bN=document.createElement('button');bN.textContent='Siguiente';bN.disabled=pg>=total-1&&!hasNext;
-    bN.onclick=()=>{if(pg<total-1)renderPage(pg+1);else doFetch(curQ,apiPg+1,true);};
+    const bN=document.createElement('button');bN.textContent='Siguiente';bN.disabled=pg>=total-1;bN.onclick=()=>renderPage(pg+1);
     const sp=document.createElement('span');sp.textContent=(pg+1)+'/'+total;
     pgEl.appendChild(bP);pgEl.appendChild(sp);pgEl.appendChild(bN);
   }
 
-  async function doFetch(q,p,append){
-    if(!append){gEl.innerHTML='<div class="sk-searching"><span>⏳</span><span>Buscando</span></div>';pgEl.innerHTML='';}
-    const params=new URLSearchParams({cid:getCID(),page:p});if(q)params.set('q',q);
+  async function doFetch(q){
+    gEl.innerHTML='<div class="sk-searching"><span>⏳</span><span>Buscando</span></div>';pgEl.innerHTML='';
+    const params=new URLSearchParams({cid:getCID()});if(q)params.set('q',q);
     try{
       const j=await fetch('/api/stickers?'+params).then(r=>r.json());
-      if(!j.data){toast('Error API');return;}
-      if(append){const prev=R.length;R.push(...j.data);apiPg=p;hasNext=!!j.has_next;curQ=q;renderPage(Math.floor(prev/PG));}
-      else{R=j.data;apiPg=p;pg=0;hasNext=!!j.has_next;curQ=q;R.length?renderPage(0):(gEl.innerHTML='<p class="sk-msg">Sin resultados</p>');}
-    }catch(e){toast('Error: '+e.message);if(!append)gEl.innerHTML='';}
+      R=j.data||[];pg=0;S.clear();updCf();
+      R.length?renderPage(0):(gEl.innerHTML='<p class="sk-msg">Sin resultados</p>');
+    }catch(e){toast('Error: '+e.message);gEl.innerHTML='';}
   }
 
   function search(){
     if(Date.now()<cdEnd)return;const q=document.getElementById('sk-q').value.trim();if(!q)return;
-    S.clear();updCf();startCD();doFetch(q,1,false);
+    startCD();doFetch(q);
   }
 
   async function confirm(){
@@ -207,7 +204,7 @@
   const cont=document.getElementById('content');
   if(cont)cont.addEventListener('contentUnload',()=>{R=[];S.clear();if(cdRaf)cancelAnimationFrame(cdRaf);},{once:true});
 
-  doFetch('',1,false);
+  doFetch('');
 })();
 
 (function(){

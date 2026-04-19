@@ -14,7 +14,7 @@ const EP = {
 };
 
 function norm(item) {
-  if (item.type === 'ad') return { type: 'ad', content: item.content, width: item.width, height: item.height };
+  if (item.type === 'ad') return item.content ? { type: 'ad', content: item.content, width: item.width, height: item.height } : null;
   const f = item.file;
   if (!f) return null;
   const url = typeof f.webp === 'string' ? f.webp : f[QUALITY]?.webp?.url;
@@ -26,14 +26,13 @@ export async function onRequestGet(context) {
   const { request, env } = context;
   const sp = new URL(request.url).searchParams;
   const q   = sp.get('q') || '';
-  const page = sp.get('page') || '1';
   const cid  = sp.get('cid') || 'anon';
   const ua   = request.headers.get('user-agent') || '';
   const key  = env.KLIPY_KEY;
   const mode = q ? 'search' : 'trending';
 
   const base = new URLSearchParams({
-    page, per_page: '24',
+    page: '1', per_page: '50',
     customer_id: cid,
     locale: LOCALE,
     content_filter: CONTENT_FILTER,
@@ -52,18 +51,16 @@ export async function onRequestGet(context) {
 
   const results = await Promise.all(fetches);
   const data = [];
-  let has_next = false;
 
   for (const r of results) {
     if (!r?.result) continue;
-    has_next = has_next || !!r.data?.has_next;
     for (const item of (r.data?.data || [])) {
       const n = norm(item);
       if (n) data.push(n);
     }
   }
 
-  return new Response(JSON.stringify({ data, has_next }), { status: 200, headers: RH });
+  return new Response(JSON.stringify({ data }), { status: 200, headers: RH });
 }
 
 export async function onRequestPost(context) {
