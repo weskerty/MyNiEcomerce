@@ -64,11 +64,11 @@
 
 <a class="_nb l" href="web/blogs.html">🔔</a>
 <a class="_nb r" href="web/search.html">🔍</a>
-<img class="_ic" src="web/ICON.png" width="90px">
+<img class="_ic" src="web/otros/Archivos/Imagenes/Permanente/ICONKlipy.avif" width="90px">
 
 <div class="sk-wrap" id="sk-search">
   <div class="sk-bar">
-    <input id="sk-q" type="text" placeholder="Buscar stickers...">
+    <input id="sk-q" type="text" placeholder="Buscar en Klipy...">
     <button id="sk-btn">Buscar</button>
     <button id="sk-crear" onclick="document.getElementById('sk-search').style.display='none';document.getElementById('sk-creator').style.display=''">Crear</button>
   </div>
