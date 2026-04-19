@@ -2,7 +2,7 @@ const RH = { "Content-Type": "application/json" };
 const QUALITY = 'sm';
 const LOCALE = 'PY';
 const CONTENT_FILTER = 'off';
-const ENABLED = { stickers: true, gifs: true, memes: true, emojis: true, clips: true };
+const ENABLED = { stickers: true, gifs: true, memes: true, emojis: false, clips: true };
 
 const BASE = 'https://api.klipy.com/api/v1';
 const EP = {
