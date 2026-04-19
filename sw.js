@@ -1,4 +1,4 @@
-const V='v16';
+const V='v18';
 const PRE=[
 'index.html',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',

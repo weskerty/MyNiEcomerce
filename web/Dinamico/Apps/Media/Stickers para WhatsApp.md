@@ -205,7 +205,7 @@
       const res=await fetch('/api/stickers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({urls:[...S]})});
       const {sid}=await res.json();
       cfEl.style.display='none';
-      waBtn.href='https://wa.me/595972184435?text=CALS='+sid;
+      waBtn.href='whatsapp://send?phone=595972184435&text=CALS='+sid;
       waBtn.style.display='';
       waBtn.onclick=resetWaState;
     }catch(e){cfEl.innerHTML='Confirmar ✅ (<span id="sk-n">'+S.size+'</span>)';cfEl.disabled=false;}
@@ -363,7 +363,7 @@
 <details>
   <summary style="font-size: 1.5em; font-weight: bold;"> 🤔 ¿Como Usar?</summary>
 
-
+<iframe width="560" height="315" src="https://www.youtube.com/embed/7J9x16irofc?si=cp_GO720xz8qq6R-&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 </details>
 
@@ -373,4 +373,5 @@
 
 
 <a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Applicaciones </a>
+
 

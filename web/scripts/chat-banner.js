@@ -333,6 +333,7 @@ window.addEventListener("scroll",_onScrollThrottled);
 window.addEventListener("resize",_onScrollThrottled);
 
 const content=document.getElementById("content");
-st.r=!0;onScroll();requestAnimationFrame(initProduct);
-if(content)content.addEventListener("contentLoaded",()=>{st.r=!0;setTimeout(()=>{onScroll();requestAnimationFrame(initProduct)},100)});
+requestAnimationFrame(initProduct);
+setTimeout(()=>{st.r=!0;onScroll()},500);
+if(content)content.addEventListener("contentLoaded",()=>{st.r=!1;setTimeout(()=>{st.r=!0;onScroll();requestAnimationFrame(initProduct)},1000)});
 }();
