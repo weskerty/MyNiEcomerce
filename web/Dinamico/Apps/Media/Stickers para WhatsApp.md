@@ -366,12 +366,19 @@
   dzEl.addEventListener('drop',e=>{e.preventDefault();dzEl.classList.remove('over');addFiles(e.dataTransfer.files);});
 })();
 </script>
-</div>
-
 
 </br>
 </br>
 </br>
+
+<details>
+  <summary style="font-size: 1.5em; font-weight: bold;"> 🤔 ¿Como Usar?</summary>
+
+
+
+</details>
+
+
 
 </div>
     <a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver al Inicio</a>

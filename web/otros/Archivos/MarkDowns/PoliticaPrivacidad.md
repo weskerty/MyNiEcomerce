@@ -27,7 +27,7 @@ Para deshabilitar las cookies de Disqus tienes Multiples Opciones;
 
 <details><summary style="font-size: 1.5em; font-weight: bold;"> Tienda y Vendedores </summary>
 
-Nuestra web funciona como un Shopping, Se incluyen otros vendedores alineados a la politica. Estos vendedores pueden no respetar estas reglas, se les insta y controla para garantizar el cumplimiento; quienes no lo hagan serán **excluidos del catálogo**.
+Nuestra web funciona como un Shopping, Se incluyen otros vendedores que prioricen el cuidado Ambiental. Estos vendedores pueden no respetar estas reglas, se les insta y controla para garantizar el cumplimiento; quienes no lo hagan serán **excluidos del catálogo**.
 
 Puedes Reportar a los Vendedores que no Siguen las Politicas de [Se Parte ↗️](web/otros/Archivos/MarkDowns/SeParte.md)
 
@@ -40,6 +40,8 @@ Che Agana no se hace responsable por las garantias, calidad del producto y demas
 </br>
 
 ---
+
+<!--
 
 <details><summary style="font-size: 1.5em; font-weight: bold;">🏆 Sorteos</summary>
 
@@ -103,6 +105,7 @@ Para ejercer estos derechos, contacta a:
 </details>
 </br>
 
+-->
 
 ---
 
