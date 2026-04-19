@@ -13,13 +13,13 @@
       "type": "image/x-icon"
     },
     {
-      "src": "web/otros/Archivos/Imagenes/Permanente/ICON-APP.png",
+      "src": "web/ICON.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "web/otros/Archivos/Imagenes/Permanente/ICON-APP.png",
+      "src": "web/ICON.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"

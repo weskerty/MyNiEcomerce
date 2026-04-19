@@ -1,5 +1,10 @@
-## Instalar Aplicacion
-Al Instala como Aplicacion reduces el consumo de datos moviles, Carga las cosas mas rapido y siempre tendras casi todo a disposicion incluso sin conexion a internet. Util si tienes plan de datos limitado asi no gastar saldo innecesariamente. 
+<div style="text-align:center;">
+
+<h2>Instalar Aplicacion</h2>
+<p>
+Al instalar como aplicacion reduces el consumo de datos moviles, cargas mas rapido y tienes casi todo disponible incluso sin conexion.
+Util si tienes datos limitados para no gastar saldo innecesariamente.
+</p>
 
 <style>
 .app-btn{margin:10px auto 0;padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:.78rem;letter-spacing:.05em;cursor:pointer;transition:background .2s,transform .15s}
@@ -8,22 +13,27 @@ Al Instala como Aplicacion reduces el consumo de datos moviles, Carga las cosas 
 </style>
 
 <button id="PI" class="app-btn" style="display:none">📲 Instalar App 💕</button>
+
 <script>
 const _b=document.getElementById('PI');
 if(window._PWA)_b.style.display='';
 _b.onclick=()=>{if(!window._PWA)return;window._PWA.prompt();window._PWA=null;_b.style.display='none';};
 </script>
 
-### ⬆️ Pruebalo ⬆️ 
+<h3 style="display:flex;justify-content:center;">⬆️ Pruebalo ⬆️</h3>
+<p>y si no te gusta se desinstala como cualquier otra app 🤗</p>
 
-y si no te Gusta se Desinstala como cualquier otra App 🤗
+<div style="display:flex;justify-content:center;">
+  <img src="web/otros/Archivos/Imagenes/Permanente/Install.md/UnInstall.avif"
+  style="width:320px;height:120px;object-fit:cover;border-radius:12px">
+</div>
 
 
-## Notificaciones 
-
-Tambien puedes activar las notificaciones para recibir las ofertas y nuevos productos 
+<h2>Notificaciones</h2>
+<p>Tambien puedes activar notificaciones para recibir ofertas y nuevos productos</p>
 
 <button id="NT" class="app-btn" style="display:none"></button>
+
 <script>
 (function(){
 const W='https://yoganopy-push.marcoygor0.workers.dev';
@@ -38,3 +48,5 @@ async function tog(sw){btn.disabled=true;try{const s=await sw.pushManager.getSub
 swR().then(sw=>{upd(sw);btn.addEventListener('click',()=>tog(sw));}).catch(()=>{});
 })();
 </script>
+
+</div>
