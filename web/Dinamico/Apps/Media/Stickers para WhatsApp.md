@@ -372,6 +372,6 @@
 
 
 
-<a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Applicaciones </a>
+<a href="whatsapp://send?phone=595972184435&text=CALS=" class="back-button">← Volver a Applicaciones </a>
 
 

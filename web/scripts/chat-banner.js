@@ -334,6 +334,6 @@ window.addEventListener("resize",_onScrollThrottled);
 
 const content=document.getElementById("content");
 requestAnimationFrame(initProduct);
-setTimeout(()=>{st.r=!0;onScroll()},500);
-if(content)content.addEventListener("contentLoaded",()=>{st.r=!1;setTimeout(()=>{st.r=!0;onScroll();requestAnimationFrame(initProduct)},1000)});
+setTimeout(()=>{st.r=!0;onScroll()},1000);
+if(content)content.addEventListener("contentLoaded",()=>{st.r=!1;requestAnimationFrame(initProduct);setTimeout(()=>{st.r=!0;onScroll()},1000)});
 }();
