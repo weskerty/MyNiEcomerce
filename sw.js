@@ -1,4 +1,4 @@
-const V='v24';
+const V='v25';
 const PRE=[
 'index.html',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
@@ -34,7 +34,7 @@ const TEMP_ROUTES=[
 
 const DJ=/\/data\.json(\?|$)/;
 const DJ_URL='web/Dinamico/data.json';
-const DJ_CK='__dj_snap';
+const DJ_ABS=new URL(DJ_URL,self.location).href;
 const TS_CK='__chk_ts';
 const CHK_INT=36000000;
 const TEMP_C=V+'-tmp';
@@ -72,13 +72,13 @@ self.addEventListener('activate',e=>{
 
 async function chkDJ(){
   try{
-    const r=await fetch(DJ_URL+'?_='+Date.now());
+    const r=await fetch(DJ_ABS+'?_='+Date.now());
     if(!r||!r.ok)return;
     const txt=await r.text();
     const c=await caches.open(V);
-    const prev=await c.match(DJ_CK);
+    const prev=await c.match(DJ_ABS);
     const prevTxt=prev?await prev.text():null;
-    await c.put(DJ_CK,new Response(txt));
+    await c.put(DJ_ABS,new Response(txt,{headers:{'Content-Type':'application/json'}}));
     await c.put(TS_CK,new Response(String(Date.now())));
     if(prevTxt===null)return;
     if(txt!==prevTxt){
@@ -111,10 +111,13 @@ self.addEventListener('fetch',e=>{
 
   if(DJ.test(url.pathname)){
     e.respondWith(
-      fetch(e.request).then(r=>{
-        if(r&&r.ok)caches.open(V).then(c=>c.put(e.request,r.clone()));
+      fetch(DJ_ABS+'?_='+Date.now()).then(r=>{
+        if(r&&r.ok){
+          const body=new Response(r.clone().body,{headers:{'Content-Type':'application/json'}});
+          caches.open(V).then(c=>c.put(DJ_ABS,body));
+        }
         return r;
-      }).catch(()=>caches.match(e.request))
+      }).catch(()=>caches.open(V).then(c=>c.match(DJ_ABS)))
     );
     return;
   }

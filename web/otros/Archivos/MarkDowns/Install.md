@@ -2,7 +2,7 @@
 
 <h2>Instalar Aplicacion</h2>
 <p>
-Al instalar como aplicacion reduces el consumo de datos moviles, cargas mas rapido y tienes casi todo disponible incluso sin conexion.
+Al instalar como aplicacion gastas menos saldo al navegar por aqui, carga mas rapido y tienes casi todo disponible incluso sin conexion.
 Util si tienes datos limitados para no gastar saldo innecesariamente.
 </p>
 
@@ -13,12 +13,6 @@ Util si tienes datos limitados para no gastar saldo innecesariamente.
 </style>
 
 <button id="PI" class="app-btn" style="display:none">📲 Instalar App 💕</button>
-
-<script>
-const _b=document.getElementById('PI');
-if(window._PWA)_b.style.display='';
-_b.onclick=()=>{if(!window._PWA)return;window._PWA.prompt();window._PWA=null;_b.style.display='none';};
-</script>
 
 <h3 style="display:flex;justify-content:center;">⬆️ Pruebalo ⬆️</h3>
 <p>y si no te gusta se desinstala como cualquier otra app 🤗</p>
