@@ -1,5 +1,5 @@
 !function(){
-const WA_BASE="https://wa.me/595972184435?text="; 
+const WA_BASE="https://wa.me/595972184435?text=";
 const IMG_BASE="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/";
 const OFICIALPROVIDER=["595972184435"];
 const night=(h=>h>=19||h<5)(new Date().getHours());
@@ -37,8 +37,8 @@ css.textContent=`
 .cb-mx{font-size:28px;cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0}
 .cb-mx:hover{background:rgba(255,255,255,0.2)}
 .cb-mb{padding:20px;overflow-y:auto;flex:1;color:#fff}
-.cb-cp{margin-bottom:30px}
-.cb-cn{font-size:14px;font-weight:normal;margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.15);opacity:.7;letter-spacing:.04em}
+.cb-cp{margin-bottom:12px;border:1px solid rgba(255,255,255,0.25);border-radius:12px;padding:12px}
+.cb-cn{font-size:12px;font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.2);opacity:.85;letter-spacing:.07em;text-transform:uppercase}
 .cb-ci{background:rgba(255,255,255,0.1);border-radius:12px;padding:10px 15px;margin-bottom:8px;transition:opacity 0.4s ease,transform 0.4s ease;display:flex;align-items:center;gap:10px}
 .cb-ci.cb-rm{opacity:0;transform:translateY(-20px)}
 .cb-ct{font-size:15px;font-weight:bold;flex:1;min-width:0}
@@ -47,13 +47,15 @@ css.textContent=`
 .cb-cc button{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
 .cb-cc button:hover{background:rgba(255,255,255,0.3)}
 .cb-cc span{min-width:30px;text-align:center;font-weight:bold}
-.cb-ca{display:flex;gap:10px;margin-top:20px;justify-content:center;flex-wrap:wrap}
-.cb-bt{padding:12px 24px;border-radius:20px;border:1px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.2);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;gap:8px}
+.cb-ca{display:flex;gap:10px;justify-content:flex-start;flex-wrap:wrap}
+.cb-cf{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
+.cb-ch{margin:0;font-size:14px;opacity:.7;font-weight:normal;text-decoration:none;white-space:nowrap}
+.cb-cn a{text-decoration:none}
+.cb-bt{padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.2);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;gap:6px}
 .cb-bt:hover{background:rgba(255,255,255,0.3)}
 .cb-bt.cb-wa{background:rgba(34,197,94,0.3);border-color:rgba(34,197,94,0.6)}
 .cb-bt.cb-tg{background:rgba(59,130,246,0.3);border-color:rgba(59,130,246,0.6)}
 .cb-cs{white-space:nowrap;font-size:13px;opacity:.85}
-.cb-ch{text-align:center;margin:.6rem 0 .3rem;font-size:14px;opacity:.7;font-weight:normal}
 .cb-em{text-align:center;padding:40px 20px;font-size:18px;opacity:0.7}
 #cs{background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3);border-radius:15px;padding:20px;margin:20px auto;max-width:340px;color:#fff;text-align:center;overflow:hidden}
 #cs.cb-404{padding:0}
@@ -80,7 +82,7 @@ document.head.appendChild(css);
 const IMG404='<img src="web/otros/Archivos/Imagenes/Permanente/404.avif">';
 function set404(el){el.className='cb-404';el.innerHTML=IMG404}
 
-let st={c:[],r:!1},ab={b:!1},exp={s:null,a:!1};
+let st={c:[],r:!1},ab={b:!1},exp={s:null,a:!1,et:null};
 
 const btn=document.createElement("div");
 btn.className="cb-btn";
@@ -140,10 +142,12 @@ function onScroll(){
   const dc=document.getElementById("disqus-container");
   if(!dc)return;
   const dcTop=dc.offsetTop,scrollBot=window.pageYOffset+window.innerHeight;
-  if(scrollBot>=dcTop+100){
-    if(!btn.classList.contains("cb-exp")&&!exp.a){btn.classList.add("cb-exp");syncBtn()}
-  } else {
-    if(btn.classList.contains("cb-exp")&&!exp.a){btn.classList.remove("cb-exp");btn.style.position="fixed";btn.style.bottom="20px";btn.style.top="";clrFng()}
+  if(scrollBot>=dcTop-100&&!btn.classList.contains("cb-exp")&&!exp.a&&!exp.et){
+    exp.et=setTimeout(()=>{exp.et=null;if(!btn.classList.contains("cb-exp")&&!exp.a){btn.classList.add("cb-exp");syncBtn();}},2000);
+  }
+  if(scrollBot<dcTop){
+    clearTimeout(exp.et);exp.et=null;
+    if(btn.classList.contains("cb-exp")&&!exp.a){btn.classList.remove("cb-exp");btn.style.position="fixed";btn.style.bottom="20px";btn.style.top="";clrFng();}
   }
   if(btn.classList.contains("cb-exp")){
     const dcBot=dcTop+dc.offsetHeight;
@@ -200,19 +204,19 @@ function renderCart(){
   let html=multi?'<div style="text-align:center;margin-bottom:8px"><a href="web/otros/Archivos/MarkDowns/SerParte.md" style="color:#facc15;font-weight:600;font-size:.85rem">⚠️ Varios Proveedores ❔</a></div>':"";
   gks.forEach(k=>{
     const g=groups[k];
-    html+=`<div class="cb-cp" data-gk="${k}">${multi?`<p class="cb-cn">📦 ${g.n}</p>`:""}`;
+    html+=`<div class="cb-cp" data-gk="${k}"><p class="cb-cn">📦 ${g.n}</p>`;
     g.items.forEach(x=>{
       const sub=x.p*x.d;
       html+=`<div class="cb-ci" data-key="${x.t}-${x.n}-${x.i}"><span class="cb-ct">${x.b}</span><span class="cb-cs">💰 ${fmt(sub)}Gs</span><div class="cb-cc"><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="-">−</button><span>${x.d}</span><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="+">+</button></div></div>`;
     });
     const msg="Hola quiero%0A"+g.items.map(x=>`[${x.d}] de ${encodeURIComponent(x.b)} [ID=${x.i}]`).join("%0A");
-    const svgWA=`<img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg" style="width:20px;height:20px;vertical-align:middle;margin-right:6px">`;
-    const svgTG=`<img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg" style="width:20px;height:20px;vertical-align:middle;margin-right:6px">`;
+    const svgWA=`<img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg" style="width:28px;height:28px;vertical-align:middle">`;
+    const svgTG=`<img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg" style="width:28px;height:28px;vertical-align:middle">`;
     let btns="";
-    if("wt"===g.t)btns=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}WhatsApp</button><button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}Telegram</button>`;
-    else if("w"===g.t)btns=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}WhatsApp</button>`;
-    else if("t"===g.t)btns=`<button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}Telegram</button>`;
-    html+=`<h5 class="cb-ch">Termina la Compra en</h5><div class="cb-ca">${btns}</div></div>`;
+    if("wt"===g.t)btns=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}↗️</button><button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}↗️</button>`;
+    else if("w"===g.t)btns=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}↗️</button>`;
+    else if("t"===g.t)btns=`<button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}↗️</button>`;
+    html+=`<div class="cb-cf"><h5 class="cb-ch">Termina la Compra en</h5><div class="cb-ca">${btns}</div></div></div>`;
   });
   modal.querySelector(".cb-mb").innerHTML=html;
   updMHT();
@@ -333,7 +337,6 @@ window.addEventListener("scroll",_onScrollThrottled);
 window.addEventListener("resize",_onScrollThrottled);
 
 const content=document.getElementById("content");
-requestAnimationFrame(initProduct);
-setTimeout(()=>{st.r=!0;onScroll()},1000);
-if(content)content.addEventListener("contentLoaded",()=>{st.r=!1;requestAnimationFrame(initProduct);setTimeout(()=>{st.r=!0;onScroll()},1000)});
+st.r=!0;onScroll();requestAnimationFrame(initProduct);
+if(content)content.addEventListener("contentLoaded",()=>{st.r=!0;setTimeout(()=>{onScroll();requestAnimationFrame(initProduct)},100)});
 }();

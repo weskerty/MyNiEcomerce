@@ -1,4 +1,4 @@
-const V='v25';
+const V='v26';
 const PRE=[
 'index.html',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
@@ -39,9 +39,10 @@ const TS_CK='__chk_ts';
 const CHK_INT=36000000;
 const TEMP_C=V+'-tmp';
 const TMP_META='__tmp_meta';
+const MD_C=V+'-md';
 
 async function getTmpMeta(){
-  try{const c=await caches.open(TEMP_C);const r=await c.match(TMP_META);return r?JSON.parse(await r.text()):{};} catch{return{};}
+  try{const c=await caches.open(TEMP_C);const r=await c.match(TMP_META);return r?JSON.parse(await r.text()):{};}catch{return{};}
 }
 async function setTmpMeta(m){
   const c=await caches.open(TEMP_C);await c.put(TMP_META,new Response(JSON.stringify(m)));
@@ -56,6 +57,23 @@ async function tmpPut(req,res,ttl){
   const m=await getTmpMeta();m[req.url]=Date.now()+ttl;await setTmpMeta(m);
 }
 
+function EP(dj){
+  return Object.values(dj.galleries).flatMap(cat=>Object.values(cat).flat());
+}
+function P2MD(p){return p.replace(/\.[^.]+$/,'.md');}
+async function syncMD(newTxt,prevTxt){
+  try{
+    const toURL=p=>new URL(p,self.location).href;
+    const nSet=new Set(EP(JSON.parse(newTxt)).map(P2MD).map(toURL));
+    const oSet=prevTxt?new Set(EP(JSON.parse(prevTxt)).map(P2MD).map(toURL)):new Set();
+    const c=await caches.open(MD_C);
+    await Promise.all([...oSet].filter(u=>!nSet.has(u)).map(u=>c.delete(u)));
+    await Promise.all([...nSet].filter(u=>!oSet.has(u)).map(async u=>{
+      try{const r=await fetch(u);if(r.ok)await c.put(u,r);}catch{}
+    }));
+  }catch{}
+}
+
 self.addEventListener('install',e=>{
   e.waitUntil(
     caches.open(V).then(c=>c.addAll(PRE)).then(()=>self.skipWaiting())
@@ -65,7 +83,7 @@ self.addEventListener('install',e=>{
 self.addEventListener('activate',e=>{
   e.waitUntil(
     caches.keys().then(ks=>Promise.all(
-      ks.filter(k=>k!==V&&k!==TEMP_C).map(k=>caches.delete(k))
+      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==MD_C).map(k=>caches.delete(k))
     )).then(()=>self.clients.claim())
   );
 });
@@ -80,8 +98,8 @@ async function chkDJ(){
     const prevTxt=prev?await prev.text():null;
     await c.put(DJ_ABS,new Response(txt,{headers:{'Content-Type':'application/json'}}));
     await c.put(TS_CK,new Response(String(Date.now())));
-    if(prevTxt===null)return;
-    if(txt!==prevTxt){
+    if(prevTxt===null||txt!==prevTxt)await syncMD(txt,prevTxt);
+    if(prevTxt!==null&&txt!==prevTxt){
       await self.registration.showNotification('Che Agana',{
         body:'Hay Novedades!',
         icon:'web/ICON.png',
@@ -104,20 +122,25 @@ async function maybeCHK(){
 
 self.addEventListener('fetch',e=>{
   const url=new URL(e.request.url);
-
   if(e.request.method!=='GET')return;
-
   if(url.origin!==self.location.origin)return;
 
   if(DJ.test(url.pathname)){
     e.respondWith(
       fetch(DJ_ABS+'?_='+Date.now()).then(r=>{
-        if(r&&r.ok){
-          const body=new Response(r.clone().body,{headers:{'Content-Type':'application/json'}});
-          caches.open(V).then(c=>c.put(DJ_ABS,body));
-        }
+        if(r&&r.ok)caches.open(V).then(c=>c.put(DJ_ABS,r.clone()));
         return r;
       }).catch(()=>caches.open(V).then(c=>c.match(DJ_ABS)))
+    );
+    return;
+  }
+
+  if(url.pathname.endsWith('.md')){
+    e.respondWith(
+      fetch(e.request).then(r=>{
+        if(r&&r.ok)caches.open(MD_C).then(c=>c.put(e.request,r.clone()));
+        return r;
+      }).catch(()=>caches.open(MD_C).then(c=>c.match(e.request)))
     );
     return;
   }
