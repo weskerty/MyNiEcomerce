@@ -202,7 +202,7 @@ function mkGrid(c,imgs){
         bN.onclick=()=>{pg++;renderPage(pg,true)};
         nav.appendChild(bP);nav.appendChild(bN);inner.appendChild(nav)}
       nav.firstChild.disabled=p===0;nav.lastChild.disabled=p===maxPg()}
-    if(a){inner.classList.remove('gi-anim');void inner.offsetWidth;inner.classList.add('gi-anim')}}
+    if(a){inner.classList.remove('gi-anim');void inner.offsetWidth;inner.classList.add('gi-anim');c.scrollIntoView({behavior:'smooth',block:'start'})}}
   renderPage(0,false)}
 
 async function pCont(c,isSw){

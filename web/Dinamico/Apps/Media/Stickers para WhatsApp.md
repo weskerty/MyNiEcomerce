@@ -72,9 +72,9 @@
   <div id="sk-grid" class="sk-grid"></div>
   <div id="sk-pg" class="gi-pg"></div>
   <div class="sk-foot">
-    <button id="sk-cf" class="sk-cf" disabled>Confirmar ✅ (<span id="sk-n">0</span>)</button>
+    <button id="sk-cf" class="sk-cf" disabled>👉 Confirmar ✅ (<span id="sk-n">0</span>) 👈</button>
     <a id="sk-wa-btn" class="sk-wa" style="display:none" href="#" target="_blank">Agregar a WhatsApp</a>
-    <button id="sc-cf" class="sc-btn" style="display:none" disabled>Enviar</button>
+    <button id="sc-cf" class="sc-btn" style="display:none" disabled>👉 Enviar 👈</button>
     <a id="sc-wa" class="sk-wa" style="display:none" href="#" target="_blank">Agregar a WhatsApp</a>
   </div>
 </div>
@@ -144,7 +144,7 @@
     S.clear();
     gEl.querySelectorAll('.sk-it.sk-on,.sk-it.sk-max').forEach(e=>e.classList.remove('sk-on','sk-max'));
     waBtn.style.display='none';waBtn.href='#';
-    cfEl.innerHTML='Confirmar ✅ (<span id="sk-n">0</span>)';
+    cfEl.innerHTML='👉 Confirmar ✅ (<span id="sk-n">0</span>) 👈';
     cfEl.disabled=true;cfEl.style.display='';
   }
 
@@ -208,7 +208,7 @@
       waBtn.href='https://wa.me/595972184435?text=CALS='+sid;
       waBtn.style.display='';
       waBtn.onclick=(e)=>{e.preventDefault();window.open(waBtn.href,'_blank');resetWaState()};
-    }catch(e){cfEl.innerHTML='Confirmar ✅ (<span id="sk-n">'+S.size+'</span>)';cfEl.disabled=false;}
+    }catch(e){cfEl.innerHTML='👉 Confirmar ✅ (<span id="sk-n">'+S.size+'</span>) 👈';cfEl.disabled=false;}
   }
 
   function renderFrames(){
@@ -242,10 +242,10 @@
   }
 
   function nextCrop(){
-    if(!cropQ.length){cropM.classList.remove('open');return;}
+    if(!cropQ.length){cropM.classList.remove('open');document.body.style.overflow='';return;}
     const fr=cropQ[0],idx=frames.indexOf(fr)+1;
     cropInfo.textContent=idx+' / '+frames.length;
-    cropM.classList.add('open');
+    cropM.classList.add('open');document.body.style.overflow='hidden';
     if(cropper){cropper.destroy();cropper=null;}
     const src=fr.croppedBlob?URL.createObjectURL(fr.croppedBlob):fr.preview;
     cropImg.onload=initCropper;cropImg.src=src;
@@ -301,7 +301,7 @@
   }
 
   scCf.onclick=async()=>{
-    scCf.disabled=true;progM.classList.add('open');setProg(0,'Procesando...');
+    scCf.disabled=true;progM.classList.add('open');document.body.style.overflow='hidden';setProg(0,'Procesando...');
     try{
       const form=new FormData();
       for(let i=0;i<frames.length;i++){
@@ -313,7 +313,7 @@
       setProg(85,'Subiendo...');
       const res=await fetch('/api/stickers',{method:'POST',body:form});
       const {sid}=await res.json();
-      setProg(100,'Listo');progM.classList.remove('open');
+      setProg(100,'Listo');progM.classList.remove('open');document.body.style.overflow='';
       scCf.style.display='none';
       scWa.href='https://wa.me/595972184435?text=CALS='+sid;
       scWa.style.display='';
@@ -337,7 +337,7 @@
         if(R.length)renderPage(0);else doFetch('');
         scWaTimer=null;
       },15000);
-    }catch(e){progM.classList.remove('open');toast('Error: '+e.message);scCf.disabled=false;}
+    }catch(e){progM.classList.remove('open');document.body.style.overflow='';toast('Error: '+e.message);scCf.disabled=false;}
   };
 
   document.getElementById('sk-btn').onclick=search;

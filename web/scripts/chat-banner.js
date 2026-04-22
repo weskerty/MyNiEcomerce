@@ -36,7 +36,7 @@ css.textContent=`
 .cb-mhT{font-size:.68em;font-weight:normal;opacity:.85;white-space:nowrap}
 .cb-mx{font-size:28px;cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0}
 .cb-mx:hover{background:rgba(255,255,255,0.2)}
-.cb-mb{padding:20px;overflow-y:auto;flex:1;color:#fff}
+.cb-mb{padding:20px;overflow-y:auto;flex:1;color:#fff;overscroll-behavior:contain}
 .cb-cp{margin-bottom:12px;border:1px solid rgba(255,255,255,0.25);border-radius:12px;padding:12px}
 .cb-cn{font-size:12px;font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.2);opacity:.85;letter-spacing:.07em;text-transform:uppercase}
 .cb-ci{background:rgba(255,255,255,0.1);border-radius:12px;padding:10px 15px;margin-bottom:8px;transition:opacity 0.4s ease,transform 0.4s ease;display:flex;align-items:center;gap:10px}
@@ -222,7 +222,7 @@ function renderCart(){
   updMHT();
 }
 
-function toggleModal(){modal.classList.toggle("cb-v");if(modal.classList.contains("cb-v")){renderCart()}}
+function toggleModal(){modal.classList.toggle("cb-v");const open=modal.classList.contains("cb-v");document.body.style.overflow=open?"hidden":"";if(open)renderCart();}
 
 function initProduct(){
   const hash=location.hash;if(!hash)return;
