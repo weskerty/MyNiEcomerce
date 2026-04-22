@@ -6,11 +6,11 @@ const ENABLED = { stickers: true, gifs: true, memes: true, emojis: false, clips:
 
 const BASE = 'https://api.klipy.com/api/v1';
 const EP = {
-  stickers: { search: 'stickers/search',       trending: 'stickers/trending' },
-  gifs:     { search: 'gifs/search',            trending: 'gifs/trending' },
-  memes:    { search: 'static-memes/search',    trending: 'static-memes/trending' },
-  emojis:   { search: 'emojis/search',          trending: 'emojis/trending' },
-  clips:    { search: 'clips/search',            trending: 'clips/trending' },
+  stickers: { search: 'stickers/search',    trending: 'stickers/trending' },
+  gifs:     { search: 'gifs/search',         trending: 'gifs/trending' },
+  memes:    { search: 'static-memes/search', trending: 'static-memes/trending' },
+  emojis:   { search: 'emojis/search',       trending: 'emojis/trending' },
+  clips:    { search: 'clips/search',        trending: 'clips/trending' },
 };
 
 function norm(item) {
@@ -24,11 +24,11 @@ function norm(item) {
 
 export async function onRequestGet(context) {
   const { request, env } = context;
-  const sp = new URL(request.url).searchParams;
+  const sp  = new URL(request.url).searchParams;
   const q   = sp.get('q') || '';
-  const cid  = sp.get('cid') || 'anon';
-  const ua   = request.headers.get('user-agent') || '';
-  const key  = env.KLIPY_KEY;
+  const cid = sp.get('cid') || 'anon';
+  const ua  = request.headers.get('user-agent') || '';
+  const key = env.KLIPY_KEY;
   const mode = q ? 'search' : 'trending';
 
   const base = new URLSearchParams({
@@ -41,17 +41,17 @@ export async function onRequestGet(context) {
   });
   if (q) base.set('q', q);
 
-  const fetches = Object.entries(ENABLED)
-    .filter(([, v]) => v)
-    .map(([name]) =>
-      fetch(`${BASE}/${key}/${EP[name][mode]}?${base}`, {
-        headers: { 'Content-Type': 'application/json', 'User-Agent': ua }
-      }).then(r => r.ok ? r.json() : null).catch(() => null)
-    );
+  const results = await Promise.all(
+    Object.entries(ENABLED)
+      .filter(([, v]) => v)
+      .map(([name]) =>
+        fetch(`${BASE}/${key}/${EP[name][mode]}?${base}`, {
+          headers: { 'Content-Type': 'application/json', 'User-Agent': ua }
+        }).then(r => r.ok ? r.json() : null).catch(() => null)
+      )
+  );
 
-  const results = await Promise.all(fetches);
   const data = [];
-
   for (const r of results) {
     if (!r?.result) continue;
     for (const item of (r.data?.data || [])) {
@@ -68,7 +68,7 @@ export async function onRequestPost(context) {
   const ct = request.headers.get('content-type') || '';
 
   if (ct.includes('multipart/form-data')) {
-    const res = await fetch(`${env.SERVER_URL}/upload`, {
+    const res = await fetch(`${env.SERVER_URL}/stickers/upload`, {
       method: 'POST',
       headers: { 'x-bridge-key': env.BRIDGE_KEY, 'content-type': ct },
       body: request.body
@@ -76,7 +76,7 @@ export async function onRequestPost(context) {
     return new Response(await res.text(), { status: res.status, headers: RH });
   }
 
-  const res = await fetch(`${env.SERVER_URL}/process`, {
+  const res = await fetch(`${env.SERVER_URL}/stickers/process`, {
     method: 'POST',
     headers: { 'x-bridge-key': env.BRIDGE_KEY, 'Content-Type': 'application/json' },
     body: await request.text()
