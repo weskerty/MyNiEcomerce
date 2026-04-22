@@ -40,6 +40,9 @@ const CHK_INT=36000000;
 const TEMP_C=V+'-tmp';
 const TMP_META='__tmp_meta';
 const MD_C=V+'-md';
+const SHARE_C='share-pending';
+const SHARE_KEY='__share_data';
+const APPS_URL='web/Dinamico/Apps/es.html';
 
 async function getTmpMeta(){
   try{const c=await caches.open(TEMP_C);const r=await c.match(TMP_META);return r?JSON.parse(await r.text()):{};}catch{return{};}
@@ -74,6 +77,22 @@ async function syncMD(newTxt,prevTxt){
   }catch{}
 }
 
+async function saveShareData(formData){
+  const meta={title:formData.get('title')||'',text:formData.get('text')||'',url:formData.get('url')||'',files:[]};
+  const raw=formData.getAll('files').filter(f=>f&&f.size>0);
+  const sc=await caches.open(SHARE_C);
+  await Promise.all(raw.map(async(f,i)=>{
+    const key='/__share_file_'+i;
+    await sc.put(key,new Response(f,{headers:{'Content-Type':f.type||'application/octet-stream','X-Share-Name':f.name||('file'+i),'X-Share-Type':f.type||''}}));
+    meta.files.push({key,name:f.name||('file'+i),type:f.type||'',size:f.size});
+  }));
+  await sc.put(SHARE_KEY,new Response(JSON.stringify(meta),{headers:{'Content-Type':'application/json'}}));
+}
+
+async function clearShareData(){
+  await caches.delete(SHARE_C);
+}
+
 self.addEventListener('install',e=>{
   e.waitUntil(
     caches.open(V).then(c=>c.addAll(PRE)).then(()=>self.skipWaiting())
@@ -83,7 +102,7 @@ self.addEventListener('install',e=>{
 self.addEventListener('activate',e=>{
   e.waitUntil(
     caches.keys().then(ks=>Promise.all(
-      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==MD_C).map(k=>caches.delete(k))
+      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==MD_C&&k!==SHARE_C).map(k=>caches.delete(k))
     )).then(()=>self.clients.claim())
   );
 });
@@ -122,6 +141,38 @@ async function maybeCHK(){
 
 self.addEventListener('fetch',e=>{
   const url=new URL(e.request.url);
+
+  if(url.pathname==='/_share'&&e.request.method==='POST'){
+    e.respondWith((async()=>{
+      try{await saveShareData(await e.request.formData());}catch{}
+      return Response.redirect('/#'+APPS_URL,303);
+    })());
+    return;
+  }
+
+  if(url.pathname==='/_share_pending'&&e.request.method==='GET'){
+    e.respondWith((async()=>{
+      const sc=await caches.open(SHARE_C);
+      const meta=await sc.match(SHARE_KEY);
+      if(!meta)return new Response('null',{headers:{'Content-Type':'application/json'}});
+      const m=JSON.parse(await meta.text());
+      if(!m.files||!m.files.length)return new Response(JSON.stringify({...m,blobs:[]}),{headers:{'Content-Type':'application/json'}});
+      const blobs=await Promise.all(m.files.map(async f=>{
+        const r=await sc.match(f.key);
+        if(!r)return null;
+        const ab=await r.arrayBuffer();
+        return {name:f.name,type:f.type,size:f.size,data:Array.from(new Uint8Array(ab))};
+      }));
+      return new Response(JSON.stringify({...m,blobs:blobs.filter(Boolean)}),{headers:{'Content-Type':'application/json'}});
+    })());
+    return;
+  }
+
+  if(url.pathname==='/_share_clear'&&e.request.method==='POST'){
+    e.respondWith(clearShareData().then(()=>new Response('ok')));
+    return;
+  }
+
   if(e.request.method!=='GET')return;
   if(url.origin!==self.location.origin)return;
 

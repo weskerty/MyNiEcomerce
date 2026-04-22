@@ -98,8 +98,8 @@
 
 <script>
 (function(){
-  const PG=18,MAX_SEL=50,CD_MS=10000,ADS=false;
-  const MAX_F=50,MAX_SZ=20*1024*1024,DIM=256,TARGET=900*1024;
+  const PG=18,MAX_SEL=30,CD_MS=10000,ADS=false;
+  const MAX_F=30,MAX_SZ=20*1024*1024,DIM=256,TARGET=900*1024;
 
   let R=[],S=new Set(),pg=0,cdEnd=0,cdRaf=null,scWaTimer=null;
   let frames=[],cropQ=[],cropper=null,mode='search';
@@ -355,7 +355,22 @@
     frames=[];if(cdRaf)cancelAnimationFrame(cdRaf);
   },{once:true});
 
-  doFetch('');
+  (async()=>{
+    try{
+      const r=await fetch('/_share_pending');
+      const d=await r.json();
+      if(!d||(!d.blobs?.length&&!d.url&&!d.text)){doFetch('');return;}
+      await fetch('/_share_clear',{method:'POST'});
+      if(d.blobs?.length){
+        const files=d.blobs.map(b=>new File([new Uint8Array(b.data)],b.name,{type:b.type}));
+        setMode('create');
+        await addFiles(files);
+      }else if(d.url||d.text){
+        const q=(d.url||d.text).trim();
+        qEl.value=q;startCD();doFetch(q);
+      }else doFetch('');
+    }catch{doFetch('');}
+  })();
 })();
 </script>
 
