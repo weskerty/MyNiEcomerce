@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UI Chat</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,sans-serif}
+body{
+height:100vh;
+background:url('https://picsum.photos/900/1600') center/cover no-repeat fixed;
+color:#fff;
+}
+
+/* CONTENEDOR CON BLUR GLOBAL */
+.A{
+height:100%;
+display:flex;
+flex-direction:column;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(25px);
+-webkit-backdrop-filter:blur(25px);
+}
+
+/* HEADER */
+.B{
+padding:12px;
+display:flex;
+align-items:center;
+gap:10px;
+}
+.B input{
+flex:1;
+padding:10px 14px;
+border:none;
+border-radius:20px;
+background:rgba(255,255,255,0.2);
+color:#fff;
+outline:none;
+}
+
+/* LISTA */
+.C{
+flex:1;
+overflow:auto;
+padding:10px;
+}
+.D{
+display:flex;
+align-items:center;
+gap:12px;
+padding:12px;
+border-radius:18px;
+background:rgba(255,255,255,0.1);
+margin-bottom:10px;
+cursor:pointer;
+transition:.2s;
+}
+.D:hover{background:rgba(255,255,255,0.2)}
+.D img{width:42px;height:42px;border-radius:50%}
+
+/* NAV */
+.H{
+display:flex;
+justify-content:space-around;
+padding:12px;
+}
+.H button{
+background:rgba(255,255,255,0.15);
+border:none;
+color:#fff;
+font-size:18px;
+padding:10px 16px;
+border-radius:15px;
+transition:.2s;
+}
+.H button:hover{background:rgba(255,255,255,0.25)}
+
+/* CHAT (igual) */
+.E{
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+display:none;
+flex-direction:column;
+}
+.E.active{display:flex}
+
+.F{
+padding:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(25px);
+}
+
+.G{
+flex:1;
+overflow:auto;
+padding:12px;
+}
+
+.M{display:flex;margin:6px 0}
+.M.r{justify-content:flex-end}
+
+.N{
+max-width:75%;
+padding:12px 16px;
+border-radius:20px;
+background:rgba(255,255,255,0.2);
+backdrop-filter:blur(20px);
+}
+
+.I{
+display:flex;
+gap:10px;
+padding:12px;
+margin:10px;
+border-radius:25px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(25px);
+}
+.I input{
+flex:1;
+padding:12px 14px;
+border:none;
+border-radius:20px;
+background:rgba(255,255,255,0.2);
+backdrop-filter:blur(20px);
+color:#fff;
+outline:none;
+}
+.I button{
+background:rgba(255,255,255,0.2);
+border:none;
+color:#fff;
+font-size:18px;
+padding:10px 14px;
+border-radius:50%;
+backdrop-filter:blur(20px);
+transition:.2s;
+}
+.I button:hover{background:rgba(255,255,255,0.3)}
+
+button{cursor:pointer}
+img{border-radius:50%}
+</style>
+</head>
+<body>
+
+<div class="A" id="main">
+
+<div class="B">
+<span>Mensajes</span>
+<input placeholder="Buscar">
+<span>⋮</span>
+</div>
+
+<div class="C">
+<div class="D" onclick="o()">
+<img src="https://i.pravatar.cc/100">
+<span>Chat Demo</span>
+</div>
+</div>
+
+<div class="H">
+<button>💬</button>
+<button>👥</button>
+<button>📢</button>
+</div>
+
+</div>
+
+<div class="E" id="chat">
+
+<div class="F">
+<div style="display:flex;align-items:center;gap:10px">
+<img src="https://i.pravatar.cc/100" style="width:36px;height:36px">
+<span>Chat Demo</span>
+</div>
+<div>
+<button onclick="c()">✕</button>
+</div>
+</div>
+
+<div class="G" id="m">
+<div class="M"><div class="N">Hola</div></div>
+<div class="M r"><div class="N">Que tal?</div></div>
+<div class="M"><div class="N">Todo bien</div></div>
+</div>
+
+<div class="I">
+<button>😊</button>
+<input id="t">
+<button onclick="s()">➤</button>
+</div>
+
+</div>
+
+<script>
+let st=0
+
+function o(){
+main.style.display='none'
+chat.classList.add('active')
+history.pushState({c:1},'')
+st=1
+}
+
+function c(){
+chat.classList.remove('active')
+main.style.display='flex'
+st=0
+}
+
+window.onpopstate=()=>{
+if(st){
+c()
+}
+}
+
+function s(){
+let v=t.value.trim()
+if(!v)return
+let d=document.createElement('div')
+d.className='M r'
+d.innerHTML='<div class="N">'+v+'</div>'
+m.appendChild(d)
+t.value=''
+m.scrollTop=m.scrollHeight
+}
+</script>
+
+</body>
+</html>

@@ -1,13 +1,76 @@
+<style>
+._nb{position:absolute;top:0;font-size:1.8rem;text-decoration:none;z-index:10}
+._nb.l{left:0}
+._nb.r{right:0}
+</style>
+<a class="_nb l" href="web/blogs.html">🔔</a>
+<a class="_nb r" href="web/search.html">🔍</a>
 <div style="text-align:center;">
 
 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Sun%20with%20Face.png" alt="Man Technologist Medium-Dark Skin Tone" width="150px" />
 
 
-<!-- </br><a href="web/otros/guias/juegoseguro/">JuegosPC</a> · <a href="https://weskerty.github.io/test/minecraft/"> Juega con Nosotros </a> -->
+<h2>😊 Comunidad Paraguaya</h2>
+        <p>Lugar para Descubrir grupos y actividades<p>
 
-<h2>😊 Comunidad Paraguay Libre</h2>
-        <p>Una comunidad segura para ser tú mismo.<p>
-		
+<div class="rss-section">
+    <h2>📰 Novedades</h2>
+    <div id="rss-section"></div>
+</div>
+
+<script>
+async function loadRSS(){
+  const K="rss_cache_v1",T=6e5;
+  const C=localStorage.getItem(K);
+  if(C){
+    const J=JSON.parse(C);
+    if(Date.now()-J.t<T){
+      document.getElementById("rss-section").innerHTML=J.h;
+      return;
+    }
+  }
+  const A=new AbortController(),S=setTimeout(()=>A.abort(),8000);
+  try{
+    const R=await fetch("https://api.rss2json.com/v1/api.json?rss_url=https://",{signal:A.signal});
+    clearTimeout(S);
+    const D=await R.json();
+    const F=new DOMParser();
+    const H=D.items.slice(0,3).map(I=>{
+      const X=F.parseFromString(I.description,"text/html");
+      const P=[...X.body.querySelectorAll("script,iframe,object,embed,link,style")];
+      P.forEach(n=>n.remove());
+      const S=[...X.body.querySelectorAll("*")];
+      S.forEach(n=>{
+        [...n.attributes].forEach(a=>{
+          if(/^on/i.test(a.name)||a.name==="srcdoc") n.removeAttribute(a.name);
+        });
+      });
+      const Dv=document.createElement("div");
+      Dv.className="rss-item";
+      const H3=document.createElement("h3");
+      const A1=document.createElement("a");
+      A1.href=I.link;
+      A1.target="_blank";
+      A1.rel="noopener noreferrer";
+      A1.textContent=I.title;
+      H3.appendChild(A1);
+      const P1=document.createElement("p");
+      P1.textContent=X.body.textContent||"";
+      Dv.appendChild(H3);
+      Dv.appendChild(P1);
+      return Dv.outerHTML;
+    }).join("");
+    document.getElementById("rss-section").innerHTML=H;
+    localStorage.setItem(K,JSON.stringify({t:Date.now(),h:H}));
+  }catch(e){
+    document.getElementById("rss-section").innerHTML="<p>Nada por Ahora 😿</p>";
+  }
+}
+loadRSS();
+</script>
+
+<!-- 
+
 	<h4>🛂 REGLAS</h4>
 		<p>Como en cualquier comunidad, aquí también hay reglas para convivir en armonía. Aunque cada grupo/canal tiene sus propias normas, estas son las principales;</p>
 		<details>
@@ -31,104 +94,145 @@
 		   Muchos no toleran que otros tengan ideologias contrarias a las suyas y se pelean. Respetemos la libertad del otro de pensar y decir lo que quiera.
 </details>
 
-<h2>😸 Unete cuando Quieras </h2>
-<a href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20"><img src="web/otros/Archivos/Imagenes/Permanente/SVG/WhatsAppButtonGreen.svg" alt="WhatsApp" height="128" /></a>
-
-<!--
-
-<div class="contenedor-imagenes">
-	<a href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20"><img src="https://way-mark.ru/wp-content/uploads/2018/11/600px-WhatsApp_logo-color-vertical.svg_-160x160.png" alt="WhatsApp" height="128" /></a>
-	<a href="https://t.me/+72FYwsOoitxhZmNh"><img src="https://front.com/assets/integrations/telegram/telegram_logo.png" alt="Telegram"  height="128" /></a>
-	<a href="https://discord.gg/fQhZaTdQsk"><img src="https://github.com/user-attachments/assets/ad78bfde-436e-49f5-86a6-873fbb2a28b3" height="128" alt="Discord"  /></a>
-	<a href="https://matrix.to/#/#Politica:matrix.org"><img src="https://github.com/user-attachments/assets/7a1d0dbb-1284-45ad-a434-3bc054effe9a" height="128" alt="Matrix"  /></a>
-<a href="https://steamcommunity.com/chat/invite/jLZU62Ap"><img src="https://i.imgur.com/tjO53Hy.png" alt="Steam"  /></a>
-	
-</div>
-			<p>Aunque la comunidad Oficial esta en WhatsApp, utilizamos <a href="https://github.com/42wim/matterbridge">un bot</a> como Puente para conectarnos💕. El bot puede fallar ya que utiliza <a href="https://photos.app.goo.gl/sQRGvXzG5KZ8r8HN6">un Telefono como Servidor</a>. </p>
-			
-	-->
-
-<!--
-
-<br>
-		<details>
-            <summary>💡 Recomendaciones ⬇️</summary>
-			<p>1️⃣ Desactiva las Notificaciones de los Grupos</p>
-			<img src="https://telegra.ph/file/2df022a08ed9b5fd0dd91.jpg" alt="Silenciar WhatsApp" width="90%" height="240" loading="lazy" />
-			
-			
-</details>
-
 -->
 
-<br>
-
-<h2>😾 Apelar Baneo Injusto ⬇</h2>
-
-<div class="galeriaMD">
-
-<a href="https://wa.me/595972184435">
-<img src="https://i.ibb.co/RcGnFJ5/MArcoCir.png" alt="MarcoRota" loading="lazy">
-</a>
-
-<a href="https://wa.me/595976667467">
-<img src="https://i.ibb.co/dMpkSpj/EMACirc.png" alt="Emanuel" loading="lazy">
-</a>
-
-<a href="https://wa.me/595992562841">
-<img src="https://i.ibb.co/wNK1PPR/NizCirc.png" alt="EdNIZ" loading="lazy">
-</a>
-
-<a href="https://wa.me/595972232260">
-<img src="https://i.ibb.co/p47pt2J/image.png" alt="Rodri" loading="lazy">
-</a>
+<h1>Grupos</h1>
 
 </div>
 
-<br>
+<style>
+*{box-sizing:border-box}
 
-<h2>
-<a href="https://photos.app.goo.gl/sd6iJ2MdgeFQLRs98" style="text-decoration:none;color:inherit;">
-Recuerdos
-<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Revolving%20Hearts.png"
-width="30"
-loading="lazy">
-</a>
-</h2>
+/* body{font-family:sans-serif;background:#0f1115;color:#e5e7eb;margin:0;padding:16px}
+h1{font-size:1.8em;margin:0 0 12px} */
 
-<div class="galeriaMD">
+details{background:#161a22;border:1px solid #2a2f3a;border-radius:12px;margin:12px 0;overflow:hidden}
+summary{cursor:pointer;padding:14px 16px;font-size:1.2em;font-weight:600;list-style:none}
+summary::-webkit-details-marker{display:none}
+details[open] summary{border-bottom:1px solid #2a2f3a}
+section{padding:14px 16px}
+h3{margin:12px 0 6px;font-size:1.05em}
+p{margin:0 0 10px;color:#a1a1aa}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin:10px 0}
+.g a{display:block;border-radius:8px;overflow:hidden;background:#0b0d12}
+.g img{width:100%;height:90px;object-fit:cover;display:block}
+.a{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.a img{height:28px}
+hr{border:none;border-top:1px solid #2a2f3a;margin:14px 0}
+</style>
 
-<a href="https://photos.app.goo.gl/sd6iJ2MdgeFQLRs98">
-<img src="https://raw.githubusercontent.com/weskerty/test/refs/heads/main/ArchivosSueltos/Ivn.jpg" loading="lazy">
-</a>
 
-<a href="https://photos.app.goo.gl/sd6iJ2MdgeFQLRs98">
-<img src="https://raw.githubusercontent.com/weskerty/test/refs/heads/main/ArchivosSueltos/amc.jpg" loading="lazy">
-</a>
 
-<a href="https://photos.app.goo.gl/sd6iJ2MdgeFQLRs98">
-<img src="https://raw.githubusercontent.com/weskerty/test/refs/heads/main/ArchivosSueltos/asao.jpg" loading="lazy">
-</a>
+<details>
+  <summary>🌱 Ambientalismo</summary>
+  <section>
+    <p>Grupos de limpieza/reciclaje.</p>
+    <hr>
 
-<a href="https://photos.app.goo.gl/sd6iJ2MdgeFQLRs98">
-<img src="https://raw.githubusercontent.com/weskerty/test/refs/heads/main/ArchivosSueltos/hanami.jpg" loading="lazy">
-</a>
+    <h3>Atrevidos</h3>
+    <div class="g">
+      <a href="#"><img src="https://raw.githubusercontent.com/weskerty/test/refs/heads/main/ArchivosSueltos/Ivn.jpg" loading="lazy"></a>
+      <a href="#"><img src="https://raw.githubusercontent.com/weskerty/test/refs/heads/main/ArchivosSueltos/amc.jpg" loading="lazy"></a>
+      <a href="#"><img src="https://raw.githubusercontent.com/weskerty/test/refs/heads/main/ArchivosSueltos/hanami.jpg" loading="lazy"></a>
+    </div>
 
-<a href="https://photos.app.goo.gl/sd6iJ2MdgeFQLRs98">
-<img src="https://raw.githubusercontent.com/weskerty/test/refs/heads/main/ArchivosSueltos/rio.jpg" loading="lazy">
-</a>
+    <div class="a">
+      <a href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20">
+        <img src="https://img.shields.io/badge/WhatsApp-25D366?logo=whatsapp&logoColor=fff&style=flat" alt="WhatsApp">
+      </a>
+    </div>
+  </section>
+</details>
 
-</div>
+<details>
+  <summary>🫂 Amistades</summary>
+  <section>
+    <p>Grupos para conocer gente y organizar reuniones.</p>
+    <hr>
+
+    <h3>Basurero</h3>
+    <p>Juntadas exRedditPY</p>
+    <div class="a">
+      <a href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20">
+        <img src="https://img.shields.io/badge/WhatsApp-25D366?logo=whatsapp&logoColor=fff&style=flat" alt="WhatsApp">
+      </a>
+    </div>
+
+    <hr>
+
+    <h3>FLISOL Paraguay</h3>
+    <p>Festival de software libre (abril).</p>
+    <div class="a">
+      <a href="https://t.me/flisolpy">
+        <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=flat&logo=telegram&logoColor=white" alt="Telegram">
+      </a>
+    </div>
+
+    <hr>
+
+    <h3>Debate Paraguay</h3>
+    <div class="a">
+      <a href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20">
+        <img src="https://img.shields.io/badge/WhatsApp-25D366?logo=whatsapp&logoColor=fff&style=flat" alt="WhatsApp">
+      </a>
+    </div>
+
+    <hr>
+
+    <h3>Librería Digital</h3>
+    <p>Venta y discusión de ebooks.</p>
+    <div class="a">
+      <a href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20">
+        <img src="https://img.shields.io/badge/WhatsApp-25D366?logo=whatsapp&logoColor=fff&style=flat" alt="WhatsApp">
+      </a>
+      <a href="https://t.me/ebookpy">
+        <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=flat&logo=telegram&logoColor=white" alt="Telegram">
+      </a>
+    </div>
+
+    <hr>
+
+    <h3>Ciencia de Datos Paraguay</h3>
+    <div class="a">
+      <a href="https://t.me/Data_Science_PY">
+        <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=flat&logo=telegram&logoColor=white" alt="Telegram">
+      </a>
+    </div>
+
+    <hr>
+
+    <h3>Arduino / Placa Base</h3>
+    <div class="a">
+      <a href="https://t.me/arduinopy">
+        <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=flat&logo=telegram&logoColor=white" alt="Telegram">
+      </a>
+    </div>
+
+    <hr>
+
+    <h3>Linux Paraguay</h3>
+    <div class="a">
+      <a href="https://t.me/LinuxPyo">
+        <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=flat&logo=telegram&logoColor=white" alt="Telegram">
+      </a>
+    </div>
+
+  </section>
+</details>
+
+
+
+
  
 </br>
 
 
 <blockquote id="compartir-bloque">
   <h3>
-    <a href="https://wa.me/?text=😻%20Comparte%20para%20ser%20más%20Amigos%20cada%20Día%20😻" 
+    <a href="https://wa.me/?text=😻%20Comparte%20para%20ser%20más%20cada%20Día%20😻" 
        id="compartir-enlace"
        style="text-decoration: none; color: inherit;">
-      😻 Comparte para ser más Amigos cada Día 😻
+      😻 Comparte para ser más cada Día 😻
     </a>
   </h3>
 </blockquote>

@@ -82,3 +82,6 @@ Esta seccion es complicada, no muchos telefonos son compatibles.
 Si tu Telefono tiene Root es Facil
 Pero si no, Debes hacer prueba y error con esta app;
 
+
+<iframe width="315" height="560" src="https://www.youtube.com/embed/ayJysNyCgVw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+

@@ -1,6 +1,9 @@
 ### SPA sencillo pero veloz
 
-**Uso actual:** expositor de artículos.
+**Uso actual:** expositor de artículos. Para que gente con interes ambiental levante sus tiendas ecologicas facilmente.
+
+
+
 
 Es una *Single Page Application* (SPA) rápida para agregar entradas en Markdown. Ideal para un blog de Facil mantenimiento.
 

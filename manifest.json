@@ -13,13 +13,13 @@
       "type": "image/x-icon"
     },
     {
-      "src": "web/ICON.png",
+      "src": "web/otros/Archivos/Imagenes/Permanente/ICON-APP.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "web/ICON.png",
+      "src": "web/otros/Archivos/Imagenes/Permanente/ICON-APP.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
@@ -36,7 +36,7 @@
       "files": [
         {
           "name": "files",
-          "accept": ["image/*", "video/*", "audio/*", "application/pdf", "*/*"]
+          "accept": ["image/*", "video/*", "audio/*", "application/pdf", "application/epub", "*/*"]
         }
       ]
     }

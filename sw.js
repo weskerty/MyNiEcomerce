@@ -1,4 +1,4 @@
-const V='v27';
+const V='v28';
 const PRE=[
 'index.html',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
@@ -12,7 +12,7 @@ const PRE=[
 'web/search.html',
 'web/blogs.html',
 'web/favicon.ico',
-'web/ICON.png',
+'web/otros/Archivos/Imagenes/Permanente/ICON.png',
 'web/404.html',
 'web/otros/Archivos/HTML/centralPage.html',
 'web/otros/Archivos/HTML/apps.html',
@@ -111,6 +111,7 @@ async function chkDJ(){
   try{
     const r=await fetch(DJ_ABS+'?_='+Date.now());
     if(!r||!r.ok)return;
+    const rc=r.clone();
     const txt=await r.text();
     const c=await caches.open(V);
     const prev=await c.match(DJ_ABS);
@@ -121,8 +122,8 @@ async function chkDJ(){
     if(prevTxt!==null&&txt!==prevTxt){
       await self.registration.showNotification('Che Agana',{
         body:'Hay Novedades!',
-        icon:'web/ICON.png',
-        badge:'web/ICON.png',
+        icon:'web/otros/Archivos/Imagenes/Permanente/ICON.png',
+        badge:'web/otros/Archivos/Imagenes/Permanente/ICON.png',
         data:{url:self.location.origin}
       });
     }
@@ -179,7 +180,7 @@ self.addEventListener('fetch',e=>{
   if(DJ.test(url.pathname)){
     e.respondWith(
       fetch(DJ_ABS+'?_='+Date.now()).then(r=>{
-        if(r&&r.ok)caches.open(V).then(c=>c.put(DJ_ABS,r.clone()));
+        if(r&&r.ok){const rc=r.clone();caches.open(V).then(c=>c.put(DJ_ABS,rc));}
         return r;
       }).catch(()=>caches.open(V).then(c=>c.match(DJ_ABS)))
     );
@@ -189,7 +190,7 @@ self.addEventListener('fetch',e=>{
   if(url.pathname.endsWith('.md')){
     e.respondWith(
       fetch(e.request).then(r=>{
-        if(r&&r.ok)caches.open(MD_C).then(c=>c.put(e.request,r.clone()));
+        if(r&&r.ok){const rc=r.clone();caches.open(MD_C).then(c=>c.put(e.request,rc));}
         return r;
       }).catch(()=>caches.open(MD_C).then(c=>c.match(e.request)))
     );
@@ -225,13 +226,13 @@ self.addEventListener('fetch',e=>{
 });
 
 self.addEventListener('push',e=>{
-  let d={title:'Che Agana',body:'Hay Novedades! 🤗',icon:'web/ICON.png'};
+  let d={title:'Che Agana',body:'Hay Novedades! 🤗',icon:'web/otros/Archivos/Imagenes/Permanente/ICON.png'};
   try{d={...d,...e.data.json()};}catch(err){}
   e.waitUntil(
     self.registration.showNotification(d.title,{
       body:d.body,
-      icon:d.icon||'web/ICON.png',
-      badge:'web/ICON.png',
+      icon:d.icon||'web/otros/Archivos/Imagenes/Permanente/ICON.png',
+      badge:'web/otros/Archivos/Imagenes/Permanente/ICON.png',
       data:{url:self.location.origin}
     })
   );
