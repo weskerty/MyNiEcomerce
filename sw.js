@@ -1,4 +1,5 @@
 const V='v28';
+const ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const PRE=[
 'index.html',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
@@ -12,7 +13,7 @@ const PRE=[
 'web/search.html',
 'web/blogs.html',
 'web/favicon.ico',
-'web/otros/Archivos/Imagenes/Permanente/ICON.png',
+ICON,
 'web/404.html',
 'web/otros/Archivos/HTML/centralPage.html',
 'web/otros/Archivos/HTML/apps.html',
@@ -38,26 +39,24 @@ const DJ_ABS=new URL(DJ_URL,self.location).href;
 const TS_CK='__chk_ts';
 const CHK_INT=36000000;
 const TEMP_C=V+'-tmp';
-const TMP_META='__tmp_meta';
 const MD_C=V+'-md';
 const SHARE_C='share-pending';
 const SHARE_KEY='__share_data';
 const APPS_URL='web/Dinamico/Apps/es.html';
 
-async function getTmpMeta(){
-  try{const c=await caches.open(TEMP_C);const r=await c.match(TMP_META);return r?JSON.parse(await r.text()):{};}catch{return{};}
-}
-async function setTmpMeta(m){
-  const c=await caches.open(TEMP_C);await c.put(TMP_META,new Response(JSON.stringify(m)));
-}
 async function tmpGet(req){
-  const m=await getTmpMeta();const exp=m[req.url];
-  if(!exp||Date.now()>exp)return null;
-  const c=await caches.open(TEMP_C);return c.match(req);
+  const c=await caches.open(TEMP_C);
+  const r=await c.match(req);
+  if(!r)return null;
+  if(Date.now()>parseInt(r.headers.get('X-Expires')||0)){await c.delete(req);return null;}
+  return r;
 }
 async function tmpPut(req,res,ttl){
-  const c=await caches.open(TEMP_C);await c.put(req,res.clone());
-  const m=await getTmpMeta();m[req.url]=Date.now()+ttl;await setTmpMeta(m);
+  const c=await caches.open(TEMP_C);
+  const buf=await res.clone().arrayBuffer();
+  const h=new Headers(res.headers);
+  h.set('X-Expires',String(Date.now()+ttl));
+  await c.put(req,new Response(buf,{status:res.status,statusText:res.statusText,headers:h}));
 }
 
 function EP(dj){
@@ -109,9 +108,8 @@ self.addEventListener('activate',e=>{
 
 async function chkDJ(){
   try{
-    const r=await fetch(DJ_ABS+'?_='+Date.now());
-    if(!r||!r.ok)return;
-    const rc=r.clone();
+    const r=await fetch(DJ_ABS,{cache:'no-store'});
+    if(!r?.ok)return;
     const txt=await r.text();
     const c=await caches.open(V);
     const prev=await c.match(DJ_ABS);
@@ -122,12 +120,12 @@ async function chkDJ(){
     if(prevTxt!==null&&txt!==prevTxt){
       await self.registration.showNotification('Che Agana',{
         body:'Hay Novedades!',
-        icon:'web/otros/Archivos/Imagenes/Permanente/ICON.png',
-        badge:'web/otros/Archivos/Imagenes/Permanente/ICON.png',
+        icon:ICON,
+        badge:ICON,
         data:{url:self.location.origin}
       });
     }
-  }catch(e){}
+  }catch{}
 }
 
 async function maybeCHK(){
@@ -137,7 +135,7 @@ async function maybeCHK(){
     const ts=last?parseInt(await last.text()):0;
     if(Date.now()-ts<CHK_INT)return;
     await chkDJ();
-  }catch(e){}
+  }catch{}
 }
 
 self.addEventListener('fetch',e=>{
@@ -179,8 +177,8 @@ self.addEventListener('fetch',e=>{
 
   if(DJ.test(url.pathname)){
     e.respondWith(
-      fetch(DJ_ABS+'?_='+Date.now()).then(r=>{
-        if(r&&r.ok){const rc=r.clone();caches.open(V).then(c=>c.put(DJ_ABS,rc));}
+      fetch(DJ_ABS,{cache:'no-store'}).then(r=>{
+        if(r?.ok){const rc=r.clone();caches.open(V).then(c=>c.put(DJ_ABS,rc));}
         return r;
       }).catch(()=>caches.open(V).then(c=>c.match(DJ_ABS)))
     );
@@ -190,7 +188,7 @@ self.addEventListener('fetch',e=>{
   if(url.pathname.endsWith('.md')){
     e.respondWith(
       fetch(e.request).then(r=>{
-        if(r&&r.ok){const rc=r.clone();caches.open(MD_C).then(c=>c.put(e.request,rc));}
+        if(r?.ok){const rc=r.clone();caches.open(MD_C).then(c=>c.put(e.request,rc));}
         return r;
       }).catch(()=>caches.open(MD_C).then(c=>c.match(e.request)))
     );
@@ -203,7 +201,7 @@ self.addEventListener('fetch',e=>{
       const cached=await tmpGet(e.request);
       if(cached)return cached;
       const r=await fetch(e.request);
-      if(r&&r.ok)await tmpPut(e.request,r,tmpRoute.ttl);
+      if(r?.ok)await tmpPut(e.request,r,tmpRoute.ttl);
       return r;
     })());
     return;
@@ -215,7 +213,7 @@ self.addEventListener('fetch',e=>{
     caches.match(e.request).then(h=>{
       if(h)return h;
       return fetch(e.request).then(r=>{
-        if(r&&r.status===200){
+        if(r?.status===200){
           const rc=r.clone();
           caches.open(V).then(c=>c.put(e.request,rc));
         }
@@ -226,13 +224,13 @@ self.addEventListener('fetch',e=>{
 });
 
 self.addEventListener('push',e=>{
-  let d={title:'Che Agana',body:'Hay Novedades! 🤗',icon:'web/otros/Archivos/Imagenes/Permanente/ICON.png'};
-  try{d={...d,...e.data.json()};}catch(err){}
+  let d={title:'Che Agana',body:'Hay Novedades! 🤗',icon:ICON};
+  try{d={...d,...e.data.json()};}catch{}
   e.waitUntil(
     self.registration.showNotification(d.title,{
       body:d.body,
-      icon:d.icon||'web/otros/Archivos/Imagenes/Permanente/ICON.png',
-      badge:'web/otros/Archivos/Imagenes/Permanente/ICON.png',
+      icon:d.icon||ICON,
+      badge:ICON,
       data:{url:self.location.origin}
     })
   );
