@@ -30,7 +30,7 @@
       "purpose": "maskable any"
     },
     {
-      "src": "web/otros/Archivos/Imagenes/Permanente/ICON-APP.png",
+      "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/ICON-APP.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
@@ -39,10 +39,10 @@
   "shortcuts": [
     {
       "name": "Tienda",
-      "url": "web/es.html",
+      "url": "/#web/es.html",
       "icons": [
         {
-          "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png",
+          "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png",
           "sizes": "96x96",
           "type": "image/png"
         }
