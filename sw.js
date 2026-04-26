@@ -45,7 +45,7 @@ const APPS_URL='web/Dinamico/Apps/es.html';
 const TL={blog:['Nuevo Blog','blog','blogs'],app:['Nueva App','app','apps'],game:['Nuevo Juego','juego','juegos'],product:['Nueva Oferta','oferta','ofertas']};
 
 function P2MD(p){return p.replace(/\.[^.]+$/,'.md');}
-function P2URL(p){return '/#'+P2MD(p).replace(/ /g,'%20');}
+function P2URL(p){return self.location.origin+'/#'+P2MD(p).replace(/ /g,'%20');}
 
 function EP(dj){
   return Object.values(dj.galleries).flatMap(cat=>Object.values(cat).flat());
