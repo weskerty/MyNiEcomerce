@@ -2,6 +2,7 @@ const V='v28';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.png';
+const MD_LIMIT=30;
 const PRE=[
 'index.html',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
@@ -27,7 +28,10 @@ const PRE=[
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/first_quarter_moon_face_animated.avif',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/sun_with_face_animated.avif',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg',
-'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg'
+'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg',
+N_ICON,
+N_ICO,
+N_BANNER
 ];
 
 const TEMP_ROUTES=[{match:'/api/',ttl:86400000}];
@@ -42,10 +46,9 @@ const SHARE_C='share-pending';
 const SHARE_KEY='__share_data';
 const APPS_URL='web/Dinamico/Apps/es.html';
 
-const TL={blog:['Nuevo Blog','blog','blogs'],app:['Nueva App','app','apps'],game:['Nuevo Juego','juego','juegos'],product:['Nueva Oferta','oferta','ofertas']};
+const NTL={blog:'Nuevo Blog \uD83D\uDCDD',app:'Nueva App \uD83D\uDCF1',game:'Nuevo Juego \uD83C\uDFAE',product:'Nuevo Producto \uD83D\uDED2'};
 
 function P2MD(p){return p.replace(/\.[^.]+$/,'.md');}
-function P2URL(p){return self.location.origin+'/#'+P2MD(p).replace(/ /g,'%20');}
 
 function EP(dj){
   return Object.values(dj.galleries).flatMap(cat=>Object.values(cat).flat());
@@ -60,21 +63,19 @@ function eN(p){
   return{type:'product',name:m?m[1]:fname};
 }
 
-function fN(paths){
-  if(paths.length===1){
-    const{type,name}=eN(paths[0]);
-    return{title:TL[type][0],body:name,url:P2URL(paths[0])};
-  }
-  const counts={};
-  for(const p of paths){const{type}=eN(p);counts[type]=(counts[type]||0)+1;}
-  const body=Object.entries(counts).map(([t,n])=>n+' '+(n>1?TL[t][2]:TL[t][1])).join(', ')+' nuevos';
-  return{title:'Che Agana',body,url:self.location.origin};
+function eID(p){
+  const fname=p.split('/').pop().replace(/\.[^.]+$/,'');
+  if(p.includes('/Blogs/')||p.includes('/Apps/')||p.includes('/Juegos/'))return fname;
+  const m=fname.match(/ID=([^-]+)/);
+  return m?m[1]:fname;
 }
 
-function showUpdate(title,body,url){
-  return self.registration.showNotification(title,{
-    body,icon:N_ICON,badge:N_ICO,image:N_BANNER,
-    tag:'dj-update',data:{url:url||self.location.origin}
+function showItem(p){
+  const{type,name}=eN(p);
+  const url='/#'+P2MD(p).replace(/ /g,'%20');
+  return self.registration.showNotification(NTL[type],{
+    body:name,icon:N_ICON,badge:N_ICO,image:N_BANNER,
+    tag:eID(p),data:{url}
   });
 }
 
@@ -94,13 +95,15 @@ async function tmpPut(req,res,ttl){
 }
 
 async function syncMD(nArr,oArr){
+  if(!MD_LIMIT)return;
   try{
     const toURL=p=>new URL(p,self.location).href;
     const nSet=new Set(nArr.map(P2MD).map(toURL));
     const oSet=new Set(oArr.map(P2MD).map(toURL));
     const c=await caches.open(MD_C);
     await Promise.all([...oSet].filter(u=>!nSet.has(u)).map(u=>c.delete(u)));
-    await Promise.all([...nSet].filter(u=>!oSet.has(u)).map(async u=>{
+    const toFetch=[...nSet].filter(u=>!oSet.has(u)).slice(0,MD_LIMIT);
+    await Promise.all(toFetch.map(async u=>{
       try{const r=await fetch(u);if(r.ok)await c.put(u,r);}catch{}
     }));
   }catch{}
@@ -116,18 +119,15 @@ async function chkDJ(){
     const prevTxt=prev?await prev.text():null;
     await c.put(DJ_ABS,new Response(txt,{headers:{'Content-Type':'application/json'}}));
     await c.put(TS_CK,new Response(String(Date.now())));
-    if(prevTxt===null||txt!==prevTxt){
-      const nArr=EP(JSON.parse(txt));
-      const oArr=prevTxt?EP(JSON.parse(prevTxt)):[];
-      await syncMD(nArr,oArr);
-      if(prevTxt!==null){
-        const oSet=new Set(oArr);
-        const newPaths=nArr.filter(p=>!oSet.has(p));
-        if(newPaths.length){
-          const{title,body,url}=fN(newPaths);
-          await showUpdate(title,body,url);
-          return true;
-        }
+    const nArr=EP(JSON.parse(txt));
+    const oArr=prevTxt?EP(JSON.parse(prevTxt)):[];
+    await syncMD(nArr,oArr);
+    if(prevTxt!==null&&txt!==prevTxt){
+      const oIDs=new Set(oArr.map(eID));
+      const newPaths=nArr.filter(p=>!oIDs.has(eID(p)));
+      if(newPaths.length){
+        await Promise.all(newPaths.map(showItem));
+        return true;
       }
     }
     return false;
@@ -259,13 +259,18 @@ self.addEventListener('push',e=>{
     const c=await caches.open(V);
     await c.put(TS_CK,new Response(String(Date.now())));
     const result=await chkDJ();
-    if(result===null)await showUpdate('Che Agana','Hay Novedades!',self.location.origin);
+    if(result===null){
+      await self.registration.showNotification('Che Agana',{
+        body:'Hay Novedades!',icon:N_ICON,badge:N_ICO,image:N_BANNER,
+        tag:'fallback',data:{url:self.location.origin}
+      });
+    }
   })());
 });
 
 self.addEventListener('notificationclick',e=>{
   e.notification.close();
-  const target=e.notification.data?.url||self.location.origin;
+  const target=e.notification.data?.url||'/';
   e.waitUntil(
     clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{
       const c=cs.find(x=>x.url.startsWith(self.location.origin)&&'focus' in x);

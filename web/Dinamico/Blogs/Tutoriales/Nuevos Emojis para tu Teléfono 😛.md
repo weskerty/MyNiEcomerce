@@ -11,6 +11,6 @@ Ejemplo: 😆🤪😋😜🤡😼😻😽🙉
 <iframe width="315" height="560" src="https://www.youtube.com/embed/ayJysNyCgVw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 
-Aqui se Explica mejor como [Cambiar las Fuentes ↗️](https://cheagana.com/#web/Dinamico/Blogs/Tutoriales/Letra%20Digital%20para%20Disléxicos.md#telefonos) en diversos Dispositivos.
+Aqui se Explica mejor como [Cambiar las Fuentes ↗️](#web/Dinamico/Blogs/Tutoriales/Letra%20Digital%20para%20Disléxicos.md#telefonos) en diversos Dispositivos.
 
 
