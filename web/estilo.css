@@ -18,8 +18,7 @@ Body::before{content:"";position:fixed;inset:0;height:110vh;z-index:-1;backgroun
 
 #bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center}
 
-blockquote,
-.rss-item {
+blockquote {
     margin: 20px 0;
     padding: 15px;
     border-left: none;
@@ -165,42 +164,8 @@ code {
 
 .back-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,102,102,0.4); text-decoration: none }
 
-.rss-section {
-    margin: 30px 0;
-    padding: 20px;
-    background: transparent !important;
-    backdrop-filter: none !important;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 15px;
-}
-
-.rss-section h2,
-.mariposas-section h2 { color: white; margin-bottom: 20px; font-size: 1.8em; text-align: center }
 
 .mariposas-section h2 { position: relative; z-index: 2 }
-
-.rss-item { background-color: rgba(0,0,0,0.5) !important }
-
-.rss-item:hover {
-    transform: translateY(-5px);
-    background-color: rgba(0,0,0,0.7) !important;
-    box-shadow: 0 8px 12px rgba(0,0,0,0.15) !important;
-}
-
-.rss-item h3 { margin: 0 0 10px 0 }
-.rss-item h3 a { color: #fff; text-decoration: none; transition: color 0.3s ease }
-.rss-item h3 a:hover { color: #1a73e8; text-decoration: underline }
-.rss-item p { color: #e0e0e0; margin: 0; line-height: 1.5 }
-
-.rss-item img {
-    max-width: 100%;
-    height: auto;
-    max-height: 300px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-top: 10px;
-    display: block;
-}
 
 #disqus-container {
     background-color: rgba(0,0,0,0.6);
@@ -298,8 +263,7 @@ code {
     .back-button { box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important }
     .view-all-button:hover,
     .back-button:hover,
-    blockquote:hover,
-    .rss-item:hover { transform: none !important }
+    blockquote:hover { transform: none !important }
 }
 
 
