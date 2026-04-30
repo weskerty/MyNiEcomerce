@@ -63,12 +63,18 @@ async function load() {
     if (!items.length) { st('Sin items'); return; }
     st(`${items.length} publicaciones`);
 
-    const g = (el, tag) => el.getElementsByTagName(tag)[0]?.textContent || '';
+    const g  = (el, tag) => el.getElementsByTagName(tag)[0]?.textContent || '';
+    const gh = (el, tag) => {
+      const node = el.getElementsByTagName(tag)[0];
+      if (!node) return '';
+      const cd = node.firstChild;
+      return (cd && cd.nodeType === 4) ? cd.data : node.textContent;
+    };
 
     $('feed').innerHTML = items.map(item => {
       const title  = g(item, 'title');
       const link   = g(item, 'link');
-      const desc   = g(item, 'description');
+      const desc   = gh(item, 'description');
       const date   = g(item, 'pubDate');
       const author = g(item, 'author');
       const d      = date ? new Date(date).toLocaleString('es-PY') : '';
