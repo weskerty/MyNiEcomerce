@@ -1,4 +1,4 @@
-const V='v42';
+const V='v43';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -51,6 +51,7 @@ const SHARE_KEY='__share_data';
 const APPS_URL='web/Dinamico/Apps/es.html';
 
 const NTL={blog:'Nuevo Blog \uD83D\uDCDD',app:'Nueva App \uD83D\uDCF1',game:'Nuevo Juego \uD83C\uDFAE',product:'Nuevo Producto \uD83D\uDED2'};
+let _ts=0;
 
 function P2MD(p){return p.replace(/\.[^.]+$/,'.md');}
 
@@ -99,7 +100,7 @@ async function getNI(p){
 
 async function showItem(p){
   const{type,name}=eN(p);
-  const url='/#'+P2MD(p).replace(/ /g,'%20');
+  const url=self.location.origin+'/#'+P2MD(p).replace(/ /g,'%20');
   const img=await getNI(p);
   return self.registration.showNotification(NTL[type],{
     body:name,icon:N_ICON,badge:N_ICO,
@@ -147,7 +148,8 @@ async function chkDJ(){
     const prev=await c.match(DJ_ABS);
     const prevTxt=prev?await prev.text():null;
     await c.put(DJ_ABS,new Response(txt,{headers:{'Content-Type':'application/json'}}));
-    await c.put(TS_CK,new Response(String(Date.now())));
+    _ts=Date.now();
+    await c.put(TS_CK,new Response(String(_ts)));
     const nArr=EP(JSON.parse(txt));
     const oArr=prevTxt?EP(JSON.parse(prevTxt)):[];
     await syncMD(nArr,oArr);
@@ -164,11 +166,12 @@ async function chkDJ(){
 }
 
 async function maybeCHK(){
+  if(Date.now()-_ts<CHK_INT)return;
   try{
     const c=await caches.open(V);
     const last=await c.match(TS_CK);
-    const ts=last?parseInt(await last.text()):0;
-    if(Date.now()-ts<CHK_INT)return;
+    _ts=last?parseInt(await last.text()):0;
+    if(Date.now()-_ts<CHK_INT)return;
     await chkDJ();
   }catch{}
 }
@@ -270,7 +273,7 @@ self.addEventListener('fetch',e=>{
     return;
   }
 
-  e.waitUntil(maybeCHK());
+  if(e.request.mode==='navigate')e.waitUntil(maybeCHK());
 
   e.respondWith(
     caches.match(e.request).then(h=>{
@@ -299,11 +302,11 @@ self.addEventListener('push',e=>{
 
 self.addEventListener('notificationclick',e=>{
   e.notification.close();
-  const target=e.notification.data?.url||'/';
+  const target=e.notification.data?.url||self.location.origin;
   e.waitUntil(
     clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{
       const c=cs.find(x=>x.url.startsWith(self.location.origin)&&'focus' in x);
-      if(c){if('navigate' in c)c.navigate(target);return c.focus();}
+      if(c)return('navigate' in c?c.navigate(target):Promise.resolve(c)).then(wc=>(wc||c).focus());
       return clients.openWindow(target);
     })
   );
