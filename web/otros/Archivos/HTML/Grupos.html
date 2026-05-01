@@ -17,9 +17,6 @@
 <style>
 *{box-sizing:border-box}
 
-/* body{font-family:sans-serif;background:#0f1115;color:#e5e7eb;margin:0;padding:16px}
-h1{font-size:1.8em;margin:0 0 12px} */
-
 details{background:#161a22;border:1px solid #2a2f3a;border-radius:12px;margin:12px 0;overflow:hidden}
 summary{cursor:pointer;padding:14px 16px;font-size:1.2em;font-weight:600;list-style:none}
 summary::-webkit-details-marker{display:none}
@@ -135,23 +132,21 @@ transform:translateY(-1px);
 }
 
 #rv-ov{
-display:none;
 position:fixed;
 inset:0;
 z-index:50;
 overflow-y:auto;
 padding:20px;
-background:rgba(10,10,18,.38);
-backdrop-filter:blur(18px) saturate(160%);
--webkit-backdrop-filter:blur(18px) saturate(160%);
+background:rgba(10,10,18,.94);
 opacity:0;
+visibility:hidden;
 pointer-events:none;
-transition:opacity .22s ease;
+transition:opacity .22s ease,visibility .22s ease;
 }
 
 #rv-ov.open{
-display:block;
 opacity:1;
+visibility:visible;
 pointer-events:auto;
 }
 
@@ -170,10 +165,8 @@ align-items:center;
 padding:14px 16px;
 margin-bottom:14px;
 border-radius:20px;
-background:rgba(255,255,255,.055);
+background:rgba(22,26,34,.97);
 border:1px solid rgba(255,255,255,.08);
-backdrop-filter:blur(14px);
--webkit-backdrop-filter:blur(14px);
 box-shadow:0 8px 24px rgba(0,0,0,.14);
 }
 
@@ -312,52 +305,44 @@ font-size:.96rem;
 
 <script>
 (function(){
-  const RSS_PATH = 'telegram/channel/2003488356';
-  const cEl = document.getElementById('rv-c');
-  const fEl = document.getElementById('rv-f');
-  const btn = document.getElementById('rv-btn');
-  let items = [];
+  const RSS_PATH='telegram/channel/2003488356';
+  const cEl=document.getElementById('rv-c');
+  const fEl=document.getElementById('rv-f');
+  const btn=document.getElementById('rv-btn');
+  const ovEl=document.getElementById('rv-ov');
+  let items=[];
 
-  function gT(el, tag){ return el.getElementsByTagName(tag)[0]?.textContent || ''; }
-  function gH(el, tag){
-    const n = el.getElementsByTagName(tag)[0];
-    if (!n) return '';
-    const c = n.firstChild;
-    return (c && c.nodeType === 4) ? c.data : n.textContent;
+  function gT(el,tag){return el.getElementsByTagName(tag)[0]?.textContent||'';}
+  function gH(el,tag){
+    const n=el.getElementsByTagName(tag)[0];
+    if(!n)return '';
+    const c=n.firstChild;
+    return(c&&c.nodeType===4)?c.data:n.textContent;
+  }
+  function fI(html){
+    return new DOMParser().parseFromString(html,'text/html').querySelector('img')?.src||null;
   }
 
-  function firstImg(html){
-    const d = new DOMParser().parseFromString(html, 'text/html');
-    return d.querySelector('img')?.src || null;
-  }
-
-  function mkCompact(item){
-    const title = gT(item, 'title');
-    const link  = gT(item, 'link');
-    const desc  = gH(item, 'description');
-    const date  = gT(item, 'pubDate');
-    const d     = date ? new Date(date).toLocaleString('es-PY', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '';
-    const img   = firstImg(desc);
-    const a = document.createElement('a');
-    a.className = 'rv-ci';
-    a.href = link; a.target = '_blank'; a.rel = 'noopener noreferrer';
-    a.innerHTML = img
-      ? `<img class="rv-ci-thumb" src="${img}" loading="lazy">`
-      : `<div class="rv-ci-thumb rv-no">📌</div>`;
-    a.innerHTML += `<div class="rv-ci-info"><div class="rv-ci-title">${title}</div><div class="rv-ci-meta">${d}</div></div>`;
+  function mkC(item){
+    const title=gT(item,'title'),link=gT(item,'link'),
+          desc=gH(item,'description'),date=gT(item,'pubDate'),
+          d=date?new Date(date).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'',
+          img=fI(desc),a=document.createElement('a');
+    a.className='rv-ci';
+    a.href=link;a.target='_blank';a.rel='noopener noreferrer';
+    a.innerHTML=(img?`<img class="rv-ci-thumb" src="${img}" loading="lazy">`:`<div class="rv-ci-thumb rv-no">📌</div>`)
+      +`<div class="rv-ci-info"><div class="rv-ci-title">${title}</div><div class="rv-ci-meta">${d}</div></div>`;
     return a;
   }
 
-  function mkFull(item){
-    const title  = gT(item, 'title');
-    const link   = gT(item, 'link');
-    const desc   = gH(item, 'description');
-    const date   = gT(item, 'pubDate');
-    const author = gT(item, 'author');
-    const d      = date ? new Date(date).toLocaleString('es-PY') : '';
-    const div    = document.createElement('div');
-    div.className = 'rv-it';
-    div.innerHTML = `<div class="rv-it-meta">${[author, d].filter(Boolean).join(' · ')}</div>
+  function mkF(item){
+    const title=gT(item,'title'),link=gT(item,'link'),
+          desc=gH(item,'description'),date=gT(item,'pubDate'),
+          author=gT(item,'author'),
+          d=date?new Date(date).toLocaleString('es-PY'):'',
+          div=document.createElement('div');
+    div.className='rv-it';
+    div.innerHTML=`<div class="rv-it-meta">${[author,d].filter(Boolean).join(' · ')}</div>
       <div class="rv-it-title"><a href="${link}" target="_blank" rel="noopener noreferrer">${title}</a></div>
       <div class="rv-it-body">${desc}</div>`;
     return div;
@@ -365,27 +350,33 @@ font-size:.96rem;
 
   async function load(){
     try{
-      const res = await fetch(`/api/rss?url=${encodeURIComponent(RSS_PATH)}`);
-      if (!res.ok) return;
-      const doc = new DOMParser().parseFromString(await res.text(), 'text/xml');
-      if (doc.querySelector('parsererror')) return;
-      items = [...doc.querySelectorAll('item')];
-      if (!items.length) return;
-      items.slice(0, 4).forEach(i => cEl.appendChild(mkCompact(i)));
-      btn.style.display = '';
-    } catch {}
+      const res=await fetch(`/api/rss?url=${encodeURIComponent(RSS_PATH)}`);
+      if(!res.ok)return;
+      const doc=new DOMParser().parseFromString(await res.text(),'text/xml');
+      if(doc.querySelector('parsererror'))return;
+      items=[...doc.querySelectorAll('item')];
+      if(!items.length)return;
+      items.slice(0,4).forEach(i=>cEl.appendChild(mkC(i)));
+      btn.style.display='';
+    }catch{}
   }
 
-  window.rvOpen = function(){
-    fEl.innerHTML = '';
-    items.forEach(i => fEl.appendChild(mkFull(i)));
-    document.getElementById('rv-ov').classList.add('open');
+  window.rvOpen=function(){
+    fEl.innerHTML='';
+    items.forEach(i=>fEl.appendChild(mkF(i)));
+    ovEl.classList.add('open');
+  };
+  window.rvClose=function(){
+    ovEl.classList.remove('open');
+    fEl.innerHTML='';
   };
 
-  window.rvClose = function(){
-    document.getElementById('rv-ov').classList.remove('open');
-    fEl.innerHTML = '';
-  };
+  document.addEventListener('contentUnload',function(){
+    ovEl.classList.remove('open');
+    fEl.innerHTML='';
+    delete window.rvOpen;
+    delete window.rvClose;
+  },{once:true});
 
   load();
 })();
@@ -565,23 +556,18 @@ font-size:.96rem;
 </blockquote>
 
 <script>
-  if (navigator.share) {
-    const enlace = document.getElementById('compartir-enlace');
-
-    enlace.removeAttribute('href');
-    enlace.style.cursor = 'pointer';
-
-    enlace.addEventListener('click', (e) => {
-      e.preventDefault(); 
-      navigator.share({
-        title: '😻 Compartir',
-        text: '😻 Comparte para ser más Amigos cada Día 😻',
-        url: window.location.href,
-      })
-      .then(() => console.log('Compartido exitosamente'))
-      .catch((error) => console.log('No se pudo compartir:', error));
-    });
+(function(){
+  if(!navigator.share)return;
+  const el=document.getElementById('compartir-enlace');
+  el.removeAttribute('href');
+  el.style.cursor='pointer';
+  function onShare(e){
+    e.preventDefault();
+    navigator.share({title:'😻 Compartir',text:'😻 Comparte para ser mas Amigos cada Dia 😻',url:window.location.href});
   }
+  el.addEventListener('click',onShare);
+  document.addEventListener('contentUnload',function(){
+    el.removeEventListener('click',onShare);
+  },{once:true});
+})();
 </script>
-
-</br>
