@@ -1,8 +1,11 @@
-const V='v41';
+const V='v42';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
 const MD_LIMIT=30;
+const NI_LIMIT=5;
+const NI_MAX=204800;
+const NI_MIME={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',avif:'image/avif'};
 const PRE=[
 'index.html',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
@@ -42,6 +45,7 @@ const TS_CK='__chk_ts';
 const CHK_INT=86400000;
 const TEMP_C=V+'-tmp';
 const MD_C=V+'-md';
+const NI_C=V+'-ni';
 const SHARE_C='share-pending';
 const SHARE_KEY='__share_data';
 const APPS_URL='web/Dinamico/Apps/es.html';
@@ -70,11 +74,36 @@ function eID(p){
   return m?m[1]:fname;
 }
 
-function showItem(p){
+async function getNI(p){
+  const url=new URL(p,self.location).href;
+  const c=await caches.open(NI_C);
+  const cached=await c.match(url);
+  if(cached)return url;
+  const ac=new AbortController();
+  const tid=setTimeout(()=>ac.abort(),5000);
+  try{
+    const r=await fetch(url,{signal:ac.signal});
+    if(!r.ok)return null;
+    const cl=parseInt(r.headers.get('Content-Length')||'0');
+    if(cl>NI_MAX)return null;
+    const buf=await r.arrayBuffer();
+    if(buf.byteLength>NI_MAX)return null;
+    const ext=p.split('.').pop().toLowerCase();
+    const keys=await c.keys();
+    if(keys.length>=NI_LIMIT)await c.delete(keys[0]);
+    await c.put(url,new Response(buf,{headers:{'Content-Type':NI_MIME[ext]||'image/avif'}}));
+    return url;
+  }catch{return null;}
+  finally{clearTimeout(tid);}
+}
+
+async function showItem(p){
   const{type,name}=eN(p);
   const url='/#'+P2MD(p).replace(/ /g,'%20');
+  const img=await getNI(p);
   return self.registration.showNotification(NTL[type],{
-    body:name,icon:N_ICON,badge:N_ICO,image:N_BANNER,
+    body:name,icon:N_ICON,badge:N_ICO,
+    ...(img?{image:img}:{}),
     tag:eID(p),data:{url}
   });
 }
@@ -167,7 +196,7 @@ self.addEventListener('install',e=>{
 self.addEventListener('activate',e=>{
   e.waitUntil(
     caches.keys().then(ks=>Promise.all(
-      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==MD_C&&k!==SHARE_C).map(k=>caches.delete(k))
+      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==MD_C&&k!==NI_C&&k!==SHARE_C).map(k=>caches.delete(k))
     )).then(()=>self.clients.claim())
   );
 });
