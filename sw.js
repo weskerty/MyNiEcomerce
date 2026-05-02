@@ -1,7 +1,8 @@
-const V='v47';
+const V='v44';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
+const FRASES_URL='web/otros/Archivos/DataBase/Frases.txt';
 const MD_LIMIT=30;
 const NI_LIMIT=5;
 const NI_MAX=204800;
@@ -54,7 +55,6 @@ const RSS_PATH='telegram/channel/cheagana';
 const RSS_ABS=new URL('/api/rss?url='+RSS_PATH,self.location).href;
 const RSS_GK='__rss_guid';
 const RSS_NI=new URL('/__rss_ni',self.location).href;
-const FRASES_URL='web/otros/Archivos/DataBase/Frases.txt';
 
 const NTL={blog:'Nuevo Blog \uD83D\uDCDD',app:'Nueva App \uD83D\uDCF1',game:'Nuevo Juego \uD83C\uDFAE',product:'Nuevo Producto \uD83D\uDED2'};
 let _ts=0;
