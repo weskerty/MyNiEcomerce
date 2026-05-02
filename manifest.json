@@ -38,17 +38,6 @@
   ],
 "shortcuts": [
   {
-    "name": "Tienda",
-    "url": "/#web/es.html",
-    "icons": [
-      {
-        "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/Cesta.png",
-        "sizes": "96x96",
-        "type": "image/png"
-      }
-    ]
-  },
-  {
     "name": "Actividades",
     "url": "/#web/otros/Archivos/HTML/Grupos.html",
     "icons": [
@@ -60,22 +49,33 @@
     ]
   },
   {
-    "name": "Juegos y Apps",
-    "url": "/#s2",
+    "name": "Blogs",
+    "url": "/#web/blogs.html",
     "icons": [
       {
-        "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/Apps.png",
+        "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/Blogs.png",
         "sizes": "96x96",
         "type": "image/png"
       }
     ]
   },
   {
-    "name": "Blogs",
-    "url": "/#web/blogs.html",
+    "name": "Tienda",
+    "url": "/#web/es.html",
     "icons": [
       {
-        "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/Blogs.png",
+        "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/Cesta.png",
+        "sizes": "96x96",
+        "type": "image/png"
+      }
+    ]
+  },
+  {
+    "name": "Juegos y Apps",
+    "url": "/#web/otros/Archivos/HTML/apps.html",
+    "icons": [
+      {
+        "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/Apps.png",
         "sizes": "96x96",
         "type": "image/png"
       }

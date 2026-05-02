@@ -205,7 +205,7 @@
       const res=await fetch('/api/stickers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({urls:[...S]})});
       const {sid}=await res.json();
       cfEl.style.display='none';
-      waBtn.href='https://wa.me/595972184435?text=CALS='+sid;
+      waBtn.href='https://wa.me/5595973254371?text=CALS='+sid;
       waBtn.style.display='';
       waBtn.onclick=(e)=>{e.preventDefault();window.open(waBtn.href,'_blank');resetWaState()};
     }catch(e){cfEl.innerHTML='👉 Confirmar ✅ (<span id="sk-n">'+S.size+'</span>) 👈';cfEl.disabled=false;}

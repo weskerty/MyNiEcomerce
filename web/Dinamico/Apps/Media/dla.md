@@ -1,65 +1,73 @@
 <div style="text-align:center;position:relative;padding-top:0;margin-top:0">
 <style>
 ._ic{display:block;margin:0 auto 8px}
-/*
-.sk-wrap{padding:12px;max-width:100%}
-.sk-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:24px;padding:10px 16px;margin-bottom:14px;position:relative;overflow:hidden;transition:border-color .2s,box-shadow .2s}
-.sk-bar:focus-within{border-color:rgba(56,189,248,.4);box-shadow:0 0 0 3px rgba(56,189,248,.08),0 8px 32px rgba(0,0,0,.25)}
-.sk-bar input[type=text]{flex:1;background:none;border:none;outline:none;color:white;font-size:.9em;min-width:0;font-family:inherit;position:relative;z-index:1}
-.sk-bar input[type=text]::placeholder{color:rgba(255,255,255,.45)}
-.sk-home{font-size:1.3rem;text-decoration:none;flex-shrink:0;line-height:1;opacity:.8;transition:opacity .2s,transform .2s;position:relative;z-index:1}
-.sk-home:hover{opacity:1;transform:scale(1.15)}
-.sk-ib{background:none;border:none;color:white;cursor:pointer;font-size:1.15rem;flex-shrink:0;padding:0 2px;opacity:.7;transition:opacity .2s,transform .2s;line-height:1;position:relative;z-index:1;min-width:1.6em;text-align:center;font-family:inherit}
-.sk-ib:hover{opacity:1;transform:scale(1.1)}
-.sk-ib:disabled{opacity:.3;cursor:not-allowed;transform:none}
-.sk-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.97);border:1px solid rgba(255,255,255,.15);color:white;padding:10px 22px;border-radius:12px;font-size:.88em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999;white-space:nowrap}
-.sk-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.dl-spin{display:none;width:48px;height:48px;border:4px solid rgba(255,255,255,.12);border-top-color:rgba(56,189,248,.85);border-radius:50%;animation:dl-r .9s linear infinite;margin:32px auto}
-@keyframes dl-r{to{transform:rotate(360deg)}}
-*/
+#DL_ST{margin:12px auto;max-width:300px;font-size:.9rem;opacity:.85}
+.INS_B{display:flex;flex-direction:column;gap:6px;margin:12px auto;max-width:280px;text-align:left;font-size:.85rem}
+.app-btn{margin:10px auto 0;padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:.78rem;cursor:pointer;transition:background .2s,transform .15s}
+.app-btn:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
 </style>
 
-<img class="_ic" src="web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.avif" width="90px">
+<img class="_ic" src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Backhand%20Index%20Pointing%20Down.png" width="90px">
 
-<!--
-<div class="sk-wrap">
-  <div class="sk-bar">
-    <a class="sk-home" href="web/es.html">🏠</a>
-    <input id="dl-q" type="text" placeholder="">
-    <button class="sk-ib" id="dl-paste">📋</button>
-    <button class="sk-ib" id="dl-btn">⬇️</button>
+<div id="DL_INS">
+  <p>Instala la app y comparte.</p>
+  <div class="INS_B">
   </div>
-  <div class="dl-spin" id="dl-spin"></div>
+  <button id="PI" class="app-btn" style="display:none">📲 Instalar App 💕</button>
+  <div style="display:flex;justify-content:center;margin-top:12px">
+    <img src="web/otros/Archivos/Imagenes/Permanente/Install.md/UnInstall.avif"
+    style="width:320px;height:120px;object-fit:cover;border-radius:12px">
+  </div>
 </div>
-<div class="sk-toast" id="dl-toast"></div>
--->
+
+<div id="DL_ST"></div>
 
 <script>
 (function(){
   const _ac=new AbortController();
   document.getElementById('content').addEventListener('contentUnload',()=>_ac.abort(),{once:true});
+
+  const SA=window.matchMedia('(display-mode: standalone)').matches||!!navigator.standalone;
+  if(SA) document.getElementById('DL_INS').style.display='none';
+
+  function ST(msg){const e=document.getElementById('DL_ST');if(e)e.textContent=msg;}
+
+  if(!SA)return;
+
   (async()=>{
     try{
       const r=await fetch('/_share_pending',{signal:_ac.signal});
       const d=await r.json();
-      if(!d||(!d.url&&!d.text))return;
+      if(!d)return;
+      if(!d.url&&!d.text){
+        if(d.files&&d.files.length)ST('No Media, Solo URL');
+        return;
+      }
       await fetch('/_share_clear',{method:'POST',signal:_ac.signal});
       const val=(d.url||d.text).trim();
-      const res=await fetch('/api/dla',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({url:val}),signal:_ac.signal});
-      if(!res.ok)return;
+      ST('Procesando...');
+      const res=await fetch('/api/dla',{
+        method:'POST',
+        headers:{'content-type':'application/json'},
+        body:JSON.stringify({url:val}),
+        signal:_ac.signal
+      });
+      if(res.status===413){ST((await res.json().catch(()=>({}))).error||'Archivo muy pesado');return;}
+      if(!res.ok){ST('Error al descargar');return;}
       const cd=res.headers.get('content-disposition')||'';
       const fn=cd.match(/filename="?([^";\n]+)"?/)?.[1]||('media_'+Date.now());
       const blob=await res.blob();
       const a=document.createElement('a');
-      a.href=URL.createObjectURL(blob);a.download=decodeURIComponent(fn);a.click();
+      a.href=URL.createObjectURL(blob);
+      a.download=decodeURIComponent(fn);
+      a.click();
       setTimeout(()=>URL.revokeObjectURL(a.href),15000);
-    }catch{}
+      ST('Listo');
+    }catch(e){if(e.name!=='AbortError')ST('Error al descargar');}
   })();
 })();
 </script>
 
-</br></br></br>
-
+<br><br><br>
 <a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a>
-
 </div>
