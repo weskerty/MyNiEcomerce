@@ -1,4 +1,4 @@
-const V='v44';
+const V='v45';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -34,7 +34,8 @@ const PRE=[
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg',
 N_ICON,
 N_ICO,
-N_BANNER
+N_BANNER,
+FRASES_URL
 ];
 
 const TEMP_ROUTES=[{match:'/api/',ttl:86400000}];
@@ -49,10 +50,11 @@ const NI_C=V+'-ni';
 const SHARE_C='share-pending';
 const SHARE_KEY='__share_data';
 const APPS_URL='web/Dinamico/Apps/es.html';
-const RSS_PATH='telegram/channel/2003488356';
+const RSS_PATH='telegram/channel/cheagana';
 const RSS_ABS=new URL('/api/rss?url='+RSS_PATH,self.location).href;
 const RSS_GK='__rss_guid';
 const RSS_NI=new URL('/__rss_ni',self.location).href;
+const FRASES_URL='web/otros/Archivos/DataBase/Frases.txt';
 
 const NTL={blog:'Nuevo Blog \uD83D\uDCDD',app:'Nueva App \uD83D\uDCF1',game:'Nuevo Juego \uD83C\uDFAE',product:'Nuevo Producto \uD83D\uDED2'};
 let _ts=0;
@@ -81,8 +83,22 @@ function eID(p){
 
 function rssGuid(xml){const m=xml.match(/<item>[\s\S]*?<guid[^>]*>([^<]+)<\/guid>/);return m?m[1]:null;}
 function rssTitle(xml){const m=xml.match(/<item>[\s\S]*?<title>([^<]+)<\/title>/);return m?m[1].replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>'):null;}
-function rssImgUrl(xml){const m=xml.match(/poster=&quot;(https:\/\/[^&]+)&quot;/)||xml.match(/src=&quot;(https:\/\/[^&]+\.(?:jpg|jpeg|png|webp|avif)[^&]*)&quot;/);return m?m[1]:null;}
+function rssImgUrl(xml){const m=xml.match(/poster=&quot;(https:\/\/[^&]+)&quot;/)||xml.match(/src=&quot;(https:\/\/[^&\s]+)&quot;/)||xml.match(/url="(https:\/\/[^"\s]+\.(?:jpg|jpeg|png|webp|avif|gif)[^"\s]*)"/i);return m?m[1]:null;}
 function rssLink(xml){const m=xml.match(/<item>[\s\S]*?<link>([^<]+)<\/link>/);return m?m[1]:self.location.origin;}
+
+async function getFrase(){
+  try{
+    const url=new URL(FRASES_URL,self.location).href;
+    const c=await caches.open(V);
+    const cached=await c.match(url);
+    const txt=cached?await cached.text():await fetch(url).then(r=>r.text());
+    const lines=txt.split('\n').map(l=>l.trim()).filter(Boolean);
+    if(!lines.length)return null;
+    const now=new Date();
+    const doy=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);
+    return lines[(doy-1)%lines.length];
+  }catch{return null;}
+}
 
 async function getNI(p){
   const url=new URL(p,self.location).href;
@@ -354,8 +370,9 @@ self.addEventListener('push',e=>{
     await c.put(TS_CK,new Response(String(Date.now())));
     const result=await chkAll();
     if(result===null){
+      const frase=await getFrase()||'Hay Novedades!';
       await self.registration.showNotification('Che Agana',{
-        body:'Hay Novedades!',icon:N_ICON,badge:N_ICO,image:N_BANNER,
+        body:frase,icon:N_ICON,badge:N_ICO,image:N_BANNER,
         tag:'fallback',data:{url:self.location.origin}
       });
     }

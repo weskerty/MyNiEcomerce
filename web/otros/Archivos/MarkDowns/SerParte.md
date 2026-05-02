@@ -142,7 +142,7 @@ Proyectos de Codigo libre en Repositorios
 1. No debe contener codigo ofuscado
 2. El repositorio debe ser publico
 3. Si incluis scripts internos deberas Utilizar la carga correcta de core.js 
-4. La entrada puede ser Descriptiva (y enlace al proyecto en algun lugar), Autonoma (script y api) o una simple redireccion (<meta http-equiv="refresh" content="0; https://TuRepositorio">)
+4. La entrada puede ser Descriptiva (y enlace al proyecto en algun lugar), Autonoma (script y api) o una simple redireccion (meta http-equiv="refresh" content="0; https://TuRepositorio")
 
 
 Simplemente solicita un PR con tus respectivos archivos en web/Dinamico/Apps|Juegos
