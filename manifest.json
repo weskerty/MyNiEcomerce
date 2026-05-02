@@ -36,19 +36,52 @@
       "purpose": "maskable any"
     }
   ],
-  "shortcuts": [
-    {
-      "name": "Tienda",
-      "url": "/#web/es.html",
-      "icons": [
-        {
-          "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png",
-          "sizes": "96x96",
-          "type": "image/png"
-        }
-      ]
-    }
-  ],
+"shortcuts": [
+  {
+    "name": "Tienda",
+    "url": "/#web/es.html",
+    "icons": [
+      {
+        "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/Cesta.png",
+        "sizes": "96x96",
+        "type": "image/png"
+      }
+    ]
+  },
+  {
+    "name": "Actividades",
+    "url": "/#web/otros/Archivos/HTML/Grupos.html",
+    "icons": [
+      {
+        "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/CatSmile.png",
+        "sizes": "96x96",
+        "type": "image/png"
+      }
+    ]
+  },
+  {
+    "name": "Juegos y Apps",
+    "url": "/#s2",
+    "icons": [
+      {
+        "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/Apps.png",
+        "sizes": "96x96",
+        "type": "image/png"
+      }
+    ]
+  },
+  {
+    "name": "Blogs",
+    "url": "/#web/blogs.html",
+    "icons": [
+      {
+        "src": "web/otros/Archivos/Imagenes/Permanente/ICONS/Blogs.png",
+        "sizes": "96x96",
+        "type": "image/png"
+      }
+    ]
+  }
+],
   "file_handlers": [
     {
       "action": "/open-file",

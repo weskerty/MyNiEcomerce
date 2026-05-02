@@ -1,4 +1,4 @@
-const V='v44';
+const V='v45';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -33,6 +33,10 @@ const PRE=[
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/sun_with_face_animated.avif',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg',
+'web/otros/Archivos/Imagenes/Permanente/ICONS/Blogs.png',
+'web/otros/Archivos/Imagenes/Permanente/ICONS/Apps.png',
+'web/otros/Archivos/Imagenes/Permanente/ICONS/CatSmile.png',
+'web/otros/Archivos/Imagenes/Permanente/ICONS/Cesta.png',
 N_ICON,
 N_ICO,
 N_BANNER,
