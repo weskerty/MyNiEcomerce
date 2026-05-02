@@ -17,12 +17,12 @@
 @keyframes dl-r{to{transform:rotate(360deg)}}
 </style>
 
-<img class="_ic" src="web/otros/Archivos/Imagenes/Permanente/ICON-ytdlp.avif" width="90px">
+<img class="_ic" src="web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.avif" width="90px">
 
 <div class="sk-wrap">
   <div class="sk-bar">
     <a class="sk-home" href="web/es.html">🏠</a>
-    <input id="dl-q" type="text" placeholder="Enlace o texto...">
+    <input id="dl-q" type="text" placeholder="">
     <button class="sk-ib" id="dl-paste">📋</button>
     <button class="sk-ib" id="dl-btn">⬇️</button>
   </div>
