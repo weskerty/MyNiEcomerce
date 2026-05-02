@@ -1,4 +1,4 @@
-const V='v43';
+const V='v44';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -49,6 +49,9 @@ const NI_C=V+'-ni';
 const SHARE_C='share-pending';
 const SHARE_KEY='__share_data';
 const APPS_URL='web/Dinamico/Apps/es.html';
+const RSS_PATH='telegram/channel/2003488356';
+const RSS_ABS=new URL('/api/rss?url='+RSS_PATH,self.location).href;
+const RSS_GK='__rss_guid';
 
 const NTL={blog:'Nuevo Blog \uD83D\uDCDD',app:'Nueva App \uD83D\uDCF1',game:'Nuevo Juego \uD83C\uDFAE',product:'Nuevo Producto \uD83D\uDED2'};
 let _ts=0;
@@ -74,6 +77,11 @@ function eID(p){
   const m=fname.match(/ID=([^-]+)/);
   return m?m[1]:fname;
 }
+
+function rssGuid(xml){const m=xml.match(/<item>[\s\S]*?<guid[^>]*>([^<]+)<\/guid>/);return m?m[1]:null;}
+function rssTitle(xml){const m=xml.match(/<item>[\s\S]*?<title>([^<]+)<\/title>/);return m?m[1].replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>'):null;}
+function rssImg(xml){const m=xml.match(/poster=&quot;(https:\/\/[^&]+)&quot;/)||xml.match(/src=&quot;(https:\/\/[^&]+\.(?:jpg|jpeg|png|webp|avif)[^&]*)&quot;/);return m?m[1]:null;}
+function rssLink(xml){const m=xml.match(/<item>[\s\S]*?<link>([^<]+)<\/link>/);return m?m[1]:self.location.origin;}
 
 async function getNI(p){
   const url=new URL(p,self.location).href;
@@ -165,6 +173,37 @@ async function chkDJ(){
   }catch{return null;}
 }
 
+async function chkRSS(){
+  try{
+    const r=await fetch(RSS_ABS,{cache:'no-store'});
+    if(!r?.ok)return false;
+    const xml=await r.text();
+    const guid=rssGuid(xml);
+    if(!guid)return false;
+    const c=await caches.open(V);
+    const prev=await c.match(RSS_GK);
+    const prevGuid=prev?await prev.text():null;
+    await c.put(RSS_GK,new Response(guid));
+    if(prevGuid!==null&&guid!==prevGuid){
+      const title=rssTitle(xml)||'Nueva actividad';
+      const img=rssImg(xml);
+      const url=rssLink(xml);
+      await self.registration.showNotification('Nueva actividad \uD83D\uDCC5',{
+        body:title,icon:N_ICON,badge:N_ICO,
+        ...(img?{image:img}:{}),
+        tag:'rss-'+guid,data:{url}
+      });
+      return true;
+    }
+    return false;
+  }catch{return null;}
+}
+
+async function chkAll(){
+  const[djR,rssR]=await Promise.all([chkDJ(),chkRSS()]);
+  return(djR===null&&rssR===null)?null:(djR||rssR||false);
+}
+
 async function maybeCHK(){
   if(Date.now()-_ts<CHK_INT)return;
   try{
@@ -172,7 +211,7 @@ async function maybeCHK(){
     const last=await c.match(TS_CK);
     _ts=last?parseInt(await last.text()):0;
     if(Date.now()-_ts<CHK_INT)return;
-    await chkDJ();
+    await chkAll();
   }catch{}
 }
 
@@ -290,7 +329,7 @@ self.addEventListener('push',e=>{
   e.waitUntil((async()=>{
     const c=await caches.open(V);
     await c.put(TS_CK,new Response(String(Date.now())));
-    const result=await chkDJ();
+    const result=await chkAll();
     if(result===null){
       await self.registration.showNotification('Che Agana',{
         body:'Hay Novedades!',icon:N_ICON,badge:N_ICO,image:N_BANNER,
@@ -313,5 +352,5 @@ self.addEventListener('notificationclick',e=>{
 });
 
 self.addEventListener('message',e=>{
-  if(e.data==='CHECK_DJ')e.waitUntil(chkDJ());
+  if(e.data==='CHECK_DJ')e.waitUntil(chkAll());
 });
