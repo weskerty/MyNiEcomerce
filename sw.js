@@ -52,6 +52,7 @@ const APPS_URL='web/Dinamico/Apps/es.html';
 const RSS_PATH='telegram/channel/2003488356';
 const RSS_ABS=new URL('/api/rss?url='+RSS_PATH,self.location).href;
 const RSS_GK='__rss_guid';
+const RSS_NI=new URL('/__rss_ni',self.location).href;
 
 const NTL={blog:'Nuevo Blog \uD83D\uDCDD',app:'Nueva App \uD83D\uDCF1',game:'Nuevo Juego \uD83C\uDFAE',product:'Nuevo Producto \uD83D\uDED2'};
 let _ts=0;
@@ -80,7 +81,7 @@ function eID(p){
 
 function rssGuid(xml){const m=xml.match(/<item>[\s\S]*?<guid[^>]*>([^<]+)<\/guid>/);return m?m[1]:null;}
 function rssTitle(xml){const m=xml.match(/<item>[\s\S]*?<title>([^<]+)<\/title>/);return m?m[1].replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>'):null;}
-function rssImg(xml){const m=xml.match(/poster=&quot;(https:\/\/[^&]+)&quot;/)||xml.match(/src=&quot;(https:\/\/[^&]+\.(?:jpg|jpeg|png|webp|avif)[^&]*)&quot;/);return m?m[1]:null;}
+function rssImgUrl(xml){const m=xml.match(/poster=&quot;(https:\/\/[^&]+)&quot;/)||xml.match(/src=&quot;(https:\/\/[^&]+\.(?:jpg|jpeg|png|webp|avif)[^&]*)&quot;/);return m?m[1]:null;}
 function rssLink(xml){const m=xml.match(/<item>[\s\S]*?<link>([^<]+)<\/link>/);return m?m[1]:self.location.origin;}
 
 async function getNI(p){
@@ -102,6 +103,23 @@ async function getNI(p){
     if(keys.length>=NI_LIMIT)await c.delete(keys[0]);
     await c.put(url,new Response(buf,{headers:{'Content-Type':NI_MIME[ext]||'image/avif'}}));
     return url;
+  }catch{return null;}
+  finally{clearTimeout(tid);}
+}
+
+async function getRSSNI(absUrl){
+  if(!absUrl)return null;
+  const ac=new AbortController();
+  const tid=setTimeout(()=>ac.abort(),5000);
+  try{
+    const r=await fetch(absUrl,{signal:ac.signal});
+    if(!r.ok)return null;
+    const buf=await r.arrayBuffer();
+    if(buf.byteLength>NI_MAX)return null;
+    const ct=r.headers.get('Content-Type')||'image/webp';
+    const c=await caches.open(NI_C);
+    await c.put(RSS_NI,new Response(buf,{headers:{'Content-Type':ct}}));
+    return RSS_NI;
   }catch{return null;}
   finally{clearTimeout(tid);}
 }
@@ -186,7 +204,7 @@ async function chkRSS(){
     await c.put(RSS_GK,new Response(guid));
     if(prevGuid!==null&&guid!==prevGuid){
       const title=rssTitle(xml)||'Nueva actividad';
-      const img=rssImg(xml);
+      const img=await getRSSNI(rssImgUrl(xml));
       const url=rssLink(xml);
       await self.registration.showNotification('Nueva actividad \uD83D\uDCC5',{
         body:title,icon:N_ICON,badge:N_ICO,
@@ -245,6 +263,11 @@ self.addEventListener('activate',e=>{
 
 self.addEventListener('fetch',e=>{
   const url=new URL(e.request.url);
+
+  if(url.pathname==='/__rss_ni'&&e.request.method==='GET'){
+    e.respondWith(caches.open(NI_C).then(c=>c.match(RSS_NI)).then(r=>r||new Response('',{status:404})));
+    return;
+  }
 
   if(url.pathname==='/_share'&&e.request.method==='POST'){
     e.respondWith((async()=>{
