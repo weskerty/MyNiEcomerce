@@ -7,9 +7,10 @@
 .app-btn:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
 </style>
 
-<img class="_ic" src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Backhand%20Index%20Pointing%20Down.png" width="90px">
+
 
 <div id="DL_INS">
+  <img class="_ic" src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Backhand%20Index%20Pointing%20Down.png" width="90px">
   <p>Instala la app y comparte.</p>
   <div class="INS_B">
   </div>
