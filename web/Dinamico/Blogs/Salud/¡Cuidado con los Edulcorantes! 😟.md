@@ -67,18 +67,6 @@ Sin embargo, se demostró que depleta *Akkermansia muciniphila*, una bacteria co
 
 ---
 
-### Polioles (Sorbitol, Maltitol, Xilitol)
-
-Los polioles son los edulcorantes "ocultos" en los productos etiquetados como **sin azúcar**: chicles, chocolates dietéticos, caramelos, algunos productos de panadería. A diferencia de los anteriores, no tienen cero calorías, aportan aproximadamente la mitad que el azúcar [[9]](https://www.vitonica.com/alimentos/maltitol-sorbitol-xilitol-que-tienes-que-saber-polialcoholes-usados-para-sustituir-al-azucar/amp).
-
-**Sensibilidad:** Se absorben parcialmente en el intestino delgado. La fracción que no se absorbe llega al intestino grueso y fermenta con las bacterias, lo cual en cantidades altas produce gases, hinchazón y efecto laxante.
-
-Son menos problemáticos que los anteriores en términos de microbiota e inflamación. Su principal riesgo práctico es que la gente los consume sin saberlo en cantidades altas al comer varios productos "sin azúcar" el mismo dia.
-
-> El xilitol tiene la ventaja extra de ser anticariogénico, por eso es el edulcorante preferido en chicles dentales.
-
----
-
 ### Aditivos
 Lo peor es que suelen venir mezclados con otros quimicos aun mas dañinos, ejemplo los espesantes como la maltodextrina o el [Carboximetilcelulosa↗️](https://en.wikipedia.org/wiki/Carboxymethyl_cellulose#Adverse_reactions) que si dañan el intestino.
 
@@ -92,17 +80,11 @@ Si ya tienes temas de colon irritable o inflamación, leer las etiquetas para ev
 
 ### Intestino y la Depresion / Ansiedad
 
-El 95% de la serotonina del cuerpo se produce en el intestino, no en el cerebro [[10]](https://vilardelldigest.com/blog/serotonina-intestinal/). Esto tiene una implicación enorme: si tu microbiota esta alterada, tu capacidad de producir serotonina también lo está.
-
-La ciencia llama a esto el **eje intestino-cerebro**, una comunicación bidireccional entre las bacterias intestinales y el sistema nervioso central, a través de vías neuronales, hormonales e inmunológicas. Cuando hay disbiosis (desequilibrio en la microbiota), se genera inflamación crónica y aumento de la permeabilidad intestinal, lo que permite que toxinas pasen al torrente sanguíneo y lleguen al cerebro [[11]](https://www.adninstitut.com/el-eje-intestino-cerebro-la-conexion-entre-la-microbiota-la-salud-mental-n-79-es).
-
-Personas con depresión suelen mostrar reducción de *Lactobacillus* y *Bifidobacterium*, exactamente las bacterias que edulcorantes como sacarina y sucralosa reducen. No es una causa directa probada, pero la correlación es lo suficientemente consistente.
-
-> Lo que le haces a tu intestino todos los dias con lo que comes, tiene consecuencias que van mucho mas alla de la digestión.
+Hay un Articulo que habla especificamente de esto: [La Depresion lo causa la Comida? ](web/Dinamico/Blogs/Salud/¿La%20Depresión%20lo%20Causa%20la%20Comida%20🤯.md)
 
 ---
 
-### ¿Entonces Que?
+### ¿Entonces que Edulcorante puedo usar?
 Hay buenas soluciones. Actualmente la Stevia es un edulcorante natural con muchos estudios los cuales no relacionan daño a la microbiota intestinal ni cancer. Los estudios incluso sugieren que los glucosidos de esteviol podrían tener un efecto favorable sobre la grasa hepática [[6]](https://www.revistagastroenterologiamexico.org//es-revision-evidencia-cientifica-opinion-tecnica-articulo-S0375090619301144).
 
 Puedes ver estos Productos: 
