@@ -3,7 +3,7 @@
 ._ic{display:block;margin:0 auto 8px}
 #DL_ST{margin:12px auto;max-width:300px;font-size:.9rem;opacity:.85}
 .INS_B{display:flex;flex-direction:column;gap:6px;margin:12px auto;max-width:280px;text-align:left;font-size:.85rem}
-.app-btn{margin:10px auto 0;padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:.78rem;cursor:pointer;transition:background .2s,transform .15s}
+.app-btn{margin:10px auto 0;padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:.78rem;cursor:pointer;transition:background .2s,transform .15s;display:block}
 .app-btn:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
 .dl-ov{display:none;position:fixed;inset:0;z-index:200;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:rgba(0,0,0,.5);align-items:center;justify-content:center;flex-direction:column;gap:10px}
 .dl-ov.open{display:flex}
@@ -31,7 +31,7 @@
 
 <div class="dl-ov" id="dl-ov">
   <span id="dl-ovck">🕐</span>
-  <span>Descargando...</span>
+  <span>Procesando...</span>
 </div>
 
 <script>
@@ -40,8 +40,9 @@
   let _oviv=null,_ovck=0;
   const ovEl=document.getElementById('dl-ov');
   const ovckEl=document.getElementById('dl-ovck');
+  const stEl=document.getElementById('DL_ST');
 
-  function ST(msg){const e=document.getElementById('DL_ST');if(e)e.textContent=msg;}
+  function ST(msg){if(stEl)stEl.textContent=msg;}
   function showOv(){ovEl.classList.add('open');_ovck=0;_oviv=setInterval(()=>{ovckEl.textContent=CK[_ovck++%12];},150);}
   function hideOv(){clearInterval(_oviv);_oviv=null;ovEl.classList.remove('open');}
 
@@ -72,7 +73,7 @@
         signal:_ac.signal
       });
       if(res.status===413){hideOv();ST((await res.json().catch(()=>({}))).error||'Archivo muy pesado');return;}
-      if(!res.ok){hideOv();ST('Error al descargar');return;}
+      if(!res.ok){hideOv();ST('Perdon, Sucedio un Error 😿');return;}
       const cd=res.headers.get('content-disposition')||'';
       const fn=decodeURIComponent(cd.match(/filename="?([^";\n]+)"?/)?.[1]||('media_'+Date.now()));
       const blob=await res.blob();
@@ -84,7 +85,11 @@
       ST('Listo');
       const file=new File([blob],fn,{type:blob.type||'application/octet-stream'});
       if(navigator.canShare&&navigator.canShare({files:[file]})){
-        navigator.share({files:[file]}).catch(()=>{});
+        const btn=document.createElement('button');
+        btn.className='app-btn';
+        btn.textContent='📤 Compartir';
+        btn.onclick=()=>{navigator.share({files:[file]}).catch(()=>{});btn.remove();};
+        stEl.after(btn);
       }
     }catch(e){hideOv();if(e.name!=='AbortError')ST('Error al descargar');}
   })();
