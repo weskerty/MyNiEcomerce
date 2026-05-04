@@ -1,1 +1,0 @@
-Aviso de Privacidad Menu Emergente guarda en local, rechaza no carga disqs ads

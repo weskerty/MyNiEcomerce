@@ -1,0 +1,585 @@
+Aqui podras encontrar Diversos Grupos y Actividades oara Participar.
+
+
+La Idea es fomentar la amistad y demas actividades asi evitar que muchos se sienttan tristes al no encontrar donde encajar. 
+
+Es posible que en uno de estos grupos puedas encajar.
+
+
+
+<div class="rss-section">
+  <h2>📰 Novedades</h2>
+  <div id="rv-c"></div>
+  <button id="rv-btn" class="view-all-button" style="display:none" onclick="rvOpen()">Ver todas →</button>
+</div>
+
+<div id="rv-ov">
+  <div id="rv-inner">
+    <div id="rv-hd">
+      <span>📰 Novedades</span>
+      <button onclick="rvClose()">✕</button>
+    </div>
+    <div id="rv-f"></div>
+  </div>
+</div>
+
+<style>
+*{box-sizing:border-box}
+
+details{background:#161a22;border:1px solid #2a2f3a;border-radius:12px;margin:12px 0;overflow:hidden}
+summary{cursor:pointer;padding:14px 16px;font-size:1.2em;font-weight:600;list-style:none}
+summary::-webkit-details-marker{display:none}
+details[open] summary{border-bottom:1px solid #2a2f3a}
+section{padding:14px 16px}
+h3{margin:12px 0 6px;font-size:1.05em}
+p{margin:0 0 10px;color:#a1a1aa}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin:10px 0}
+.g a{display:block;border-radius:8px;overflow:hidden;background:#0b0d12}
+.g img{width:100%;height:90px;object-fit:cover;display:block}
+.a{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.a img{height:28px}
+hr{border:none;border-top:1px solid #2a2f3a;margin:14px 0}
+
+.rss-section{
+margin:20px 0;
+padding:18px;
+border-radius:24px;
+border:1px solid rgba(255,255,255,.12);
+background:rgba(255,255,255,.035);
+box-shadow:0 12px 32px rgba(0,0,0,.18);
+}
+
+.rss-section h2{
+margin:0 0 14px;
+font-size:1.35em;
+font-weight:700;
+letter-spacing:.3px;
+text-align:center;
+color:#fff;
+}
+
+#rv-c{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.rv-ci{
+display:flex;
+align-items:center;
+gap:12px;
+padding:12px;
+border-radius:18px;
+text-decoration:none;
+background:rgba(255,255,255,.028);
+border:1px solid rgba(255,255,255,.055);
+transition:.22s ease;
+}
+
+.rv-ci:hover{
+transform:translateY(-2px);
+background:rgba(255,255,255,.055);
+border-color:rgba(255,255,255,.12);
+box-shadow:0 10px 20px rgba(0,0,0,.12);
+}
+
+.rv-ci-thumb{
+width:56px;
+height:56px;
+aspect-ratio:1/1;
+border-radius:16px;
+object-fit:cover;
+flex-shrink:0;
+background:rgba(255,255,255,.06);
+}
+
+.rv-ci-thumb.rv-no{
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:1.3em;
+}
+
+.rv-ci-info{
+flex:1;
+min-width:0;
+}
+
+.rv-ci-title{
+font-size:.92em;
+line-height:1.35;
+color:#fff;
+display:-webkit-box;
+-webkit-line-clamp:2;
+-webkit-box-orient:vertical;
+overflow:hidden;
+}
+
+.rv-ci-meta{
+margin-top:5px;
+font-size:.73em;
+color:rgba(255,255,255,.5);
+}
+
+.view-all-button{
+margin-top:14px;
+width:100%;
+padding:13px;
+border:none;
+border-radius:18px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.06);
+color:#fff;
+font-size:.95em;
+cursor:pointer;
+transition:.2s ease;
+}
+
+.view-all-button:hover{
+background:rgba(255,255,255,.075);
+transform:translateY(-1px);
+}
+
+#rv-ov{
+position:fixed;
+inset:0;
+z-index:50;
+overflow-y:auto;
+padding:20px;
+background:rgba(10,10,18,.94);
+opacity:0;
+visibility:hidden;
+pointer-events:none;
+transition:opacity .22s ease,visibility .22s ease;
+}
+
+#rv-ov.open{
+opacity:1;
+visibility:visible;
+pointer-events:auto;
+}
+
+#rv-inner{
+max-width:820px;
+margin:0 auto;
+}
+
+#rv-hd{
+position:sticky;
+top:0;
+z-index:2;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:14px 16px;
+margin-bottom:14px;
+border-radius:20px;
+background:rgba(22,26,34,.97);
+border:1px solid rgba(255,255,255,.08);
+box-shadow:0 8px 24px rgba(0,0,0,.14);
+}
+
+#rv-hd span{
+font-size:1.15em;
+font-weight:700;
+color:#fff;
+}
+
+#rv-hd button{
+width:38px;
+height:38px;
+border:none;
+border-radius:14px;
+background:rgba(255,255,255,.06);
+color:#fff;
+font-size:1em;
+cursor:pointer;
+transition:.2s;
+}
+
+#rv-hd button:hover{
+background:rgba(255,255,255,.12);
+transform:scale(1.04);
+}
+
+#rv-f{
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+.rv-it{
+overflow:hidden;
+border-radius:22px;
+background:rgba(255,255,255,.045);
+border:1px solid rgba(255,255,255,.08);
+box-shadow:0 10px 28px rgba(0,0,0,.18);
+}
+
+.rv-it-meta{
+padding:14px 16px 2px;
+font-size:.74em;
+color:rgba(255,255,255,.45);
+}
+
+.rv-it-title{
+padding:2px 16px 12px;
+font-size:1rem;
+font-weight:700;
+line-height:1.42;
+}
+
+.rv-it-title a{
+color:#fff;
+text-decoration:none;
+}
+
+.rv-it-title a:hover{
+opacity:.86;
+}
+
+.rv-it-body img,
+.rv-it-body video{
+width:100%;
+display:block;
+}
+
+.rv-it-body audio{
+width:100%;
+display:block;
+padding:10px 14px;
+box-sizing:border-box;
+}
+
+.rv-it-body p{
+margin:0;
+padding:8px 16px;
+font-size:.92em;
+line-height:1.6;
+color:rgba(255,255,255,.88);
+}
+
+.rv-it-body div{
+padding:4px 16px 10px;
+font-size:.84em;
+line-height:1.55;
+color:rgba(255,255,255,.72);
+}
+
+.rv-it-body a{
+color:#9fd3ff;
+text-decoration:none;
+}
+
+.rv-it-body a:hover{
+text-decoration:underline;
+}
+
+@media (max-width:700px){
+
+.rss-section{
+padding:15px;
+border-radius:20px;
+}
+
+.rv-ci{
+padding:11px;
+border-radius:16px;
+}
+
+.rv-ci-thumb{
+width:50px;
+height:50px;
+border-radius:14px;
+}
+
+#rv-ov{
+padding:14px;
+}
+
+#rv-hd{
+padding:12px 14px;
+border-radius:18px;
+}
+
+.rv-it{
+border-radius:18px;
+}
+
+.rv-it-title{
+font-size:.96rem;
+}
+}
+</style>
+
+<script>
+(function(){
+  const RSS_PATH='telegram/channel/cheagana';
+  const cEl=document.getElementById('rv-c');
+  const fEl=document.getElementById('rv-f');
+  const btn=document.getElementById('rv-btn');
+  const ovEl=document.getElementById('rv-ov');
+  let items=[];
+
+  function gT(el,tag){return el.getElementsByTagName(tag)[0]?.textContent||'';}
+  function gH(el,tag){
+    const n=el.getElementsByTagName(tag)[0];
+    if(!n)return '';
+    const c=n.firstChild;
+    return(c&&c.nodeType===4)?c.data:n.textContent;
+  }
+  function fI(html){
+    return new DOMParser().parseFromString(html,'text/html').querySelector('img')?.src||null;
+  }
+
+  function mkC(item){
+    const title=gT(item,'title'),link=gT(item,'link'),
+          desc=gH(item,'description'),date=gT(item,'pubDate'),
+          d=date?new Date(date).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'',
+          img=fI(desc),a=document.createElement('a');
+    a.className='rv-ci';
+    a.href=link;a.target='_blank';a.rel='noopener noreferrer';
+    a.innerHTML=(img?`<img class="rv-ci-thumb" src="${img}" loading="lazy">`:`<div class="rv-ci-thumb rv-no">📌</div>`)
+      +`<div class="rv-ci-info"><div class="rv-ci-title">${title}</div><div class="rv-ci-meta">${d}</div></div>`;
+    return a;
+  }
+
+  function mkF(item){
+    const title=gT(item,'title'),link=gT(item,'link'),
+          desc=gH(item,'description'),date=gT(item,'pubDate'),
+          author=gT(item,'author'),
+          d=date?new Date(date).toLocaleString('es-PY'):'',
+          div=document.createElement('div');
+    div.className='rv-it';
+    div.innerHTML=`<div class="rv-it-meta">${[author,d].filter(Boolean).join(' · ')}</div>
+      <div class="rv-it-title"><a href="${link}" target="_blank" rel="noopener noreferrer">${title}</a></div>
+      <div class="rv-it-body">${desc}</div>`;
+    return div;
+  }
+
+  async function load(){
+    try{
+      const res=await fetch(`/api/rss?url=${encodeURIComponent(RSS_PATH)}`);
+      if(!res.ok)return;
+      const doc=new DOMParser().parseFromString(await res.text(),'text/xml');
+      if(doc.querySelector('parsererror'))return;
+      items=[...doc.querySelectorAll('item')];
+      if(!items.length)return;
+      items.slice(0,4).forEach(i=>cEl.appendChild(mkC(i)));
+      btn.style.display='';
+    }catch{}
+  }
+
+  window.rvOpen=function(){
+    fEl.innerHTML='';
+    items.forEach(i=>fEl.appendChild(mkF(i)));
+    ovEl.classList.add('open');
+  };
+  window.rvClose=function(){
+    ovEl.classList.remove('open');
+    fEl.innerHTML='';
+  };
+
+  document.addEventListener('contentUnload',function(){
+    ovEl.classList.remove('open');
+    fEl.innerHTML='';
+    delete window.rvOpen;
+    delete window.rvClose;
+  },{once:true});
+
+  load();
+})();
+</script>
+
+
+
+<h1>Grupos</h1>
+
+</div>
+
+
+
+
+<details>
+  <summary>🌱 Ambientalismo</summary>
+  <section>
+    <p>Grupos de limpieza/reciclaje.</p>
+    <hr>
+
+    <h3>Atrevidos</h3>
+    <p> Agrupacion de Limpieza y Concienciación </p>
+      <div class="g">
+      <a href="#"><img src="web/otros/Archivos/Imagenes/Grupos/AtrevidosAmbiental.avif" loading="lazy"></a>
+      <a href="#"><img src="web/otros/Archivos/Imagenes/Grupos/Atrevidos2.avif" loading="lazy"></a>
+      <a href="#"><img src="web/otros/Archivos/Imagenes/Grupos/Atrevidos3.avif" loading="lazy"></a>
+    </div>
+
+    <div class="a">
+      <a href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20">
+        <img src="https://img.shields.io/badge/WhatsApp-25D366?logo=whatsapp&logoColor=fff&style=plastic" alt="WhatsApp">
+      </a>
+      <a href="https://www.instagram.com/atrevidos.py?igsh=MXQzZHhmN2syMTExMQ==">
+      <img src="https://img.shields.io/badge/Instagram-E4405F?logo=instagram&logoColor=fff&style=plastic" alt="Instagram"> 
+      </a>
+       <a href="https://www.facebook.com/p/Atrevidos-61557080633469/">
+      <img src="https://img.shields.io/badge/Facebook-1877F2?logo=facebook&logoColor=fff&style=plastic" alt="Facebook">
+      </a>
+    </div>
+    
+    <hr>
+    
+
+
+    <hr>
+  </section>
+</details>
+
+<details>
+  <summary>💻 Tecnologia</summary>
+  <section>
+      <h3>FLISOL Paraguay</h3>
+    <p>Festival de software libre (abril).</p>
+    
+ <div class="g">
+ <a href="#"><img src="web/otros/Archivos/Imagenes/Grupos/FLISOL.avif" loading="lazy"></a>
+      <a href="#"><img src="web/otros/Archivos/Imagenes/Grupos/FLISOL2.avif" loading="lazy"></a>
+      <a href="#"><img src="web/otros/Archivos/Imagenes/Grupos/FLISOL3.avif" loading="lazy"></a>
+    </div>
+    
+    <div class="a">
+      <a href="https://t.me/flisolpy">
+        <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=plastic&logo=telegram&logoColor=white" alt="Telegram">
+      </a>
+
+       <a href="https://www.instagram.com/flisol_asu?igsh=eWUxNmMwNGN5dTkw">
+      <img src="https://img.shields.io/badge/Instagram-E4405F?logo=instagram&logoColor=fff&style=plastic" alt="Instagram"> 
+      </a>
+      <a href="https://www.facebook.com/FLISoLPY/">
+      <img src="https://img.shields.io/badge/Facebook-1877F2?logo=facebook&logoColor=fff&style=plastic" alt="Facebook">
+      </a>
+    
+    </div>
+        <hr>
+    
+       <h3>Ciencia de Datos Paraguay</h3>
+    <div class="a">
+      <a href="https://t.me/Data_Science_PY">
+        <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=plastic&logo=telegram&logoColor=white" alt="Telegram">
+      </a>
+    </div>
+
+    <hr>
+
+    <h3>Arduino y Placas Base</h3>
+    <div class="a">
+      <a href="https://t.me/arduinopy">
+        <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=plastic&logo=telegram&logoColor=white" alt="Telegram">
+      </a>
+    </div>
+
+    <hr>
+
+    <h3>Linux Paraguay</h3>
+    <div class="a">
+      <a href="https://t.me/LinuxPyo">
+        <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=plastic&logo=telegram&logoColor=white" alt="Telegram">
+      </a>
+    </div>
+
+  </section>
+</details>
+
+<details>
+  <summary>🫂 Juntadas</summary>
+  <section>
+    <p>Grupos para conocer y organizar reuniones.</p>
+    <hr>
+
+    <h3>Basurero</h3>
+    <p></p>
+    
+        <div class="g">
+      <a href="#"><img src="https://raw.githubusercontent.com/weskerty/test/refs/heads/main/ArchivosSueltos/Ivn.jpg" loading="lazy"></a>
+      <a href="#"><img src="https://raw.githubusercontent.com/weskerty/test/refs/heads/main/ArchivosSueltos/amc.jpg" loading="lazy"></a>
+      <a href="#"><img src="https://raw.githubusercontent.com/weskerty/test/refs/heads/main/ArchivosSueltos/hanami.jpg" loading="lazy"></a>
+    </div>
+    
+    <div class="a">
+      <a href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20">
+        <img src="https://img.shields.io/badge/WhatsApp-25D366?logo=whatsapp&logoColor=fff&style=plastic" alt="WhatsApp">
+      </a>
+      <a href="https://discord.gg/dmqKEM7Upa">
+      <img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=fff&style=plastic" alt="Discord">
+      </a>
+      
+    </div>
+
+    <hr>
+
+
+
+    <hr>
+
+    <h3>Debate Paraguay</h3>
+    <div class="a">
+      <a href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20">
+        <img src="https://img.shields.io/badge/WhatsApp-25D366?logo=whatsapp&logoColor=fff&style=plastic" alt="WhatsApp">
+      </a>
+    </div>
+
+    <hr>
+
+    <h3>Librería Digital</h3>
+    <p>Venta y discusión de ebooks.</p>
+    <div class="a">
+      <a href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20">
+        <img src="https://img.shields.io/badge/WhatsApp-25D366?logo=whatsapp&logoColor=fff&style=plastic" alt="WhatsApp">
+      </a>
+      <a href="https://t.me/ebookpy">
+        <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=plastic&logo=telegram&logoColor=white" alt="Telegram">
+      </a>
+    </div>
+
+    <hr>
+
+
+
+  </section>
+</details>
+
+
+
+
+ 
+</br>
+
+
+<blockquote id="compartir-bloque">
+  <h3>
+    <a href="https://wa.me/?text=😻%20" 
+       id="compartir-enlace"
+       style="text-decoration: none; color: inherit;">
+      😻 Comparte para ser más cada Día 😻
+    </a>
+  </h3>
+</blockquote>
+
+<script>
+(function(){
+  if(!navigator.share)return;
+  const el=document.getElementById('compartir-enlace');
+  el.removeAttribute('href');
+  el.style.cursor='pointer';
+  function onShare(e){
+    e.preventDefault();
+    navigator.share({title:'😻 Compartir',text:'😻 Comparte para ser mas Amigos cada Dia 😻',url:window.location.href});
+  }
+  el.addEventListener('click',onShare);
+  document.addEventListener('contentUnload',function(){
+    el.removeEventListener('click',onShare);
+  },{once:true});
+})();
+</script>
+
+
+Esta seccion puede tener contenido desactualizado, corrobora los detalles actualizados en Grupos y Actividades.

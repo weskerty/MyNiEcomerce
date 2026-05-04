@@ -1,0 +1,1 @@
+Hash Temporal para API
