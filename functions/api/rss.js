@@ -9,5 +9,5 @@ export async function onRequestGet(context) {
     headers: { 'x-bridge-key': env.BRIDGE_KEY }
   });
 
-  return new Response(await res.text(), { status: res.status, headers: H });
+  return new Response(res.body, { status: res.status, headers: H });
 }
