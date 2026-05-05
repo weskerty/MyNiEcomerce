@@ -545,29 +545,3 @@ font-size:.96rem;
 </br>
 
 
-<blockquote id="compartir-bloque">
-  <h3>
-    <a href="https://wa.me/?text=😻%20" 
-       id="compartir-enlace"
-       style="text-decoration: none; color: inherit;">
-      😻 Comparte para ser más cada Día 😻
-    </a>
-  </h3>
-</blockquote>
-
-<script>
-(function(){
-  if(!navigator.share)return;
-  const el=document.getElementById('compartir-enlace');
-  el.removeAttribute('href');
-  el.style.cursor='pointer';
-  function onShare(e){
-    e.preventDefault();
-    navigator.share({title:'😻 Compartir',text:'😻 Comparte para ser mas Amigos cada Dia 😻',url:window.location.href});
-  }
-  el.addEventListener('click',onShare);
-  document.addEventListener('contentUnload',function(){
-    el.removeEventListener('click',onShare);
-  },{once:true});
-})();
-</script>

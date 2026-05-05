@@ -241,6 +241,5 @@
 })();
 </script>
 
-<br><br><br>
 <a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a>
 </div>

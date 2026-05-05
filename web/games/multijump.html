@@ -1,0 +1,612 @@
+<style>
+#MJ{display:flex;flex-direction:column;align-items:center;min-height:100vh;background:#060612;color:#b0b8e0;font-family:'Courier New',monospace;padding-bottom:20px}
+.MJ_s{display:none;flex-direction:column;gap:10px;width:100%;max-width:520px;padding:16px;box-sizing:border-box}
+.MJ_s.on{display:flex}
+#MJ h2{color:#00ffaa;text-shadow:0 0 10px #00ffaa55;margin:4px 0;font-size:1.4em}
+#MJ input{background:#0a0a1e;border:1px solid #252550;color:#b0b8e0;padding:8px 10px;border-radius:6px;font:inherit;box-sizing:border-box}
+#MJ button{background:#10102a;border:1px solid #303068;color:#b0b8e0;padding:8px 14px;border-radius:6px;cursor:pointer;font:inherit}
+#MJ button:hover{background:#1c1c40;border-color:#5050a0}
+#MJ button:disabled{opacity:.5;cursor:default}
+#MJ .p{background:#003322;border-color:#00cc88;color:#00ffaa}
+#MJ .p:hover{background:#004433}
+.mrow{display:flex;gap:8px;align-items:center}
+.MJ_ri{display:flex;justify-content:space-between;align-items:center;background:#0a0a1e;padding:8px 12px;border-radius:6px;border:1px solid #181840;gap:8px}
+#MJ_log{height:140px;overflow-y:auto;background:#040410;border:1px solid #181840;border-radius:6px;padding:6px;font-size:12px;line-height:1.6}
+.MJ_pi{display:inline-flex;align-items:center;padding:3px 10px;border-radius:12px;font-size:12px;background:#0a0a1e;border:1px solid #202048}
+.MJ_pi.ok{border-color:#00ffaa;color:#00ffaa}
+#MJ_gm{display:none;flex-direction:column;width:100%;height:100vh;background:#060612;position:fixed;top:0;left:0;z-index:50}
+#MJ_gm.on{display:flex}
+#MJ_hud{display:flex;justify-content:space-between;align-items:center;padding:0 10px;background:#04040e;height:44px;font-size:13px;width:100%;box-sizing:border-box;flex-shrink:0}
+#MJ_cv{display:block;flex-shrink:0}
+#MJ_dead{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#000000cc;color:#ff6680;padding:12px 24px;border-radius:8px;font-size:14px;text-align:center;pointer-events:none;z-index:10}
+#MJ_ctrl{display:flex;justify-content:space-between;align-items:center;padding:6px 12px;background:#04040e;height:64px;width:100%;box-sizing:border-box;flex-shrink:0}
+.MJ_dp{display:flex;gap:5px;align-items:center}
+.MJ_k{width:50px;height:50px;background:#12122e;border:1px solid #303060;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;user-select:none;-webkit-user-select:none;touch-action:none}
+.MJ_k.dn,.MJ_k:active{background:#28285a;border-color:#6060c0}
+.MJ_sr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #181840}
+</style>
+
+<div id="MJ">
+  <div id="MJ_au" class="MJ_s">
+    <h2>⬆ MultiJump</h2>
+    <p style="color:#405070;font-size:13px;margin:0">Multiplayer platformer — up to 5 players</p>
+    <input id="MJ_nm" placeholder="Your name" maxlength="16" style="max-width:240px">
+    <div class="mrow">
+      <button class="p" id="MJ_br">Login / Register</button>
+      <button id="MJ_bg">Play as Guest</button>
+    </div>
+  </div>
+
+  <div id="MJ_lb" class="MJ_s">
+    <div class="mrow" style="justify-content:space-between">
+      <h2>Rooms</h2>
+      <button class="p" id="MJ_bc">+ Create Room</button>
+    </div>
+    <div id="MJ_rl" style="display:flex;flex-direction:column;gap:6px;min-height:40px"></div>
+    <div id="MJ_ls" style="color:#405068;font-size:12px">Connecting...</div>
+  </div>
+
+  <div id="MJ_rm" class="MJ_s">
+    <div class="mrow" style="justify-content:space-between">
+      <h2 id="MJ_rn">Room</h2>
+      <button id="MJ_blv">Leave</button>
+    </div>
+    <div id="MJ_pl" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+    <div id="MJ_log"></div>
+    <div class="mrow">
+      <input id="MJ_mi" placeholder="Message..." style="flex:1">
+      <button id="MJ_bs">Send</button>
+    </div>
+    <div class="mrow">
+      <button class="p" id="MJ_brd">Ready</button>
+      <button id="MJ_bm1" title="Mute mic">🎤</button>
+      <button id="MJ_bm2" title="Mute peers">🔊</button>
+      <span id="MJ_rst" style="color:#405068;font-size:12px;margin-left:4px"></span>
+    </div>
+  </div>
+
+  <div id="MJ_gm">
+    <div id="MJ_hud">
+      <span id="MJ_hl">LVL 1</span>
+      <span id="MJ_ha" style="color:#5070a0"></span>
+      <span id="MJ_hp">0 pts</span>
+    </div>
+    <canvas id="MJ_cv"></canvas>
+    <div id="MJ_dead">YOU DIED<br><small style="color:#c06070">Spectating...</small></div>
+    <div id="MJ_ctrl">
+      <div class="MJ_dp">
+        <div class="MJ_k" data-a="l">◀</div>
+        <div class="MJ_k" data-a="d">▼</div>
+        <div class="MJ_k" data-a="r">▶</div>
+      </div>
+      <div class="MJ_dp">
+        <div class="MJ_k" data-a="fire">💥</div>
+        <div class="MJ_k" data-a="u">▲</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="MJ_ov" class="MJ_s" style="max-width:380px;margin-top:40px">
+    <h2 id="MJ_ot">Game Over</h2>
+    <div id="MJ_os"></div>
+    <button class="p" id="MJ_bbb" style="margin-top:8px">Back to Lobby</button>
+  </div>
+</div>
+
+<script>
+(async()=>{
+const {joinRoom,selfId}=await import('https://esm.run/trystero@0.22.0');
+
+const CFG={
+  appId:'multijump-v1',
+  meta:'MJ-meta-v1',
+  max:5,
+  gid:'MULTIJUMP',
+  lvJson:'web/games/multijump/level.json',
+  regUrl:'#web/register.html',
+  tMs:50,
+  pMs:100
+};
+const PH={g:0.55,jF:-13,djF:-11,spd:3.5,mxF:16,fr:0.82,iFr:0.97,spF:-18,bSpd:-14};
+const PW=20,PHh=30;
+const PCOLS=['#00ffaa','#ff2d6b','#ffd700','#00aaff','#ff8c00'];
+const PTCOL={static:'#1a3560',moving:'#381a60',break:'#602818',portal:'#601848',spring:'#186040',ice:'#183c60'};
+
+const $=id=>document.getElementById(id);
+const cv=$('MJ_cv'),ctx=cv.getContext('2d');
+
+const SC=id=>{
+  ['MJ_au','MJ_lb','MJ_rm','MJ_ov'].forEach(s=>$(s).classList.remove('on'));
+  $('MJ_gm').classList.remove('on');
+  if(id==='MJ_gm')$('MJ_gm').classList.add('on');
+  else if(id)$(id).classList.add('on');
+};
+
+let jUid=localStorage.getItem('JLB_uid');
+let jPriv=localStorage.getItem('JLB_priv');
+let myName=localStorage.getItem('MJ_name')||'Jumper';
+$('MJ_nm').value=myName;
+SC('MJ_au');
+
+async function JL_req(ep,meth,data){
+  if(!jUid||!jPriv)return null;
+  try{
+    const pk=await crypto.subtle.importKey('jwk',JSON.parse(jPriv),'Ed25519',false,['sign']);
+    const ts=Date.now(),rb=data?JSON.stringify(data):'';
+    const rb64=rb?btoa(unescape(encodeURIComponent(rb))):'';
+    const msg=new TextEncoder().encode(`${jUid}:${ts}:${rb64}`);
+    const sig=await crypto.subtle.sign('Ed25519',pk,msg);
+    const sh=[...new Uint8Array(sig)].map(b=>b.toString(16).padStart(2,'0')).join('');
+    return fetch(`/api/leaderboard/${ep}`,{method:meth,headers:{'content-type':'application/json','x-uid':jUid,'x-timestamp':String(ts),'x-sig':sh},body:rb||undefined});
+  }catch(e){return null;}
+}
+const JL_sc=async d=>{const r=await JL_req('score','POST',{gameID:CFG.gid,delta:d});return r?.ok?r.json():null;};
+
+let metaRm=null,gameRm=null;
+let sAnn,gAnn,sChat,gChat,sRdy,gRdy,sStart,gStart,sPo,gPo,sEv,gEv,sNxt,gNxt;
+let myRid=null,isHost=false;
+let lobRms={},annTmr=null;
+let players={},myP=null;
+let rdyS=new Set();
+let lvUs=[],lvI=0,lvD=null;
+let plts=[],buls=[],bossE=null;
+let lId=null,pId=null,rfId=null;
+let camY=0,wSc=1;
+let ls=null,aEls={},mMu=false,pMu=false;
+const keys={l:0,r:0,u:0,d:0,fire:0};
+let lastJ=0,lastF=0,goalReached=false,gameEnded=false;
+let _kd,_ku,_rs;
+
+$('MJ_br').onclick=()=>{
+  myName=$('MJ_nm').value.trim()||'Jumper';
+  localStorage.setItem('MJ_name',myName);
+  if(!jUid){window.location.hash=CFG.regUrl;return;}
+  LB_init();
+};
+$('MJ_bg').onclick=()=>{
+  myName=$('MJ_nm').value.trim()||'Jumper';
+  localStorage.setItem('MJ_name',myName);
+  LB_init();
+};
+
+function LB_init(){
+  SC('MJ_lb');
+  metaRm=joinRoom({appId:CFG.appId},CFG.meta);
+  [sAnn,gAnn]=metaRm.makeAction('ann');
+  gAnn(d=>{lobRms[d.rid]={...d,ts:Date.now()};LB_rnd();});
+  metaRm.onPeerJoin(()=>{if(isHost&&myRid)LB_ann();});
+  annTmr=setInterval(()=>{
+    const n=Date.now();
+    Object.keys(lobRms).forEach(k=>{if(n-lobRms[k].ts>15000)delete lobRms[k];});
+    LB_rnd();
+    if(isHost&&myRid)LB_ann();
+  },5000);
+  setTimeout(LB_rnd,1200);
+}
+
+function LB_ann(){sAnn({rid:myRid,name:$('MJ_rn').textContent,cnt:Object.keys(players).length,max:CFG.max,state:'waiting'});}
+
+function LB_rnd(){
+  const rl=$('MJ_rl');rl.innerHTML='';
+  const rms=Object.values(lobRms).filter(r=>r.state==='waiting');
+  $('MJ_ls').textContent=rms.length?rms.length+' room(s) found':'No rooms — create one!';
+  rms.forEach(r=>{
+    const d=document.createElement('div');d.className='MJ_ri';
+    const nm=document.createElement('span');nm.textContent=r.name;
+    const ct=document.createElement('span');ct.style.cssText='color:#405068;font-size:12px';ct.textContent=r.cnt+'/'+r.max;
+    const b=document.createElement('button');b.textContent='Join';b.onclick=()=>RM_join(r.rid,r.name,false);
+    d.append(nm,ct,b);rl.appendChild(d);
+  });
+}
+
+$('MJ_bc').onclick=()=>{
+  const rid=Math.random().toString(36).slice(2,8).toUpperCase();
+  RM_join(rid,myName+"'s Room",true);
+};
+
+function RM_join(rid,rname,host){
+  myRid=rid;isHost=host;
+  gameRm=joinRoom({appId:CFG.appId},'MJ-'+rid);
+  [sChat,gChat]=gameRm.makeAction('chat');
+  [sRdy,gRdy]=gameRm.makeAction('rdy');
+  [sStart,gStart]=gameRm.makeAction('start');
+  [sPo,gPo]=gameRm.makeAction('pos');
+  [sEv,gEv]=gameRm.makeAction('evt');
+  [sNxt,gNxt]=gameRm.makeAction('nxt');
+
+  players[selfId]={id:selfId,name:myName,uid:jUid,color:PCOLS[0],x:0,y:0,vx:0,vy:0,onGround:false,jumpsLeft:2,alive:true,checkpoint:null,score:0,facing:1,stun:0,pv:new Set(),cv2:new Set(),onIce:false};
+  myP=players[selfId];
+  rdyS.clear();
+
+  gChat(d=>RM_log(d.n+': '+d.m));
+  gRdy((d,from)=>{rdyS.add(from);RM_log(d.n+' ready');RM_upd();if(isHost)RM_chk();});
+  gStart(async d=>{lvUs=d.us;lvI=0;await LV_load(lvUs[0]);GM_go();});
+  gPo((d,from)=>{if(!players[from])return;const p=players[from];p.x=d.x;p.y=d.y;p.vx=d.vx;p.vy=d.vy;p.facing=d.f;p.alive=d.a;p.score=d.s;});
+  gEv((d,from)=>EV_hdl(d,from));
+  gNxt(async d=>{lvI=d.i;await LV_load(lvUs[lvI]);GM_nxt();});
+
+  gameRm.onPeerJoin(id=>{
+    if(Object.keys(players).length>=CFG.max)return;
+    const ci=Object.keys(players).length;
+    players[id]={id,name:'Jumper',uid:null,color:PCOLS[ci%PCOLS.length],x:0,y:0,vx:0,vy:0,onGround:false,jumpsLeft:2,alive:true,checkpoint:null,score:0,facing:1,stun:0,pv:new Set(),cv2:new Set(),onIce:false};
+    RM_log('Player joined');RM_upd();RM_recol();
+    if(isHost)LB_ann();
+  });
+  gameRm.onPeerLeave(id=>{
+    delete players[id];
+    if(aEls[id]){aEls[id].pause();aEls[id].srcObject=null;aEls[id].remove();delete aEls[id];}
+    RM_log('Player left');RM_upd();
+    if(lId&&Object.keys(players).length>0&&Object.values(players).every(p=>!p.alive))setTimeout(GM_end,800);
+  });
+
+  RM_vc();
+  if(isHost)LB_ann();
+  $('MJ_rn').textContent=rname;
+  SC('MJ_rm');RM_log('Room '+rid);RM_upd();
+}
+
+function RM_recol(){Object.keys(players).forEach((id,i)=>players[id].color=PCOLS[i%PCOLS.length]);}
+
+function RM_upd(){
+  const pl=$('MJ_pl');pl.innerHTML='';
+  Object.values(players).forEach(p=>{
+    const s=document.createElement('span');
+    s.className='MJ_pi'+(rdyS.has(p.id)?' ok':'');
+    s.textContent=p.name+(rdyS.has(p.id)?' ✓':'');
+    s.style.borderLeft='3px solid '+p.color;
+    pl.appendChild(s);
+  });
+  $('MJ_rst').textContent=rdyS.size+'/'+Object.keys(players).length+' ready';
+}
+
+function RM_log(m){const l=$('MJ_log'),d=document.createElement('div');d.textContent=m;l.appendChild(d);l.scrollTop=l.scrollHeight;}
+function RM_chk(){const n=Object.keys(players).length;if(n<1||rdyS.size<n)return;GM_fetch();}
+
+async function GM_fetch(){
+  try{const r=await fetch(CFG.lvJson);lvUs=await r.json();}catch(e){lvUs=[];}
+  if(!lvUs.length)return;
+  lvI=0;await LV_load(lvUs[0]);
+  sStart({us:lvUs});GM_go();
+}
+
+$('MJ_brd').onclick=()=>{rdyS.add(selfId);sRdy({n:myName});RM_upd();$('MJ_brd').disabled=true;if(isHost)RM_chk();};
+$('MJ_bs').onclick=RM_snd;
+$('MJ_mi').addEventListener('keydown',e=>{if(e.key==='Enter')RM_snd();});
+function RM_snd(){const m=$('MJ_mi').value.trim();if(!m)return;$('MJ_mi').value='';sChat({n:myName,m});RM_log(myName+': '+m);}
+
+$('MJ_blv').onclick=RM_lv;
+function RM_lv(){
+  GM_cln();
+  try{gameRm?.leave();}catch(e){}
+  gameRm=null;myRid=null;players={};rdyS.clear();myP=null;
+  $('MJ_brd').disabled=false;
+  SC('MJ_lb');
+}
+
+async function RM_vc(){
+  try{ls=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:1,noiseSuppression:1},video:0});}
+  catch(e){ls=null;return;}
+  gameRm.addStream(ls);
+  gameRm.onPeerStream((s,id)=>{
+    if(!aEls[id]){aEls[id]=document.createElement('audio');document.body.appendChild(aEls[id]);}
+    aEls[id].srcObject=s;aEls[id].autoplay=true;aEls[id].playsInline=true;aEls[id].muted=pMu;
+  });
+}
+$('MJ_bm1').onclick=()=>{mMu=!mMu;if(ls)ls.getAudioTracks().forEach(t=>t.enabled=!mMu);$('MJ_bm1').textContent=mMu?'🤫':'🎤';};
+$('MJ_bm2').onclick=()=>{pMu=!pMu;Object.values(aEls).forEach(a=>a.muted=pMu);$('MJ_bm2').textContent=pMu?'🔇':'🔊';};
+
+async function LV_load(url){
+  const r=await fetch(url);lvD=await r.json();
+  PH.g=lvD.gravity??0.55;
+  plts=lvD.platforms.map(p=>({...p,_ox:p.x,_oy:p.y,_d:1,_hp:p.hp??3,_br:false,_dx:0,_dy:0}));
+  bossE=lvD.boss?{...lvD.boss,_hp:lvD.boss.hp,_d:1,_sx:lvD.boss.x,_t:0,_bl:[],_dead:false}:null;
+}
+
+function PL_sp(p,x,y){
+  Object.assign(p,{x,y,vx:0,vy:0,onGround:false,jumpsLeft:2,alive:true,stun:0,checkpoint:null,onIce:false});
+  p.pv=new Set();p.cv2=new Set();
+}
+
+function GM_go(){
+  SC('MJ_gm');RZ();goalReached=false;gameEnded=false;
+  const sp=lvD.spawns??[[50,lvD.h-50]];
+  Object.values(players).forEach((p,i)=>{const s=sp[i%sp.length];PL_sp(p,s[0],s[1]);});
+  if(myP)camY=Math.max(0,myP.y-cv.height/wSc*0.45);
+  buls=[];
+  $('MJ_hl').textContent='LVL '+(lvI+1);
+  $('MJ_hp').textContent='0 pts';
+  $('MJ_dead').style.display='none';
+  GM_cln();
+  lId=setInterval(GM_tick,CFG.tMs);
+  pId=setInterval(GM_sndP,CFG.pMs);
+  rfId=requestAnimationFrame(RD);
+}
+
+function GM_nxt(){
+  goalReached=false;buls=[];RZ();
+  const sp=lvD.spawns??[[50,lvD.h-50]];
+  Object.values(players).forEach((p,i)=>{const s=sp[i%sp.length];PL_sp(p,s[0],s[1]);p.alive=true;});
+  if(myP)camY=Math.max(0,myP.y-cv.height/wSc*0.45);
+  $('MJ_hl').textContent='LVL '+(lvI+1);
+  $('MJ_dead').style.display='none';
+  GM_cln();
+  lId=setInterval(GM_tick,CFG.tMs);
+  pId=setInterval(GM_sndP,CFG.pMs);
+  if(!rfId)rfId=requestAnimationFrame(RD);
+}
+
+function GM_tick(){
+  if(!lvD)return;
+  PLT_an();
+  PH_tick();
+  if(bossE)BS_tick();
+  BL_tick();
+  if(myP?.alive&&myP.y>lvD.h+120)PL_die(myP);
+  if(!goalReached&&myP?.alive&&lvD.goal){
+    const g=lvD.goal;
+    if(myP.x+PW>g.x&&myP.x<g.x+g.w&&myP.y+PHh>g.y&&myP.y<g.y+g.h){
+      goalReached=true;myP.score+=5;
+      if(isHost){
+        lvI++;
+        if(lvI>=lvUs.length)setTimeout(GM_end,600);
+        else LV_load(lvUs[lvI]).then(()=>{sNxt({i:lvI});GM_nxt();});
+      }
+    }
+  }
+  $('MJ_hp').textContent=(myP?.score??0)+' pts';
+  const al=Object.values(players).filter(p=>p.alive).length;
+  $('MJ_ha').textContent=al+'/'+Object.keys(players).length;
+  if(!gameEnded&&Object.values(players).every(p=>!p.alive))setTimeout(GM_end,800);
+}
+
+function PH_tick(){
+  if(!myP||!myP.alive)return;
+  const p=myP,now=Date.now();
+  if(p.stun>0){p.stun--;p.vy=Math.min(p.vy+PH.g,PH.mxF);p.y+=p.vy;p.x=Math.max(0,Math.min(p.x,lvD.w-PW));return;}
+
+  if(keys.l){p.vx=p.onIce?Math.max(p.vx-0.5,-PH.spd):-PH.spd;p.facing=-1;}
+  else if(keys.r){p.vx=p.onIce?Math.min(p.vx+0.5,PH.spd):PH.spd;p.facing=1;}
+  else p.vx*=(p.onIce?PH.iFr:(p.onGround?PH.fr:0.95));
+
+  if(keys.u&&now-lastJ>150&&p.jumpsLeft>0){p.vy=p.jumpsLeft===2?PH.jF:PH.djF;p.jumpsLeft--;lastJ=now;keys.u=0;}
+  if(keys.d&&!p.onGround)p.vy=Math.min(p.vy+2,PH.mxF);
+  if(keys.fire&&now-lastF>400){
+    lastF=now;
+    const bx=p.x+PW/2-3;
+    buls.push({x:bx,y:p.y,w:6,h:10,vy:PH.bSpd,ow:selfId});
+    sEv({type:'sh',x:bx,y:p.y});
+    keys.fire=0;
+  }
+
+  p.vy=Math.min(p.vy+PH.g,PH.mxF);
+  p.x+=p.vx;p.y+=p.vy;
+  p.x=Math.max(0,Math.min(p.x,lvD.w-PW));
+  p.onGround=false;p.onIce=false;
+
+  for(const plt of plts){if(!plt._br&&PL_col(p,plt))PL_eft(p,plt);}
+
+  if(lvD.checkpoints){
+    for(const cp of lvD.checkpoints){
+      if(!p.cv2.has(cp.id)&&p.x+PW>cp.x&&p.x<cp.x+cp.w&&p.y+PHh>cp.y&&p.y<cp.y+cp.h){
+        p.cv2.add(cp.id);p.checkpoint={x:cp.x+cp.w/2-PW/2,y:cp.y-PHh};p.score+=2;
+      }
+    }
+  }
+
+  const tcy=p.y-(cv.height/wSc)*0.4;
+  camY+=(tcy-camY)*0.08;
+  camY=Math.max(0,Math.min(camY,lvD.h-cv.height/wSc));
+}
+
+function PL_col(p,plt){
+  if(p.vy<0)return false;
+  if(p.x+PW<=plt.x||p.x>=plt.x+plt.w)return false;
+  const pb=p.y+PHh,ppb=pb-p.vy;
+  if(ppb>plt.y+8)return false;
+  if(pb<plt.y||p.y>plt.y+plt.h)return false;
+  p.y=plt.y-PHh;p.vy=0;p.onGround=true;p.jumpsLeft=2;
+  if(plt.type==='moving'){p.x+=plt._dx;p.y+=plt._dy;}
+  return true;
+}
+
+function PL_eft(p,plt){
+  if(plt.type==='spring'){p.vy=PH.spF;p.onGround=false;}
+  else if(plt.type==='portal'){p.x=plt.tx;p.y=plt.ty;p.vy=0;p.vx=0;}
+  else if(plt.type==='break'){plt._hp--;if(plt._hp<=0)plt._br=true;}
+  else if(plt.type==='ice'){p.onIce=true;}
+  if(!p.pv.has(plt.id)){p.pv.add(plt.id);p.score++;}
+}
+
+function PL_die(p){
+  p.alive=false;
+  if(p.id===selfId){
+    sEv({type:'die'});
+    clearInterval(lId);clearInterval(pId);lId=null;pId=null;
+    $('MJ_dead').style.display='flex';
+    $('MJ_dead').style.flexDirection='column';
+  }
+}
+
+function PLT_an(){
+  plts.forEach(plt=>{
+    if(plt.type!=='moving')return;
+    const sp=plt.spd??1.5,ox=plt.x,oy=plt.y;
+    if(plt.axis==='y'){plt.y+=sp*plt._d;if(Math.abs(plt.y-plt._oy)>=plt.range)plt._d*=-1;}
+    else{plt.x+=sp*plt._d;if(Math.abs(plt.x-plt._ox)>=plt.range)plt._d*=-1;}
+    plt._dx=plt.x-ox;plt._dy=plt.y-oy;
+  });
+}
+
+function BL_tick(){
+  buls=buls.filter(b=>{
+    b.y+=b.vy;
+    if(b.y<-80||b.y>lvD.h+80)return false;
+    if(bossE&&!bossE._dead&&b.x<bossE.x+bossE.w&&b.x+b.w>bossE.x&&b.y<bossE.y+bossE.h&&b.y+b.h>bossE.y){
+      bossE._hp--;
+      if(bossE._hp<=0){bossE._dead=true;if(b.ow===selfId){myP&&(myP.score+=10);sEv({type:'bk'});}}
+      return false;
+    }
+    if(b.ow===selfId){
+      for(const id in players){
+        if(id===selfId)continue;
+        const op=players[id];
+        if(!op.alive)continue;
+        if(b.x<op.x+PW&&b.x+b.w>op.x&&b.y<op.y+PHh&&b.y+b.h>op.y){op.stun=80;return false;}
+      }
+    }
+    return true;
+  });
+}
+
+function BS_tick(){
+  const b=bossE;if(!b||b._dead)return;
+  b.x+=(b.spd??3)*b._d;
+  if(b.x<b._sx-(b.range??150)||b.x>b._sx+(b.range??150))b._d*=-1;
+  b._t=(b._t||0)+CFG.tMs;
+  if(b._t>=(b.shootInterval??2500)){
+    b._t=0;
+    Object.values(players).filter(p=>p.alive).slice(0,3).forEach(p=>{
+      b._bl.push({x:b.x+b.w/2-3,y:b.y+b.h,w:6,h:12,vy:b.bulletSpd??5,hx:(p.x-b.x)*0.008});
+    });
+  }
+  b._bl=b._bl.filter(bl=>{
+    bl.x+=bl.hx;bl.y+=bl.vy;
+    if(bl.y>lvD.h+80)return false;
+    if(myP?.alive&&bl.x<myP.x+PW&&bl.x+bl.w>myP.x&&bl.y<myP.y+PHh&&bl.y+bl.h>myP.y){myP.stun=90;return false;}
+    return true;
+  });
+}
+
+function GM_sndP(){if(!myP||!gameRm)return;sPo({x:myP.x,y:myP.y,vx:myP.vx,vy:myP.vy,f:myP.facing,a:myP.alive,s:myP.score});}
+
+function EV_hdl(d,from){
+  if(d.type==='die'&&players[from])players[from].alive=false;
+  else if(d.type==='sh')buls.push({x:d.x,y:d.y,w:6,h:10,vy:PH.bSpd,ow:from});
+  else if(d.type==='bk'&&bossE)bossE._dead=true;
+}
+
+function RZ(){
+  cv.width=window.innerWidth;
+  cv.height=Math.max(180,window.innerHeight-44-64);
+  wSc=cv.width/(lvD?.w??600);
+}
+
+function RD(){
+  rfId=requestAnimationFrame(RD);
+  if(!lvD)return;
+  ctx.fillStyle=lvD.bg??'#060612';
+  ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.save();ctx.scale(wSc,wSc);
+  const oy=-camY;
+
+  plts.forEach(plt=>{
+    if(plt._br)return;
+    ctx.fillStyle=plt.type==='break'?`hsl(${plt._hp*15+5},55%,28%)`:PTCOL[plt.type]??'#1a3560';
+    ctx.fillRect(plt.x,plt.y+oy,plt.w,plt.h);
+    if(plt.type==='spring'){ctx.fillStyle='#33ff88';ctx.fillRect(plt.x+plt.w*0.3,plt.y+oy-5,plt.w*0.4,6);}
+    if(plt.type==='portal'){ctx.strokeStyle='#ff44ff';ctx.lineWidth=2;ctx.strokeRect(plt.x+1,plt.y+oy+1,plt.w-2,plt.h-2);}
+    if(plt.type==='ice'){ctx.fillStyle='#88ccff33';ctx.fillRect(plt.x,plt.y+oy,plt.w,plt.h);}
+    if(plt.type==='moving'){ctx.fillStyle='#aa88ff22';ctx.fillRect(plt.x,plt.y+oy,plt.w,plt.h);}
+  });
+
+  if(lvD.checkpoints)lvD.checkpoints.forEach(cp=>{
+    const vis=myP?.cv2.has(cp.id);
+    ctx.fillStyle=vis?'#ffaa0044':'#ffaa0011';ctx.fillRect(cp.x,cp.y+oy,cp.w,cp.h);
+    ctx.strokeStyle='#ffaa00';ctx.lineWidth=vis?2:1;
+    ctx.setLineDash(vis?[]:[5,5]);ctx.strokeRect(cp.x,cp.y+oy,cp.w,cp.h);ctx.setLineDash([]);
+    ctx.fillStyle='#ffaa00';ctx.font='9px monospace';ctx.textAlign='center';
+    ctx.fillText('CP',cp.x+cp.w/2,cp.y+oy-3);
+  });
+
+  if(lvD.goal){
+    const g=lvD.goal;
+    ctx.fillStyle='#00ffaa22';ctx.fillRect(g.x,g.y+oy,g.w,g.h);
+    ctx.strokeStyle='#00ffaa';ctx.lineWidth=2;ctx.strokeRect(g.x,g.y+oy,g.w,g.h);
+    ctx.fillStyle='#00ffaa';ctx.font='bold 11px monospace';ctx.textAlign='center';
+    ctx.fillText('GOAL',g.x+g.w/2,g.y+oy-4);
+  }
+
+  if(bossE&&!bossE._dead){
+    const b=bossE;
+    ctx.fillStyle='#440011';ctx.fillRect(b.x,b.y+oy,b.w,b.h);
+    ctx.fillStyle='#ff2d6b';ctx.fillRect(b.x,b.y+oy,b.w*(b._hp/b.maxHp),5);
+    ctx.fillStyle='#ffcc00';
+    ctx.fillRect(b.x+b.w*0.15,b.y+oy+b.h*0.2,14,12);
+    ctx.fillRect(b.x+b.w*0.65,b.y+oy+b.h*0.2,14,12);
+    ctx.fillStyle='#330000';ctx.fillRect(b.x+b.w*0.25,b.y+oy+b.h*0.65,b.w*0.5,4);
+    ctx.fillStyle='#ff4400';
+    b._bl.forEach(bl=>ctx.fillRect(bl.x,bl.y+oy,bl.w,bl.h));
+  }
+
+  Object.values(players).forEach(p=>{
+    if(!p.alive)return;
+    ctx.globalAlpha=p.stun>0?0.3+Math.sin(p.stun*0.5)*0.35:1;
+    ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y+oy,PW,PHh);
+    const ex=p.facing>0?p.x+PW-8:p.x+2;
+    ctx.fillStyle='#fff';ctx.fillRect(ex,p.y+oy+6,6,6);
+    ctx.fillStyle='#111';ctx.fillRect(ex+(p.facing>0?2:0),p.y+oy+8,3,3);
+    ctx.globalAlpha=1;
+    ctx.fillStyle=p.color;ctx.font='9px monospace';ctx.textAlign='center';
+    ctx.fillText(p.name.slice(0,8),p.x+PW/2,p.y+oy-3);
+  });
+  ctx.globalAlpha=1;
+
+  ctx.fillStyle='#ffffaa';
+  buls.forEach(b=>ctx.fillRect(b.x,b.y+oy,b.w,b.h));
+
+  ctx.restore();
+}
+
+async function GM_end(){
+  if(gameEnded)return;
+  gameEnded=true;
+  GM_cln();SC('MJ_ov');
+  const sorted=Object.values(players).sort((a,b)=>b.score-a.score);
+  const myRk=sorted.findIndex(p=>p.id===selfId);
+  $('MJ_ot').textContent=myRk===0?'YOU WIN! 🏆':'Game Over';
+  const os=$('MJ_os');os.innerHTML='';
+  sorted.forEach((p,i)=>{
+    const d=document.createElement('div');d.className='MJ_sr';
+    d.innerHTML=`<span style="color:${p.color}">${i+1}. ${p.name}</span><span>${p.score} pts</span>`;
+    os.appendChild(d);
+  });
+  if(jUid&&myP?.score>0)await JL_sc(myP.score);
+}
+
+$('MJ_bbb').onclick=()=>{RM_lv();SC('MJ_lb');};
+
+const KM={ArrowLeft:'l',ArrowRight:'r',ArrowUp:'u',ArrowDown:'d',a:'l',d:'r',w:'u',s:'d',' ':'u',x:'fire',z:'fire'};
+_kd=e=>{const a=KM[e.key];if(a){keys[a]=1;if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key))e.preventDefault();}};
+_ku=e=>{const a=KM[e.key];if(a)keys[a]=0;};
+_rs=()=>{if(lvD&&$('MJ_gm').classList.contains('on'))RZ();};
+document.addEventListener('keydown',_kd);
+document.addEventListener('keyup',_ku);
+window.addEventListener('resize',_rs);
+
+document.querySelectorAll('.MJ_k').forEach(btn=>{
+  const a=btn.dataset.a;
+  btn.addEventListener('touchstart',e=>{e.preventDefault();keys[a]=1;},{passive:false});
+  btn.addEventListener('touchend',e=>{e.preventDefault();keys[a]=0;},{passive:false});
+  btn.addEventListener('mousedown',()=>keys[a]=1);
+  btn.addEventListener('mouseup',()=>keys[a]=0);
+  btn.addEventListener('mouseleave',()=>keys[a]=0);
+});
+
+function GM_cln(){clearInterval(lId);clearInterval(pId);if(rfId){cancelAnimationFrame(rfId);rfId=null;}lId=null;pId=null;}
+
+function _cln(){
+  GM_cln();clearInterval(annTmr);
+  document.removeEventListener('keydown',_kd);
+  document.removeEventListener('keyup',_ku);
+  window.removeEventListener('resize',_rs);
+  if(ls){ls.getTracks().forEach(t=>t.stop());ls=null;}
+  Object.values(aEls).forEach(a=>{a.pause();a.srcObject=null;a.remove();});
+  try{gameRm?.leave();}catch(e){}
+  try{metaRm?.leave();}catch(e){}
+  gameRm=null;metaRm=null;
+}
+const _ct=document.getElementById('content');
+if(_ct)_ct.addEventListener('contentUnload',_cln,{once:true});
+
+})();
+</script>

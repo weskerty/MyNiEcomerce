@@ -99,3 +99,5 @@
 <br><br><br>
 <a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a>
 </div>
+
+<meta http-equiv="refresh" content="0; web/games/multijump.html">
