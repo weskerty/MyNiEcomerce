@@ -4,7 +4,6 @@ Si te gustan las plantas que no pasan desapercibidas, la **Iresine** es de esas 
 
 <div id="cs"></div>
 
-Se vende Junto con una Plantera/Maceta Pequeña.
 Si se le deja Libre en tierra sin limite suele crecer como un arbusto pequeño, puede alcanzar altura de 30 a 45 cm como maximo despues de mucho tiempo. Aveces va extendiendose pudiendo enraizarse a los alrededores.
 
 ### Cuidados

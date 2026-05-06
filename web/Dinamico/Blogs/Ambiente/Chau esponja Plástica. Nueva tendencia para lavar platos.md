@@ -2,6 +2,8 @@ Estudios nuevos vienen avisando algo simple: al limpiar la cocina también larga
 
 Las esponjas comunes suelen estar hechas de [Melamina ](https://en.wikipedia.org/wiki/Melamine), un plástico duro y poroso. Básicamente funcionan como una lija fina: sacan mugre pegada fácil, pero al mismo tiempo se van gastando.
 
+![138915](web/otros/Archivos/Imagenes/ChauesponjaPlástica/138915.avif)
+
 Cada vez que frotas sueltan pedacitos del plastico. No se ven, pero quedan en el agua. Parece una boludez, hasta que lo mirás a gran escala.
 
 Un estudio publicado en ACS Environmental Science & Technology encontró que una sola esponja de melamina puede largar millones de fibras microscópicas durante su vida útil. Si sumás millones de casas usando eso, el número se dispara.
@@ -15,7 +17,7 @@ Cada vez más gente cambia a opciones más tranqui con el ambiente y que limpian
 #### Lufa 
 Es natural, de las más recomendadas. Sale de una [Planta ](https://en.wikipedia.org/wiki/Luffa), sirve para limpiar de todo y se degrada solito, sin dejar plástico.
 
-
+![138917](web/otros/Archivos/Imagenes/ChauesponjaPlástica/138917.avif)
 
 
 También están los estropajos de fibra de coco o cáscara de nuez. Limpian bien, aguantan bastante y contaminan menos.
