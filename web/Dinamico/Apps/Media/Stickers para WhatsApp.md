@@ -98,7 +98,7 @@
 
 <script>
 (function(){
-  const PG=18,MAX_SEL=30,CD_MS=10000,ADS=false;
+  const PG=18,MAX_SEL=30,CD_MS=10000,ADS=true;
   const MAX_F=30,MAX_SZ=20*1024*1024,DIM=256,TARGET=900*1024;
 
   let R=[],S=new Set(),pg=0,cdEnd=0,cdRaf=null,scWaTimer=null;

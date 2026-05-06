@@ -8,7 +8,7 @@
 <div id="INS_W">
   <h2>Instalar Aplicacion</h2>
   <p>Al instalar como aplicacion gastas menos saldo al navegar por aqui, carga mas rapido y tienes casi todo disponible incluso sin conexion. Util si tienes datos limitados para no gastar saldo innecesariamente.</p>
-  <button id="PI" class="view-all-button" style="display:none">📲 Instalar App 💕</button>
+  <button id="PI" class="app-btn" style="display:none">📲 Instalar App 💕</button>
   <h3 style="display:flex;justify-content:center;">⬆️ Pruebalo ⬆️</h3>
   <p>y si no te gusta se desinstala como cualquier otra app 🤗</p>
   <div style="display:flex;justify-content:center;">
@@ -19,7 +19,7 @@
 
 <h2>Notificaciones</h2>
 <p>Tambien puedes activar notificaciones para recibir ofertas y nuevos productos</p>
-<button id="NT" class="view-all-button" style="display:none"></button>
+<button id="NT" class="app-btn" style="display:none"></button>
 
 <script>
 (function(){
