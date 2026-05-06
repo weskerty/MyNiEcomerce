@@ -76,7 +76,15 @@ css.textContent=`
 #cs .cb-a:hover{background:rgba(34,197,94,0.5)}
 #cs .cb-s{font-size:24px;font-weight:bold;color:#22c55e;margin-bottom:10px}
 #cs .cb-s2{font-size:16px;color:#fff}
-#cs .cb-er{font-size:22px;font-weight:bold;color:#fbbf24}`;
+#cs .cb-er{font-size:22px;font-weight:bold;color:#fbbf24}
+#compartir-bloque{margin:30px 0;padding:20px 30px;background-color:rgba(0,0,0,0.5);border-radius:14px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;animation:SH_glow 2.4s infinite ease-in-out}
+#compartir-bloque a{position:relative;z-index:2;text-decoration:none}
+.share-btn{display:inline-flex;align-items:center;gap:10px;padding:13px 28px;border-radius:50px;font-family:var(--font);font-size:1em;font-weight:700;color:#fff;background:linear-gradient(135deg,#10b981 0%,#059669 40%,#065f46 100%);box-shadow:0 4px 18px rgba(16,185,129,0.45),0 0 0 0 rgba(16,185,129,0.4);border:1px solid rgba(255,255,255,0.15);transition:transform 0.2s ease,box-shadow 0.2s ease;animation:SH_pulse 2.4s infinite ease-in-out;cursor:pointer;will-change:transform}
+.share-btn::before{content:'↗';font-size:1.15em;line-height:1}
+.share-btn:hover{transform:scale(1.06) translateY(-2px);box-shadow:0 8px 30px rgba(16,185,129,0.65),0 0 0 0 rgba(16,185,129,0);text-decoration:none}
+@keyframes SH_glow{0%,100%{box-shadow:0 0 20px rgba(16,185,129,0.4);border:2px solid rgba(16,185,129,0.3)}50%{box-shadow:0 0 40px rgba(234,179,8,0.6),0 0 60px rgba(16,185,129,0.4);border:2px solid rgba(234,179,8,0.5)}}
+@keyframes SH_pulse{0%,100%{box-shadow:0 4px 18px rgba(16,185,129,0.45),0 0 0 0 rgba(16,185,129,0.35)}60%{box-shadow:0 4px 18px rgba(16,185,129,0.45),0 0 0 14px rgba(16,185,129,0)}}
+@media(prefers-reduced-motion:reduce){#compartir-bloque{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}`;
 document.head.appendChild(css);
 
 const IMG404='<img src="web/otros/Archivos/Imagenes/Permanente/404.avif">';
@@ -279,6 +287,23 @@ function initProduct(){
   render();
 }
 
+function initShare(){
+  const el=document.getElementById('compartir-enlace');
+  if(!el)return;
+  el.classList.add('share-btn');
+  if(!navigator.share)return;
+  el.removeAttribute('href');
+  el.style.cursor='pointer';
+  function onSh(e){
+    e.preventDefault();
+    navigator.share({title:'😻 Compartir',text:'😻 Comparte para ser mas Amigos cada Dia 😻',url:location.href});
+  }
+  el.addEventListener('click',onSh);
+  document.addEventListener('contentUnload',()=>el.removeEventListener('click',onSh),{once:true});
+}
+
+function initPage(){initProduct();initShare();}
+
 modal.className="cb-modal";
 modal.innerHTML='<div class="cb-mc"><div class="cb-mh"><div class="cb-mhl"><span>🛒 Carrito</span><span class="cb-mhT"></span></div><span class="cb-mx">✕</span></div><div class="cb-mb"></div></div>';
 document.body.appendChild(modal);
@@ -337,6 +362,6 @@ window.addEventListener("scroll",_onScrollThrottled);
 window.addEventListener("resize",_onScrollThrottled);
 
 const content=document.getElementById("content");
-st.r=!0;onScroll();requestAnimationFrame(initProduct);
-if(content)content.addEventListener("contentLoaded",()=>{st.r=!0;setTimeout(()=>{onScroll();requestAnimationFrame(initProduct)},100)});
+st.r=!0;onScroll();requestAnimationFrame(initPage);
+if(content)content.addEventListener("contentLoaded",()=>{st.r=!0;setTimeout(()=>{onScroll();requestAnimationFrame(initPage)},100)});
 }();
