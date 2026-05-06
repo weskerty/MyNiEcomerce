@@ -34,7 +34,7 @@ Body.mob .sel, Body.mob .sel * {
     -webkit-user-select: text;
 }
 
-Body::before{content:"";position:fixed;inset:0;height:110vh;z-index:-1;background:url('otros/Archivos/Imagenes/pexels-cody-king-433493-1118667.jpg') no-repeat center/cover;transform:translateZ(0);will-change:transform}
+Body::before{content:"";position:fixed;inset:0;height:110vh;z-index:-1;background:url('otros/Archivos/Imagenes/wallpaper.avif') no-repeat center/cover;transform:translateZ(0);will-change:transform}
 
 #bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center}
 
