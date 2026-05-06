@@ -10,23 +10,30 @@
     --font: 'Comfortaa', 'Fluent Emoji Color', sans-serif;
     --font-h: 'Libre Baskerville', 'Merriweather', 'Times New Roman', 'Georgia', 'Fluent Emoji Color', serif;
     color-scheme: only dark;
-    overscroll-behavior-y: none;
 }
 
 button, a, label, input {
     -webkit-tap-highlight-color: transparent;
 }
 
+Body {
+    margin: 0;
+    color: #fff;
+    background: #000;
+    font-family: var(--font);
+    overscroll-behavior-y: none;
+}
+
 Body.mob {
     user-select: none;
     -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 Body.mob .sel, Body.mob .sel * {
     user-select: text;
     -webkit-user-select: text;
 }
 
-Body{margin:0;color:#fff;background:#000;font-family:var(--font)}
 Body::before{content:"";position:fixed;inset:0;height:110vh;z-index:-1;background:url('otros/Archivos/Imagenes/pexels-cody-king-433493-1118667.jpg') no-repeat center/cover;transform:translateZ(0);will-change:transform}
 
 #bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center}
