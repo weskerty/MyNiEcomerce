@@ -67,7 +67,7 @@
     <input id="sk-q" type="text" placeholder="Buscar en Klipy...">
     <button class="sk-ib" id="sk-btn">🔍</button>
     <button class="sk-ib" id="sk-crear">📤</button>
-    <input type="file" id="sc-in" accept="image/*" multiple style="display:none">
+    <input type="file" id="sc-in" accept="image/*,video/mp4" multiple style="display:none">
   </div>
   <div id="sk-grid" class="sk-grid"></div>
   <div id="sk-pg" class="gi-pg"></div>
@@ -98,7 +98,7 @@
 
 <script>
 (function(){
-  const PG=18,MAX_SEL=30,CD_MS=10000,ADS=true;
+  const PG=18,MAX_SEL=30,CD_MS=10000,ADS=false;
   const MAX_F=30,MAX_SZ=20*1024*1024,DIM=256,TARGET=900*1024;
 
   let R=[],S=new Set(),pg=0,cdEnd=0,cdRaf=null,scWaTimer=null;
@@ -220,7 +220,7 @@
       const rm=document.createElement('button');rm.className='sc-rm';rm.textContent='x';
       rm.onclick=e=>{e.stopPropagation();URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);frames.splice(i,1);renderFrames();};
       d.appendChild(img);d.appendChild(rm);
-      d.onclick=()=>{cropQ=[f];nextCrop();};
+      if(!f.isVid&&!f.isWebp)d.onclick=()=>{cropQ=[f];nextCrop();};
       gEl.appendChild(d);
     });
     scCf.disabled=false;
@@ -273,16 +273,65 @@
     nextCrop();
   };
 
+  async function getVidThumb(file){
+    return new Promise(res=>{
+      const v=document.createElement('video'),u=URL.createObjectURL(file);
+      v.src=u;v.muted=true;v.playsInline=true;v.currentTime=0.1;
+      v.onloadeddata=()=>{
+        const c=document.createElement('canvas');c.width=DIM;c.height=DIM;
+        c.getContext('2d').drawImage(v,0,0,DIM,DIM);
+        URL.revokeObjectURL(u);
+        c.toBlob(b=>res(URL.createObjectURL(b)),'image/webp',.7);
+      };
+      v.onerror=()=>{URL.revokeObjectURL(u);res('');};
+    });
+  }
+
+  async function mp4ToWebM(file){
+    return new Promise((res,rej)=>{
+      const v=document.createElement('video'),u=URL.createObjectURL(file);
+      v.src=u;v.muted=true;v.playsInline=true;v.loop=false;
+      const c=document.createElement('canvas');c.width=DIM;c.height=DIM;
+      const ctx=c.getContext('2d');
+      v.onloadedmetadata=()=>{
+        const mime=MediaRecorder.isTypeSupported('video/webm;codecs=vp9')?'video/webm;codecs=vp9':'video/webm';
+        const chunks=[],stream=c.captureStream(15);
+        const rec=new MediaRecorder(stream,{mimeType:mime});
+        rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+        rec.onstop=()=>{stream.getTracks().forEach(t=>t.stop());URL.revokeObjectURL(u);res(new Blob(chunks,{type:'video/webm'}));};
+        rec.start(200);
+        const stop=()=>{if(rec.state!=='inactive')rec.stop();};
+        v.onended=stop;
+        if(v.requestVideoFrameCallback){
+          const draw=()=>{ctx.drawImage(v,0,0,DIM,DIM);if(!v.ended)v.requestVideoFrameCallback(draw);};
+          v.requestVideoFrameCallback(draw);
+        }else{
+          const iv=setInterval(()=>{if(v.ended)clearInterval(iv);else ctx.drawImage(v,0,0,DIM,DIM);},1000/15);
+          rec.addEventListener('stop',()=>clearInterval(iv),{once:true});
+        }
+        v.play().catch(rej);
+      };
+      v.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('Video load failed'));};
+    });
+  }
+
   async function addFiles(list){
     const valid=[...list].filter(f=>{
-      if(!f.type.startsWith('image/')){toast('Solo imagenes: '+f.name);return false;}
-      if(f.size>MAX_SZ){toast('Max 5MB: '+f.name);return false;}
+      const ok=f.type.startsWith('image/')||f.type==='video/mp4';
+      if(!ok){toast('Formato no soportado: '+f.name);return false;}
+      if(f.size>MAX_SZ){toast('Max 20MB: '+f.name);return false;}
       return true;
     });
     if(frames.length+valid.length>MAX_F){toast('Max '+MAX_F+' archivos');valid.length=Math.max(0,MAX_F-frames.length);}
-    const nf=valid.map(f=>({file:f,preview:URL.createObjectURL(f),croppedBlob:null}));
+    const nf=await Promise.all(valid.map(async f=>{
+      const isVid=f.type==='video/mp4';
+      const isWebp=f.type==='image/webp';
+      const preview=isVid?await getVidThumb(f):URL.createObjectURL(f);
+      return{file:f,preview,croppedBlob:null,isVid,isWebp};
+    }));
     frames.push(...nf);renderFrames();
-    if(nf.length){cropQ.push(...nf);if(cropQ.length===nf.length)nextCrop();}
+    const forCrop=nf.filter(f=>!f.isVid&&!f.isWebp);
+    if(forCrop.length){const wasEmpty=!cropQ.length;cropQ.push(...forCrop);if(wasEmpty)nextCrop();}
   }
 
   async function toWebp(blob){
@@ -306,9 +355,16 @@
       const form=new FormData();
       for(let i=0;i<frames.length;i++){
         setProg(Math.round(i/frames.length*80),'Procesando '+(i+1)+'/'+frames.length);
-        const src=frames[i].croppedBlob||frames[i].file;
-        const webp=await toWebp(src);
-        form.append('files',webp,frames[i].file.name.replace(/\.[^.]+$/,'.webp'));
+        const fr=frames[i];
+        if(fr.isVid){
+          const webm=await mp4ToWebM(fr.file);
+          form.append('files',webm,fr.file.name.replace(/\.[^.]+$/,'.webm'));
+        }else if(fr.isWebp&&!fr.croppedBlob){
+          form.append('files',fr.file,fr.file.name);
+        }else{
+          const webp=await toWebp(fr.croppedBlob||fr.file);
+          form.append('files',webp,fr.file.name.replace(/\.[^.]+$/,'.webp'));
+        }
       }
       setProg(85,'Subiendo...');
       const res=await fetch('/api/stickers',{method:'POST',body:form});
@@ -375,8 +431,6 @@
 </script>
 
 </br>
-</br>
-</br>
 
 <details>
   <summary style="font-size: 1.5em; font-weight: bold;"> 🤔 ¿Como Usar?</summary>
@@ -391,5 +445,3 @@
 
 
 <a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Applicaciones </a>
-
-
