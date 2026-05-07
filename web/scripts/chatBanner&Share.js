@@ -288,18 +288,43 @@ function initProduct(){
 }
 
 function initShare(){
-  const el=document.getElementById('compartir-enlace');
+  let el=document.getElementById("sh");
   if(!el)return;
-  el.classList.add('share-btn');
+
+  el.id="compartir-enlace";
+
+  el.innerHTML=`
+    <div id="compartir-bloque">
+      <a id="compartir-btn" href="#">
+        <span class="share-btn">Compartir</span>
+      </a>
+    </div>
+  `;
+
+  const a=document.getElementById("compartir-btn");
+  if(!a)return;
+
   if(!navigator.share)return;
-  el.removeAttribute('href');
-  el.style.cursor='pointer';
+
+  a.removeAttribute("href");
+  a.style.cursor="pointer";
+
   function onSh(e){
     e.preventDefault();
-    navigator.share({title:'😻 Compartir',text:'😻 Comparte para ser mas Amigos cada Dia 😻',url:location.href});
+    navigator.share({
+      title:"😻 Compartir",
+      text:"😻 Comparte para ser mas Amigos cada Dia 😻",
+      url:location.href
+    });
   }
-  el.addEventListener('click',onSh);
-  document.addEventListener('contentUnload',()=>el.removeEventListener('click',onSh),{once:true});
+
+  a.addEventListener("click",onSh);
+
+  document.addEventListener(
+    "contentUnload",
+    ()=>a.removeEventListener("click",onSh),
+    {once:true}
+  );
 }
 
 function initPage(){initProduct();initShare();}
@@ -365,3 +390,5 @@ const content=document.getElementById("content");
 st.r=!0;onScroll();requestAnimationFrame(initPage);
 if(content)content.addEventListener("contentLoaded",()=>{st.r=!0;setTimeout(()=>{onScroll();requestAnimationFrame(initPage)},100)});
 }();
+
+
