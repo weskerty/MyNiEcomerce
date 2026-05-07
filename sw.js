@@ -1,9 +1,9 @@
-const V='v52';
+const V='v53';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
 const FRASES_URL='web/otros/Archivos/DataBase/Frases.txt';
-const MD_LIMIT=30;
+const MD_LIMIT=10;
 const NI_LIMIT=5;
 const NI_MAX=204800;
 const NI_MIME={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',avif:'image/avif'};
