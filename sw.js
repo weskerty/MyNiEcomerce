@@ -1,4 +1,4 @@
-const V='v53';
+const V='v54';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -24,7 +24,7 @@ const PRE=[
 'web/otros/Archivos/HTML/centralPage.html',
 'web/otros/Archivos/HTML/apps.html',
 'web/fondo.json',
-'web/otros/Archivos/Imagenes/pexels-cody-king-433493-1118667.jpg',
+'web/otros/Archivos/Imagenes/wallpaper.avif',
 'web/otros/Archivos/Imagenes/Permanente/404.avif',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/man_factory_worker_animated.avif',
 'web/scripts/Galerias.js',
