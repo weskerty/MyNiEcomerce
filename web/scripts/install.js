@@ -13,6 +13,7 @@ window.addEventListener('appinstalled',()=>{
 function bindPI(){
   const b=document.getElementById('PI');
   if(!b||b._bound)return;
+  if(window.__ENV?.pwa){b.style.display='none';return;}
   b._bound=true;
   function show(){if(window._PWA)b.style.display='';}
   show();

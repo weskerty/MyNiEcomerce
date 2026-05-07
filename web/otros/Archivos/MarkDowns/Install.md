@@ -26,7 +26,7 @@
   const _ac=new AbortController();
   document.getElementById('content').addEventListener('contentUnload',()=>_ac.abort(),{once:true});
 
-  if(window.matchMedia('(display-mode: standalone)').matches||!!navigator.standalone)
+  if(window.__ENV?.pwa)
     document.getElementById('INS_W').style.display='none';
 
   const W='https://yoganopy-push.marcoygor0.workers.dev';
