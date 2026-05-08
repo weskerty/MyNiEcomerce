@@ -1,4 +1,4 @@
-const V='v56';
+const V='v57';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -43,7 +43,11 @@ N_BANNER,
 FRASES_URL
 ];
 
-const TEMP_ROUTES=[{match:'/api/',ttl:86400000}];
+const TEMP_ROUTES=[{match:'/api/',ttl:18000000}];
+const EXT_CACHE=[
+  {origin:'tetunori.github.io',ttl:0}
+];
+const EXT_C='ext-fonts';
 const DJ=/\/data\.json(\?|$)/;
 const DJ_URL='web/Dinamico/data.json';
 const DJ_ABS=new URL(DJ_URL,self.location).href;
@@ -276,7 +280,7 @@ self.addEventListener('install',e=>{
 self.addEventListener('activate',e=>{
   e.waitUntil(
     caches.keys().then(ks=>Promise.all(
-      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==MD_C&&k!==NI_C&&k!==SHARE_C).map(k=>caches.delete(k))
+      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==MD_C&&k!==NI_C&&k!==SHARE_C&&k!==EXT_C).map(k=>caches.delete(k))
     )).then(()=>self.clients.claim())
   );
 });
@@ -321,6 +325,32 @@ self.addEventListener('fetch',e=>{
   }
 
   if(e.request.method!=='GET')return;
+
+  const extEntry=EXT_CACHE.find(x=>url.hostname===x.origin);
+  if(extEntry){
+    e.respondWith((async()=>{
+      const c=await caches.open(EXT_C);
+      const cached=await c.match(e.request);
+      if(cached)return cached;
+      try{
+        const r=await fetch(e.request);
+        if(r?.ok){
+          const rc=r.clone();
+          if(extEntry.ttl>0){
+            const buf=await rc.arrayBuffer();
+            const h=new Headers(r.headers);
+            h.set('X-Expires',String(Date.now()+extEntry.ttl));
+            await c.put(e.request,new Response(buf,{status:r.status,statusText:r.statusText,headers:h}));
+          }else{
+            await c.put(e.request,rc);
+          }
+        }
+        return r;
+      }catch{return cached||new Response('',{status:504});}
+    })());
+    return;
+  }
+
   if(url.origin!==self.location.origin)return;
 
   if(DJ.test(url.pathname)){
