@@ -83,7 +83,7 @@
   const CD=10000;
   const CK=['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'];
   let R=[],TP=1,pg=1,CQ='',cdEnd=0,cdRaf=null,_sac=null;
-  let WM='h',_cki=0,_ckiv=null,_ckEl=null,_oviv=null,_ovck=0;
+  let WM=window.innerHeight>window.innerWidth?'v':'h',_cki=0,_ckiv=null,_ckEl=null,_oviv=null,_ovck=0;
 
   const gEl=document.getElementById('wp-grid');
   const pgEl=document.getElementById('wp-pg');
@@ -230,13 +230,18 @@
     };
   });
 
+  const _ori=window.matchMedia('(orientation: portrait)');
+  _ori.addEventListener('change',e=>setMode(e.matches?'v':'h'));
+
   const _el=document.getElementById('content');
   if(_el)_el.addEventListener('contentUnload',()=>{
     if(_sac){_sac.abort();_sac=null;}
     if(cdRaf){cancelAnimationFrame(cdRaf);cdRaf=null;}
     stopCK();hideOv();
+    _ori.removeEventListener('change',arguments.callee);
   },{once:true});
 
+  setMode(WM);
   doSearch('nature landscape',1);
 })();
 </script>

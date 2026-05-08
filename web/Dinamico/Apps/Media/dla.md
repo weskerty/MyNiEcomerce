@@ -91,7 +91,7 @@
         btn.onclick=()=>{navigator.share({files:[file]}).catch(()=>{});btn.remove();};
         stEl.after(btn);
       }
-    }catch(e){hideOv();if(e.name!=='AbortError')ST('Error al descargar');}
+    }catch(e){hideOv();if(e.name!=='AbortError')ST('Perdon, Sucedio un Error 😿');}
   })();
 })();
 </script>

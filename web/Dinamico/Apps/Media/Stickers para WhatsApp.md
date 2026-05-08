@@ -12,8 +12,24 @@
 .sk-ib:hover{opacity:1;transform:scale(1.1)}
 .sk-ib:disabled{opacity:.3;cursor:not-allowed;transform:none}
 .sk-bar.sk-cd::after{content:'';position:absolute;left:0;top:0;height:100%;width:var(--sk-cd-p,0%);background:rgba(56,189,248,.13);transition:width .1s linear;pointer-events:none;z-index:0}
-.sk-grid{display:grid;grid-template-columns:repeat(auto-fill,120px);gap:8px;justify-content:center;margin-bottom:8px;min-height:40px}
-.sk-grid-c{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:8px;min-height:40px}
+.sk-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,120px);
+  min-width:calc(120px*3 + 8px*2);
+  gap:8px;
+  justify-content:center;
+  margin-bottom:8px;
+  min-height:40px
+}
+.sk-grid-c{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+  margin-bottom:8px;
+  min-height:40px;
+  min-width:calc(120px*3 + 8px*2)
+}
 .sk-it{width:120px;height:120px;border-radius:16px;overflow:hidden;cursor:pointer;position:relative;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);box-sizing:border-box;transition:transform .15s,border-color .15s,box-shadow .15s;will-change:transform;flex-shrink:0}
 .sk-it img{width:100%;height:100%;object-fit:fill;display:block}
 .sk-it:hover{transform:scale(1.05)}
@@ -28,7 +44,16 @@
 .gi-pg button:disabled{opacity:.3;cursor:default}
 .gi-pg span{color:rgba(255,255,255,.55);font-size:.82em}
 .sk-foot{display:flex;justify-content:center;gap:10px;margin-top:14px}
-.sk-cf{padding:10px 28px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.14);color:white;cursor:pointer;font-size:.95em;transition:background .2s}
+.sk-cf{
+  padding:14px 36px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.14);
+  color:white;
+  cursor:pointer;
+  font-size:1.1em;
+  transition:background .2s
+}
 .sk-cf:hover:not(:disabled){background:rgba(255,255,255,.24)}
 .sk-cf:disabled{opacity:.4;cursor:default}
 .sk-wa{display:inline-block;padding:10px 28px;border-radius:12px;background:#25d366;color:white;text-decoration:none;font-size:.95em;font-weight:600;transition:background .2s}
@@ -42,7 +67,17 @@
 .sc-btn{padding:8px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.14);color:white;cursor:pointer;font-size:.9em;transition:background .2s}
 .sc-btn:hover{background:rgba(255,255,255,.24)}
 .sc-btn:disabled{opacity:.4;cursor:not-allowed}
-.sc-fr{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);cursor:pointer;flex-shrink:0}
+.sc-fr{
+  position:relative;
+  width:120px;
+  height:120px;
+  border-radius:16px;
+  overflow:hidden;
+  background:rgba(255,255,255,.08);
+  border:2px solid rgba(255,255,255,.15);
+  cursor:pointer;
+  flex-shrink:0
+}
 .sc-fr img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .sc-fr .sc-rm{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.7);border:none;color:white;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
 .sc-fr.sc-done{border-color:#4ade80}
@@ -63,7 +98,7 @@
 <div class="sk-wrap" id="sk-search">
   <div class="sk-bar" id="sk-bar">
     <a class="sk-home" href="web/es.html">🏠</a>
-    <input id="sk-q" type="text" placeholder="Buscar en Klipy...">
+    <input id="sk-q" type="text" placeholder="Buscar Stickers en Klipy...">
     <button class="sk-ib" id="sk-btn">🔍</button>
     <button class="sk-ib" id="sk-crear">📤</button>
     <input type="file" id="sc-in" accept="image/*,video/mp4" multiple style="display:none">
