@@ -35,7 +35,7 @@
 
 <div id="DLA_APP" style="display:none">
   <div class="da-bar">
-    <input id="DLA_IN" type="text" placeholder="...">
+    <input id="DLA_IN" type="text" placeholder="">
     <button class="da-ib" id="DLA_SB">🔍</button>
   </div>
   <div id="DL_ST"></div>
@@ -44,13 +44,14 @@
 
 <div class="dl-ov" id="dl-ov">
   <span id="dl-ovck">🕐</span>
-  <span>Pensando...</span>
+  <span>Espera, Generando con IA...</span>
 </div>
 
 <script>
 (function(){
   const SA=window.matchMedia('(display-mode: standalone)').matches||!!navigator.standalone;
-  if(!SA){location.hash='web/otros/Archivos/MarkDowns/Install.md';return;}
+  const NP='Notification' in window&&Notification.permission==='granted';
+  if(!SA||!NP){location.href='web/otros/Archivos/MarkDowns/Install.md';return;}
 
   document.getElementById('DLA_APP').style.display='';
 
@@ -87,8 +88,8 @@
         body:JSON.stringify({url,type}),
         signal:_ac.signal
       });
-      if(res.status===413){hideOv();ST((await res.json().catch(()=>({}))).error||'muy pesado 😿');return;}
-      if(!res.ok){hideOv();ST('Perdon, Sucedio un Error 😿');return;}
+      if(res.status===413){hideOv();ST((await res.json().catch(()=>({}))).error||'Perdon, Muy Pesado 😿');return;}
+      if(!res.ok){hideOv();ST('Perdon, Error al Generar 😿');return;}
       const cd=res.headers.get('content-disposition')||'';
       const fn=decodeURIComponent(cd.match(/filename="?([^";\n]+)"?/)?.[1]||('media_'+Date.now()));
       const blob=await res.blob();
@@ -104,12 +105,12 @@
         btn.onclick=()=>{navigator.share({files:[file]}).catch(()=>{});btn.remove();};
         stEl.after(btn);
       }
-    }catch(e){hideOv();if(e.name!=='AbortError')ST('Error al descargar');}
+    }catch(e){hideOv();if(e.name!=='AbortError')ST('Perdon, Error al Generar 😿');}
   }
 
   function renderResults(groups){
     resEl.innerHTML='';
-    if(!groups.length){resEl.innerHTML='<p class="da-msg">Sin resultados</p>';return;}
+    if(!groups.length){resEl.innerHTML='<p class="da-msg">Perdon, Error al Generar 😿</p>';return;}
     groups.forEach(items=>{
       const grp=document.createElement('div');
       grp.className='da-grp';
@@ -131,12 +132,12 @@
 
   async function doSearch(q){
     q=q.trim();if(!q)return;
-    resEl.innerHTML='<div class="da-searching"><span>🔍</span><span>Buscando...</span></div>';
+    resEl.innerHTML='<div class="da-searching"><span>🔍</span><span>Generando...</span></div>';
     try{
       const r=await fetch(`/api/dla?q=${encodeURIComponent(q)}`,{signal:_ac.signal});
       const data=await r.json();
       renderResults(Array.isArray(data)?data:[]);
-    }catch(e){if(e.name!=='AbortError')resEl.innerHTML='<p class="da-msg">Error al buscar</p>';}
+    }catch(e){if(e.name!=='AbortError')resEl.innerHTML='<p class="da-msg">Perdon, Error al Generar 😿</p>';}
   }
 
   document.getElementById('DLA_SB').onclick=()=>doSearch(inEl.value);
@@ -147,7 +148,7 @@
       const r=await fetch('/_share_pending',{signal:_ac.signal});
       const d=await r.json();
       if(!d)return;
-      if(!d.url&&!d.text){if(d.files&&d.files.length)ST('No Media, Solo URL');return;}
+      if(!d.url&&!d.text){if(d.files&&d.files.length)ST('Perdon, Error al Generar 😿');return;}
       await fetch('/_share_clear',{method:'POST',signal:_ac.signal});
       const val=(d.url||d.text).trim();
       await doDownload(val,'video');
