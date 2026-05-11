@@ -51,7 +51,11 @@
 (function(){
   const SA=window.matchMedia('(display-mode: standalone)').matches||!!navigator.standalone;
   const NP='Notification' in window&&Notification.permission==='granted';
-  if(!SA||!NP){location.href='web/otros/Archivos/MarkDowns/Install.md';return;}
+  if(!SA||!NP){
+  document.querySelector('a.back-button').href='web/otros/Archivos/MarkDowns/Install.md';
+  document.querySelector('a.back-button').click();
+  return;
+}
 
   document.getElementById('DLA_APP').style.display='';
 
