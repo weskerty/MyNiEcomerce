@@ -1,4 +1,7 @@
-
+<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"></head>
+<body>
 
 <style data-content>
 :root{
@@ -9,8 +12,8 @@
 #FB_W{
   position:relative;
   width:100%;
-  height:calc(100vh - var(--fb-hud));
-  min-height:320px;
+  height:calc(50vh - var(--fb-hud));
+  min-height:220px;
   overflow:hidden;
   font-family:'Courier New',monospace;
   background:transparent;
@@ -46,29 +49,29 @@
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:12px;
+  gap:10px;
   z-index:20;
   background:#00000066;
 }
 #FB_OV.FB_h{display:none;}
 #FB_OV h2{
   color:var(--fb-accent);
-  font-size:2.2rem;
+  font-size:1.6rem;
   font-weight:900;
   text-shadow:0 0 20px var(--fb-accent);
   margin:0;
   letter-spacing:4px;
   text-transform:uppercase;
 }
-#FB_OV p{color:#fff;font-size:.95rem;margin:0;opacity:.8;}
+#FB_OV p{color:#fff;font-size:.85rem;margin:0;opacity:.8;}
 #FB_BTN{
-  margin-top:8px;
-  padding:10px 32px;
+  margin-top:6px;
+  padding:8px 28px;
   background:transparent;
   border:2px solid var(--fb-accent);
   color:var(--fb-accent);
   font-family:'Courier New',monospace;
-  font-size:1rem;
+  font-size:.9rem;
   font-weight:900;
   letter-spacing:3px;
   cursor:pointer;
@@ -80,12 +83,12 @@
 #FB_BTN:hover,#FB_BTN:active{background:var(--fb-accent);color:#070710;}
 #FB_MUTE{
   position:absolute;
-  bottom:12px;right:12px;
+  bottom:8px;right:8px;
   background:transparent;
   border:1px solid #ffffff33;
   color:#fff;
-  font-size:1.2rem;
-  width:36px;height:36px;
+  font-size:1rem;
+  width:30px;height:30px;
   border-radius:50%;
   cursor:pointer;
   z-index:15;
@@ -131,19 +134,39 @@ const ctx=FB.cv.getContext('2d');
 
 const CFG={
   gravity:0.38,
-  flap:-7.2,
+  flap:-6.5,
   pipeW:52,
-  pipeGap:145,
+  pipeGap:110,
   pipeSpd:2.2,
   pipeDist:260,
   birdX:80,
-  birdR:17,
+  birdR:14,
+  birdDrawR:22,
+  killMargin:20,
   lobbyId:'flappy-p2p-v1',
   appId:{appId:'flappy-p2p-v1'},
-  findSec:6,
   imgSrc:'https://picsum.photos/seed/',
   posSendMs:50,
+  pipeImgCount:10,
+  pipeImgBase:'',
 };
+
+const SFX={
+  bgm:new Audio(),
+  jump:new Audio(),
+  hit:new Audio(),
+};
+SFX.bgm.src='';
+SFX.jump.src='';
+SFX.hit.src='';
+SFX.bgm.loop=true;
+SFX.bgm.volume=0.4;
+SFX.jump.volume=0.6;
+SFX.hit.volume=0.7;
+
+function sfxPlay(a){if(!a.src)return;a.currentTime=0;a.play().catch(function(){});}
+function bgmPlay(){if(!SFX.bgm.src)return;SFX.bgm.play().catch(function(){});}
+function bgmPause(){SFX.bgm.pause();}
 
 let W=0,H=0;
 function FB_resize(){
@@ -165,13 +188,29 @@ function rng32(s){
   };
 }
 
+const pipeImgs=[];
+(function(){
+  for(let i=0;i<CFG.pipeImgCount;i++){
+    const img=new Image();
+    img.crossOrigin='anonymous';
+    if(CFG.pipeImgBase){
+      img.src=CFG.pipeImgBase+'pipe'+i+'.png';
+    }else{
+      img.src='https://picsum.photos/seed/pipe'+i+'/104/600';
+    }
+    pipeImgs.push(img);
+  }
+})();
+
 let rng=null;
 let pipes=[],score=0,best=0;
 let by=0,bvy=0,alive=false,started=false;
 let rafId=null,posIv=null;
 
 function newPipe(x){
-  return{x,topH:H*0.15+rng()*(H*0.55),passed:false};
+  const margin=H*0.12;
+  const imgIdx=Math.floor(rng()*CFG.pipeImgCount);
+  return{x,topH:margin+rng()*(H-margin*2-CFG.pipeGap),passed:false,imgIdx};
 }
 
 function initGame(){
@@ -189,8 +228,12 @@ function initGame(){
 
 function flap(){
   if(!alive)return;
-  started=true;
+  if(!started){
+    started=true;
+    bgmPlay();
+  }
   bvy=CFG.flap;
+  sfxPlay(SFX.jump);
 }
 
 function tick(){
@@ -199,7 +242,7 @@ function tick(){
   by+=bvy;
   for(const p of pipes)p.x-=CFG.pipeSpd;
   if(pipes[pipes.length-1].x<W-CFG.pipeDist)pipes.push(newPipe(W+10));
-  while(pipes.length&&pipes[0].x<-CFG.pipeW-10)pipes.shift();
+  while(pipes.length&&pipes[0].x<-CFG.pipeW-CFG.killMargin)pipes.shift();
   const bx=CFG.birdX,br=CFG.birdR-3;
   for(const p of pipes){
     if(!p.passed&&p.x+CFG.pipeW<bx){p.passed=true;score++;FB.sc.textContent=score;}
@@ -207,11 +250,14 @@ function tick(){
     const inY=by-br<p.topH||by+br>p.topH+CFG.pipeGap;
     if(inX&&inY){die();return;}
   }
-  if(by-CFG.birdR<0||by+CFG.birdR>H){die();return;}
+  const km=CFG.killMargin;
+  if(by+CFG.birdR<-km||by-CFG.birdR>H+km){die();return;}
 }
 
 function die(){
   alive=false;
+  bgmPause();
+  sfxPlay(SFX.hit);
   if(score>best)best=score;
   FB.ot.textContent='GAME OVER';
   FB.om.textContent='Puntaje: '+score+' | Mejor: '+best;
@@ -219,14 +265,19 @@ function die(){
 }
 
 function drawPipe(p){
-  const g=ctx.createLinearGradient(p.x,0,p.x+CFG.pipeW,0);
-  g.addColorStop(0,'#1a3a1a');g.addColorStop(.4,'#2d7a2d');g.addColorStop(1,'#1a3a1a');
-  ctx.fillStyle=g;
-  ctx.fillRect(p.x,0,CFG.pipeW,p.topH-4);
-  ctx.fillRect(p.x,p.topH+CFG.pipeGap+4,CFG.pipeW,H);
-  ctx.fillStyle='#3daf3d';
-  ctx.fillRect(p.x-4,p.topH-18,CFG.pipeW+8,18);
-  ctx.fillRect(p.x-4,p.topH+CFG.pipeGap,CFG.pipeW+8,18);
+  const img=pipeImgs[p.imgIdx];
+  const botY=p.topH+CFG.pipeGap;
+  const botH=H-botY;
+  if(img&&img.complete&&img.naturalWidth){
+    ctx.drawImage(img,p.x,0,CFG.pipeW,p.topH);
+    ctx.drawImage(img,p.x,botY,CFG.pipeW,botH);
+  }else{
+    const g=ctx.createLinearGradient(p.x,0,p.x+CFG.pipeW,0);
+    g.addColorStop(0,'#1a3a1a');g.addColorStop(.4,'#2d7a2d');g.addColorStop(1,'#1a3a1a');
+    ctx.fillStyle=g;
+    ctx.fillRect(p.x,0,CFG.pipeW,p.topH);
+    ctx.fillRect(p.x,botY,CFG.pipeW,botH);
+  }
 }
 
 const birdImgs={};
@@ -246,7 +297,7 @@ function drawBird(x,y,id,alpha,angle){
   ctx.globalAlpha=alpha;
   ctx.translate(x,y);
   ctx.rotate(angle);
-  const r=CFG.birdR,img=getImg(id);
+  const r=CFG.birdDrawR,img=getImg(id);
   ctx.beginPath();
   ctx.arc(0,0,r,0,Math.PI*2);
   if(img.complete&&img.naturalWidth){
@@ -268,9 +319,9 @@ function render(){
   }
   if(!started&&alive){
     ctx.fillStyle='#ffffff55';
-    ctx.font='bold 14px "Courier New"';
+    ctx.font='bold 13px "Courier New"';
     ctx.textAlign='center';
-    ctx.fillText('TAP / ESPACIO',W/2,H/2+50);
+    ctx.fillText('TAP / ESPACIO',W/2,H/2+40);
     ctx.textAlign='left';
   }
 }
@@ -330,9 +381,10 @@ async function initVoice(){
 
 async function initNet(){
   try{
-    const {joinRoom}=await import('https://esm.run/trystero@0.22.0');
+    const mod=await import('https://esm.run/trystero@0.22.0');
+    const {joinRoom,selfId}=mod;
     room=joinRoom(CFG.appId,CFG.lobbyId);
-    FB.net.textContent='buscando...';
+    FB.net.textContent='...';
     let getSP;
     [sendPos,getSP]=room.makeAction('pos');
     getSP(function({y,alive:a},from){
@@ -352,9 +404,6 @@ async function initNet(){
       FB.net.textContent=n?n+' online':'sin peers';
       if(!n)FB.net.classList.remove('FB_con');
     });
-    setTimeout(function(){
-      if(!FB.net.classList.contains('FB_con'))FB.net.textContent='sin red';
-    },CFG.findSec*1000);
   }catch(e){
     FB.net.textContent='sin red';
   }
@@ -379,6 +428,7 @@ FB.content.addEventListener('contentUnload',function(){
   if(posIv){clearInterval(posIv);posIv=null;}
   document.removeEventListener('keydown',FB_key);
   RO.disconnect();
+  bgmPause();
   if(ls){ls.getTracks().forEach(function(t){t.stop();});ls=null;}
   if(ra){ra.pause();ra.srcObject=null;ra.remove();ra=null;}
   try{if(room)room.leave();}catch(e){}
@@ -388,3 +438,4 @@ FB.content.addEventListener('contentUnload',function(){
 </script>
 
 </body>
+</html>
