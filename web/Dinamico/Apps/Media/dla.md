@@ -25,8 +25,6 @@
 .dl-ov span:last-child{color:rgba(255,255,255,.8);font-size:.95em}
 @keyframes dl-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:.7}}
 #DL_ST{margin:10px auto;max-width:300px;font-size:.9rem;opacity:.85;min-height:1.2em}
-.app-btn{margin:10px auto 0;padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:.78rem;cursor:pointer;transition:background .2s,transform .15s;display:block}
-.app-btn:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
 .da-searching{display:flex;flex-direction:column;align-items:center;padding:32px 0;gap:8px}
 .da-searching span:first-child{font-size:3rem}
 .da-searching span:last-child{color:rgba(255,255,255,.6);font-size:.9em}
@@ -83,7 +81,6 @@
 
   async function doDownload(url,type){
     ST('');
-    document.querySelector('.app-btn')?.remove();
     showOv();
     try{
       const res=await fetch('/api/dla',{
@@ -92,23 +89,19 @@
         body:JSON.stringify({url,type}),
         signal:_ac.signal
       });
-      if(res.status===413){hideOv();ST((await res.json().catch(()=>({}))).error||'Perdon, Muy Pesado 😿');return;}
-      if(!res.ok){hideOv();ST('Perdon, Error al Generar 😿');return;}
-      const cd=res.headers.get('content-disposition')||'';
-      const fn=decodeURIComponent(cd.match(/filename="?([^";\n]+)"?/)?.[1]||('media_'+Date.now()));
-      const blob=await res.blob();
-      const burl=URL.createObjectURL(blob);
-      const a=document.createElement('a');
-      a.href=burl;a.download=fn;a.click();
-      setTimeout(()=>URL.revokeObjectURL(burl),15000);
+      const j=await res.json().catch(()=>({}));
+      if(!res.ok){hideOv();ST(j.error||'Perdon, Error al Generar 😿');return;}
+      if(!j.url){hideOv();ST('Perdon, Error al Generar 😿');return;}
       hideOv();ST('Listo ✅');
-      const file=new File([blob],fn,{type:blob.type||'application/octet-stream'});
-      if(navigator.canShare&&navigator.canShare({files:[file]})){
-        const btn=document.createElement('button');
-        btn.className='app-btn';btn.textContent='📤 Compartir';
-        btn.onclick=()=>{navigator.share({files:[file]}).catch(()=>{});btn.remove();};
-        stEl.after(btn);
-      }
+      try{
+        const br=await fetch(j.url,{signal:_ac.signal});
+        if(!br.ok) throw 0;
+        const blob=await br.blob();
+        const burl=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=burl;a.download=j.filename||'media';a.click();
+        setTimeout(()=>URL.revokeObjectURL(burl),15000);
+      }catch{window.open(j.url,'_blank');}
     }catch(e){hideOv();if(e.name!=='AbortError')ST('Perdon, Error al Generar 😿');}
   }
 

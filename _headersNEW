@@ -1,0 +1,28 @@
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+
+/sw.js
+  Cache-Control: no-cache
+
+/web/Dinamico/data.json
+  Cache-Control: no-cache
+
+/web/otros/Archivos/Fuentes/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/web/otros/Archivos/Imagenes/Permanente/*
+  Cache-Control: public, max-age=604800
+
+/web/otros/Archivos/Imagenes/*
+  Cache-Control: public, max-age=43200
+
+/web/scripts/*
+  Cache-Control: public, max-age=86400
+
+/web/estilo.css
+  Cache-Control: public, max-age=86400
+
+/web/Dinamico/*
+  Cache-Control: public, max-age=43200, stale-while-revalidate=86400

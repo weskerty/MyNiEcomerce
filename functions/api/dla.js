@@ -1,5 +1,4 @@
 const URL_RE=/https?:\/\/[^\s"'<>]+/;
-const RH_ERR={'content-type':'application/json'};
 const RH_JSON={'content-type':'application/json'};
 
 export async function onRequestGet(context){
@@ -22,10 +21,10 @@ export async function onRequestPost(context){
 
  let raw,type;
  try{const j=await request.json();raw=j.url;type=j.type;}
- catch{return new Response(JSON.stringify({error:'Invalid body'}),{status:400,headers:RH_ERR});}
+ catch{return new Response(JSON.stringify({error:'Invalid body'}),{status:400,headers:RH_JSON});}
 
  const m=URL_RE.exec(String(raw||''));
- if(!m) return new Response(JSON.stringify({error:'No URL found'}),{status:400,headers:RH_ERR});
+ if(!m) return new Response(JSON.stringify({error:'No URL found'}),{status:400,headers:RH_JSON});
 
  const res=await fetch(`${env.SERVER_URL}/dla`,{
   method:'POST',
@@ -33,9 +32,6 @@ export async function onRequestPost(context){
   body:JSON.stringify({url:m[0],type:type==='audio'?'audio':'video'})
  });
 
- const h={'content-type':res.headers.get('content-type')||'application/octet-stream'};
- const cd=res.headers.get('content-disposition');
- if(cd) h['content-disposition']=cd;
-
- return new Response(res.body,{status:res.status,headers:h});
+ const j=await res.json().catch(()=>({}));
+ return new Response(JSON.stringify(j),{status:res.status,headers:RH_JSON});
 }

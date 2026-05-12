@@ -1,4 +1,4 @@
-const V='v58';
+const V='v59';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -274,7 +274,7 @@ async function clearShareData(){
 }
 
 self.addEventListener('install',e=>{
-  e.waitUntil(caches.open(V).then(c=>c.addAll(PRE)).then(()=>self.skipWaiting()));
+  e.waitUntil(caches.open(V).then(c=>c.addAll(PRE.map(u=>new Request(u,{cache:'reload'})))).then(()=>self.skipWaiting()));
 });
 
 self.addEventListener('activate',e=>{
