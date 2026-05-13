@@ -4,3 +4,158 @@ Manzana:Rojo y Dulce
 Chipa:Se come, suele ser Amarillo
 Teclado:Sirve para Expresarse
 Helicoptero:Hace mucho ruido cuando lo ves funcionar
+Reloj:Siempre avanza
+Escalera:Ayuda a subir
+Nieve:Cambia el suelo
+Espejo:Devuelve algo
+Lobo:Auuuu
+Cuchillo:Aveces Lastima 
+Tomate:A veces acompaña
+Botella:Guarda por dentro
+Papel:Puede doblarse
+Martillo:Hace impacto
+Piedra:No suele moverse
+Nube:A veces tapa
+Lampara:Ayuda cuando falta
+Escoba:Se mueve bastante
+Caja:Puede ocultar
+Llave:Abre posibilidades
+Candado:Evita el paso
+Balde:Sirve cuando cae
+Cepillo:Va y viene
+Jabon:Desaparece usando
+Toalla:Termina mojada
+Camisa:Tiene botones
+Pantalon:Tiene dos caminos
+Corbata:Cuelga adelante
+Anzuelo:Espera algo
+Red:Atrapa sin cerrar
+Cuerda:Puede tensarse
+Campana:Se escucha lejos
+Silbato:Llama atencion
+Ventilador:Mueve cosas
+Horno:Cambia las cosas
+Microfono:Hace llegar
+Tambor:Responde al tacto 
+Flauta:Necesita aire
+Violin:No se golpea
+Piano:Tiene extremos
+Semaforo:Ordena momentos
+Tunel:Oculta el camino
+Ascensor:Sube sin caminar
+Carretera:Conecta lugares
+Gasolina:Hace seguir
+Bateria:A veces se acaba 
+Cable:Une energia
+Enchufe:Va en la pared
+Impresora:Deja marcas
+Camara:Guarda instantes
+Foto:No cambia sola
+Marco:Rodea recuerdos
+Calendario:suelen marcar
+Tijera:Divide facil
+Pegamento:Une partes
+Mochila:Carga secretos
+Bolso:Guarda rapido
+Moneda:Pasa de mano
+Billete:Cambia decisiones
+Tesoro:Suele esconderse
+Diamante:No es suave
+Oro:Muchos lo quieren
+Plata:Brilla distinto
+Corona:No cualquiera usa
+Trono:Uno se sienta
+Espada:No sirve de cuchara
+Escudo:Va adelante
+Flecha:Busca direccion
+Arco:Necesita tension
+Antorcha:Ilumina moviendose
+Mapa:No es el lugar
+Brújula:Evita perderse
+Cueva:Oscura y fria
+Lago:Quieto pero profundo
+Pantano:Engaña al paso
+Tronco:Antes estuvo vivo
+Hoja:Cae facil
+Espina:Molesta al tocar
+Hongo:Aparece sin aviso
+Miel:No la hacen humanos
+Nido:No tiene puerta
+Jaula:Limita movimientos
+Huella:Alguien estuvo ahi
+Sombra:Sigue sin hablar
+Eco:Repite tarde
+Viento:No se ve
+Tormenta:Cambia el ambiente
+Relampago:Aparece un instante
+Humo:Sube lentamente
+Ceniza:Queda despues
+Lava:No se enfria rapido
+Cristal:Puede romperse
+Hierro:No flota facil
+Acero:Es mas duro
+Algodon:Muy liviano
+Seda:Se siente distinta
+Ladrillo:Forma paredes
+Techo:Cubre arriba
+Piso:Siempre abajo
+Colchon:Se hunde un poco
+Cortina:Tapa parcialmente
+Alfombra:No va en pared
+Cajon:Se desliza
+Armario:Guarda muchas cosas
+Percha:Sostiene ropa
+Escritorio:Tiene superficie libre
+Cuaderno:Recibe ideas
+Borrador:Hace desaparecer
+Regla:Mide recto
+Compas:Gira sobre un punto
+Tinta:Deja marca
+Sello:Confirma algo
+Sobre:Guarda mensajes
+Paquete:Llega cerrado
+Timbre:Anuncia visitas
+Pasillo:Une habitaciones
+Balcon:Sale sin bajar
+Sotano:Debajo de todo
+Atico:Cerca del techo
+Estadio:Muchos miran
+Trofeo:Representa logro
+Medalla:Se cuelga
+Bandera:Se mueve arriba
+Uniforme:Muchos iguales
+Mascara:Tapa identidad
+Disfraz:Parece otra cosa
+Puzzle:Faltan piezas
+Ficha:Vale dentro
+Ruleta:Gira y decide
+Domino:Cae seguido
+YoYo:Sube y baja
+Canica:Rueda pequeña
+Trampolin:Devuelve impulso
+Columpio:Va y viene
+Tobogan:Siempre baja
+Burbuja:Dura poco
+Cometa:Sigue el viento
+Volante:Cambia direccion
+Pedal:Se presiona
+Freno:Detiene avance
+Motor:Hace funcionar
+Radar:Detecta lejos
+Sirena:No es silenciosa
+Paracaidas:Baja despacio
+Cohete:No vuelve rapido
+Satélite:Gira constantemente
+Alien:No parece conocido
+Fantasma:Muchos no creen
+Dragon:Escupe problemas
+Castillo:Tiene murallas
+Mazmorra:No suele tener luz
+Pergamino:Muy antiguo
+Hechizo:Cambia cosas raras
+Pocion:No siempre cura
+Cristal:Refleja distinto
+Portal:Une lugares extraños
+Runa:Tiene significado raro
+Totem:Permanece quieto
+Amuleto:Se lleva encima
