@@ -160,7 +160,7 @@ const CFG={
   imgSrc:'https://picsum.photos/seed/',
   posSendMs:50,
   pipeImgCount:10,
-  pwChance:0.10,
+  pwChance:0.05,
   blinkDurMs:900,
   blinkHz:80,
   base:'web/otros/Archivos/Imagenes/Permanente/Juegos/Flappy/',
@@ -415,6 +415,9 @@ function render(){
   ctx.clearRect(0,0,W,H);
   for(const p of pipes)drawPipe(p);
 
+  for(const [pid,ps] of Object.entries(peers)){
+    if(ps.y!=null&&ps.alive)drawBird(CFG.birdX+4,ps.y,pid,0.72,0);
+  }
   const now=performance.now();
   const blinking=now<blinkEnd;
   let birdAlpha=1;
@@ -423,9 +426,6 @@ function render(){
   }
   drawBird(CFG.birdX,by,MY_ID,birdAlpha,Math.max(-0.5,Math.min(1.2,bvy*0.06)));
 
-  for(const [pid,ps] of Object.entries(peers)){
-    if(ps.y!=null&&ps.alive)drawBird(CFG.birdX+4,ps.y,pid,0.72,0);
-  }
   if(!started&&alive){
     ctx.fillStyle='#ffffff55';
     ctx.font='bold 13px "Courier New"';
