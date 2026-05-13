@@ -7,6 +7,7 @@
 :root{
   --fb-accent:#39ff14;
   --fb-danger:#ff2d6b;
+  --fb-gold:#ffd700;
   --fb-hud:48px;
 }
 #FB_W{
@@ -39,6 +40,15 @@
   color:var(--fb-accent);
   text-shadow:0 0 12px var(--fb-accent),0 0 24px var(--fb-accent);
   letter-spacing:2px;
+}
+#FB_SH{
+  font-size:1rem;
+  font-weight:900;
+  color:var(--fb-gold);
+  text-shadow:0 0 10px var(--fb-gold);
+  letter-spacing:2px;
+  min-width:40px;
+  text-align:center;
 }
 #FB_NET{font-size:.7rem;color:#ffffff55;text-align:right;line-height:1.4;}
 #FB_NET.FB_con{color:var(--fb-accent);}
@@ -105,6 +115,7 @@
   <canvas id="FB_CV"></canvas>
   <div id="FB_HUD">
     <div id="FB_SC">0</div>
+    <div id="FB_SH"></div>
     <div id="FB_NET">sin red</div>
   </div>
   <div id="FB_OV">
@@ -122,6 +133,7 @@ const FB={
   W:document.getElementById('FB_W'),
   cv:document.getElementById('FB_CV'),
   sc:document.getElementById('FB_SC'),
+  sh:document.getElementById('FB_SH'),
   net:document.getElementById('FB_NET'),
   ov:document.getElementById('FB_OV'),
   ot:document.getElementById('FB_OT'),
@@ -148,21 +160,27 @@ const CFG={
   imgSrc:'https://picsum.photos/seed/',
   posSendMs:50,
   pipeImgCount:10,
-  pipeImgBase:'',
+  pwChance:0.18,
+  blinkDurMs:900,
+  blinkHz:80,
+  base:'web/otros/Archivos/Imagenes/Permanente/Juegos/Flappy/',
 };
 
 const SFX={
   bgm:new Audio(),
   jump:new Audio(),
   hit:new Audio(),
+  pw:new Audio(),
 };
-SFX.bgm.src='';
-SFX.jump.src='';
-SFX.hit.src='';
+SFX.bgm.src=CFG.base+'bgm.ogg';
+SFX.jump.src=CFG.base+'jump.ogg';
+SFX.hit.src=CFG.base+'hit.ogg';
+SFX.pw.src=CFG.base+'pipeW.ogg';
 SFX.bgm.loop=true;
 SFX.bgm.volume=0.4;
 SFX.jump.volume=0.6;
 SFX.hit.volume=0.7;
+SFX.pw.volume=0.8;
 
 function sfxPlay(a){if(!a.src)return;a.currentTime=0;a.play().catch(function(){});}
 function bgmPlay(){if(!SFX.bgm.src)return;SFX.bgm.play().catch(function(){});}
@@ -188,50 +206,76 @@ function rng32(s){
   };
 }
 
+const PI_fallback=(function(){
+  const img=new Image();
+  img.src=CFG.base+'pipe.avif';
+  return img;
+})();
+
+const PI_pw=(function(){
+  const img=new Image();
+  img.src=CFG.base+'pipeW.avif';
+  return img;
+})();
+
 const pipeImgs=[];
 (function(){
   for(let i=0;i<CFG.pipeImgCount;i++){
     const img=new Image();
-    img.crossOrigin='anonymous';
-    if(CFG.pipeImgBase){
-      img.src=CFG.pipeImgBase+'pipe'+i+'.png';
-    }else{
-      img.src='https://picsum.photos/seed/pipe'+i+'/104/600';
-    }
+    img.src=CFG.base+'pipe'+i+'.avif';
     pipeImgs.push(img);
   }
 })();
 
+const MY_IMG=(function(){
+  const img=new Image();
+  img.src=CFG.base+'im.avif';
+  return img;
+})();
+
+function PI_get(idx){
+  const img=pipeImgs[idx];
+  if(img&&img.complete&&img.naturalWidth)return img;
+  if(PI_fallback.complete&&PI_fallback.naturalWidth)return PI_fallback;
+  return null;
+}
+
 let rng=null;
-let pipes=[],score=0,best=0;
+let pipes=[],score=0,best=0,shields=0;
 let by=0,bvy=0,alive=false,started=false;
+let blinkEnd=0,hitCoolEnd=0;
 let rafId=null,posIv=null;
+
+function SH_update(){
+  FB.sh.textContent=shields>0?'🛡'.repeat(Math.min(shields,5)):'';
+}
 
 function newPipe(x){
   const margin=H*0.12;
-  const imgIdx=Math.floor(rng()*CFG.pipeImgCount);
-  return{x,topH:margin+rng()*(H-margin*2-CFG.pipeGap),passed:false,imgIdx};
+  const isPW=rng()<CFG.pwChance;
+  const imgIdx=isPW?-1:Math.floor(rng()*CFG.pipeImgCount);
+  return{x,topH:margin+rng()*(H-margin*2-CFG.pipeGap),passed:false,imgIdx,isPW,pwTaken:false};
 }
 
 function initGame(){
   rng=rng32(Date.now()&0xFFFFFFFF);
   pipes=[];
   score=0;
+  shields=0;
   by=H/2;
   bvy=0;
   alive=true;
   started=false;
+  blinkEnd=0;hitCoolEnd=0;
   FB.sc.textContent='0';
+  SH_update();
   pipes.push(newPipe(W+CFG.pipeDist));
   pipes.push(newPipe(W+CFG.pipeDist*2));
 }
 
 function flap(){
   if(!alive)return;
-  if(!started){
-    started=true;
-    bgmPlay();
-  }
+  if(!started){started=true;bgmPlay();}
   bvy=CFG.flap;
   sfxPlay(SFX.jump);
 }
@@ -244,14 +288,49 @@ function tick(){
   if(pipes[pipes.length-1].x<W-CFG.pipeDist)pipes.push(newPipe(W+10));
   while(pipes.length&&pipes[0].x<-CFG.pipeW-CFG.killMargin)pipes.shift();
   const bx=CFG.birdX,br=CFG.birdR-3;
+  const now=performance.now();
   for(const p of pipes){
-    if(!p.passed&&p.x+CFG.pipeW<bx){p.passed=true;score++;FB.sc.textContent=score;}
+    if(!p.passed&&p.x+CFG.pipeW<bx){
+      p.passed=true;
+      if(p.isPW&&!p.pwTaken){
+        p.pwTaken=true;
+        shields++;
+        SH_update();
+        sfxPlay(SFX.pw);
+      }else if(!p.isPW){
+        score++;
+        FB.sc.textContent=score;
+      }
+    }
+    if(p.isPW)continue;
     const inX=bx+br>p.x&&bx-br<p.x+CFG.pipeW;
     const inY=by-br<p.topH||by+br>p.topH+CFG.pipeGap;
-    if(inX&&inY){die();return;}
+    if(inX&&inY&&now>hitCoolEnd){
+      if(shields>0){
+        shields--;
+        SH_update();
+        blinkEnd=now+CFG.blinkDurMs;
+        hitCoolEnd=now+CFG.blinkDurMs;
+        sfxPlay(SFX.hit);
+      }else{
+        die();return;
+      }
+    }
   }
   const km=CFG.killMargin;
-  if(by+CFG.birdR<-km||by-CFG.birdR>H+km){die();return;}
+  if(by+CFG.birdR<-km||by-CFG.birdR>H+km){
+    if(shields>0&&now>hitCoolEnd){
+      shields--;
+      SH_update();
+      blinkEnd=now+CFG.blinkDurMs;
+      hitCoolEnd=now+CFG.blinkDurMs;
+      by=Math.max(CFG.birdR,Math.min(H-CFG.birdR,by));
+      bvy=0;
+      sfxPlay(SFX.hit);
+    }else if(shields===0){
+      die();return;
+    }
+  }
 }
 
 function die(){
@@ -259,34 +338,55 @@ function die(){
   bgmPause();
   sfxPlay(SFX.hit);
   if(score>best)best=score;
-  FB.ot.textContent='GAME OVER';
-  FB.om.textContent='Puntaje: '+score+' | Mejor: '+best;
+  FB.ot.textContent='Caiste 😿';
+  FB.om.textContent='Esquivados: '+score+' | Mejor: '+best;
   FB.ov.classList.remove('FB_h');
 }
 
 function drawPipe(p){
-  const img=pipeImgs[p.imgIdx];
   const botY=p.topH+CFG.pipeGap;
   const botH=H-botY;
-  if(img&&img.complete&&img.naturalWidth){
+  let img;
+  if(p.isPW){
+    img=(PI_pw.complete&&PI_pw.naturalWidth)?PI_pw:PI_get(0);
+  }else{
+    img=PI_get(p.imgIdx);
+  }
+  if(img){
     ctx.drawImage(img,p.x,0,CFG.pipeW,p.topH);
     ctx.drawImage(img,p.x,botY,CFG.pipeW,botH);
   }else{
     const g=ctx.createLinearGradient(p.x,0,p.x+CFG.pipeW,0);
-    g.addColorStop(0,'#1a3a1a');g.addColorStop(.4,'#2d7a2d');g.addColorStop(1,'#1a3a1a');
+    if(p.isPW){
+      g.addColorStop(0,'#7a5500');g.addColorStop(.4,'#ffd700');g.addColorStop(1,'#7a5500');
+    }else{
+      g.addColorStop(0,'#1a3a1a');g.addColorStop(.4,'#2d7a2d');g.addColorStop(1,'#1a3a1a');
+    }
     ctx.fillStyle=g;
     ctx.fillRect(p.x,0,CFG.pipeW,p.topH);
     ctx.fillRect(p.x,botY,CFG.pipeW,botH);
   }
+  if(p.isPW&&!p.pwTaken){
+    ctx.save();
+    const cx=p.x+CFG.pipeW/2,cy=p.topH+CFG.pipeGap/2;
+    ctx.font='bold 18px "Courier New"';
+    ctx.textAlign='center';
+    ctx.textBaseline='middle';
+    ctx.fillStyle='#ffd700';
+    ctx.shadowColor='#ffd700';
+    ctx.shadowBlur=12;
+    ctx.fillText('🛡',cx,cy);
+    ctx.restore();
+  }
 }
 
-const birdImgs={};
-function getImg(id){
-  if(birdImgs[id])return birdImgs[id];
+const peerImgs={};
+function getPeerImg(id){
+  if(peerImgs[id])return peerImgs[id];
   const img=new Image();
   img.crossOrigin='anonymous';
-  img.src=CFG.imgSrc+id+'/'+(CFG.birdR*4)+'/'+(CFG.birdR*4);
-  return(birdImgs[id]=img);
+  img.src=CFG.imgSrc+id+'/'+(CFG.birdDrawR*4)+'/'+(CFG.birdDrawR*4);
+  return(peerImgs[id]=img);
 }
 
 const MY_ID=Math.random().toString(36).slice(2,8);
@@ -297,7 +397,8 @@ function drawBird(x,y,id,alpha,angle){
   ctx.globalAlpha=alpha;
   ctx.translate(x,y);
   ctx.rotate(angle);
-  const r=CFG.birdDrawR,img=getImg(id);
+  const r=CFG.birdDrawR;
+  const img=id===MY_ID?MY_IMG:getPeerImg(id);
   ctx.beginPath();
   ctx.arc(0,0,r,0,Math.PI*2);
   if(img.complete&&img.naturalWidth){
@@ -313,7 +414,15 @@ function drawBird(x,y,id,alpha,angle){
 function render(){
   ctx.clearRect(0,0,W,H);
   for(const p of pipes)drawPipe(p);
-  drawBird(CFG.birdX,by,MY_ID,1,Math.max(-0.5,Math.min(1.2,bvy*0.06)));
+
+  const now=performance.now();
+  const blinking=now<blinkEnd;
+  let birdAlpha=1;
+  if(blinking){
+    birdAlpha=Math.floor((blinkEnd-now)/CFG.blinkHz)%2===0?0.15:1;
+  }
+  drawBird(CFG.birdX,by,MY_ID,birdAlpha,Math.max(-0.5,Math.min(1.2,bvy*0.06)));
+
   for(const [pid,ps] of Object.entries(peers)){
     if(ps.y!=null&&ps.alive)drawBird(CFG.birdX+4,ps.y,pid,0.72,0);
   }
@@ -382,7 +491,7 @@ async function initVoice(){
 async function initNet(){
   try{
     const mod=await import('https://esm.run/trystero@0.22.0');
-    const {joinRoom,selfId}=mod;
+    const {joinRoom}=mod;
     room=joinRoom(CFG.appId,CFG.lobbyId);
     FB.net.textContent='...';
     let getSP;
@@ -401,7 +510,7 @@ async function initNet(){
     room.onPeerLeave(function(id){
       delete peers[id];
       const n=Object.keys(peers).length;
-      FB.net.textContent=n?n+' online':'sin peers';
+      FB.net.textContent=n?n+' online':'0';
       if(!n)FB.net.classList.remove('FB_con');
     });
   }catch(e){
