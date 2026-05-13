@@ -1,0 +1,6 @@
+Gato:Tiene 4 Patas
+Perro:El mejor Amigo
+Manzana:Rojo y Dulce
+Chipa:Se come, suele ser Amarillo
+Teclado:Sirve para Expresarse
+Helicoptero:Hace mucho ruido cuando lo ves funcionar

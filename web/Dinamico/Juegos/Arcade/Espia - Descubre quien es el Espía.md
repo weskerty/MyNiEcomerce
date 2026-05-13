@@ -196,6 +196,12 @@ h2{
     <h1>ESPÍA</h1>
     <div class="ES_sub">AMIGO ESPÍA — P2P</div>
     <div class="ES_divider"></div>
+    <div class="ES_label">Tu nombre</div>
+    <div class="ES_row">
+      <input id="ES_my_name" class="ES_inp ES_grow" placeholder="Nombre (opcional)" maxlength="16">
+      <button id="ES_name_btn" class="ES_btn ES_sm">OK</button>
+    </div>
+    <div class="ES_divider"></div>
     <div class="ES_label">Salas activas</div>
     <div id="ES_lobbies"><div class="ES_notice">Buscando salas...</div></div>
     <div class="ES_divider"></div>
@@ -272,11 +278,13 @@ const TURN_SECS=60;
 const VOTE_SECS=60;
 const WORD_SHRINK_MS=10000;
 
-const MY_ID=Math.random().toString(36).slice(2,8).toUpperCase();
+let MY_ID=Math.random().toString(36).slice(2,8).toUpperCase();
 
 const $ =id=>document.getElementById(id);
 
 const EL={
+  myNameInp:$('ES_my_name'),
+  nameBtn:$('ES_name_btn'),
   lobbies:$('ES_lobbies'),
   roomName:$('ES_room_name'),
   createBtn:$('ES_create_btn'),
@@ -477,8 +485,9 @@ async function joinGameRoom(){
       }
     });
 
-    getTurnNext(({idx})=>{
+    getTurnNext(({idx,done})=>{
       turnIdx=idx;
+      if(done){startVote();return;}
       renderTurn();
     });
 
@@ -621,7 +630,8 @@ function renderTurn(){
     el.style.borderColor=el.id==='ES_gp_'+activeId?'var(--e-acc)':'';
   });
   unmuteActive(activeId);
-  startTurnTimer();
+  if(activeId===MY_ID)startTurnTimer();
+  else{clearInterval(turnTimer);turnSecs=TURN_SECS;renderTurnTimer();}
 }
 
 let turnSecs=TURN_SECS;
@@ -645,8 +655,11 @@ function renderTurnTimer(){
 function advanceTurn(){
   clearInterval(turnTimer);
   turnIdx++;
-  if(turnIdx>=turnOrder.length){startVote();return;}
-  if(window._ES_sendTurnNext)window._ES_sendTurnNext({idx:turnIdx});
+  if(turnIdx>=turnOrder.length){
+    if(window._ES_sendTurnNext)window._ES_sendTurnNext({idx:turnIdx,done:true});
+    startVote();return;
+  }
+  if(window._ES_sendTurnNext)window._ES_sendTurnNext({idx:turnIdx,done:false});
   renderTurn();
 }
 
@@ -741,10 +754,20 @@ EL.backLobbyBtn.onclick=leaveRoom;
 EL.startBtn.onclick=hostStart;
 EL.passBtn.onclick=advanceTurn;
 
+EL.myNameInp.placeholder='Tu ID: '+MY_ID;
+function applyName(){
+  const v=EL.myNameInp.value.trim().toUpperCase().replace(/[^A-Z0-9_\-]/g,'').slice(0,16);
+  if(v)MY_ID=v;
+  EL.myNameInp.placeholder='Tu ID: '+MY_ID;
+  EL.myNameInp.value='';
+}
+EL.nameBtn.onclick=applyName;
+EL.myNameInp.onkeydown=e=>{if(e.key==='Enter')applyName();};
+
 function toggleMyMute(){
   myMuted=!myMuted;
   if(myStream)myStream.getAudioTracks().forEach(t=>t.enabled=!myMuted);
-  const label=myMuted?'🔇 Mic':'🎤 Mic';
+  const label=myMuted?'🔇 Mic: Desactivado':'🎤 Mic: Activado';
   EL.myMuteBtn.textContent=label;
   EL.myMuteGame.textContent=label;
   if(window._ES_sendMute)window._ES_sendMute({muted:myMuted});
