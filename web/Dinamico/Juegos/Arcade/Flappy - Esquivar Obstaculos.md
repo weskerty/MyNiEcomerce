@@ -160,7 +160,7 @@ const CFG={
   imgSrc:'https://picsum.photos/seed/',
   posSendMs:50,
   pipeImgCount:10,
-  pwChance:0.18,
+  pwChance:0.10,
   blinkDurMs:900,
   blinkHz:80,
   base:'web/otros/Archivos/Imagenes/Permanente/Juegos/Flappy/',
@@ -247,7 +247,7 @@ let blinkEnd=0,hitCoolEnd=0;
 let rafId=null,posIv=null;
 
 function SH_update(){
-  FB.sh.textContent=shields>0?'🛡'.repeat(Math.min(shields,5)):'';
+  FB.sh.textContent=shields>0?'❤️':'';
 }
 
 function newPipe(x){
@@ -294,7 +294,7 @@ function tick(){
       p.passed=true;
       if(p.isPW&&!p.pwTaken){
         p.pwTaken=true;
-        shields++;
+        if(shields<1)shields++;
         SH_update();
         sfxPlay(SFX.pw);
       }else if(!p.isPW){
@@ -375,7 +375,7 @@ function drawPipe(p){
     ctx.fillStyle='#ffd700';
     ctx.shadowColor='#ffd700';
     ctx.shadowBlur=12;
-    ctx.fillText('🛡',cx,cy);
+    ctx.fillText('❤️',cx,cy);
     ctx.restore();
   }
 }
