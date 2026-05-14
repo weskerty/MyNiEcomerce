@@ -1,4 +1,4 @@
-const V='v60';
+const V='v61';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -23,6 +23,7 @@ const PRE=[
 'web/404.html',
 'web/otros/Archivos/HTML/centralPage.html',
 'web/otros/Archivos/HTML/apps.html',
+'web/otros/Archivos/HTML/Grupos.html',
 'web/fondo.json',
 'web/otros/Archivos/Imagenes/wallpaper.avif',
 'web/otros/Archivos/Imagenes/Permanente/404.avif',
