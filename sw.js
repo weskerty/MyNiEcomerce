@@ -197,7 +197,7 @@ async function chkDJ(){
     const c=await caches.open(V);
     const prev=await c.match(DJ_ABS);
     const prevTxt=prev?await prev.text():null;
-    await c.put(DJ_ABS,new Response(txt,{headers:{'Content-Type':'application/json'}}));
+    await c.put(DJ_ABS,new Response(txt,{status:200,headers:new Headers(r.headers)}));
     _ts=Date.now();
     await c.put(TS_CK,new Response(String(_ts)));
     const nArr=EP(JSON.parse(txt));
@@ -354,22 +354,67 @@ self.addEventListener('fetch',e=>{
   if(url.origin!==self.location.origin)return;
 
   if(DJ.test(url.pathname)){
-    e.respondWith(
-      fetch(DJ_ABS,{cache:'no-store'}).then(r=>{
-        if(r?.ok){const rc=r.clone();caches.open(V).then(c=>c.put(DJ_ABS,rc));}
+    e.respondWith((async()=>{
+      const c=await caches.open(V);
+      const cc=await c.match(DJ_ABS);
+      if(cc){
+        e.waitUntil((async()=>{
+          try{
+            const etag=cc.headers.get('etag');
+            const r=await fetch(DJ_ABS,{cache:'no-store',...(etag&&{headers:{'If-None-Match':etag}})});
+            if(r.status===304||!r?.ok)return;
+            const txt=await r.text();
+            const prev=await c.match(DJ_ABS);
+            const prevTxt=prev?await prev.text():null;
+            if(txt===prevTxt)return;
+            await c.put(DJ_ABS,new Response(txt,{status:200,headers:new Headers(r.headers)}));
+            _ts=Date.now();
+            await c.put(TS_CK,new Response(String(_ts)));
+            if(prevTxt!==null){
+              const nA=EP(JSON.parse(txt)),oA=EP(JSON.parse(prevTxt));
+              await syncMD(nA,oA);
+              const oIDs=new Set(oA.map(eID));
+              const nP=nA.filter(p=>!oIDs.has(eID(p)));
+              if(nP.length)await Promise.all(nP.map(showItem));
+            }
+          }catch{}
+        })());
+        return cc;
+      }
+      try{
+        const r=await fetch(DJ_ABS,{cache:'no-store'});
+        if(r?.ok){
+          const txt=await r.text();
+          await c.put(DJ_ABS,new Response(txt,{status:200,headers:new Headers(r.headers)}));
+          return new Response(txt,{headers:{'Content-Type':'application/json'}});
+        }
         return r;
-      }).catch(()=>caches.open(V).then(c=>c.match(DJ_ABS)))
-    );
+      }catch{return new Response('{}',{status:503});}
+    })());
     return;
   }
 
   if(url.pathname.endsWith('.md')){
-    e.respondWith(
-      fetch(e.request).then(r=>{
-        if(r?.ok){const rc=r.clone();caches.open(MD_C).then(c=>c.put(e.request,rc));}
+    e.respondWith((async()=>{
+      const c=await caches.open(MD_C);
+      const cc=await c.match(e.request);
+      if(cc){
+        e.waitUntil((async()=>{
+          try{
+            const etag=cc.headers.get('etag');
+            const r=await fetch(e.request,{cache:'no-store',...(etag&&{headers:{'If-None-Match':etag}})});
+            if(r.status===304||!r?.ok)return;
+            await c.put(e.request,r);
+          }catch{}
+        })());
+        return cc;
+      }
+      try{
+        const r=await fetch(e.request);
+        if(r?.ok)await c.put(e.request,r.clone());
         return r;
-      }).catch(()=>caches.open(MD_C).then(c=>c.match(e.request)))
-    );
+      }catch{return new Response('',{status:503});}
+    })());
     return;
   }
 
