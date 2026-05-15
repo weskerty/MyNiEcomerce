@@ -96,7 +96,7 @@
 
 <script>
 (function(){
-  const PG_H=19,PG_V=6,MAX_SEL=30,CD_MS=10000,ADS=false;
+  const PG_H=18,PG_V=6,MAX_SEL=30,CD_MS=10000,ADS=false;
   const MAX_F=30,MAX_SZ=20*1024*1024,DIM=256,TARGET=900*1024;
   const CK=['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'];
   let PG=window.innerHeight>window.innerWidth?PG_V:PG_H;
