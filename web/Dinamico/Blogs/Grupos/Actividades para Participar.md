@@ -1,1 +1,1 @@
-<meta http-equiv="refresh" content="0; web/otros/Archivos/HTML/Grupos.html">
+<meta http-equiv="refresh" content="0; #web/otros/Archivos/HTML/Grupos.html">
