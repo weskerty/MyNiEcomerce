@@ -209,7 +209,7 @@
     ckStart(document.getElementById('sk-ck'));
     pgEl.innerHTML='';
     try{
-      const res=await fetch('/api/stickers/tgpack',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pack})});
+      const res=await fetch('/api/stickers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pack})});
       ckStop();
       if(!res.ok)throw new Error(res.status);
       const {sid}=await res.json();

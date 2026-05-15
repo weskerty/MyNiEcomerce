@@ -76,10 +76,12 @@ export async function onRequestPost(context) {
     return new Response(await res.text(), { status: res.status, headers: RH });
   }
 
-  const res = await fetch(`${env.SERVER_URL}/stickers/process`, {
+  const body = await request.text();
+  const ep   = JSON.parse(body).urls ? 'process' : 'tgpack';
+  const res  = await fetch(`${env.SERVER_URL}/stickers/${ep}`, {
     method: 'POST',
     headers: { 'x-bridge-key': env.BRIDGE_KEY, 'Content-Type': 'application/json' },
-    body: await request.text()
+    body
   });
   return new Response(await res.text(), { status: res.status, headers: RH });
 }
