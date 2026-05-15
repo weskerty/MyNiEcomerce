@@ -12,7 +12,7 @@
 .sk-ib:hover{opacity:1;transform:scale(1.1)}
 .sk-ib:disabled{opacity:.3;cursor:not-allowed;transform:none}
 .sk-bar.sk-cd::after{content:'';position:absolute;left:0;top:0;height:100%;width:var(--sk-cd-p,0%);background:rgba(56,189,248,.13);transition:width .1s linear;pointer-events:none;z-index:0}
-.sk-grid{display:grid;grid-template-columns:repeat(auto-fill,120px);min-width:calc(120px*3 + 8px*2);gap:8px;justify-content:center;margin-bottom:8px;min-height:40px}
+.sk-grid{display:grid;grid-template-columns:repeat(auto-fill,120px);min-width:calc(120px*2 + 8px*1);gap:8px;justify-content:center;margin-bottom:8px;min-height:40px}
 .sk-grid-c{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:8px;min-height:40px;min-width:calc(120px*3 + 8px*2)}
 .sk-it{width:120px;height:120px;border-radius:16px;overflow:hidden;cursor:pointer;position:relative;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);box-sizing:border-box;transition:transform .15s,border-color .15s,box-shadow .15s;will-change:transform;flex-shrink:0}
 .sk-it img{width:100%;height:100%;object-fit:fill;display:block}
@@ -63,7 +63,7 @@
 <div class="sk-wrap" id="sk-search">
   <div class="sk-bar" id="sk-bar">
     <a class="sk-home" href="web/es.html">🏠</a>
-    <input id="sk-q" type="text" placeholder="Buscar Klipy o pegar enlace t.me/addstickers/...">
+    <input id="sk-q" type="text" placeholder="Buscar en Klipy o pega enlace de Stickers TG...">
     <button class="sk-ib" id="sk-btn">🔍</button>
     <button class="sk-ib" id="sk-crear">📤</button>
     <input type="file" id="sc-in" accept="image/*,video/mp4" multiple style="display:none">
@@ -96,9 +96,10 @@
 
 <script>
 (function(){
-  const PG=18,MAX_SEL=30,CD_MS=10000,ADS=false;
+  const PG_H=19,PG_V=6,MAX_SEL=30,CD_MS=10000,ADS=false;
   const MAX_F=30,MAX_SZ=20*1024*1024,DIM=256,TARGET=900*1024;
   const CK=['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'];
+  let PG=window.innerHeight>window.innerWidth?PG_V:PG_H;
   let _ckiv=null,_cki=0;
   function ckStart(el){if(_ckiv)clearInterval(_ckiv);_cki=0;_ckiv=setInterval(()=>el.textContent=CK[_cki++%12],150);}
   function ckStop(){if(_ckiv){clearInterval(_ckiv);_ckiv=null;}}
@@ -438,10 +439,17 @@
     setMode('create');addFiles(e.target.files);inEl.value='';
   };
 
+  const _ori=window.matchMedia('(orientation: portrait)');
+  _ori.addEventListener('change',e=>{
+    PG=e.matches?PG_V:PG_H;
+    if(mode==='search'&&R.length)renderPage(0);
+  });
+
   const cont=document.getElementById('content');
   if(cont)cont.addEventListener('contentUnload',()=>{
     frames.forEach(f=>{URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);});
     frames=[];ckStop();if(cdRaf)cancelAnimationFrame(cdRaf);
+    _ori.removeEventListener('change',arguments.callee);
   },{once:true});
 
   (async()=>{
