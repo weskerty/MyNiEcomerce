@@ -55,8 +55,27 @@
     }catch{}
     btn.disabled=false;
   }
+  async function resubIfLost(sw){
+    if(Notification.permission!=='granted')return;
+    try{
+      const s=await sw.pushManager.getSubscription();
+      if(s)return;
+      const ns=await sw.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(VP)});
+      await fetch(W+'/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ns.toJSON())}).catch(()=>{});
+      await upd(sw);
+    }catch{}
+  }
+
   Promise.race([navigator.serviceWorker.ready,new Promise((_,rj)=>setTimeout(()=>rj(),3000))])
-    .then(sw=>{if(_ac.signal.aborted)return;upd(sw);btn.addEventListener('click',()=>tog(sw));})
+    .then(sw=>{
+      if(_ac.signal.aborted)return;
+      upd(sw);
+      btn.addEventListener('click',()=>tog(sw));
+      navigator.serviceWorker.addEventListener('controllerchange',()=>{
+        if(_ac.signal.aborted)return;
+        navigator.serviceWorker.ready.then(resubIfLost);
+      });
+    })
     .catch(()=>{});
 })();
 </script>
