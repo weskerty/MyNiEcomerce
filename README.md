@@ -1,3 +1,6 @@
+
+# Español 
+
 ### SPA sencillo pero veloz
 
 **Uso actual:** expositor de artículos. Para que gente con interes ambiental levante sus tiendas ecologicas facilmente.
@@ -37,7 +40,16 @@ Ejemplo: galerías con Swiper. Permite agrupar imágenes Markdown dentro de:
 
 O cargarlas desde `data.json` (ver `POS/scripts/converter.js` o workflow de galerías).
 
+PWA
+sw.js con notificaciones dinamicas como suscripcion de cada contenido dinamico (Puede ser inseguro depende de lo que tu mismo generes)
+
+Ver [Notificaciones RSS](/web/otros/Archivos/HTML/Grupos.html) como lo guarda en notify/script.js Ver tambien plugin de core.js install.js e install.md 
+
+Resuscripcion a la mierda de PWA de iOS en [centralPage](/web/otros/Archivos/HTML/centralPage.html) 
+
+
 ---
+
 
 Espero que te sea útil. Si lo mejorás me gustaria ver tambien 🥺👉👈
 
