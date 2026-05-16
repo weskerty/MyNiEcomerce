@@ -348,6 +348,37 @@ font-size:.96rem;
     return div;
   }
 
+  async function wOPFS(){
+    try{
+      const S=`(async()=>{
+const R=await fetch('/api/rss?url=${encodeURIComponent(RSS_PATH)}',{cache:'no-store'});
+if(!R.ok)return notify(null);
+const x=await R.text();
+const gM=x.match(/<item>[\\s\\S]*?<guid[^>]*>([^<]+)<\\/guid>/);
+if(!gM)return notify(null);
+const guid=gM[1];
+const root=await self.navigator.storage.getDirectory();
+const dir=await root.getDirectoryHandle('notify',{create:true});
+let prev=null;
+try{prev=await(await(await dir.getFileHandle('rss.state')).getFile()).text();}catch{}
+const wh=await(await dir.getFileHandle('rss.state',{create:true})).createWritable();
+await wh.write(guid);await wh.close();
+if(prev===null||guid===prev)return notify(null);
+const tM=x.match(/<item>[\\s\\S]*?<title>([^<]+)<\\/title>/);
+const title=(tM?tM[1]:'Nueva actividad').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+const iM=x.match(/poster=&quot;(https:\\/\\/[^&]+)&quot;/)||x.match(/src=&quot;(https:\\/\\/[^&\\s]+)&quot;/);
+const lM=x.match(/<item>[\\s\\S]*?<link>([^<]+)<\\/link>/);
+notify({title:'Nueva actividad \uD83D\uDCC5',body:title,...(iM?{image:iM[1]}:{}),tag:'rss-'+guid,url:lM?lM[1]:'${location.origin}'});
+})();`;
+      const root=await navigator.storage.getDirectory();
+      const dir=await root.getDirectoryHandle('notify',{create:true});
+      const fh=await dir.getFileHandle('rss.js',{create:true});
+      const wt=await fh.createWritable();
+      await wt.write(S);
+      await wt.close();
+    }catch{}
+  }
+
   async function load(){
     try{
       const res=await fetch(`/api/rss?url=${encodeURIComponent(RSS_PATH)}`);
@@ -379,6 +410,7 @@ font-size:.96rem;
   },{once:true});
 
   load();
+  wOPFS();
 })();
 </script>
 
