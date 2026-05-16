@@ -462,8 +462,10 @@
         const files=d.blobs.map(b=>new File([new Uint8Array(b.data)],b.name,{type:b.type}));
         setMode('create');await addFiles(files);
       }else if(d.url||d.text){
-        const q=(d.url||d.text).trim();qEl.value=q;
-        if(TG_IP(q)){TG_DF(q);}else{startCD();doFetch(q);}
+        const q=(d.url||d.text).trim();
+        if(TG_IP(q)){qEl.value=q;TG_DF(q);}
+        else if(d.url){toast('No compatible');doFetch('');}
+        else doFetch('');
       }else doFetch('');
     }catch{doFetch('');}
   })();

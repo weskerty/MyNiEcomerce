@@ -64,6 +64,7 @@ const RSS_PATH='telegram/channel/cheagana';
 const RSS_ABS=new URL('/api/rss?url='+RSS_PATH,self.location).href;
 const RSS_GK='__rss_guid';
 const RSS_NI=new URL('/__rss_ni',self.location).href;
+const OPFS_DIR='notify';
 
 const NTL={blog:'Nuevo Blog \uD83D\uDCDD',app:'Nueva App \uD83D\uDCF1',game:'Nuevo Juego \uD83C\uDFAE',product:'Nuevo Producto \uD83D\uDED2'};
 let _ts=0;
@@ -255,6 +256,33 @@ async function maybeCHK(){
     _ts=last?parseInt(await last.text()):0;
     if(Date.now()-_ts<CHK_INT)return;
     await chkAll();
+  }catch{}
+}
+
+async function runOPFS(){
+  try{
+    const root=await self.navigator.storage.getDirectory();
+    let dir;
+    try{dir=await root.getDirectoryHandle(OPFS_DIR);}catch{return;}
+    for await(const[name,handle]of dir.entries()){
+      if(handle.kind!=='file'||!name.endsWith('.js'))continue;
+      try{
+        const txt=await(await handle.getFile()).text();
+        const nFn=opts=>{
+          if(!opts)return;
+          return self.registration.showNotification(opts.title||'Che Agana',{
+            body:opts.body||'',
+            icon:opts.icon||N_ICON,
+            badge:N_ICO,
+            image:opts.image||N_BANNER,
+            tag:opts.tag||('opfs-'+name),
+            data:{url:opts.url||self.location.origin}
+          });
+        };
+        const r=new Function('notify',txt)(nFn);
+        if(r instanceof Promise)await Promise.race([r,new Promise((_,j)=>setTimeout(j,5000))]);
+      }catch{}
+    }
   }catch{}
 }
 
@@ -456,6 +484,7 @@ self.addEventListener('push',e=>{
         tag:'fallback',data:{url:self.location.origin}
       });
     }
+    await runOPFS();
   })());
 });
 
@@ -473,4 +502,5 @@ self.addEventListener('notificationclick',e=>{
 
 self.addEventListener('message',e=>{
   if(e.data==='CHECK_DJ')e.waitUntil(chkAll());
+  if(e.data==='RUN_OPFS')e.waitUntil(runOPFS());
 });
