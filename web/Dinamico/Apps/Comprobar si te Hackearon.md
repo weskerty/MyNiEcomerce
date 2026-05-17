@@ -194,7 +194,7 @@
       r.innerHTML=PW_RE(data);
       PW_ST(data.suspicious?'Email sospechoso':'Verificacion completa',data.suspicious?'er':'ok');
     }catch{
-      r.innerHTML=`<div class="pw-card y"><div class="pw-ch">⚠️ Servicio no disponible</div><div class="pw-cd">No se pudo consultar emailrep.io. Verificar que el endpoint <code>/api/hibp</code> este activo.</div></div>`;
+      r.innerHTML=`<div class="pw-card y"><div class="pw-ch">⚠️ Servicio no disponible</div><div class="pw-cd">Perdon, No se pudo consultar 😿</div></div>`;
       PW_ST('Error','er');
     }
     btn.disabled=false;

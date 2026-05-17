@@ -34,16 +34,23 @@
 <div style="padding:0 12px;max-width:100%">
 
   <div id="qr-idle">
-    <div class="qr-btns">
-      <button class="qr-mi" id="qr-cb">
-        <span class="qr-mi-ic">📷</span>
-        <span class="qr-mi-lb">Camara</span>
-      </button>
-      <button class="qr-mi" id="qr-fb">
-        <span class="qr-mi-ic">📤</span>
-        <span class="qr-mi-lb">Subir</span>
-      </button>
+<div class="BOTON-M1">
+
+  <button class="BOTON-M2" id="qr-cb" title="Camara">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">📷</div>
+      <p class="BOTON-M5">Camara</p>
     </div>
+  </button>
+
+  <button class="BOTON-M2" id="qr-fb" title="Subir">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">📤</div>
+      <p class="BOTON-M5">Subir</p>
+    </div>
+  </button>
+
+</div>
     <input type="file" id="qr-in" accept="image/*" style="display:none">
   </div>
 
@@ -289,7 +296,6 @@
 })();
 </script>
 
-</div>
 
 </br>
 

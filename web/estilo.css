@@ -66,15 +66,6 @@ blockquote.red {
     50% { background-color: rgba(255,0,0,0.7) }
 }
 
-blockquote.gold {
-    background-color: rgba(0,0,0,0.336);
-    animation: backgroundColorChangeGold 5s infinite;
-}
-
-@keyframes backgroundColorChangeGold {
-    0%,100% { background-color: rgba(0,0,0,0.336) }
-    50% { background-color: rgba(255,251,0,0.055) }
-}
 
 .loading-screen {
     position: fixed;
@@ -185,7 +176,6 @@ code {
 .back-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102,102,102,0.4); text-decoration: none }
 
 
-.mariposas-section h2 { position: relative; z-index: 2 }
 
 #disqus-container {
     background-color: rgba(0,0,0,0.6);
@@ -197,73 +187,98 @@ code {
     backdrop-filter: blur(5px);
 }
 
-.mariposas-section {
-    margin: 30px 0;
-    padding: 20px;
-    background-color: rgba(0,0,0,0.3);
-    backdrop-filter: blur(0px);
-    border-radius: 15px;
-    position: relative;
-    overflow: hidden;
+.BOTON-M1{
+display:flex;
+flex-wrap:wrap;
+gap:14px;
+margin:24px 0;
+justify-content:center
 }
 
-.mariposas-section p { position: relative; z-index: 2 }
-
-.butterfly {
-    position: absolute;
-    width: 40px;
-    height: 20px;
-    pointer-events: none;
-    animation: flyPath 6s infinite linear;
-    will-change: transform, left;
-    backface-visibility: hidden;
+.BOTON-M2{
+position:relative;
+width:92px;
+height:92px;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:8px;
+border-radius:22px;
+text-decoration:none;
+color:rgba(255,255,255,.9);
+background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.04));
+border:1px solid rgba(255,255,255,.14);
+box-shadow:
+0 6px 18px rgba(0,0,0,.22),
+inset 0 1px 0 rgba(255,255,255,.1),
+inset 0 -1px 0 rgba(0,0,0,.2);
+overflow:hidden;
+transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,filter .18s ease;
+transform:perspective(600px) translateZ(0)
 }
 
-.butterfly::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 18px;
-    height: 15px;
-    background: linear-gradient(45deg, #ff0080, #ff8000);
-    border-radius: 10% 50% 10% 50%;
-    transform-origin: right bottom;
-    animation: wingFlap 0.3s infinite ease-in-out;
-    box-shadow: 0 0 15px #ff0080;
+.BOTON-M2::before{
+content:"";
+position:absolute;
+inset:-50%;
+background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.18),transparent 55%);
+opacity:.6;
+transform:translateX(-30%) translateY(-30%);
+pointer-events:none
 }
 
-.butterfly::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 18px;
-    height: 15px;
-    background: linear-gradient(45deg, #00ff80, #0080ff);
-    border-radius: 50% 10% 50% 10%;
-    transform-origin: left bottom;
-    animation: wingFlap 0.3s infinite ease-in-out;
-    box-shadow: 0 0 15px #00ff80;
+.BOTON-M2::after{
+content:"";
+position:absolute;
+inset:0;
+background:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.12),transparent 60%);
+transform:translateX(-120%);
+transition:.6s
 }
 
-.butterfly:nth-child(1) { top: 20%; animation-delay: 0s }
-.butterfly:nth-child(2) { top: 60%; animation-delay: 2s }
-.butterfly:nth-child(3) { top: 40%; animation-delay: 4s }
-
-@keyframes wingFlap {
-    0%,100% { transform: scaleY(1) rotate(0deg) }
-    50% { transform: scaleY(0.3) rotate(15deg) }
+.BOTON-M2:hover{
+transform:perspective(600px) translateY(-3px) scale(1.04);
+border-color:rgba(255,255,255,.22);
+box-shadow:
+0 12px 26px rgba(0,0,0,.28),
+inset 0 1px 0 rgba(255,255,255,.12)
 }
 
-@keyframes flyPath {
-    0% { left: -50px; transform: translateY(0px) }
-    25% { transform: translateY(-40px) }
-    50% { transform: translateY(20px) }
-    75% { transform: translateY(-30px) }
-    100% { left: calc(100% + 50px); transform: translateY(0px) }
+.BOTON-M2:hover::after{
+transform:translateX(120%)
 }
 
+.BOTON-M3{
+text-align:center
+}
+
+.BOTON-M4{
+width:44px;
+height:44px;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:0 auto 6px;
+font-size:36px;
+line-height:1;
+filter:drop-shadow(0 3px 4px rgba(0,0,0,.25))
+}
+
+.BOTON-M4 img{
+width:100%;
+height:100%;
+object-fit:contain;
+display:block
+}
+
+.BOTON-M5{
+margin:0;
+font-size:.74rem;
+font-weight:500;
+letter-spacing:.02em;
+color:rgba(255,255,255,.85);
+white-space:nowrap
+}
 
 
 @media (prefers-reduced-motion: reduce) {

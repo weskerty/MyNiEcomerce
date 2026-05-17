@@ -111,17 +111,3 @@ Para ejercer estos derechos, contacta a:
 
 
 ---
-
-## 10. Cambios en esta Política
-Esta política puede actualizarse; Puedes ver los cambios [Aqui](https://github.com/weskerty/MyNiEcomerce/commits/main/web/otros/Archivos/MarkDowns/PoliticaPrivacidad.md)
-
-
-<h3>Última actualización: <span id="f">Cargando...</span></3>
-<script>
-const a='web/otros/MarkDowns/PoliticaPrivacidad.md',r='weskerty/MyNiEcomerce',b='main';
-async function h(){try{const x=await fetch(a,{method:'HEAD'});if(!x.ok)throw 0;return new Date(x.headers.get('Last-Modified'))}catch(e){return null}}
-async function g(){try{const x=await fetch(a);if(!x.ok)throw 0;return new Date(x.headers.get('Last-Modified'))}catch(e){return null}}
-async function gh(){try{const x=await fetch(`https://api.github.com/repos/${r}/commits?path=${a}&sha=${b}&per_page=1`);if(!x.ok)throw 0;const c=await x.json();return c.length?new Date(c[0].commit.author.date):null}catch(e){return null}}
-async function m(){let f=await h();if(!f)f=await g();if(!f)f=await gh();document.getElementById('f').textContent=f?f.toLocaleString('es-ES',{dateStyle:'medium',timeStyle:'short'}):'Solicitar'}
-m();
-</script>

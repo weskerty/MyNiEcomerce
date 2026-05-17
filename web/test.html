@@ -1,83 +1,78 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Test Notify</title>
+<style>
+.BOTON-M1{
+display:flex;
+flex-wrap:wrap;
+gap:12px;
+margin:20px 0;
+justify-content:center
+}
 
-</head>
-<body>
-<h3>Test Notify</h3>
+.BOTON-M2{
+width:90px;
+height:90px;
+flex:0 0 auto;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:6px;
+border-radius:18px;
+text-decoration:none;
+color:#fff;
+background:linear-gradient(135deg,rgba(255,255,255,.25),rgba(255,255,255,.05),rgba(255,255,255,.15));
+transition:.2s;
+backdrop-filter:blur(10px);
+-webkit-backdrop-filter:blur(10px)
+}
 
-<label>Title<input id="ti" value="Titulo"></label>
-<label>Body<input id="bo" value="Descripcion"></label>
-<label>Icon URL <small>(fllbck)</small><input id="ic" placeholder="https://..."></label>
-<label>Image/Banner URL <small>(fllbck)</small><input id="im" placeholder="https://..."></label>
-<label>URL al click<input id="ur" placeholder="default: origin"></label>
-<label>Tag<input id="tg" value="test-notify"></label>
+.BOTON-M2:hover{
+transform:scale(1.08)
+}
 
-<hr>
-<div class="row">
-  <button onclick="notifyNow()">Notificar ahora</button>
-  <button onclick="saveOPFS()">Guardar OPFS</button>
+.BOTON-M3{
+text-align:center
+}
+
+.BOTON-M4{
+width:42px;
+height:42px;
+display:flex;
+align-items:center;
+justify-content:center;
+margin:0 auto 4px;
+font-size:38px;
+line-height:1
+}
+
+.BOTON-M4 img{
+width:100%;
+height:100%;
+object-fit:contain;
+display:block
+}
+
+.BOTON-M5{
+margin:0;
+font-size:.75rem;
+white-space:nowrap
+}
+</style>
+
+<div class="BOTON-M1">
+
+<a href="" class="BOTON-M2" title="Facebook">
+<div class="BOTON-M3">
+<div class="BOTON-M4">📘</div>
+<p class="BOTON-M5">Facebook</p>
 </div>
-<div class="row">
-  <button onclick="simPush()">SW push</button>
-  <button onclick="clearOPFS()">Limpiar OPFS</button>
+</a>
+
+<a href="https://www.instagram.com/cheagana" class="BOTON-M2" title="Instagram">
+<div class="BOTON-M3">
+<div class="BOTON-M4">
+<img src="web/otros/Archivos/Imagenes/Permanente/SVG/instagram-2016-logo-svgrepo-com.svg">
 </div>
+<p class="BOTON-M5">Instagram</p>
+</div>
+</a>
 
-<div id="log"></div>
-
-<script>
-const $=id=>document.getElementById(id).value.trim();
-const log=m=>document.getElementById('log').textContent=m;
-
-async function ensurePerm(){
-  if(Notification.permission==='granted')return true;
-  return(await Notification.requestPermission())==='granted';
-}
-
-async function notifyNow(){
-  if(!await ensurePerm())return log('Permiso denegado');
-  const reg=await navigator.serviceWorker.ready;
-  const opts={body:$('bo'),tag:$('tg')||'test',data:{url:$('ur')||location.origin}};
-  if($('ic'))opts.icon=$('ic');
-  if($('im'))opts.image=$('im');
-  await reg.showNotification($('ti')||'Test',opts);
-  log('Notificacion enviada directa');
-}
-
-async function saveOPFS(){
-  const data={title:$('ti'),body:$('bo'),tag:$('tg')||'test',url:$('ur')||location.origin};
-  if($('ic'))data.icon=$('ic');
-  if($('im'))data.image=$('im');
-  const script=`notify(${JSON.stringify(data)});`;
-  try{
-    const root=await navigator.storage.getDirectory();
-    const dir=await root.getDirectoryHandle('notify',{create:true});
-    const fh=await dir.getFileHandle('test.js',{create:true});
-    const w=await fh.createWritable();
-    await w.write(script);
-    await w.close();
-    log('Guardado: notify/test.js');
-  }catch(e){log('Error OPFS: '+e.message);}
-}
-
-async function simPush(){
-  const reg=await navigator.serviceWorker.ready;
-  if(!reg.active)return log('SW no activo');
-  reg.active.postMessage('RUN_OPFS');
-  log('RUN_OPFS enviado al SW');
-}
-
-async function clearOPFS(){
-  try{
-    const root=await navigator.storage.getDirectory();
-    const dir=await root.getDirectoryHandle('notify');
-    for await(const[name]of dir.entries())await dir.removeEntry(name);
-    log('OPFS limpiado');
-  }catch{log('Sin directorio notify');}
-}
-</script>
-</body>
-</html>
+</div>
