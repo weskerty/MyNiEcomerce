@@ -81,7 +81,7 @@
   const CJS='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js';
   const CCS='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css';
 
-  let _cam=null,_cp=null,_pf=null,_res='',_det=false,_tt=null;
+  let _cam=null,_cp=null,_pf=null,_res='',_det=false,_tt=null,_blobUrl=null;
 
   const $=id=>document.getElementById(id);
   const st=$('qr-st'),sa=$('qr-sa'),ra=$('qr-ra'),idle=$('qr-idle');
@@ -155,7 +155,7 @@
         },
         ()=>{}
       );
-      QS_ST('Apuntando al QR...','act');cb.disabled=false;fb.disabled=false;
+      QS_ST('Apunta al QR...','act');cb.disabled=false;fb.disabled=false;
     }catch(e){
       sa.style.display='none';idle.style.display='';
       cb.disabled=false;fb.disabled=false;
@@ -204,8 +204,8 @@
     QS_CE(true);
     cm.classList.add('open');document.body.style.overflow='hidden';
     const url=URL.createObjectURL(file);
+    _blobUrl=url;
     function QS_IC(){
-      URL.revokeObjectURL(url);
       if(!window.Cropper)return;
       if(_cp){_cp.destroy();_cp=null;}
       _cp=new Cropper(ci,{viewMode:1,dragMode:'move',background:false,autoCropArea:.9,aspectRatio:NaN});
@@ -219,6 +219,7 @@
     if(!_cp){$('qr-ccl').onclick();return;}
     const canvas=_cp.getCroppedCanvas({imageSmoothingQuality:'high'});
     _cp.destroy();_cp=null;
+    if(_blobUrl){URL.revokeObjectURL(_blobUrl);_blobUrl=null;}
     cm.classList.remove('open');document.body.style.overflow='';QS_CE(false);
     _pf=null;
     canvas.toBlob(b=>QS_SB(b),'image/png');
@@ -226,6 +227,7 @@
 
   $('qr-csk').onclick=()=>{
     if(_cp){_cp.destroy();_cp=null;}
+    if(_blobUrl){URL.revokeObjectURL(_blobUrl);_blobUrl=null;}
     cm.classList.remove('open');document.body.style.overflow='';QS_CE(false);
     const f=_pf;_pf=null;
     if(f)QS_SB(f);
@@ -233,6 +235,7 @@
 
   $('qr-ccl').onclick=()=>{
     if(_cp){_cp.destroy();_cp=null;}
+    if(_blobUrl){URL.revokeObjectURL(_blobUrl);_blobUrl=null;}
     cm.classList.remove('open');document.body.style.overflow='';QS_CE(false);
     _pf=null;cb.disabled=false;fb.disabled=false;
     if(!_res&&sa.style.display==='none'){idle.style.display='';QS_ST('Lector QR');}
@@ -267,6 +270,7 @@
   if(cont)cont.addEventListener('contentUnload',()=>{
     QS_KK();
     if(_cp){_cp.destroy();_cp=null;}
+    if(_blobUrl){URL.revokeObjectURL(_blobUrl);_blobUrl=null;}
     if(cm.classList.contains('open')){cm.classList.remove('open');document.body.style.overflow='';QS_CE(false);}
     clearTimeout(_tt);
   },{once:true});
@@ -286,3 +290,11 @@
 </script>
 
 </div>
+
+</br>
+
+<a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Applicaciones </a>
+
+</br>
+
+<div id="sh"></div>
