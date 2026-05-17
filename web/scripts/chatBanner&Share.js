@@ -2,8 +2,23 @@
 const WA_BASE="https://wa.me/595972184435?text=";
 const IMG_BASE="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/";
 const OFICIALPROVIDER=["595972184435"];
+const HIDE_PATHS=["web/Dinamico/Apps/","web/Dinamico/Juegos/","web/otros/Archivos/HTML/centralPage.html"];
 const night=(h=>h>=19||h<5)(new Date().getHours());
 const grSrc=IMG_BASE+(night?"first_quarter_moon_face_animated.avif":"sun_with_face_animated.avif");
+
+function isHidden(){
+  let h;try{h=decodeURIComponent(location.hash.slice(1))}catch(e){h=location.hash.slice(1)}
+  return HIDE_PATHS.some(p=>h.includes(p));
+}
+function getRouteWA(){
+  const hash=location.hash;if(!hash)return null;
+  let dec;try{dec=decodeURIComponent(hash)}catch(e){dec=hash}
+  const mNM=dec.match(/NM=([^-\s]+)/);if(!mNM)return null;
+  const nm=mNM[1];
+  if(nm.startsWith("WATG"))return nm.substring(4);
+  if(nm.startsWith("WA"))return nm.substring(2);
+  return null;
+}
 
 const css=document.createElement("style");
 css.textContent=`
@@ -105,11 +120,13 @@ document.body.appendChild(btn);
 const tip=document.createElement("div");tip.className="cb-gr-tip";
 tip.textContent=night?"Buenas noches":"Buenos dias";
 document.body.appendChild(tip);
-setTimeout(()=>{
-  tip.classList.add("on");
-  setTimeout(()=>tip.textContent="Preguntame lo que quieras",2200);
-  setTimeout(()=>{tip.classList.remove("on");setTimeout(()=>tip.remove(),600)},5000);
-},300);
+if(!isHidden()){
+  setTimeout(()=>{
+    tip.classList.add("on");
+    setTimeout(()=>tip.textContent="Preguntame lo que quieras",2200);
+    setTimeout(()=>{tip.classList.remove("on");setTimeout(()=>tip.remove(),600)},5000);
+  },300);
+}
 
 const modal=document.createElement("div");
 
@@ -125,6 +142,7 @@ function openExt(url){
 }
 
 function syncBtn(){
+  btn.style.display=isHidden()&&!st.c.length?"none":"";
   if(st.c.length>0){
     btn.classList.contains("cb-exp")
       ?(btnLbl.innerHTML="🛒 Finalizar compra",btn.classList.add("cb-c"))
@@ -334,7 +352,7 @@ function initShare(){
   );
 }
 
-function initPage(){initProduct();initShare();}
+function initPage(){initProduct();initShare();syncBtn();}
 
 modal.className="cb-modal";
 modal.innerHTML='<div class="cb-mc"><div class="cb-mh"><div class="cb-mhl"><span>🛒 Carrito</span><span class="cb-mhT"></span></div><span class="cb-mx">✕</span></div><div class="cb-mb"></div></div>';
@@ -342,8 +360,10 @@ document.body.appendChild(modal);
 
 btn.addEventListener("click",()=>{
   if(st.c.length>0)return toggleModal();
+  const wa=getRouteWA();
+  const base=wa?"https://wa.me/"+wa+"?text=":WA_BASE;
   const txt=encodeURIComponent("Hola, Quisiera saber mas sobre esto "+window.location.href);
-  openExt(WA_BASE+txt);
+  openExt(base+txt);
 });
 
 modal.addEventListener("click",ev=>{

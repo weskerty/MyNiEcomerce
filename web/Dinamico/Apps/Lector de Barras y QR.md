@@ -1,15 +1,17 @@
 <div style="text-align:center;position:relative;padding-top:0;margin-top:0">
 <style>
-.qr-wrap{padding:12px;max-width:100%}
-.qr-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:24px;padding:10px 16px;margin-bottom:14px}
-.qr-bar:focus-within{border-color:rgba(56,189,248,.4);box-shadow:0 0 0 3px rgba(56,189,248,.08)}
-.qr-st{flex:1;color:rgba(255,255,255,.6);font-size:.9em;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.qr-hm{font-size:1.3rem;text-decoration:none;flex-shrink:0;line-height:1;opacity:.8;transition:opacity .2s,transform .2s}
-.qr-hm:hover{opacity:1;transform:scale(1.15)}
-.qr-ib{background:none;border:none;color:white;cursor:pointer;font-size:1.15rem;flex-shrink:0;padding:0 2px;opacity:.7;transition:opacity .2s,transform .2s;line-height:1;font-family:inherit}
-.qr-ib:hover{opacity:1;transform:scale(1.1)}
-.qr-ib:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.qr-st{color:rgba(255,255,255,.75);font-size:1.3em;font-weight:600;margin:10px 0 22px;min-height:1.6em;transition:color .2s}
+.qr-st.act{color:rgba(56,189,248,.9)}
+.qr-st.ok{color:rgba(37,211,102,.9)}
+.qr-btns{display:flex;gap:16px;justify-content:center;margin-bottom:18px}
+.qr-mi{width:90px;height:90px;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:18px;border:none;cursor:pointer;color:white;background:linear-gradient(135deg,rgba(255,255,255,.25),rgba(255,255,255,.05),rgba(255,255,255,.15));transition:transform .2s,opacity .2s;font-family:inherit}
+.qr-mi:hover{transform:scale(1.08)}
+.qr-mi:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.qr-mi-ic{font-size:2rem;line-height:1}
+.qr-mi-lb{font-size:.72rem;color:rgba(255,255,255,.8)}
 .qr-area{margin:0 auto;max-width:320px;border-radius:16px;overflow:hidden;position:relative;background:rgba(0,0,0,.25)}
+.qr-cc{display:block;margin:10px auto 0;background:none;border:none;color:rgba(255,255,255,.45);font-size:.8em;cursor:pointer;font-family:inherit;text-decoration:underline}
+.qr-cc:hover{color:rgba(255,255,255,.75)}
 .qr-rt{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:12px 16px;color:white;font-size:.9em;word-break:break-all;text-align:left;margin-bottom:10px;max-height:160px;overflow-y:auto;white-space:pre-wrap}
 .qr-rl{display:inline-block;padding:8px 20px;border-radius:10px;background:rgba(37,211,102,.85);color:white;text-decoration:none;font-size:.9em;margin-bottom:10px;transition:background .2s}
 .qr-rl:hover{background:#1ebe5d;color:white;text-decoration:none}
@@ -18,30 +20,36 @@
 .qr-btn:hover{background:rgba(255,255,255,.24)}
 .qr-tk{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.97);border:1px solid rgba(255,255,255,.15);color:white;padding:10px 22px;border-radius:12px;font-size:.88em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999;white-space:nowrap}
 .qr-tk.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.qr-modal{display:none;position:fixed;inset:0;z-index:200;align-items:center;justify-content:center;flex-direction:column;gap:12px;background:rgba(0,0,0,.88)}
-.qr-modal.open{display:flex}
+.qr-modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);overflow-y:auto}
+.qr-modal.open{display:flex;flex-direction:column;align-items:center;padding:20px 16px;gap:12px}
 .qr-cw{position:relative;max-width:min(90vw,420px);max-height:60vh;overflow:hidden}
 .qr-cw img{display:block;max-width:100%;max-height:60vh}
-.qr-help{color:rgba(255,255,255,.4);font-size:.85em;padding:32px 0}
 #qr-reader video{width:100%!important;border-radius:0}
 #qr-reader img{display:none!important}
 </style>
 
-<div style="font-size:2.8rem;margin:0 auto 6px;display:block;line-height:1.2">🔍</div>
+<div style="font-size:2.8rem;margin:0 auto 4px;line-height:1.2">🔍</div>
+<div class="qr-st" id="qr-st">Lector QR</div>
 
-<div class="qr-wrap">
-  <div class="qr-bar">
-    <a class="qr-hm" href="web/es.html">🏠</a>
-    <span class="qr-st" id="qr-st">Lector QR</span>
-    <button class="qr-ib" id="qr-fb" title="Subir imagen">🖼️</button>
-    <button class="qr-ib" id="qr-cb" title="Camara">📷</button>
+<div style="padding:0 12px;max-width:100%">
+
+  <div id="qr-idle">
+    <div class="qr-btns">
+      <button class="qr-mi" id="qr-cb">
+        <span class="qr-mi-ic">📷</span>
+        <span class="qr-mi-lb">Camara</span>
+      </button>
+      <button class="qr-mi" id="qr-fb">
+        <span class="qr-mi-ic">📤</span>
+        <span class="qr-mi-lb">Subir</span>
+      </button>
+    </div>
     <input type="file" id="qr-in" accept="image/*" style="display:none">
   </div>
 
-  <div id="qr-idle" class="qr-help">📷 Camara &nbsp;·&nbsp; 🖼️ Subir imagen</div>
-
   <div class="qr-area" id="qr-sa" style="display:none">
     <div id="qr-reader"></div>
+    <button class="qr-cc" id="qr-cc">Cancelar</button>
   </div>
 
   <div id="qr-ra" style="display:none;padding:12px 0">
@@ -52,6 +60,7 @@
       <button class="qr-btn" id="qr-ns">🔄 Nuevo</button>
     </div>
   </div>
+
 </div>
 
 <div class="qr-tk" id="qr-tk"></div>
@@ -87,6 +96,11 @@
     return{text:t,url:null};
   }
 
+  function QS_ST(txt,mod){
+    st.textContent=txt;
+    st.className='qr-st'+(mod?' '+mod:'');
+  }
+
   function QS_SR(raw){
     const{text,url}=QS_SZ(raw);
     _res=text;
@@ -94,7 +108,7 @@
     rt.textContent=text;
     if(url){rl.href=url;rl.style.display='';}
     else{rl.style.display='none';rl.removeAttribute('href');}
-    st.textContent='Resultado';
+    QS_ST('Resultado','ok');
     cb.disabled=false;fb.disabled=false;
   }
 
@@ -124,7 +138,7 @@
     QS_KK();
     cb.disabled=true;fb.disabled=true;
     idle.style.display='none';ra.style.display='none';
-    st.textContent='Iniciando camara...';
+    QS_ST('Iniciando camara...','act');
     try{
       await QS_LH();
       $('qr-reader').innerHTML='';
@@ -141,17 +155,17 @@
         },
         ()=>{}
       );
-      st.textContent='Apunta al QR...';cb.disabled=false;fb.disabled=false;
+      QS_ST('Apuntando al QR...','act');cb.disabled=false;fb.disabled=false;
     }catch(e){
       sa.style.display='none';idle.style.display='';
       cb.disabled=false;fb.disabled=false;
-      QS_T('Error camara: '+(e.message||e));st.textContent='Lector QR';
+      QS_T('Error camara: '+(e.message||e));QS_ST('Lector QR');
     }
   }
 
   async function QS_SB(input){
     idle.style.display='none';
-    st.textContent='Procesando...';
+    QS_ST('Procesando...','act');
     try{
       await QS_LH();
       const div=document.createElement('div');div.style.display='none';document.body.appendChild(div);
@@ -163,16 +177,21 @@
         QS_SR(raw);
       }catch{
         QS_T('No se encontro QR');
-        st.textContent='Lector QR';
+        QS_ST('Lector QR');
         idle.style.display='';
         cb.disabled=false;fb.disabled=false;
       }finally{div.remove();}
     }catch(e){
       QS_T('Error: '+(e.message||e));
-      st.textContent='Lector QR';
+      QS_ST('Lector QR');
       idle.style.display='';
       cb.disabled=false;fb.disabled=false;
     }
+  }
+
+  function QS_CE(open){
+    const el=document.getElementById('content');
+    if(el)el.style.minHeight=open?(window.innerHeight*1.5)+'px':'';
   }
 
   async function QS_HF(file){
@@ -181,40 +200,49 @@
     QS_KK();
     cb.disabled=true;fb.disabled=true;
     try{await QS_LC();}catch{}
-    const url=URL.createObjectURL(file);
-    ci.onload=()=>{
-      URL.revokeObjectURL(url);
-      if(window.Cropper){
-        if(_cp){_cp.destroy();_cp=null;}
-        _cp=new Cropper(ci,{viewMode:1,dragMode:'move',background:false,autoCropArea:.9,aspectRatio:NaN});
-      }
-      cm.classList.add('open');document.body.style.overflow='hidden';
-    };
-    ci.src=url;
     cif.textContent=file.name;
+    QS_CE(true);
+    cm.classList.add('open');document.body.style.overflow='hidden';
+    const url=URL.createObjectURL(file);
+    function QS_IC(){
+      URL.revokeObjectURL(url);
+      if(!window.Cropper)return;
+      if(_cp){_cp.destroy();_cp=null;}
+      _cp=new Cropper(ci,{viewMode:1,dragMode:'move',background:false,autoCropArea:.9,aspectRatio:NaN});
+    }
+    ci.onload=QS_IC;
+    ci.src=url;
+    if(ci.complete&&ci.naturalWidth)QS_IC();
   }
 
   $('qr-cok').onclick=()=>{
     if(!_cp){$('qr-ccl').onclick();return;}
     const canvas=_cp.getCroppedCanvas({imageSmoothingQuality:'high'});
     _cp.destroy();_cp=null;
-    cm.classList.remove('open');document.body.style.overflow='';
+    cm.classList.remove('open');document.body.style.overflow='';QS_CE(false);
     _pf=null;
     canvas.toBlob(b=>QS_SB(b),'image/png');
   };
 
   $('qr-csk').onclick=()=>{
     if(_cp){_cp.destroy();_cp=null;}
-    cm.classList.remove('open');document.body.style.overflow='';
+    cm.classList.remove('open');document.body.style.overflow='';QS_CE(false);
     const f=_pf;_pf=null;
     if(f)QS_SB(f);
   };
 
   $('qr-ccl').onclick=()=>{
     if(_cp){_cp.destroy();_cp=null;}
-    cm.classList.remove('open');document.body.style.overflow='';
+    cm.classList.remove('open');document.body.style.overflow='';QS_CE(false);
     _pf=null;cb.disabled=false;fb.disabled=false;
-    if(!_res&&sa.style.display==='none'){idle.style.display='';st.textContent='Lector QR';}
+    if(!_res&&sa.style.display==='none'){idle.style.display='';QS_ST('Lector QR');}
+  };
+
+  $('qr-cc').onclick=()=>{
+    QS_KK();
+    sa.style.display='none';idle.style.display='';
+    cb.disabled=false;fb.disabled=false;
+    QS_ST('Lector QR');
   };
 
   cb.onclick=QS_SC;
@@ -232,14 +260,14 @@
     sa.style.display='none';ra.style.display='none';idle.style.display='';
     rl.style.display='none';rl.removeAttribute('href');
     rt.textContent='';_res='';
-    st.textContent='Lector QR';cb.disabled=false;fb.disabled=false;
+    QS_ST('Lector QR');cb.disabled=false;fb.disabled=false;
   };
 
   const cont=document.getElementById('content');
   if(cont)cont.addEventListener('contentUnload',()=>{
     QS_KK();
     if(_cp){_cp.destroy();_cp=null;}
-    if(cm.classList.contains('open')){cm.classList.remove('open');document.body.style.overflow='';}
+    if(cm.classList.contains('open')){cm.classList.remove('open');document.body.style.overflow='';QS_CE(false);}
     clearTimeout(_tt);
   },{once:true});
 
@@ -257,7 +285,4 @@
 })();
 </script>
 
-<br>
-<a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a>
-<br>
 </div>
