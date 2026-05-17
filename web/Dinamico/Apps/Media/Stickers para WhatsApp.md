@@ -147,6 +147,7 @@
   let R=[],S=new Set(),pg=0,cdEnd=0,cdRaf=null;
   let frames=[],cropQ=[],cropper=null,mode='search';
   let ovFr=null,ovNS=64,ovSel=-1;
+  let _cropImgUrl=null;
 
   const gEl=document.getElementById('sk-grid'),pgEl=document.getElementById('sk-pg'),tEl=document.getElementById('sk-toast');
   const cfEl=document.getElementById('sk-cf'),waBtn=document.getElementById('wa-btn');
@@ -291,7 +292,9 @@
     frames.forEach((f,i)=>{
       const d=document.createElement('div');
       d.className='sc-fr'+((f.croppedBlob||f.cropData)?' sc-done':'')+(f.overlays?.length?' ov-on':'');
-      const img=document.createElement('img');img.src=f.preview;
+      const img=document.createElement('img');
+      img.src=f.preview||'';
+      img.onerror=()=>{img.src='';};
       const rm=document.createElement('button');rm.className='sc-rm';rm.textContent='x';
       rm.onclick=e=>{e.stopPropagation();URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);freeOv(f);frames.splice(i,1);renderFrames();};
       const ovB=document.createElement('button');ovB.className='sc-ovb';ovB.textContent=f.overlays?.length?'🖼 ExtraImagen ✓':'🖼 Añadir Imagen';
@@ -318,74 +321,103 @@
     });
   }
 
+
+  function _setCropSrc(fr){
+    if(_cropImgUrl){URL.revokeObjectURL(_cropImgUrl);_cropImgUrl=null;}
+    if(fr.croppedBlob){_cropImgUrl=URL.createObjectURL(fr.croppedBlob);return _cropImgUrl;}
+    return fr.preview;
+  }
+
   function nextCrop(){
-    if(!cropQ.length){cropM.classList.remove('open');document.body.style.overflow='';return;}
+    if(!cropQ.length){
+      if(_cropImgUrl){URL.revokeObjectURL(_cropImgUrl);_cropImgUrl=null;}
+      cropM.classList.remove('open');document.body.style.overflow='';
+      return;
+    }
     const fr=cropQ[0],idx=frames.indexOf(fr)+1;
     cropInfo.textContent=idx+' / '+frames.length+(fr.isVid?' 🎬':'');
     cropM.classList.add('open');document.body.style.overflow='hidden';
     if(cropper){cropper.destroy();cropper=null;}
-    const src=fr.croppedBlob?URL.createObjectURL(fr.croppedBlob):fr.preview;
-    cropImg.onload=initCropper;cropImg.src=src;
+    const src=_setCropSrc(fr);
+    cropImg.onload=initCropper;
+    cropImg.onerror=()=>{cropSkip.onclick();};
+    cropImg.src=src;
     if(cropImg.complete&&cropImg.naturalWidth)initCropper();
   }
 
   cropOk.onclick=()=>{
     if(!cropper)return;
     const fr=cropQ.shift();if(!fr)return;
-    const doNext=()=>{
+    const advance=()=>{
       if(cropper){cropper.destroy();cropper=null;}
-      if(!cropQ.length&&frames.indexOf(fr)<frames.length-1){const next=frames[frames.indexOf(fr)+1];if(next)cropQ.push(next);}
+      if(!cropQ.length&&frames.indexOf(fr)<frames.length-1){const nxt=frames[frames.indexOf(fr)+1];if(nxt)cropQ.push(nxt);}
       nextCrop();
     };
     if(fr.isVid){
       const d=cropper.getData(true);
       fr.cropData={x:d.x,y:d.y,w:d.width,h:d.height};
       const el=gEl.children[frames.indexOf(fr)];if(el)el.classList.add('sc-done');
-      doNext();
+      advance();
     }else{
       cropper.getCroppedCanvas({imageSmoothingQuality:'high'}).toBlob(blob=>{
+        if(!blob){advance();return;}
+        
         if(fr.croppedBlob)URL.revokeObjectURL(fr.croppedBlob);
-        fr.croppedBlob=blob;fr.preview=URL.createObjectURL(blob);
+        const oldPrev=fr.preview;
+        fr.croppedBlob=blob;
+        fr.preview=URL.createObjectURL(blob);
+        URL.revokeObjectURL(oldPrev);
         const el=gEl.children[frames.indexOf(fr)];
         if(el){el.querySelector('img').src=fr.preview;el.classList.add('sc-done');}
-        doNext();
+        advance();
       },'image/webp',.92);
     }
   };
 
   cropSkip.onclick=()=>{
     const fr=cropQ.shift();if(cropper){cropper.destroy();cropper=null;}
-    if(!cropQ.length&&frames.indexOf(fr)<frames.length-1){const next=frames[frames.indexOf(fr)+1];if(next)cropQ.push(next);}
+    if(!cropQ.length&&frames.indexOf(fr)<frames.length-1){const nxt=frames[frames.indexOf(fr)+1];if(nxt)cropQ.push(nxt);}
     nextCrop();
   };
 
+ 
   async function getVidThumb(file){
     return new Promise(res=>{
       const v=document.createElement('video'),u=URL.createObjectURL(file);
-      v.src=u;v.muted=true;v.playsInline=true;v.currentTime=0.1;
-      v.onloadeddata=()=>{
+      v.src=u;v.muted=true;v.playsInline=true;v.preload='metadata';
+      v.onloadedmetadata=()=>{v.currentTime=Math.min(0.5,v.duration*0.1||0);};
+      v.onseeked=()=>{
         const c=document.createElement('canvas');c.width=DIM;c.height=DIM;
         c.getContext('2d').drawImage(v,0,0,DIM,DIM);
-        URL.revokeObjectURL(u);c.toBlob(b=>res(URL.createObjectURL(b)),'image/webp',.7);
+        URL.revokeObjectURL(u);v.src='';
+        c.toBlob(b=>res(b?URL.createObjectURL(b):''),'image/webp',.7);
       };
       v.onerror=()=>{URL.revokeObjectURL(u);res('');};
+     
+      v.onloadeddata=()=>{if(v.currentTime===0){v.currentTime=0.001;}};
     });
   }
 
+  
   async function mp4ToWebM(file,cropData,overlays){
+    if(typeof MediaRecorder==='undefined')throw new Error('MediaRecorder no soportado en este navegador');
     const ckEl=document.getElementById('sc-ck'),lv=document.getElementById('sc-lv');
     ckEl.style.display='none';lv.style.display='block';
     return new Promise((res,rej)=>{
+      const cleanup=()=>{lv.style.display='none';ckEl.style.display='';};
       const v=document.createElement('video'),u=URL.createObjectURL(file);
       v.src=u;v.muted=true;v.playsInline=true;v.loop=false;
       const c=document.createElement('canvas');c.width=DIM;c.height=DIM;
       const ctx=c.getContext('2d'),lctx=lv.getContext('2d');
       v.onloadedmetadata=()=>{
-        const mime=MediaRecorder.isTypeSupported('video/webm;codecs=vp9')?'video/webm;codecs=vp9':'video/webm';
+        let mime='video/webm';
+        if(MediaRecorder.isTypeSupported('video/webm;codecs=vp9'))mime='video/webm;codecs=vp9';
+        let rec;
+        try{rec=new MediaRecorder(c.captureStream(15),{mimeType:mime});}
+        catch(e){URL.revokeObjectURL(u);cleanup();rej(e);return;}
         const chunks=[],stream=c.captureStream(15);
-        const rec=new MediaRecorder(stream,{mimeType:mime});
         rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
-        rec.onstop=()=>{stream.getTracks().forEach(t=>t.stop());URL.revokeObjectURL(u);lv.style.display='none';ckEl.style.display='';res(new Blob(chunks,{type:'video/webm'}));};
+        rec.onstop=()=>{stream.getTracks().forEach(t=>t.stop());URL.revokeObjectURL(u);cleanup();res(new Blob(chunks,{type:'video/webm'}));};
         rec.start(200);
         v.onended=()=>{if(rec.state!=='inactive')rec.stop();};
         const drawFrame=()=>{
@@ -404,26 +436,37 @@
           const iv=setInterval(()=>{if(v.ended)clearInterval(iv);else drawFrame();},1000/15);
           rec.addEventListener('stop',()=>clearInterval(iv),{once:true});
         }
-        v.play().catch(e=>{lv.style.display='none';ckEl.style.display='';rej(e);});
+        v.play().catch(e=>{cleanup();rej(e);});
       };
-      v.onerror=()=>{URL.revokeObjectURL(u);lv.style.display='none';ckEl.style.display='';rej(new Error('Video load failed'));};
+      v.onerror=()=>{URL.revokeObjectURL(u);cleanup();rej(new Error('Video load failed'));};
     });
   }
+
 
   async function toWebp(blob,overlays){
     const ql=[.92,.7,.5,.3,.15,.08,.04,.02,.01];
     const dOv=ctx=>{if(overlays?.length)overlays.forEach(o=>{try{ctx.drawImage(o.img,o.x-o.s/2,o.y-o.s/2,o.s,o.s);}catch{}});};
-    for(const q of ql){
-      const out=await new Promise(res=>{
-        const u=URL.createObjectURL(blob);const img=new Image();
-        img.onload=()=>{const c=document.createElement('canvas');c.width=DIM;c.height=DIM;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,DIM,DIM);dOv(ctx);URL.revokeObjectURL(u);c.toBlob(res,'image/webp',q);};img.src=u;
-      });
-      if(out.size<=TARGET)return out;
-    }
-    return new Promise(res=>{
-      const u=URL.createObjectURL(blob);const img=new Image();
-      img.onload=()=>{const c=document.createElement('canvas');c.width=128;c.height=128;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,128,128);dOv(ctx);URL.revokeObjectURL(u);c.toBlob(res,'image/webp',.05);};img.src=u;
+    const render=(srcBlob,q,w,h)=>new Promise((res,rej)=>{
+      const u=URL.createObjectURL(srcBlob);
+      const img=new Image();
+      img.onload=()=>{
+        const c=document.createElement('canvas');c.width=w;c.height=h;
+        const ctx=c.getContext('2d');
+        ctx.drawImage(img,0,0,w,h);
+        dOv(ctx);
+        URL.revokeObjectURL(u);
+        c.toBlob(b=>b?res(b):rej(new Error('toBlob null')),'image/webp',q);
+      };
+      img.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('img load failed'));};
+      img.src=u;
     });
+    for(const q of ql){
+      try{
+        const out=await render(blob,q,DIM,DIM);
+        if(out.size<=TARGET)return out;
+      }catch(e){if(q===ql[ql.length-1])throw e;}
+    }
+    return render(blob,.05,128,128);
   }
 
   async function addFiles(list){
@@ -464,6 +507,7 @@
       }
       setProg(85,'Subiendo...');
       const res=await fetch('/api/stickers',{method:'POST',body:form});
+      if(!res.ok)throw new Error('HTTP '+res.status);
       const {sid}=await res.json();
       ckStop();setProg(100,'Listo');progM.classList.remove('open');document.body.style.overflow='';
       scCf.style.display='none';
@@ -486,7 +530,10 @@
     document.getElementById('sc-ov-q').value='';
     const c=document.getElementById('sc-ov-c'),ctx=c.getContext('2d');
     ctx.clearRect(0,0,DIM,DIM);
-    const bg=new Image();bg.onload=()=>ctx.drawImage(bg,0,0,DIM,DIM);bg.src=fr.preview;
+    const bg=new Image();
+    bg.onload=()=>ctx.drawImage(bg,0,0,DIM,DIM);
+    bg.onerror=()=>{};
+    bg.src=fr.preview;
     document.getElementById('sc-ov-modal').classList.add('open');
     document.body.style.overflow='hidden';
     requestAnimationFrame(ovRL);
@@ -607,6 +654,7 @@
   if(cont)cont.addEventListener('contentUnload',()=>{
     frames.forEach(f=>{URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);freeOv(f);});
     frames=[];ckStop();if(cdRaf)cancelAnimationFrame(cdRaf);
+    if(_cropImgUrl){URL.revokeObjectURL(_cropImgUrl);_cropImgUrl=null;}
     _ori.removeEventListener('change',arguments.callee);
   },{once:true});
 
@@ -628,6 +676,7 @@
     }catch{doFetch('');}
   })();
 })();
+
 </script>
 
 </br>
