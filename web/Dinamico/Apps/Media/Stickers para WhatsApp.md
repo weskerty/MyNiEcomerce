@@ -80,7 +80,7 @@
 <div class="sk-wrap" id="sk-search">
   <div class="sk-bar" id="sk-bar">
     <a class="sk-home" href="web/es.html">🏠</a>
-    <input id="sk-q" type="text" placeholder="Buscar en Klipy o pega enlace de Stickers TG...">
+    <input id="sk-q" type="text" placeholder="Buscar en Klipy o pega enlace de Stickers Telegram...">
     <button class="sk-ib" id="sk-btn">🔍</button>
     <button class="sk-ib" id="sk-crear">📤</button>
     <input type="file" id="sc-in" accept="image/*,video/mp4" multiple style="display:none">
@@ -136,7 +136,7 @@
 
 <script>
 (function(){
-  const PG_H=18,PG_V=6,MAX_SEL=30,CD_MS=10000,ADS=false;
+  const PG_H=18,PG_V=6,MAX_SEL=10,CD_MS=10000,ADS=false;
   const MAX_F=30,MAX_SZ=20*1024*1024,DIM=256,TARGET=900*1024;
   const CK=['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'];
   let PG=window.innerHeight>window.innerWidth?PG_V:PG_H;
@@ -167,6 +167,7 @@
   function setProg(p,l){pBar.style.width=p+'%';if(l!=null)pLbl.textContent=l;}
 
   function freeOv(f){(f.overlays||[]).forEach(o=>{if(o.src?.startsWith('blob:'))URL.revokeObjectURL(o.src);});}
+  function freeFrame(f){URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);if(f.previewCropped)URL.revokeObjectURL(f.previewCropped);freeOv(f);}
 
   function setMode(m){
     mode=m;const isC=m==='create';
@@ -232,7 +233,7 @@
   }
 
   async function doFetch(q){
-    if(mode==='create'){frames.forEach(f=>{URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);freeOv(f);});frames=[];cropQ=[];}
+    if(mode==='create'){frames.forEach(freeFrame);frames=[];cropQ=[];}
     setMode('search');S.clear();updCf();
     gEl.innerHTML='<div class="sk-searching"><span id="sk-ck">🕐</span><span>Buscando</span></div>';
     ckStart(document.getElementById('sk-ck'));
@@ -247,7 +248,7 @@
 
   async function TG_DF(q){
     const pack=TG_PN(q);
-    if(mode==='create'){frames.forEach(f=>{URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);freeOv(f);});frames=[];cropQ=[];}
+    if(mode==='create'){frames.forEach(freeFrame);frames=[];cropQ=[];}
     setMode('search');S.clear();updCf();
     cfEl.style.display='none';waBtn.style.display='none';
     gEl.innerHTML='<div class="sk-searching"><span id="sk-ck">🕐</span><span>Descargando pack TG...</span></div>';
@@ -291,12 +292,12 @@
     if(!frames.length){setMode('search');if(R.length)renderPage(pg);return;}
     frames.forEach((f,i)=>{
       const d=document.createElement('div');
-      d.className='sc-fr'+((f.croppedBlob||f.cropData)?' sc-done':'')+(f.overlays?.length?' ov-on':'');
+      d.className='sc-fr'+((f.croppedBlob||f.cropData||f.previewCropped)?' sc-done':'')+(f.overlays?.length?' ov-on':'');
       const img=document.createElement('img');
-      img.src=f.preview||'';
+      img.src=f.previewCropped||f.preview||'';
       img.onerror=()=>{img.src='';};
       const rm=document.createElement('button');rm.className='sc-rm';rm.textContent='x';
-      rm.onclick=e=>{e.stopPropagation();URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);freeOv(f);frames.splice(i,1);renderFrames();};
+      rm.onclick=e=>{e.stopPropagation();freeFrame(f);frames.splice(i,1);renderFrames();};
       const ovB=document.createElement('button');ovB.className='sc-ovb';ovB.textContent=f.overlays?.length?'🖼 ExtraImagen ✓':'🖼 Añadir Imagen';
       ovB.onclick=e=>{e.stopPropagation();ovOpen(f);};
       d.appendChild(img);d.appendChild(rm);d.appendChild(ovB);
@@ -317,14 +318,16 @@
   function initCropper(){
     loadCropperJS().then(()=>{
       if(cropper){cropper.destroy();cropper=null;}
-      cropper=new Cropper(cropImg,{viewMode:1,dragMode:'move',background:false,autoCropArea:.9});
+      setTimeout(()=>{
+        if(!cropM.classList.contains('open'))return;
+        cropper=new Cropper(cropImg,{viewMode:1,dragMode:'move',background:false,autoCropArea:.9});
+      },0);
     });
   }
 
-
   function _setCropSrc(fr){
     if(_cropImgUrl){URL.revokeObjectURL(_cropImgUrl);_cropImgUrl=null;}
-    if(fr.croppedBlob){_cropImgUrl=URL.createObjectURL(fr.croppedBlob);return _cropImgUrl;}
+    if(fr.croppedBlob&&!fr.isVid){_cropImgUrl=URL.createObjectURL(fr.croppedBlob);return _cropImgUrl;}
     return fr.preview;
   }
 
@@ -356,12 +359,13 @@
     if(fr.isVid){
       const d=cropper.getData(true);
       fr.cropData={x:d.x,y:d.y,w:d.width,h:d.height};
-      const el=gEl.children[frames.indexOf(fr)];if(el)el.classList.add('sc-done');
-      advance();
+      cropper.getCroppedCanvas({width:DIM,height:DIM,imageSmoothingQuality:'high'}).toBlob(b=>{
+        if(b){const old=fr.previewCropped;if(old)URL.revokeObjectURL(old);fr.previewCropped=URL.createObjectURL(b);const el=gEl.children[frames.indexOf(fr)];if(el){el.querySelector('img').src=fr.previewCropped;el.classList.add('sc-done');}}
+        advance();
+      },'image/webp',.7);
     }else{
       cropper.getCroppedCanvas({imageSmoothingQuality:'high'}).toBlob(blob=>{
         if(!blob){advance();return;}
-        
         if(fr.croppedBlob)URL.revokeObjectURL(fr.croppedBlob);
         const oldPrev=fr.preview;
         fr.croppedBlob=blob;
@@ -380,25 +384,25 @@
     nextCrop();
   };
 
- 
   async function getVidThumb(file){
     return new Promise(res=>{
       const v=document.createElement('video'),u=URL.createObjectURL(file);
-      v.src=u;v.muted=true;v.playsInline=true;v.preload='metadata';
-      v.onloadedmetadata=()=>{v.currentTime=Math.min(0.5,v.duration*0.1||0);};
-      v.onseeked=()=>{
+      let done=false;
+      const finish=()=>{
+        if(done)return;done=true;clearTimeout(to);
         const c=document.createElement('canvas');c.width=DIM;c.height=DIM;
         c.getContext('2d').drawImage(v,0,0,DIM,DIM);
         URL.revokeObjectURL(u);v.src='';
         c.toBlob(b=>res(b?URL.createObjectURL(b):''),'image/webp',.7);
       };
-      v.onerror=()=>{URL.revokeObjectURL(u);res('');};
-     
-      v.onloadeddata=()=>{if(v.currentTime===0){v.currentTime=0.001;}};
+      const to=setTimeout(()=>{if(!done){done=true;URL.revokeObjectURL(u);v.src='';res('');}},5000);
+      v.src=u;v.muted=true;v.playsInline=true;v.preload='metadata';
+      v.onseeked=finish;
+      v.onerror=()=>{if(!done){done=true;clearTimeout(to);URL.revokeObjectURL(u);res('');}};
+      v.onloadedmetadata=()=>{v.currentTime=Math.min(0.5,v.duration*0.1||0);};
     });
   }
 
-  
   async function mp4ToWebM(file,cropData,overlays){
     if(typeof MediaRecorder==='undefined')throw new Error('MediaRecorder no soportado en este navegador');
     const ckEl=document.getElementById('sc-ck'),lv=document.getElementById('sc-lv');
@@ -412,11 +416,10 @@
       v.onloadedmetadata=()=>{
         let mime='video/webm';
         if(MediaRecorder.isTypeSupported('video/webm;codecs=vp9'))mime='video/webm;codecs=vp9';
-        const stream=c.captureStream(15);
         let rec;
-        try{rec=new MediaRecorder(stream,{mimeType:mime});}
+        try{rec=new MediaRecorder(c.captureStream(15),{mimeType:mime});}
         catch(e){URL.revokeObjectURL(u);cleanup();rej(e);return;}
-        const chunks=[];
+        const chunks=[],stream=c.captureStream(15);
         rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
         rec.onstop=()=>{stream.getTracks().forEach(t=>t.stop());URL.revokeObjectURL(u);cleanup();res(new Blob(chunks,{type:'video/webm'}));};
         rec.start(200);
@@ -442,7 +445,6 @@
       v.onerror=()=>{URL.revokeObjectURL(u);cleanup();rej(new Error('Video load failed'));};
     });
   }
-
 
   async function toWebp(blob,overlays){
     const ql=[.92,.7,.5,.3,.15,.08,.04,.02,.01];
@@ -470,6 +472,37 @@
     return render(blob,.05,128,128);
   }
 
+  async function toAnimWebM(base,overlays,dur=2500){
+    return new Promise((res,rej)=>{
+      const img=new Image(),u=URL.createObjectURL(base);
+      img.onload=()=>{
+        URL.revokeObjectURL(u);
+        const c=document.createElement('canvas');c.width=DIM;c.height=DIM;
+        const ctx=c.getContext('2d');
+        let mime='video/webm';
+        if(MediaRecorder.isTypeSupported('video/webm;codecs=vp9'))mime='video/webm;codecs=vp9';
+        const stream=c.captureStream(15);
+        let rec;
+        try{rec=new MediaRecorder(stream,{mimeType:mime});}
+        catch(e){stream.getTracks().forEach(t=>t.stop());rej(e);return;}
+        const chunks=[];
+        rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+        rec.onstop=()=>{stream.getTracks().forEach(t=>t.stop());res(new Blob(chunks,{type:'video/webm'}));};
+        rec.start(200);
+        let elapsed=0,last=performance.now();
+        const loop=()=>{
+          const now=performance.now();elapsed+=now-last;last=now;
+          ctx.drawImage(img,0,0,DIM,DIM);
+          overlays.forEach(o=>{try{ctx.drawImage(o.img,o.x-o.s/2,o.y-o.s/2,o.s,o.s);}catch{}});
+          if(elapsed<dur)requestAnimationFrame(loop);else rec.stop();
+        };
+        requestAnimationFrame(loop);
+      };
+      img.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('load'));};
+      img.src=u;
+    });
+  }
+
   async function addFiles(list){
     const valid=[...list].filter(f=>{
       const ok=f.type.startsWith('image/')||f.type==='video/mp4';
@@ -481,7 +514,7 @@
     const nf=await Promise.all(valid.map(async f=>{
       const isVid=f.type==='video/mp4';const isWebp=f.type==='image/webp';
       const preview=isVid?await getVidThumb(f):URL.createObjectURL(f);
-      return{file:f,preview,croppedBlob:null,cropData:null,isVid,isWebp,overlays:[]};
+      return{file:f,preview,croppedBlob:null,cropData:null,previewCropped:null,isVid,isWebp,overlays:[]};
     }));
     frames.push(...nf);renderFrames();
     const forCrop=nf.filter(f=>!f.isWebp);
@@ -498,11 +531,18 @@
         const fr=frames[i];
         if(fr.isVid){
           const webm=await mp4ToWebM(fr.file,fr.cropData||null,fr.overlays||[]);
-          if(!webm.size)throw new Error('Video vacio');
           form.append('files',webm,fr.file.name.replace(/\.[^.]+$/,'.webm'));
+        }else if(fr.isWebp&&!fr.croppedBlob&&!fr.overlays?.length){
+          form.append('files',fr.file,fr.file.name);
         }else{
-          const webp=await toWebp(fr.croppedBlob||fr.file,fr.overlays||[]);
-          form.append('files',webp,fr.file.name.replace(/\.[^.]+$/,'.webp'));
+          const hasAnim=(fr.overlays||[]).some(o=>o.anim);
+          if(hasAnim){
+            const webm=await toAnimWebM(fr.croppedBlob||fr.file,fr.overlays||[]);
+            form.append('files',webm,fr.file.name.replace(/\.[^.]+$/,'.webm'));
+          }else{
+            const webp=await toWebp(fr.croppedBlob||fr.file,fr.overlays||[]);
+            form.append('files',webp,fr.file.name.replace(/\.[^.]+$/,'.webp'));
+          }
         }
       }
       setProg(85,'Subiendo...');
@@ -515,7 +555,7 @@
       waBtn.style.display='';
       waBtn.onclick=(e)=>{
         e.preventDefault();window.open(waBtn.href,'_blank');
-        frames.forEach(f=>{URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);freeOv(f);});
+        frames.forEach(freeFrame);
         frames=[];cropQ=[];waBtn.href='#';
         setMode('search');
         if(R.length)renderPage(pg);else doFetch('');
@@ -533,7 +573,7 @@
     const bg=new Image();
     bg.onload=()=>ctx.drawImage(bg,0,0,DIM,DIM);
     bg.onerror=()=>{};
-    bg.src=fr.preview;
+    bg.src=fr.previewCropped||fr.preview;
     document.getElementById('sc-ov-modal').classList.add('open');
     document.body.style.overflow='hidden';
     requestAnimationFrame(ovRL);
@@ -582,15 +622,15 @@
 
   async function ovAdd(url,isBlob){
     try{
-      let src=url;
+      let src=url,anim=false;
       if(!isBlob){
-        try{const r=await fetch(url);const b=await r.blob();src=URL.createObjectURL(b);}catch{}
+        try{const r=await fetch(url);const b=await r.blob();anim=b.type==='image/gif';src=URL.createObjectURL(b);}catch{}
       }
       const img=new Image();
       if(!isBlob)img.crossOrigin='anonymous';
       await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=src;});
       if(!ovFr.overlays)ovFr.overlays=[];
-      ovFr.overlays.push({img,src,x:128,y:128,s:ovNS});
+      ovFr.overlays.push({img,src,x:128,y:128,s:ovNS,anim});
       ovSel=ovFr.overlays.length-1;
       document.getElementById('ov-sz-lbl').textContent=ovNS+'px';
       ovRL();
@@ -652,7 +692,7 @@
 
   const cont=document.getElementById('content');
   if(cont)cont.addEventListener('contentUnload',()=>{
-    frames.forEach(f=>{URL.revokeObjectURL(f.preview);if(f.croppedBlob)URL.revokeObjectURL(f.croppedBlob);freeOv(f);});
+    frames.forEach(freeFrame);
     frames=[];ckStop();if(cdRaf)cancelAnimationFrame(cdRaf);
     if(_cropImgUrl){URL.revokeObjectURL(_cropImgUrl);_cropImgUrl=null;}
     _ori.removeEventListener('change',arguments.callee);
