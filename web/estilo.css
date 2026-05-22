@@ -79,7 +79,17 @@ blockquote.red {
     z-index: 1000;
 }
 
-.loading-screen p { font-size: 2em; font-family: var(--font) }
+.loading-screen p {
+    font-size: 2em;
+    font-family: var(--font);
+    animation: _LS1 1.4s ease-in-out infinite;
+    will-change: transform, opacity;
+}
+
+@keyframes _LS1 {
+    0%,100% { transform: translateY(0) scale(1); opacity: 1 }
+    50% { transform: translateY(-8px) scale(1.06); opacity: 0.6 }
+}
 
 .hide { display: none }
 
@@ -286,7 +296,7 @@ white-space:nowrap
     #disqus-container {
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
-        background-color: rgba(0,0,0,0.85) !important;
+        background-color: rgba(0,0,0,0.481) !important;
     }
     .view-all-button,
     .back-button,
@@ -298,4 +308,20 @@ white-space:nowrap
     .view-all-button:hover,
     .back-button:hover,
     blockquote:hover { transform: none !important }
+}
+
+body.low-perf .content {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(20,20,20,0.846) !important;
+}
+
+body.low-perf #disqus-container {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: rgba(0,0,0,0.481) !important;
+}
+
+body.low-perf .loading-screen p {
+    animation: none;
 }
