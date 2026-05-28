@@ -313,15 +313,12 @@ white-space:nowrap
 body.low-perf .content {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    background: rgba(20,20,20,0.846) !important;
+    background: #1e1f25 !important;
+    border-color: rgba(255,255,255,0.08) !important;
 }
 
 body.low-perf #disqus-container {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    background-color: rgba(0,0,0,0.481) !important;
-}
-
-body.low-perf .loading-screen p {
-    animation: none;
+    background: #1e1f25 !important;
 }
