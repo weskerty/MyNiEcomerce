@@ -4,7 +4,7 @@
 <body>
 
 <style data-content>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 :root{
   --e-bg:#080810;
   --e-acc:#c8ff00;
@@ -13,7 +13,7 @@
   --e-txt:#e8e8e8;
   --e-spy:#ff9900;
   --e-mono:'Share Tech Mono',monospace;
-  --e-head:'Bebas Neue',sans-serif;
+  --e-head:'Share Tech Mono',monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 #ES_W{
@@ -274,7 +274,7 @@ const WORD_SHRINK_MS=10000;
 
 const MY_ID=Math.random().toString(36).slice(2,8).toUpperCase();
 
-const $ =id=>document.getElementById(id);
+const $=id=>document.getElementById(id);
 
 const EL={
   lobbies:$('ES_lobbies'),
@@ -334,6 +334,7 @@ async function loadWords(){
 let lobbyRoom=null,gameRoom=null;
 let lobbyPeers={};
 let knownRooms={};
+let _sendAnn=null;
 
 let roomId=null,roomName=null,isHost=false;
 let gamePlayers={};
@@ -346,20 +347,18 @@ let gameActive=false;
 async function initLobby(){
   EL.status.textContent='Conectando...';
   try{
-    const mod=await import('https://esm.run/trystero@0.22.0');
-    const{joinRoom}=mod;
+    const{joinRoom}=await import('https://esm.run/trystero@0.22.0');
     lobbyRoom=joinRoom(APP_ID,LOBBY_ROOM);
 
     let[sendAnn,getAnn]=lobbyRoom.makeAction('ann');
     let[sendBye,getBye]=lobbyRoom.makeAction('bye');
+    _sendAnn=sendAnn;
 
     lobbyRoom.onPeerJoin(id=>{
       lobbyPeers[id]=true;
-      if(roomId&&isHost)sendAnn({roomId,roomName,count:Object.keys(gamePlayers).length+1});
+      if(roomId&&isHost)_sendAnn({roomId,roomName,count:Object.keys(gamePlayers).length});
     });
-    lobbyRoom.onPeerLeave(id=>{
-      delete lobbyPeers[id];
-    });
+    lobbyRoom.onPeerLeave(id=>delete lobbyPeers[id]);
     getAnn(({roomId:rid,roomName:rn,count},from)=>{
       knownRooms[rid]={name:rn,count,host:from,ts:Date.now()};
       renderLobbies();
@@ -372,15 +371,11 @@ async function initLobby(){
     EL.status.textContent='';
     setInterval(()=>{
       const now=Date.now();
-      Object.keys(knownRooms).forEach(k=>{
-        if(now-knownRooms[k].ts>15000){delete knownRooms[k];}
-      });
+      Object.keys(knownRooms).forEach(k=>{if(now-knownRooms[k].ts>15000)delete knownRooms[k];});
       renderLobbies();
     },5000);
-
     setInterval(()=>{
-      if(roomId&&isHost&&lobbyRoom)
-        sendAnn({roomId,roomName,count:Object.keys(gamePlayers).length+1});
+      if(roomId&&isHost&&_sendAnn)_sendAnn({roomId,roomName,count:Object.keys(gamePlayers).length});
     },8000);
 
     loadWords();
@@ -412,10 +407,7 @@ async function createRoom(){
   EL.startBtn.style.display='';
   EL.waitMsg.style.display='none';
   renderRoomPlayers();
-  if(lobbyRoom){
-    const mod=await import('https://esm.run/trystero@0.22.0');
-    lobbyRoom.makeAction('ann')[0]({roomId,roomName,count:1});
-  }
+  if(_sendAnn)_sendAnn({roomId,roomName,count:1});
 }
 
 async function joinRoom(rid,rname){
@@ -432,9 +424,9 @@ async function joinRoom(rid,rname){
 }
 
 async function joinGameRoom(){
+  const voicePromise=initVoice();
   try{
-    const mod=await import('https://esm.run/trystero@0.22.0');
-    const{joinRoom:jr}=mod;
+    const{joinRoom:jr}=await import('https://esm.run/trystero@0.22.0');
     gameRoom=jr(APP_ID,roomId);
 
     let[sendJoin,getJoin]=gameRoom.makeAction('join');
@@ -445,41 +437,51 @@ async function joinGameRoom(){
 
     gameRoom.onPeerJoin(id=>{
       gamePlayers[id]={id,host:false};
-      sendJoin({id:MY_ID,host:isHost});
+      const allKnown=Object.values(gamePlayers).map(p=>({id:p.id,host:p.host}));
+      sendJoin({id:MY_ID,host:isHost,all:allKnown});
       renderRoomPlayers();
-      if(isHost&&lobbyRoom)
-        lobbyRoom.makeAction('ann')[0]({roomId,roomName,count:Object.keys(gamePlayers).length});
+      if(isHost&&_sendAnn)_sendAnn({roomId,roomName,count:Object.keys(gamePlayers).length});
+      voicePromise.then(()=>{if(myStream)gameRoom.addStream(myStream,id);});
     });
 
     gameRoom.onPeerLeave(id=>{
       delete gamePlayers[id];
       delete peerStreams[id];
+      const el=document.getElementById('ES_audio_'+id);
+      if(el){el.pause();el.remove();}
       renderRoomPlayers();
       if(gameActive){
+        const wasIdx=turnOrder.indexOf(id);
         turnOrder=turnOrder.filter(x=>x!==id);
-        if(turnOrder[turnIdx]===id)advanceTurn();
+        if(wasIdx>=0&&wasIdx<=turnIdx&&turnIdx>0)turnIdx--;
+        if(turnOrder[turnIdx]===id||!turnOrder[turnIdx])advanceTurn();
       }
     });
 
-    getJoin(({id,host},from)=>{
-      gamePlayers[from]={id:from,host};
+    getJoin(({id,host,all},from)=>{
+      if(all&&Array.isArray(all)){
+        all.forEach(p=>{if(!gamePlayers[p.id])gamePlayers[p.id]={id:p.id,host:p.host};});
+      }else{
+        gamePlayers[from]={id:from,host};
+      }
       renderRoomPlayers();
     });
 
-    getStart(({order,spyIdx,wordIdx},from)=>{
+    getStart(({order,spyIdx,word,hint},from)=>{
       if(!isHost){
         turnOrder=order;
         spyId=order[spyIdx];
-        const w=words[wordIdx]||{word:'???',hint:'???'};
-        chosenWord=w.word;
-        chosenHint=w.hint;
+        chosenWord=word;
+        chosenHint=hint;
         startWordReveal();
       }
     });
 
-    getTurnNext(({idx})=>{
-      turnIdx=idx;
-      renderTurn();
+    getTurnNext(({idx,from:sender},peerId)=>{
+      if(sender===turnOrder[turnIdx-1]||peerId===turnOrder[turnIdx-1]){
+        turnIdx=idx;
+        renderTurn();
+      }
     });
 
     getVote(({voter,target},from)=>{
@@ -497,12 +499,13 @@ async function joinGameRoom(){
       playStream(id,stream);
     });
 
-    window._ES_sendTurnNext=sendTurnNext;
+    window._ES_sendTurnNext=(data)=>sendTurnNext({...data,from:MY_ID});
     window._ES_sendVote=sendVote;
     window._ES_sendMute=sendMute;
     window._ES_sendStart=sendStart;
 
-    await initVoice();
+    await voicePromise;
+    if(myStream)gameRoom.addStream(myStream);
   }catch(e){}
 }
 
@@ -567,14 +570,13 @@ function hostStart(){
   if(all.length<2)return;
   const order=[...all].sort(()=>Math.random()-.5);
   const spyIdx=Math.floor(Math.random()*order.length);
-  const wordIdx=Math.floor(Math.random()*words.length);
+  const w=words[Math.floor(Math.random()*words.length)];
   spyId=order[spyIdx];
-  const w=words[wordIdx];
   chosenWord=w.word;
   chosenHint=w.hint;
   turnOrder=order;
   turnIdx=0;
-  window._ES_sendStart({order,spyIdx,wordIdx});
+  window._ES_sendStart({order,spyIdx,word:w.word,hint:w.hint});
   startWordReveal();
 }
 
@@ -644,9 +646,15 @@ function renderTurnTimer(){
 
 function advanceTurn(){
   clearInterval(turnTimer);
+  const wasActive=turnOrder[turnIdx];
   turnIdx++;
-  if(turnIdx>=turnOrder.length){startVote();return;}
-  if(window._ES_sendTurnNext)window._ES_sendTurnNext({idx:turnIdx});
+  if(turnIdx>=turnOrder.length){
+    if(wasActive===MY_ID||isHost)startVote();
+    return;
+  }
+  if(wasActive===MY_ID){
+    if(window._ES_sendTurnNext)window._ES_sendTurnNext({idx:turnIdx});
+  }
   renderTurn();
 }
 
