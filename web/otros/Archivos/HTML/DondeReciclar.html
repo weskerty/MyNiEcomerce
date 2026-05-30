@@ -11,7 +11,7 @@
   position:relative;
 }
 #rc-map .leaflet-container{background:#1a1f2e}
-#rc-map .leaflet-tile-pane{filter:invert(1) hue-rotate(180deg) brightness(.85) contrast(.9) saturate(.8)}
+
 #rc-map .leaflet-control-attribution{
   background:rgba(10,12,20,.75)!important;
   color:rgba(255,255,255,.45)!important;font-size:.6em!important;
@@ -124,7 +124,7 @@ const PUNTOS=[
     nombre:'Paraguay Insumos',
     dir:'Barrio Loma Merlo, Calle America 5868 c/ Juan Bautista Rivarola, Luque',
     horario:'Lun - Vie: 8:00 - 18:00',
-    tel:null,wa:'0983596037'
+    tel:null,wa:'595983596037'
   },
   {
     id:2,lat:-25.336771,lng:-57.524364,
@@ -148,7 +148,7 @@ const PUNTOS=[
     nombre:'Universidad Nacional de Itapua',
     dir:'Abg. Lorenzo Zacarias Lopez 255 y Ruta PY01 Km 2,5, Barrio Ka agua Rory, Encarnacion',
     horario:null,
-    tel:'0986668545',wa:null
+    tel:'595986668545',wa:null
   },
   {
     id:5,lat:-25.288448,lng:-57.64311,
@@ -166,10 +166,10 @@ const CAT_LABEL={electronico:'Electronicos',plastico:'Plastico',papel:'Papel',vi
 let map=null,markers=[],selId=null,_filter='';
 
 function mkIcon(cat,sel){
-  const el=document.createElement('div');
-  el.className=`rc-pin rc-pin-${cat}${sel?' rc-pin-selected':''}`;
-  el.innerHTML=`<span>${CAT_EMOJI[cat]||'♻️'}</span>`;
-  return L.divIcon({html:el,className:'',iconSize:[32,32],iconAnchor:[16,32],popupAnchor:[0,-34]});
+  return L.divIcon({
+    html:`<div style="font-size:20px;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))">${CAT_EMOJI[cat]||'♻️'}</div>`,
+    className:'',iconSize:[24,24],iconAnchor:[12,12]
+  });
 }
 
 function showDetail(p){
@@ -254,8 +254,8 @@ function loadLeaflet(cb){
   document.head.appendChild(css);
   const s=document.createElement('script');
   s.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
-  s.integrity='sha512-BwHfrr4c9kmRkLw6iXFdzcdWV/PGkVgiIyIWLLlTSXzWQzxuSg4DiQUCpauz/EWjgk5TYQqX/kvn9pG1NpYfqg==';
-  s.crossOrigin='anonymous';
+  
+  
   s.onload=cb;
   document.head.appendChild(s);
 }
@@ -275,3 +275,25 @@ document.addEventListener('contentUnload',function(){
 loadLeaflet(initMap);
 })();
 </script>
+
+<br>
+
+<h2> Faltan Mas Lugares? </h2>
+<p> Puedes solicitar el agregado de mas lugares al 0972184435 o ver en alternativas mas completas: </p>
+
+
+ 
+     
+    <a href="https://mipaissinresiduos.com.py/mapa-de-reciclaje/" class="pc-mi" >
+      <div class="pc-mc">
+        <h3>Mi Pais sin Residuos </h3>
+      </div>
+    </a> 
+    
+
+<br>
+
+  <a href="web/otros/Archivos/MarkDowns/Desecho&Reciclaje.md" class="btn-item">
+    <img src="">
+    <div class="btn-cnt"><h3>Alternativas</h3><p>Actualizar el Sistema de Tu Dispositivo para dar Nueva Vida</p></div>
+  </a>
