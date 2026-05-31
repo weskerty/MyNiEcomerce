@@ -139,7 +139,7 @@ const AP_URL=(()=>{
 })();
 
 function AP_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
-function AP_sck(k,v){document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=31536000`;}
+function AP_sck(k,v){const sec=location.protocol==="https:"?";Secure":"";document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=31536000;SameSite=Strict${sec}`;}
 function AP_dck(k){document.cookie=`${k}=;path=/;max-age=0`;}
 
 let _AP_usr=AP_ck("ap_u"),_AP_pwd=AP_ck("ap_p"),_AP_cats={},_AP_mde=null,_AP_entries=[];
@@ -303,6 +303,19 @@ function AP_resetForm(){
   document.getElementById('ap-submit').textContent='📤 Enviar Solicitud';
 }
 
+async function AP_loadImgs(container){
+  const imgs=container.querySelectorAll('img[data-id]');
+  await Promise.all([...imgs].map(async img=>{
+    try{
+      const res=await fetch(AP_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action:'img',usuario:_AP_usr,password:_AP_pwd,ID:img.dataset.id})});
+      if(!res.ok)return;
+      const blob=await res.blob();
+      img.src=URL.createObjectURL(blob);
+    }catch{}
+  }));
+}
+
 function AP_TS(t){return new Date(t).toLocaleDateString('es-PY',{day:'2-digit',month:'2-digit',year:'2-digit'});}
 
 window.AP_loadSolicitudes=async function(noFetch){
@@ -318,21 +331,21 @@ window.AP_loadSolicitudes=async function(noFetch){
   const badges={pendiente:'<span class="ap-badge pend">Pendiente</span>',negado:'<span class="ap-badge neg">Rechazado</span>',aprobado:'<span class="ap-badge" style="background:#1a3320;color:#4ade80">Aprobado</span>'};
   _AP_entries.forEach(e=>{
     const div=document.createElement('div');div.className='ap-sol-item';
-    const imgSrc=e.estado==='pendiente'?`${AP_URL}?action=img&u=${encodeURIComponent(_AP_usr)}&p=${encodeURIComponent(_AP_pwd)}&ID=${encodeURIComponent(e.ID)}`:'';
     const eJson=encodeURIComponent(JSON.stringify(e));
-    const canEdit=e.estado!=='pendiente';
-    div.innerHTML=`<img class="ap-sol-img" src="${imgSrc}" alt="" onerror="this.style.display='none'" style="${!imgSrc?'display:none':''}">
+    div.innerHTML=`<img class="ap-sol-img" alt="" onerror="this.style.display='none'" style="${e.estado!=='pendiente'?'display:none':''}"
+      data-id="${e.ID}">
     <div class="ap-sol-info">
       <div class="nm">${e.NB} ${badges[e.estado]||''}</div>
       <div class="dt">ID: ${e.ID} &middot; ${e.categoria}${e.subcategoria?'/'+e.subcategoria:''} &middot; ${AP_TS(e.tsUpdate)}</div>
       ${e.estado==='negado'&&e.motivo?`<div class="ap-sol-neg">&#10060; ${e.motivo}</div>`:''}
       <div class="ap-sol-acts">
-        <button onclick="AP_reenviarSol(decodeURIComponent('${eJson}'))">&#128260; ${e.estado==='aprobado'?'Editar':'Reenviar'}</button>
+        <button data-e="${eJson}" onclick="AP_reenviarSol(this)">&#128260; ${e.estado==='aprobado'?'Editar':'Reenviar'}</button>
         <button class="del" onclick="AP_borrarSol('${e.ID}')">&#128465; Borrar</button>
       </div>
     </div>`;
     lst.appendChild(div);
   });
+  AP_loadImgs(lst);
 };
 
 window.AP_borrarSol=async function(ID){
@@ -343,8 +356,8 @@ window.AP_borrarSol=async function(ID){
   AP_toast('Entrada borrada');AP_loadSolicitudes(true);
 };
 
-window.AP_reenviarSol=function(eStr){
-  const e=JSON.parse(eStr);
+window.AP_reenviarSol=function(btn){
+  const e=JSON.parse(decodeURIComponent(btn.dataset.e));
   AP_mainTab('nuevo');
   const nmParts=(e.NM||'').match(/^(WATG|WA|TG)(.*)$/);
   document.getElementById('ap-nm').value=nmParts?nmParts[1]:'WATG';
