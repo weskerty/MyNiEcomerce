@@ -1,0 +1,364 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<style>
+:root{--ap-bg:#0f1117;--ap-card:#1a1d27;--ap-border:#2a2d3e;--ap-accent:#6366f1;--ap-accent2:#818cf8;--ap-ok:#10b981;--ap-err:#ef4444;--ap-warn:#f59e0b;--ap-txt:#e2e8f0;--ap-txt2:#94a3b8;--ap-inp:#252837;--ap-radius:10px}
+#ap-wrap{min-height:100vh;background:var(--ap-bg);color:var(--ap-txt);font-family:'Segoe UI',system-ui,sans-serif;padding:0 0 80px}
+#ap-wrap *{box-sizing:border-box}
+.ap-top{background:linear-gradient(135deg,#1e2035 0%,#151827 100%);border-bottom:1px solid var(--ap-border);padding:20px 20px 16px;display:flex;align-items:center;gap:14px}
+.ap-top h1{margin:0;font-size:18px;font-weight:700;color:var(--ap-txt)}
+.ap-top span{font-size:12px;color:var(--ap-txt2);margin-top:2px;display:block}
+.ap-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--ap-accent),var(--ap-accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ap-sect{max-width:600px;margin:0 auto;padding:20px 16px 0}
+.ap-card{background:var(--ap-card);border:1px solid var(--ap-border);border-radius:var(--ap-radius);padding:20px;margin-bottom:16px}
+.ap-card h2{margin:0 0 16px;font-size:14px;font-weight:600;color:var(--ap-txt2);text-transform:uppercase;letter-spacing:.08em}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:12px;font-weight:600;color:var(--ap-txt2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.fg input,.fg select,.fg textarea{width:100%;background:var(--ap-inp);border:1px solid var(--ap-border);border-radius:8px;color:var(--ap-txt);padding:10px 12px;font-size:14px;outline:none;transition:border .15s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--ap-accent)}
+.fg select option{background:#1a1d27}
+.ap-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ap-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 20px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;width:100%}
+.ap-btn:active{transform:scale(.97)}
+.ap-btn.pri{background:linear-gradient(135deg,var(--ap-accent),var(--ap-accent2));color:#fff}
+.ap-btn.sec{background:var(--ap-inp);color:var(--ap-txt);border:1px solid var(--ap-border)}
+.ap-btn:disabled{opacity:.5;cursor:not-allowed}
+.ap-msg{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e2035;border:1px solid var(--ap-border);border-radius:10px;padding:10px 20px;font-size:13px;color:var(--ap-txt);z-index:9999;pointer-events:none;white-space:nowrap;max-width:90vw;text-overflow:ellipsis;overflow:hidden}
+.ap-msg.ok{border-color:var(--ap-ok);color:var(--ap-ok)}
+.ap-msg.err{border-color:var(--ap-err);color:var(--ap-err)}
+.ap-msg.warn{border-color:var(--ap-warn);color:var(--ap-warn)}
+.ap-tabs{display:flex;gap:2px;background:var(--ap-inp);border-radius:8px;padding:3px;margin-bottom:20px}
+.ap-tab{flex:1;padding:8px;border:none;background:transparent;color:var(--ap-txt2);border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.ap-tab.act{background:var(--ap-card);color:var(--ap-txt)}
+.ap-img-prev{width:100%;aspect-ratio:16/9;object-fit:contain;background:#111;border-radius:8px;display:none;margin-top:8px}
+.ap-sol-item{background:var(--ap-inp);border:1px solid var(--ap-border);border-radius:8px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.ap-sol-img{width:64px;height:64px;object-fit:cover;border-radius:6px;flex-shrink:0;background:#111}
+.ap-sol-info{flex:1;min-width:0}
+.ap-sol-info .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ap-sol-info .dt{font-size:12px;color:var(--ap-txt2);margin-top:3px}
+.ap-sol-neg{background:#2d1515;border:1px solid #7f1d1d;border-radius:6px;padding:8px 10px;font-size:12px;color:#fca5a5;margin-top:6px}
+.ap-sol-acts{display:flex;gap:6px;margin-top:8px}
+.ap-sol-acts button{padding:6px 12px;border-radius:6px;border:1px solid var(--ap-border);background:var(--ap-inp);color:var(--ap-txt);font-size:12px;cursor:pointer}
+.ap-sol-acts button.del{border-color:#7f1d1d;color:#fca5a5}
+.ap-badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700}
+.ap-badge.pend{background:#1e3a5f;color:#60a5fa}
+.ap-badge.neg{background:#3b0f0f;color:#f87171}
+#ap-mde .EasyMDEContainer{background:var(--ap-inp)!important;border-radius:8px;overflow:hidden}
+#ap-mde .CodeMirror{background:var(--ap-inp)!important;color:var(--ap-txt)!important;min-height:200px}
+#ap-mde .editor-toolbar{background:#1e2035!important;border-color:var(--ap-border)!important}
+#ap-mde .editor-toolbar button{color:var(--ap-txt2)!important}
+#ap-mde .editor-toolbar button:hover{background:var(--ap-border)!important}
+.ap-auth-note{font-size:12px;color:var(--ap-txt2);text-align:center;margin-top:10px}
+.ap-auth-note a{color:var(--ap-accent);cursor:pointer}
+</style>
+<div id="ap-wrap">
+<div class="ap-top">
+  <div class="ap-logo">🛍️</div>
+  <div><h1>Agregar Producto</h1><span>Envia tu solicitud para publicar en la tienda</span></div>
+</div>
+<div class="ap-sect">
+  <div id="ap-auth">
+    <div class="ap-tabs">
+      <button class="ap-tab act" id="ap-tlogin" onclick="AP_showTab('login')">Iniciar Sesion</button>
+      <button class="ap-tab" id="ap-treg" onclick="AP_showTab('reg')">Registrarse</button>
+    </div>
+    <div class="ap-card" id="ap-login-box">
+      <h2>Acceso</h2>
+      <div class="fg"><label>Usuario</label><input id="ap-lu" type="text" placeholder="tu_usuario" autocomplete="username"></div>
+      <div class="fg"><label>Contraseña</label><input id="ap-lp" type="password" placeholder="••••••" autocomplete="current-password"></div>
+      <button class="ap-btn pri" onclick="AP_login()">Entrar</button>
+      <p class="ap-auth-note">¿Sin cuenta? <a onclick="AP_showTab('reg')">Registrate aqui</a></p>
+    </div>
+    <div class="ap-card" id="ap-reg-box" style="display:none">
+      <h2>Nuevo Usuario</h2>
+      <div class="fg"><label>Usuario</label><input id="ap-ru" type="text" placeholder="mi_usuario (3-32 chars)" autocomplete="username"></div>
+      <div class="fg"><label>Contraseña</label><input id="ap-rp" type="password" placeholder="minimo 6 chars" autocomplete="new-password"></div>
+      <div class="fg"><label>Confirmar</label><input id="ap-rp2" type="password" placeholder="••••••" autocomplete="new-password"></div>
+      <button class="ap-btn pri" onclick="AP_registro()">Crear Cuenta</button>
+      <p class="ap-auth-note">¿Ya tenes cuenta? <a onclick="AP_showTab('login')">Inicia sesion</a></p>
+    </div>
+  </div>
+  <div id="ap-main" style="display:none">
+    <div class="ap-tabs">
+      <button class="ap-tab act" id="ap-tnuevo" onclick="AP_mainTab('nuevo')">➕ Nueva Solicitud</button>
+      <button class="ap-tab" id="ap-tmis" onclick="AP_mainTab('mis')">📋 Mis Solicitudes</button>
+    </div>
+    <div id="ap-tab-nuevo">
+      <div class="ap-card">
+        <h2>Datos del Producto</h2>
+        <div class="ap-row">
+          <div class="fg"><label>Categoria</label><select id="ap-cat" onchange="AP_updSub()"></select></div>
+          <div class="fg"><label>Subcategoria</label><select id="ap-sub"></select></div>
+        </div>
+        <div class="ap-row">
+          <div class="fg"><label>Tipo Contacto</label>
+            <select id="ap-nm">
+              <option value="WATG">WhatsApp y Telegram</option>
+              <option value="WA">Solo WhatsApp</option>
+              <option value="TG">Solo Telegram</option>
+            </select>
+          </div>
+          <div class="fg"><label>Numero</label><input id="ap-nu" type="text" placeholder="595972184435" inputmode="numeric"></div>
+        </div>
+        <div class="ap-row">
+          <div class="fg"><label>Codigo ID</label><input id="ap-id" type="text" placeholder="SKU123" maxlength="40"></div>
+          <div class="fg"><label>Nombre</label><input id="ap-nb" type="text" placeholder="Nombre del producto" maxlength="60"></div>
+        </div>
+        <div class="ap-row">
+          <div class="fg"><label>Precio (Gs)</label><input id="ap-pc" type="text" placeholder="50.000" inputmode="numeric"></div>
+          <div class="fg"><label>Cantidad (opcional)</label><input id="ap-cd" type="number" placeholder="10" inputmode="numeric" min="0"></div>
+        </div>
+        <div class="fg"><label>Fecha Limite (opcional)</label><input id="ap-tm" type="text" placeholder="DD.MM.YYYY.HH.MM" maxlength="16" inputmode="numeric"></div>
+      </div>
+      <div class="ap-card">
+        <h2>Imagen del Producto</h2>
+        <div class="fg">
+          <input type="file" id="ap-img" accept="image/*" style="display:none">
+          <button class="ap-btn sec" onclick="document.getElementById('ap-img').click()">📷 Seleccionar Imagen</button>
+          <div id="ap-imgnm" style="font-size:12px;color:var(--ap-txt2);margin-top:6px"></div>
+          <img id="ap-imgprev" class="ap-img-prev" alt="">
+        </div>
+      </div>
+      <div class="ap-card" id="ap-mde">
+        <h2>Descripcion (Markdown)</h2>
+        <p style="font-size:12px;color:var(--ap-txt2);margin:0 0 10px">Solo enlaces externos para imagenes/videos. Ejemplo: <code style="background:#111;padding:2px 5px;border-radius:4px">![](https://...)</code></p>
+        <textarea id="ap-mdtxt"></textarea>
+      </div>
+      <button class="ap-btn pri" id="ap-submit" onclick="AP_enviar()">📤 Enviar Solicitud</button>
+    </div>
+    <div id="ap-tab-mis" style="display:none">
+      <div id="ap-sol-list"><div style="text-align:center;color:var(--ap-txt2);padding:40px">Cargando...</div></div>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+(function(){
+const AP_URL=(()=>{
+  const base=document.querySelector('meta[name=api-base]')?.content||'';
+  return base||'/api/productos';
+})();
+
+function AP_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
+function AP_sck(k,v){document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=31536000`;}
+function AP_dck(k){document.cookie=`${k}=;path=/;max-age=0`;}
+
+let _AP_usr=AP_ck('ap_u'),_AP_pwd=AP_ck('ap_p'),_AP_cats={},_AP_mde=null,_AP_editBase=null;
+let _AP_msg=null;
+
+function AP_toast(t,tp='ok',d=3000){
+  if(_AP_msg)_AP_msg.remove();
+  _AP_msg=document.createElement('div');
+  _AP_msg.className='ap-msg '+tp;
+  _AP_msg.textContent=t;
+  document.body.appendChild(_AP_msg);
+  setTimeout(()=>{if(_AP_msg){_AP_msg.remove();_AP_msg=null;}},d);
+}
+
+function AP_FP(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+
+async function AP_fetch(path,opts={}){
+  const res=await fetch(AP_URL+path,{headers:{'Content-Type':'application/json'},...opts});
+  const data=await res.json().catch(()=>({}));
+  return{ok:res.ok,status:res.status,data};
+}
+
+window.AP_showTab=function(t){
+  document.getElementById('ap-login-box').style.display=t==='login'?'block':'none';
+  document.getElementById('ap-reg-box').style.display=t==='reg'?'block':'none';
+  document.getElementById('ap-tlogin').classList.toggle('act',t==='login');
+  document.getElementById('ap-treg').classList.toggle('act',t==='reg');
+};
+
+window.AP_mainTab=function(t){
+  document.getElementById('ap-tab-nuevo').style.display=t==='nuevo'?'block':'none';
+  document.getElementById('ap-tab-mis').style.display=t==='mis'?'block':'none';
+  document.getElementById('ap-tnuevo').classList.toggle('act',t==='nuevo');
+  document.getElementById('ap-tmis').classList.toggle('act',t==='mis');
+  if(t==='mis')AP_loadSolicitudes();
+};
+
+async function AP_loadCats(){
+  const{ok,data}=await AP_fetch('/cats');
+  if(!ok)return;
+  _AP_cats=data;
+  const sel=document.getElementById('ap-cat');
+  sel.innerHTML='';
+  Object.keys(data).sort().forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
+  AP_updSub();
+}
+
+window.AP_updSub=function(){
+  const c=document.getElementById('ap-cat').value;
+  const sel=document.getElementById('ap-sub');
+  sel.innerHTML='<option value="">General</option>';
+  (_AP_cats[c]||[]).forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});
+};
+
+function AP_initMDE(){
+  if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;}
+  _AP_mde=new EasyMDE({
+    element:document.getElementById('ap-mdtxt'),
+    spellChecker:false,autofocus:false,status:false,
+    initialValue:'',
+    toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','|','preview','guide']
+  });
+}
+
+function AP_showMain(){
+  document.getElementById('ap-auth').style.display='none';
+  document.getElementById('ap-main').style.display='block';
+  AP_loadCats();
+  setTimeout(AP_initMDE,100);
+}
+
+function AP_showAuth(){
+  document.getElementById('ap-auth').style.display='block';
+  document.getElementById('ap-main').style.display='none';
+}
+
+window.AP_login=async function(){
+  const u=document.getElementById('ap-lu').value.trim();
+  const p=document.getElementById('ap-lp').value;
+  if(!u||!p)return AP_toast('Completa los campos','warn');
+  const{ok,data}=await AP_fetch('/login',{method:'POST',body:JSON.stringify({usuario:u,password:p})});
+  if(!ok)return AP_toast(data.error||'Error','err');
+  _AP_usr=u;_AP_pwd=p;
+  AP_sck('ap_u',u);AP_sck('ap_p',p);
+  AP_toast('Bienvenido '+u);
+  AP_showMain();
+};
+
+window.AP_registro=async function(){
+  const u=document.getElementById('ap-ru').value.trim();
+  const p=document.getElementById('ap-rp').value;
+  const p2=document.getElementById('ap-rp2').value;
+  if(!u||!p)return AP_toast('Completa los campos','warn');
+  if(p!==p2)return AP_toast('Las contraseñas no coinciden','warn');
+  const{ok,data}=await AP_fetch('/registro',{method:'POST',body:JSON.stringify({usuario:u,password:p})});
+  if(!ok)return AP_toast(data.error||'Error','err');
+  AP_toast('Cuenta creada! Iniciando sesion...');
+  document.getElementById('ap-lu').value=u;
+  document.getElementById('ap-lp').value=p;
+  await AP_login();
+};
+
+document.getElementById('ap-img').onchange=async function(e){
+  const f=e.target.files[0];if(!f)return;
+  const ab=await f.arrayBuffer();
+  const cv=document.createElement('canvas');
+  const img=new Image(),url=URL.createObjectURL(f);
+  await new Promise(r=>{img.onload=r;img.src=url;});
+  cv.width=img.naturalWidth;cv.height=img.naturalHeight;
+  cv.getContext('2d').drawImage(img,0,0);
+  URL.revokeObjectURL(url);
+  let q=0.85,blob=null,tries=0;
+  do{blob=await new Promise(r=>cv.toBlob(r,'image/webp',q));q=Math.max(0.05,q-0.1);tries++;}
+  while(blob&&blob.size>512*1024&&tries<12);
+  document.getElementById('ap-imgnm').textContent=`${f.name} → webp ${(blob.size/1024).toFixed(0)}KB`;
+  const prev=document.getElementById('ap-imgprev');
+  prev.src=URL.createObjectURL(blob);prev.style.display='block';
+  this._blob=blob;
+};
+
+async function AP_blobToB64(blob){
+  return new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(',')[1]);fr.readAsDataURL(blob);});
+}
+
+window.AP_enviar=async function(){
+  const cat=document.getElementById('ap-cat').value;
+  const sub=document.getElementById('ap-sub').value;
+  const nm=document.getElementById('ap-nm').value;
+  const nu=document.getElementById('ap-nu').value.trim();
+  const id=document.getElementById('ap-id').value.trim();
+  const nb=document.getElementById('ap-nb').value.trim();
+  const pcRaw=document.getElementById('ap-pc').value.replace(/\D/g,'');
+  const cd=document.getElementById('ap-cd').value;
+  const tm=document.getElementById('ap-tm').value.trim();
+  const imgEl=document.getElementById('ap-img');
+  const imgBlob=imgEl._blob;
+  if(!cat||!id||!nb||!pcRaw)return AP_toast('Faltan datos obligatorios','warn');
+  if(!imgBlob&&!_AP_editBase)return AP_toast('Imagen requerida','warn');
+  const md=_AP_mde?_AP_mde.value():'';
+  const body={usuario:_AP_usr,password:_AP_pwd,categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),CD:cd!==''?parseInt(cd):null,TM:tm||null,md};
+  if(imgBlob){body.imgData=await AP_blobToB64(imgBlob);body.imgExt='.webp';}
+  const endpoint=_AP_editBase?'/solicitud/editar':'/solicitud';
+  if(_AP_editBase)body.baseOld=_AP_editBase;
+  const btn=document.getElementById('ap-submit');
+  btn.disabled=true;btn.textContent='Enviando...';
+  const{ok,data}=await AP_fetch(endpoint,{method:'POST',body:JSON.stringify(body)});
+  btn.disabled=false;btn.textContent='📤 Enviar Solicitud';
+  if(!ok)return AP_toast(data.error||'Error al enviar','err');
+  AP_toast(_AP_editBase?'Solicitud actualizada':'Solicitud enviada!');
+  _AP_editBase=null;
+  AP_resetForm();
+};
+
+function AP_resetForm(){
+  ['ap-id','ap-nb','ap-pc','ap-cd','ap-tm','ap-nu'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('ap-imgnm').textContent='';
+  document.getElementById('ap-imgprev').style.display='none';
+  document.getElementById('ap-imgprev').src='';
+  document.getElementById('ap-img')._blob=null;
+  if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;setTimeout(AP_initMDE,50);}
+  document.getElementById('ap-submit').textContent='📤 Enviar Solicitud';
+}
+
+window.AP_loadSolicitudes=async function(){
+  const lst=document.getElementById('ap-sol-list');
+  lst.innerHTML='<div style="text-align:center;color:var(--ap-txt2);padding:40px">Cargando...</div>';
+  const{ok,data}=await AP_fetch(`/solicitudes?u=${encodeURIComponent(_AP_usr)}&p=${encodeURIComponent(_AP_pwd)}`);
+  if(!ok){lst.innerHTML=`<div style="color:var(--ap-err);padding:20px">${data.error||'Error'}</div>`;return;}
+  const{solicitudes=[]}=data;
+  if(!solicitudes.length){lst.innerHTML='<div style="text-align:center;color:var(--ap-txt2);padding:40px">Sin solicitudes aun</div>';return;}
+  lst.innerHTML='';
+  solicitudes.forEach(s=>{
+    const d=document.createElement('div');d.className='ap-sol-item';
+    const imgSrc=`${AP_URL}/img?u=${encodeURIComponent(_AP_usr)}&p=${encodeURIComponent(_AP_pwd)}&base=${encodeURIComponent(s.base)}`;
+    const badge=s.negado?'<span class="ap-badge neg">Rechazado</span>':'<span class="ap-badge pend">Pendiente</span>';
+    d.innerHTML=`<img class="ap-sol-img" src="${imgSrc}" alt="" onerror="this.style.display='none'">
+    <div class="ap-sol-info">
+      <div class="nm">${s.base.replace(/NB=/,'').split('-').pop()||s.base}</div>
+      <div class="dt">${badge}</div>
+      ${s.negado&&s.motivo?`<div class="ap-sol-neg">❌ ${s.motivo}</div>`:''}
+      <div class="ap-sol-acts">
+        ${!s.negado?`<button onclick="AP_editarSol('${s.base}')">✏️ Editar</button>`:'<button onclick="AP_reeditarSol(\''+s.base+'\')">🔄 Reenviar</button>'}
+        <button class="del" onclick="AP_borrarSol('${s.base}')">🗑️ Borrar</button>
+      </div>
+    </div>`;
+    lst.appendChild(d);
+  });
+};
+
+window.AP_borrarSol=async function(base){
+  if(!confirm('Borrar esta solicitud?'))return;
+  const{ok,data}=await AP_fetch('/solicitud',{method:'DELETE',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd,base})});
+  if(!ok)return AP_toast(data.error||'Error','err');
+  AP_toast('Solicitud borrada');AP_loadSolicitudes();
+};
+
+window.AP_editarSol=function(base){
+  _AP_editBase=base;
+  AP_mainTab('nuevo');
+  document.getElementById('ap-submit').textContent='🔄 Actualizar Solicitud';
+  AP_toast('Editando solicitud. Completa los nuevos datos','warn',5000);
+};
+
+window.AP_reeditarSol=window.AP_editarSol;
+
+document.getElementById('ap-pc').oninput=function(){
+  let v=this.value.replace(/\D/g,'');
+  if(v)this.value=AP_FP(parseInt(v));
+};
+document.getElementById('ap-tm').oninput=function(){
+  let v=this.value.replace(/\D/g,''),r='',ii=0;
+  const seg=[2,2,4,2,2];
+  for(let s=0;s<seg.length&&ii<v.length;s++){r+=v.slice(ii,ii+seg[s]);ii+=seg[s];if(ii<v.length)r+='.';}
+  this.value=r;
+};
+
+if(_AP_usr&&_AP_pwd){
+  AP_fetch('/login',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd})})
+    .then(({ok})=>{if(ok)AP_showMain();else{AP_dck('ap_u');AP_dck('ap_p');_AP_usr=null;_AP_pwd=null;}});
+}
+})();
+</script>
