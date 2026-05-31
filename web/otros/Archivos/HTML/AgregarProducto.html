@@ -142,7 +142,7 @@ function AP_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*
 function AP_sck(k,v){document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=31536000`;}
 function AP_dck(k){document.cookie=`${k}=;path=/;max-age=0`;}
 
-let _AP_usr=AP_ck("ap_u"),_AP_pwd=AP_ck("ap_p"),_AP_cats={},_AP_mde=null;
+let _AP_usr=AP_ck("ap_u"),_AP_pwd=AP_ck("ap_p"),_AP_cats={},_AP_mde=null,_AP_entries=[];
 let _AP_msg=null;
 
 function AP_toast(t,tp='ok',d=3000){
@@ -208,6 +208,7 @@ function AP_showMain(){
   document.getElementById('ap-auth').style.display='none';
   document.getElementById('ap-main').style.display='block';
   AP_loadCats();
+  AP_loadSolicitudes();
   setTimeout(AP_initMDE,100);
 }
 
@@ -285,8 +286,11 @@ window.AP_enviar=async function(){
   const{ok,data}=await AP_fetch('enviar',{method:'POST',body:JSON.stringify(body)});
   btn.disabled=false;btn.textContent='📤 Enviar Solicitud';
   if(!ok)return AP_toast(data.error||'Error al enviar','err');
+  const{ok:_ok2,data:_d2}=await AP_fetch('historial',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd})});
+  if(_ok2)_AP_entries=(_d2.entries||[]).slice().reverse();
   AP_toast('Solicitud enviada!');
   AP_resetForm();
+  AP_mainTab('mis');
 };
 
 function AP_resetForm(){
@@ -301,26 +305,29 @@ function AP_resetForm(){
 
 function AP_TS(t){return new Date(t).toLocaleDateString('es-PY',{day:'2-digit',month:'2-digit',year:'2-digit'});}
 
-window.AP_loadSolicitudes=async function(){
+window.AP_loadSolicitudes=async function(noFetch){
   const lst=document.getElementById('ap-sol-list');
-  lst.innerHTML='<div style="text-align:center;color:var(--ap-txt2);padding:40px">Cargando...</div>';
-  const{ok,data}=await AP_fetch('historial',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd})});
-  if(!ok){lst.innerHTML=`<div style="color:var(--ap-err);padding:20px">${data.error||'Error'}</div>`;return;}
-  const entries=(data.entries||[]).slice().reverse();
-  if(!entries.length){lst.innerHTML='<div style="text-align:center;color:var(--ap-txt2);padding:40px">Sin historial aun</div>';return;}
+  if(!noFetch){
+    lst.innerHTML='<div style="text-align:center;color:var(--ap-txt2);padding:40px">Cargando...</div>';
+    const{ok,data}=await AP_fetch('historial',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd})});
+    if(!ok){lst.innerHTML=`<div style="color:var(--ap-err);padding:20px">${data.error||'Error'}</div>`;return;}
+    _AP_entries=(data.entries||[]).slice().reverse();
+  }
+  if(!_AP_entries.length){lst.innerHTML='<div style="text-align:center;color:var(--ap-txt2);padding:40px">Sin historial aun</div>';return;}
   lst.innerHTML='';
   const badges={pendiente:'<span class="ap-badge pend">Pendiente</span>',negado:'<span class="ap-badge neg">Rechazado</span>',aprobado:'<span class="ap-badge" style="background:#1a3320;color:#4ade80">Aprobado</span>'};
-  entries.forEach(e=>{
+  _AP_entries.forEach(e=>{
     const div=document.createElement('div');div.className='ap-sol-item';
     const imgSrc=e.estado==='pendiente'?`${AP_URL}?action=img&u=${encodeURIComponent(_AP_usr)}&p=${encodeURIComponent(_AP_pwd)}&ID=${encodeURIComponent(e.ID)}`:'';
     const eJson=encodeURIComponent(JSON.stringify(e));
+    const canEdit=e.estado!=='pendiente';
     div.innerHTML=`<img class="ap-sol-img" src="${imgSrc}" alt="" onerror="this.style.display='none'" style="${!imgSrc?'display:none':''}">
     <div class="ap-sol-info">
       <div class="nm">${e.NB} ${badges[e.estado]||''}</div>
       <div class="dt">ID: ${e.ID} &middot; ${e.categoria}${e.subcategoria?'/'+e.subcategoria:''} &middot; ${AP_TS(e.tsUpdate)}</div>
       ${e.estado==='negado'&&e.motivo?`<div class="ap-sol-neg">&#10060; ${e.motivo}</div>`:''}
       <div class="ap-sol-acts">
-        ${e.estado!=='aprobado'?`<button onclick="AP_reenviarSol(decodeURIComponent('${eJson}'))">&#128260; ${e.estado==='negado'?'Reenviar':'Editar'}</button>`:''}
+        <button onclick="AP_reenviarSol(decodeURIComponent('${eJson}'))">&#128260; ${e.estado==='aprobado'?'Editar':'Reenviar'}</button>
         <button class="del" onclick="AP_borrarSol('${e.ID}')">&#128465; Borrar</button>
       </div>
     </div>`;
@@ -332,7 +339,8 @@ window.AP_borrarSol=async function(ID){
   if(!confirm('Borrar esta entrada?'))return;
   const{ok,data}=await AP_fetch('borrar',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd,ID})});
   if(!ok)return AP_toast(data.error||'Error','err');
-  AP_toast('Entrada borrada');AP_loadSolicitudes();
+  _AP_entries=_AP_entries.filter(e=>e.ID!==ID);
+  AP_toast('Entrada borrada');AP_loadSolicitudes(true);
 };
 
 window.AP_reenviarSol=function(eStr){
