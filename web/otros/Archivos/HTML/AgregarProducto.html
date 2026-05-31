@@ -156,8 +156,8 @@ function AP_toast(t,tp='ok',d=3000){
 
 function AP_FP(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
 
-async function AP_fetch(path,opts={}){
-  const res=await fetch(AP_URL+path,{headers:{'Content-Type':'application/json'},...opts});
+async function AP_fetch(action,opts={}){
+  const isGet=!opts.method||opts.method==="GET";const url=isGet?`${AP_URL}?action=${action}`:AP_URL;if(!isGet&&opts.body){const _b=JSON.parse(opts.body);_b.action=action;opts.body=JSON.stringify(_b);}const res=await fetch(url,{headers:{"Content-Type":"application/json"},...opts});
   const data=await res.json().catch(()=>({}));
   return{ok:res.ok,status:res.status,data};
 }
@@ -178,7 +178,7 @@ window.AP_mainTab=function(t){
 };
 
 async function AP_loadCats(){
-  const{ok,data}=await AP_fetch('/cats');
+  const{ok,data}=await AP_fetch('cats');
   if(!ok)return;
   _AP_cats=data;
   const sel=document.getElementById('ap-cat');
@@ -220,7 +220,7 @@ window.AP_login=async function(){
   const u=document.getElementById('ap-lu').value.trim();
   const p=document.getElementById('ap-lp').value;
   if(!u||!p)return AP_toast('Completa los campos','warn');
-  const{ok,data}=await AP_fetch('/login',{method:'POST',body:JSON.stringify({usuario:u,password:p})});
+  const{ok,data}=await AP_fetch('login',{method:'POST',body:JSON.stringify({usuario:u,password:p})});
   if(!ok)return AP_toast(data.error||'Error','err');
   _AP_usr=u;_AP_pwd=p;
   AP_sck('ap_u',u);AP_sck('ap_p',p);
@@ -234,7 +234,7 @@ window.AP_registro=async function(){
   const p2=document.getElementById('ap-rp2').value;
   if(!u||!p)return AP_toast('Completa los campos','warn');
   if(p!==p2)return AP_toast('Las contraseñas no coinciden','warn');
-  const{ok,data}=await AP_fetch('/registro',{method:'POST',body:JSON.stringify({usuario:u,password:p})});
+  const{ok,data}=await AP_fetch('registro',{method:'POST',body:JSON.stringify({usuario:u,password:p})});
   if(!ok)return AP_toast(data.error||'Error','err');
   AP_toast('Cuenta creada! Iniciando sesion...');
   document.getElementById('ap-lu').value=u;
@@ -281,7 +281,7 @@ window.AP_enviar=async function(){
   const md=_AP_mde?_AP_mde.value():'';
   const body={usuario:_AP_usr,password:_AP_pwd,categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),CD:cd!==''?parseInt(cd):null,TM:tm||null,md};
   if(imgBlob){body.imgData=await AP_blobToB64(imgBlob);body.imgExt='.webp';}
-  const endpoint=_AP_editBase?'/solicitud/editar':'/solicitud';
+  const endpoint=_AP_editBase?'editar':'enviar';
   if(_AP_editBase)body.baseOld=_AP_editBase;
   const btn=document.getElementById('ap-submit');
   btn.disabled=true;btn.textContent='Enviando...';
@@ -306,14 +306,14 @@ function AP_resetForm(){
 window.AP_loadSolicitudes=async function(){
   const lst=document.getElementById('ap-sol-list');
   lst.innerHTML='<div style="text-align:center;color:var(--ap-txt2);padding:40px">Cargando...</div>';
-  const{ok,data}=await AP_fetch(`/solicitudes?u=${encodeURIComponent(_AP_usr)}&p=${encodeURIComponent(_AP_pwd)}`);
+  const{ok,data}=await AP_fetch('solicitudes',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd})});
   if(!ok){lst.innerHTML=`<div style="color:var(--ap-err);padding:20px">${data.error||'Error'}</div>`;return;}
   const{solicitudes=[]}=data;
   if(!solicitudes.length){lst.innerHTML='<div style="text-align:center;color:var(--ap-txt2);padding:40px">Sin solicitudes aun</div>';return;}
   lst.innerHTML='';
   solicitudes.forEach(s=>{
     const d=document.createElement('div');d.className='ap-sol-item';
-    const imgSrc=`${AP_URL}/img?u=${encodeURIComponent(_AP_usr)}&p=${encodeURIComponent(_AP_pwd)}&base=${encodeURIComponent(s.base)}`;
+    const imgSrc=`${AP_URL}?action=img&u=${encodeURIComponent(_AP_usr)}&p=${encodeURIComponent(_AP_pwd)}&base=${encodeURIComponent(s.base)}`;
     const badge=s.negado?'<span class="ap-badge neg">Rechazado</span>':'<span class="ap-badge pend">Pendiente</span>';
     d.innerHTML=`<img class="ap-sol-img" src="${imgSrc}" alt="" onerror="this.style.display='none'">
     <div class="ap-sol-info">
@@ -331,7 +331,7 @@ window.AP_loadSolicitudes=async function(){
 
 window.AP_borrarSol=async function(base){
   if(!confirm('Borrar esta solicitud?'))return;
-  const{ok,data}=await AP_fetch('/solicitud',{method:'DELETE',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd,base})});
+  const{ok,data}=await AP_fetch('borrar',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd,base})});
   if(!ok)return AP_toast(data.error||'Error','err');
   AP_toast('Solicitud borrada');AP_loadSolicitudes();
 };
@@ -357,7 +357,7 @@ document.getElementById('ap-tm').oninput=function(){
 };
 
 if(_AP_usr&&_AP_pwd){
-  AP_fetch('/login',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd})})
+  AP_fetch('login',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd})})
     .then(({ok})=>{if(ok)AP_showMain();else{AP_dck('ap_u');AP_dck('ap_p');_AP_usr=null;_AP_pwd=null;}});
 }
 })();
