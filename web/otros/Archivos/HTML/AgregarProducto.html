@@ -280,7 +280,9 @@ window.AP_enviar=async function(){
   if(!cat||!id||!nb||!pcRaw)return AP_toast('Faltan datos obligatorios','warn');
   if(!imgBlob)return AP_toast('Imagen requerida','warn');
   const md=_AP_mde?_AP_mde.value():'';
+  const idEl=document.getElementById('ap-id');
   const body={usuario:_AP_usr,password:_AP_pwd,categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),CD:cd!==''?parseInt(cd):null,TM:tm||null,md,imgData:await AP_blobToB64(imgBlob),imgExt:'.webp'};
+  if(idEl._idOriginal)body.idOriginal=idEl._idOriginal;
   const btn=document.getElementById('ap-submit');
   btn.disabled=true;btn.textContent='Enviando...';
   const{ok,data}=await AP_fetch('enviar',{method:'POST',body:JSON.stringify(body)});
@@ -300,6 +302,8 @@ function AP_resetForm(){
   document.getElementById('ap-imgprev').src='';
   document.getElementById('ap-img')._blob=null;
   if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;setTimeout(AP_initMDE,50);}
+  document.getElementById('ap-id').disabled=false;
+  document.getElementById('ap-id')._idOriginal=null;
   document.getElementById('ap-submit').textContent='📤 Enviar Solicitud';
 }
 
@@ -381,6 +385,8 @@ window.AP_reenviarSol=function(btn){
   document.getElementById('ap-nm').value=nmParts?nmParts[1]:'WATG';
   document.getElementById('ap-nu').value=nmParts?nmParts[2]:'';
   document.getElementById('ap-id').value=e.ID||'';
+  document.getElementById('ap-id').disabled=!!e.aprobadoAlgezVez;
+  document.getElementById('ap-id')._idOriginal=e.aprobadoAlgezVez?(e.ID||''):null;
   document.getElementById('ap-nb').value=e.NB||'';
   document.getElementById('ap-pc').value=AP_FP(e.PC||0);
   document.getElementById('ap-cd').value=e.CD!=null?e.CD:'';
