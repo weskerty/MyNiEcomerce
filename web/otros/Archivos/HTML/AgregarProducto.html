@@ -328,7 +328,7 @@ window.AP_loadSolicitudes=async function(noFetch){
   }
   if(!_AP_entries.length){lst.innerHTML='<div style="text-align:center;color:var(--ap-txt2);padding:40px">Sin historial aun</div>';return;}
   lst.innerHTML='';
-  const badges={pendiente:'<span class="ap-badge pend">Pendiente</span>',negado:'<span class="ap-badge neg">Rechazado</span>',aprobado:'<span class="ap-badge" style="background:#1a3320;color:#4ade80">Aprobado</span>'};
+  const badges={pendiente:'<span class="ap-badge pend">Pendiente</span>',negado:'<span class="ap-badge neg">Rechazado</span>',aprobado:'<span class="ap-badge" style="background:#1a3320;color:#4ade80">Aprobado</span>',solicitaBorrado:'<span class="ap-badge" style="background:#3b1a00;color:#fb923c">Borrado Pendiente</span>'};
   _AP_entries.forEach(e=>{
     const div=document.createElement('div');div.className='ap-sol-item';
     const eJson=encodeURIComponent(JSON.stringify(e));
@@ -339,8 +339,8 @@ window.AP_loadSolicitudes=async function(noFetch){
       <div class="dt">ID: ${e.ID} &middot; ${e.categoria}${e.subcategoria?'/'+e.subcategoria:''} &middot; ${AP_TS(e.tsUpdate)}</div>
       ${e.estado==='negado'&&e.motivo?`<div class="ap-sol-neg">&#10060; ${e.motivo}</div>`:''}
       <div class="ap-sol-acts">
-        <button data-e="${eJson}" onclick="AP_reenviarSol(this)">&#128260; ${e.estado==='aprobado'?'Editar':'Reenviar'}</button>
-        <button class="del" onclick="AP_borrarSol('${e.ID}')">&#128465; Borrar</button>
+        ${e.estado!=='solicitaBorrado'?`<button data-e="${eJson}" onclick="AP_reenviarSol(this)">&#128260; ${e.estado==='aprobado'?'Editar':'Reenviar'}</button>`:''}
+        ${e.estado==='solicitaBorrado'?`<button onclick="AP_cancelarBorrado('${e.ID}')">&#10006; Cancelar Borrado</button>`:`<button class="del" onclick="AP_borrarSol('${e.ID}')">&#128465; ${e.estado==='aprobado'?'Solicitar Borrado':'Borrar'}</button>`}
       </div>
     </div>`;
     lst.appendChild(div);
@@ -349,11 +349,29 @@ window.AP_loadSolicitudes=async function(noFetch){
 };
 
 window.AP_borrarSol=async function(ID){
-  if(!confirm('Borrar esta entrada?'))return;
+  const e=_AP_entries.find(en=>en.ID===ID);
+  const esAprobado=e&&e.estado==='aprobado';
+  if(!confirm(esAprobado?'Solicitar borrado al administrador?':'Borrar esta entrada?'))return;
   const{ok,data}=await AP_fetch('borrar',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd,ID})});
   if(!ok)return AP_toast(data.error||'Error','err');
-  _AP_entries=_AP_entries.filter(e=>e.ID!==ID);
-  AP_toast('Entrada borrada');AP_loadSolicitudes(true);
+  if(data.entry){
+    const idx=_AP_entries.findIndex(en=>en.ID===ID);
+    if(idx>=0)_AP_entries[idx]=data.entry;
+    AP_toast('Solicitud de borrado enviada','warn');
+  }else{
+    _AP_entries=_AP_entries.filter(en=>en.ID!==ID);
+    AP_toast('Entrada borrada');
+  }
+  AP_loadSolicitudes(true);
+};
+
+window.AP_cancelarBorrado=async function(ID){
+  if(!confirm('Cancelar la solicitud de borrado?'))return;
+  const{ok,data}=await AP_fetch('cancelarBorrado',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd,ID})});
+  if(!ok)return AP_toast(data.error||'Error','err');
+  const idx=_AP_entries.findIndex(e=>e.ID===ID);
+  if(idx>=0)_AP_entries[idx]=data.entry;
+  AP_toast('Borrado cancelado');AP_loadSolicitudes(true);
 };
 
 window.AP_reenviarSol=function(btn){
