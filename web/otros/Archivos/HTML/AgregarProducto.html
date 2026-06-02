@@ -1,55 +1,145 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
 <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 <style>
-:root{--ap-bg:#0f1117;--ap-card:#1a1d27;--ap-border:#2a2d3e;--ap-accent:#6366f1;--ap-accent2:#818cf8;--ap-ok:#10b981;--ap-err:#ef4444;--ap-warn:#f59e0b;--ap-txt:#e2e8f0;--ap-txt2:#94a3b8;--ap-inp:#252837;--ap-radius:10px}
-#ap-wrap{min-height:100vh;background:var(--ap-bg);color:var(--ap-txt);font-family:'Segoe UI',system-ui,sans-serif;padding:0 0 80px}
+:root{
+--g1:rgba(255,255,255,0.06);
+--g2:rgba(255,255,255,0.10);
+--gb:rgba(255,255,255,0.13);
+--gbb:rgba(255,255,255,0.18);
+--acc:#4f8ef7;
+--acc2:#a78bfa;
+--ok:#34d399;
+--err:#f87171;
+--warn:#fbbf24;
+--txt:rgba(255,255,255,0.92);
+--txt2:rgba(255,255,255,0.45);
+--r:16px;
+--ri:12px;
+}
+#ap-wrap{color:var(--txt);font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;padding:0 0 90px;-webkit-font-smoothing:antialiased}
 #ap-wrap *{box-sizing:border-box}
-.ap-top{background:linear-gradient(135deg,#1e2035 0%,#151827 100%);border-bottom:1px solid var(--ap-border);padding:20px 20px 16px;display:flex;align-items:center;gap:14px}
-.ap-top h1{margin:0;font-size:18px;font-weight:700;color:var(--ap-txt)}
-.ap-top span{font-size:12px;color:var(--ap-txt2);margin-top:2px;display:block}
-.ap-logo{width:40px;height:40px;background:linear-gradient(135deg,var(--ap-accent),var(--ap-accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.ap-sect{max-width:600px;margin:0 auto;padding:20px 16px 0}
-.ap-card{background:var(--ap-card);border:1px solid var(--ap-border);border-radius:var(--ap-radius);padding:20px;margin-bottom:16px}
-.ap-card h2{margin:0 0 16px;font-size:14px;font-weight:600;color:var(--ap-txt2);text-transform:uppercase;letter-spacing:.08em}
-.fg{margin-bottom:14px}
-.fg label{display:block;font-size:12px;font-weight:600;color:var(--ap-txt2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
-.fg input,.fg select,.fg textarea{width:100%;background:var(--ap-inp);border:1px solid var(--ap-border);border-radius:8px;color:var(--ap-txt);padding:10px 12px;font-size:14px;outline:none;transition:border .15s}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--ap-accent)}
-.fg select option{background:#1a1d27}
-.ap-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.ap-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 20px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;width:100%}
+.ap-top{padding:22px 18px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--gb)}
+.ap-top h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.3px}
+.ap-top span{font-size:12px;color:var(--txt2);margin-top:2px;display:block}
+.ap-logo{width:42px;height:42px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;box-shadow:0 4px 14px rgba(79,142,247,.28)}
+.ap-sect{max-width:600px;margin:0 auto;padding:18px 14px 0}
+.ap-card{background:var(--g1);border:1px solid var(--gb);border-radius:var(--r);padding:18px;margin-bottom:14px;backdrop-filter:none}
+.ap-card h2{margin:0 0 14px;font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:5px;letter-spacing:.03em}
+.fg input,.fg select,.fg textarea{
+width:100%;
+background:var(--g1);
+border:1px solid var(--gb);
+border-radius:var(--ri);
+color:var(--txt);
+padding:10px 13px;
+font-size:15px;
+outline:none;
+transition:border .15s,background .15s;
+-webkit-appearance:none;
+font-family:inherit;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:rgba(79,142,247,.6);background:var(--g2)}
+.fg select option{background:#1a1a2e;color:#fff}
+.ap-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ap-btn{
+display:inline-flex;align-items:center;justify-content:center;gap:7px;
+padding:12px 20px;border:none;border-radius:var(--ri);
+font-size:15px;font-weight:600;cursor:pointer;
+transition:opacity .15s,transform .1s,box-shadow .15s;
+width:100%;font-family:inherit;letter-spacing:-.1px;
+}
 .ap-btn:active{transform:scale(.97)}
-.ap-btn.pri{background:linear-gradient(135deg,var(--ap-accent),var(--ap-accent2));color:#fff}
-.ap-btn.sec{background:var(--ap-inp);color:var(--ap-txt);border:1px solid var(--ap-border)}
-.ap-btn:disabled{opacity:.5;cursor:not-allowed}
-.ap-msg{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1e2035;border:1px solid var(--ap-border);border-radius:10px;padding:10px 20px;font-size:13px;color:var(--ap-txt);z-index:9999;pointer-events:none;white-space:nowrap;max-width:90vw;text-overflow:ellipsis;overflow:hidden}
-.ap-msg.ok{border-color:var(--ap-ok);color:var(--ap-ok)}
-.ap-msg.err{border-color:var(--ap-err);color:var(--ap-err)}
-.ap-msg.warn{border-color:var(--ap-warn);color:var(--ap-warn)}
-.ap-tabs{display:flex;gap:2px;background:var(--ap-inp);border-radius:8px;padding:3px;margin-bottom:20px}
-.ap-tab{flex:1;padding:8px;border:none;background:transparent;color:var(--ap-txt2);border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
-.ap-tab.act{background:var(--ap-card);color:var(--ap-txt)}
-.ap-img-prev{width:100%;aspect-ratio:16/9;object-fit:contain;background:#111;border-radius:8px;display:none;margin-top:8px}
-.ap-sol-item{background:var(--ap-inp);border:1px solid var(--ap-border);border-radius:8px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
-.ap-sol-img{width:64px;height:64px;object-fit:cover;border-radius:6px;flex-shrink:0;background:#111}
+.ap-btn.pri{
+background:linear-gradient(135deg,var(--acc),var(--acc2));
+color:#fff;
+box-shadow:0 4px 18px rgba(79,142,247,.3);
+}
+.ap-btn.pri:hover{box-shadow:0 6px 22px rgba(79,142,247,.45)}
+.ap-btn.sec{
+background:transparent;
+color:var(--txt);
+border:1px solid var(--gbb);
+}
+.ap-btn.sec:hover{background:var(--g2)}
+.ap-btn:disabled{opacity:.4;cursor:not-allowed}
+.ap-msg{
+position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+background:rgba(20,20,35,0.85);
+border:1px solid var(--gb);
+border-radius:50px;padding:10px 22px;
+font-size:13px;font-weight:500;color:var(--txt);
+z-index:9999;pointer-events:none;white-space:nowrap;
+max-width:88vw;text-overflow:ellipsis;overflow:hidden;
+backdrop-filter:saturate(1.4);
+box-shadow:0 8px 32px rgba(0,0,0,.35);
+}
+.ap-msg.ok{border-color:rgba(52,211,153,.4);color:var(--ok)}
+.ap-msg.err{border-color:rgba(248,113,113,.4);color:var(--err)}
+.ap-msg.warn{border-color:rgba(251,191,36,.4);color:var(--warn)}
+.ap-tabs{
+display:flex;gap:2px;
+background:var(--g1);
+border:1px solid var(--gb);
+border-radius:50px;padding:3px;margin-bottom:18px;
+}
+.ap-tab{flex:1;padding:8px;border:none;background:transparent;color:var(--txt2);border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.ap-tab.act{background:var(--g2);color:var(--txt);border:1px solid var(--gb)}
+
+.ap-img-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.ap-img-thumb{
+width:72px;height:72px;flex-shrink:0;
+border-radius:var(--ri);
+border:1.5px dashed var(--gb);
+overflow:hidden;cursor:pointer;
+background:var(--g1);
+display:flex;align-items:center;justify-content:center;
+font-size:24px;transition:border-color .15s,background .15s;
+position:relative;
+}
+.ap-img-thumb:hover{border-color:var(--acc);background:var(--g2)}
+.ap-img-thumb img{width:100%;height:100%;object-fit:cover;display:none;border-radius:calc(var(--ri) - 2px)}
+.ap-img-fields{flex:1;display:flex;flex-direction:column;gap:8px}
+.ap-img-fields .fg{margin:0}
+.ap-img-size{font-size:11px;color:var(--txt2);padding:0 2px}
+
+.ap-sol-item{
+background:var(--g1);border:1px solid var(--gb);
+border-radius:var(--ri);padding:13px;margin-bottom:10px;
+display:flex;gap:11px;align-items:flex-start;
+}
+.ap-sol-img{width:52px;height:52px;object-fit:cover;border-radius:9px;flex-shrink:0;background:rgba(255,255,255,.05)}
 .ap-sol-info{flex:1;min-width:0}
 .ap-sol-info .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ap-sol-info .dt{font-size:12px;color:var(--ap-txt2);margin-top:3px}
-.ap-sol-neg{background:#2d1515;border:1px solid #7f1d1d;border-radius:6px;padding:8px 10px;font-size:12px;color:#fca5a5;margin-top:6px}
-.ap-sol-acts{display:flex;gap:6px;margin-top:8px}
-.ap-sol-acts button{padding:6px 12px;border-radius:6px;border:1px solid var(--ap-border);background:var(--ap-inp);color:var(--ap-txt);font-size:12px;cursor:pointer}
-.ap-sol-acts button.del{border-color:#7f1d1d;color:#fca5a5}
-.ap-badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700}
-.ap-badge.pend{background:#1e3a5f;color:#60a5fa}
-.ap-badge.neg{background:#3b0f0f;color:#f87171}
-#ap-mde .EasyMDEContainer{background:var(--ap-inp)!important;border-radius:8px;overflow:hidden}
-#ap-mde .CodeMirror{background:var(--ap-inp)!important;color:var(--ap-txt)!important;min-height:200px}
-#ap-mde .editor-toolbar{background:#1e2035!important;border-color:var(--ap-border)!important}
-#ap-mde .editor-toolbar button{color:var(--ap-txt2)!important}
-#ap-mde .editor-toolbar button:hover{background:var(--ap-border)!important}
-.ap-auth-note{font-size:12px;color:var(--ap-txt2);text-align:center;margin-top:10px}
-.ap-auth-note a{color:var(--ap-accent);cursor:pointer}
+.ap-sol-info .dt{font-size:11px;color:var(--txt2);margin-top:3px}
+.ap-sol-neg{
+background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);
+border-radius:8px;padding:7px 10px;font-size:12px;color:#fca5a5;margin-top:6px
+}
+.ap-sol-acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.ap-sol-acts button{
+padding:5px 12px;border-radius:50px;
+border:1px solid var(--gb);background:var(--g1);
+color:var(--txt);font-size:12px;cursor:pointer;
+font-family:inherit;transition:background .15s;
+}
+.ap-sol-acts button:hover{background:var(--g2)}
+.ap-sol-acts button.del{border-color:rgba(248,113,113,.3);color:#fca5a5}
+.ap-badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.04em}
+.ap-badge.pend{background:rgba(79,142,247,.15);color:#93c5fd;border:1px solid rgba(79,142,247,.25)}
+.ap-badge.neg{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+.ap-auth-note{font-size:12px;color:var(--txt2);text-align:center;margin-top:10px}
+.ap-auth-note a{color:var(--acc);cursor:pointer}
+
+#ap-mde .EasyMDEContainer{background:transparent!important;border-radius:var(--ri);overflow:hidden}
+#ap-mde .CodeMirror{background:var(--g1)!important;color:var(--txt)!important;min-height:180px;border-radius:0 0 var(--ri) var(--ri)!important;border:1px solid var(--gb)!important;border-top:none!important}
+#ap-mde .editor-toolbar{background:var(--g1)!important;border:1px solid var(--gb)!important;border-bottom:1px solid var(--gb)!important;border-radius:var(--ri) var(--ri) 0 0!important}
+#ap-mde .editor-toolbar button{color:var(--txt2)!important}
+#ap-mde .editor-toolbar button:hover,#ap-mde .editor-toolbar button.active{background:var(--g2)!important;border-color:var(--gb)!important}
+#ap-mde .editor-toolbar i.separator{border-color:var(--gb)!important}
 </style>
+
 <div id="ap-wrap">
 <div class="ap-top">
   <div class="ap-logo">🛍️</div>
@@ -64,17 +154,17 @@
     <div class="ap-card" id="ap-login-box">
       <h2>Acceso</h2>
       <div class="fg"><label>Usuario</label><input id="ap-lu" type="text" placeholder="tu_usuario" autocomplete="username"></div>
-      <div class="fg"><label>Contraseña</label><input id="ap-lp" type="password" placeholder="••••••" autocomplete="current-password"></div>
+      <div class="fg"><label>Contrasena</label><input id="ap-lp" type="password" placeholder="••••••" autocomplete="current-password"></div>
       <button class="ap-btn pri" onclick="AP_login()">Entrar</button>
-      <p class="ap-auth-note">¿Sin cuenta? <a onclick="AP_showTab('reg')">Registrate aqui</a></p>
+      <p class="ap-auth-note">Sin cuenta? <a onclick="AP_showTab('reg')">Registrate aqui</a></p>
     </div>
     <div class="ap-card" id="ap-reg-box" style="display:none">
       <h2>Nuevo Usuario</h2>
       <div class="fg"><label>Usuario</label><input id="ap-ru" type="text" placeholder="mi_usuario (3-32 chars)" autocomplete="username"></div>
-      <div class="fg"><label>Contraseña</label><input id="ap-rp" type="password" placeholder="minimo 6 chars" autocomplete="new-password"></div>
+      <div class="fg"><label>Contrasena</label><input id="ap-rp" type="password" placeholder="minimo 6 chars" autocomplete="new-password"></div>
       <div class="fg"><label>Confirmar</label><input id="ap-rp2" type="password" placeholder="••••••" autocomplete="new-password"></div>
       <button class="ap-btn pri" onclick="AP_registro()">Crear Cuenta</button>
-      <p class="ap-auth-note">¿Ya tenes cuenta? <a onclick="AP_showTab('login')">Inicia sesion</a></p>
+      <p class="ap-auth-note">Ya tenes cuenta? <a onclick="AP_showTab('login')">Inicia sesion</a></p>
     </div>
   </div>
   <div id="ap-main" style="display:none">
@@ -97,46 +187,50 @@
               <option value="TG">Solo Telegram</option>
             </select>
           </div>
-          <div class="fg"><label>Numero</label><input id="ap-nu" type="text" placeholder="595972184435" inputmode="numeric"></div>
+          <div class="fg"><label>Numero</label><input id="ap-nu" type="tel" placeholder="595972184435" inputmode="numeric" minlength="12" maxlength="20"></div>
         </div>
-        <div class="ap-row">
-          <div class="fg"><label>Codigo ID</label><input id="ap-id" type="text" placeholder="SKU123" maxlength="40"></div>
-          <div class="fg"><label>Nombre</label><input id="ap-nb" type="text" placeholder="Nombre del producto" maxlength="60"></div>
+        <div class="ap-card" style="padding:12px;margin-bottom:0;background:var(--g1);border-radius:var(--ri)">
+          <div class="ap-img-row">
+            <div class="ap-img-thumb" id="ap-img-thumb" onclick="document.getElementById('ap-img').click()">
+              <span id="ap-img-icon">📷</span>
+              <img id="ap-imgprev" alt="">
+            </div>
+            <div class="ap-img-fields">
+              <div class="fg"><label>Nombre</label><input id="ap-nb" type="text" placeholder="Nombre del producto" maxlength="100"></div>
+              <div class="fg"><label>Codigo ID</label><input id="ap-id" type="text" placeholder="SKU123" maxlength="50"></div>
+            </div>
+          </div>
+          <div class="ap-img-size" id="ap-imgnm"></div>
+          <input type="file" id="ap-img" accept="image/avif,image/webp,image/*" style="display:none">
         </div>
+        <div style="height:12px"></div>
         <div class="ap-row">
-          <div class="fg"><label>Precio (Gs)</label><input id="ap-pc" type="text" placeholder="50.000" inputmode="numeric"></div>
-          <div class="fg"><label>Cantidad (opcional)</label><input id="ap-cd" type="number" placeholder="10" inputmode="numeric" min="0"></div>
+          <div class="fg"><label>Precio (Gs)</label><input id="ap-pc" type="text" placeholder="50.000" inputmode="numeric" maxlength="14"></div>
+          <div class="fg"><label>Cantidad (opcional)</label><input id="ap-cd" type="text" placeholder="10" inputmode="numeric" maxlength="4"></div>
         </div>
         <div class="fg"><label>Fecha Limite (opcional)</label><input id="ap-tm" type="text" placeholder="DD.MM.YYYY.HH.MM" maxlength="16" inputmode="numeric"></div>
       </div>
-      <div class="ap-card">
-        <h2>Imagen del Producto</h2>
-        <div class="fg">
-          <input type="file" id="ap-img" accept="image/*" style="display:none">
-          <button class="ap-btn sec" onclick="document.getElementById('ap-img').click()">📷 Seleccionar Imagen</button>
-          <div id="ap-imgnm" style="font-size:12px;color:var(--ap-txt2);margin-top:6px"></div>
-          <img id="ap-imgprev" class="ap-img-prev" alt="">
-        </div>
-      </div>
       <div class="ap-card" id="ap-mde">
         <h2>Descripcion (Markdown)</h2>
-        <p style="font-size:12px;color:var(--ap-txt2);margin:0 0 10px">Solo enlaces externos para imagenes/videos. Ejemplo: <code style="background:#111;padding:2px 5px;border-radius:4px">![](https://...)</code></p>
+        <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Solo enlaces externos para imagenes/videos. Ejemplo: <code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:5px;font-size:11px">![](https://...)</code></p>
         <textarea id="ap-mdtxt"></textarea>
       </div>
       <button class="ap-btn pri" id="ap-submit" onclick="AP_enviar()">📤 Enviar Solicitud</button>
     </div>
     <div id="ap-tab-mis" style="display:none">
-      <div id="ap-sol-list"><div style="text-align:center;color:var(--ap-txt2);padding:40px">Cargando...</div></div>
+      <div id="ap-sol-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
     </div>
   </div>
 </div>
 </div>
+
 <script>
 (function(){
 const AP_URL=(()=>{
   const base=document.querySelector('meta[name=api-base]')?.content||'';
   return base||'/api/productos';
 })();
+const AP_MAX_SIZE=200*1024;
 
 function AP_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
 function AP_sck(k,v){const sec=location.protocol==="https:"?";Secure":"";document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=31536000;SameSite=Strict${sec}`;}
@@ -157,7 +251,10 @@ function AP_toast(t,tp='ok',d=3000){
 function AP_FP(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
 
 async function AP_fetch(action,opts={}){
-  const isGet=!opts.method||opts.method==="GET";const url=isGet?`${AP_URL}?action=${action}`:AP_URL;if(!isGet&&opts.body){const _b=JSON.parse(opts.body);_b.action=action;opts.body=JSON.stringify(_b);}const res=await fetch(url,{headers:{"Content-Type":"application/json"},...opts});
+  const isGet=!opts.method||opts.method==="GET";
+  const url=isGet?`${AP_URL}?action=${action}`:AP_URL;
+  if(!isGet&&opts.body){const _b=JSON.parse(opts.body);_b.action=action;opts.body=JSON.stringify(_b);}
+  const res=await fetch(url,{headers:{"Content-Type":"application/json"},...opts});
   const data=await res.json().catch(()=>({}));
   return{ok:res.ok,status:res.status,data};
 }
@@ -212,11 +309,6 @@ function AP_showMain(){
   setTimeout(AP_initMDE,100);
 }
 
-function AP_showAuth(){
-  document.getElementById('ap-auth').style.display='block';
-  document.getElementById('ap-main').style.display='none';
-}
-
 window.AP_login=async function(){
   const u=document.getElementById('ap-lu').value.trim();
   const p=document.getElementById('ap-lp').value;
@@ -234,7 +326,7 @@ window.AP_registro=async function(){
   const p=document.getElementById('ap-rp').value;
   const p2=document.getElementById('ap-rp2').value;
   if(!u||!p)return AP_toast('Completa los campos','warn');
-  if(p!==p2)return AP_toast('Las contraseñas no coinciden','warn');
+  if(p!==p2)return AP_toast('Las contrasenas no coinciden','warn');
   const{ok,data}=await AP_fetch('registro',{method:'POST',body:JSON.stringify({usuario:u,password:p})});
   if(!ok)return AP_toast(data.error||'Error','err');
   AP_toast('Cuenta creada! Iniciando sesion...');
@@ -243,27 +335,85 @@ window.AP_registro=async function(){
   await AP_login();
 };
 
-document.getElementById('ap-img').onchange=async function(e){
-  const f=e.target.files[0];if(!f)return;
-  const ab=await f.arrayBuffer();
-  const cv=document.createElement('canvas');
-  const img=new Image(),url=URL.createObjectURL(f);
+async function AP_processImg(file){
+  const isAnimatable=file.type==='image/avif'||file.type==='image/webp';
+  if(isAnimatable&&file.size<=AP_MAX_SIZE){
+    const ext=file.type==='image/avif'?'.avif':'.webp';
+    return{blob:file,ext,size:file.size};
+  }
+  if(isAnimatable&&file.size>AP_MAX_SIZE){
+    const ok=confirm(`Supera ${AP_MAX_SIZE/1024}KB, se comprimira y perdera la animacion. Continuar?`);
+    if(!ok)return{error:'Cancelado'};
+  }
+  const url=URL.createObjectURL(file);
+  const img=new Image();
   await new Promise(r=>{img.onload=r;img.src=url;});
-  cv.width=img.naturalWidth;cv.height=img.naturalHeight;
-  cv.getContext('2d').drawImage(img,0,0);
   URL.revokeObjectURL(url);
+  const cv=document.createElement('canvas');
+  cv.width=256;cv.height=256;
+  cv.getContext('2d').drawImage(img,0,0,256,256);
   let q=0.85,blob=null,tries=0;
   do{blob=await new Promise(r=>cv.toBlob(r,'image/webp',q));q=Math.max(0.05,q-0.1);tries++;}
-  while(blob&&blob.size>512*1024&&tries<12);
-  document.getElementById('ap-imgnm').textContent=`${f.name} → webp ${(blob.size/1024).toFixed(0)}KB`;
-  const prev=document.getElementById('ap-imgprev');
-  prev.src=URL.createObjectURL(blob);prev.style.display='block';
-  this._blob=blob;
+  while(blob&&blob.size>AP_MAX_SIZE&&tries<12);
+  return{blob,ext:'.webp',size:blob.size};
+}
+
+function AP_setThumb(blob){
+  const thumb=document.getElementById('ap-imgprev');
+  const icon=document.getElementById('ap-img-icon');
+  thumb.src=URL.createObjectURL(blob);
+  thumb.style.display='block';
+  icon.style.display='none';
+}
+
+document.getElementById('ap-img').onchange=async function(e){
+  const f=e.target.files[0];if(!f)return;
+  const result=await AP_processImg(f);
+  if(result.error)return AP_toast(result.error,'err');
+  AP_setThumb(result.blob);
+  document.getElementById('ap-imgnm').textContent=`${(result.size/1024).toFixed(0)} KB`;
+  document.getElementById('ap-img')._blob=result.blob;
+  document.getElementById('ap-img')._ext=result.ext;
 };
+
+document.addEventListener('paste',async function(e){
+  const active=document.activeElement;
+  const isText=active&&(active.tagName==='INPUT'||active.tagName==='TEXTAREA'||active.isContentEditable);
+  if(isText)return;
+  const items=[...(e.clipboardData?.items||[])];
+  const imgItem=items.find(i=>i.type.startsWith('image/'));
+  if(!imgItem)return;
+  e.preventDefault();
+  const f=imgItem.getAsFile();if(!f)return;
+  const result=await AP_processImg(f);
+  if(result.error)return AP_toast(result.error,'err');
+  AP_setThumb(result.blob);
+  document.getElementById('ap-imgnm').textContent=`${(result.size/1024).toFixed(0)} KB`;
+  document.getElementById('ap-img')._blob=result.blob;
+  document.getElementById('ap-img')._ext=result.ext;
+  AP_toast('Imagen pegada','ok');
+});
 
 async function AP_blobToB64(blob){
   return new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(',')[1]);fr.readAsDataURL(blob);});
 }
+
+document.getElementById('ap-pc').oninput=function(){
+  let v=this.value.replace(/\D/g,'').slice(0,10);
+  if(v)this.value=AP_FP(parseInt(v));
+};
+document.getElementById('ap-tm').oninput=function(){
+  let v=this.value.replace(/\D/g,''),r='',ii=0;
+  const seg=[2,2,4,2,2];
+  for(let s=0;s<seg.length&&ii<v.length;s++){r+=v.slice(ii,ii+seg[s]);ii+=seg[s];if(ii<v.length)r+='.';}
+  this.value=r;
+};
+document.getElementById('ap-nu').oninput=function(){
+  this.value=this.value.replace(/\D/g,'').slice(0,20);
+};
+document.getElementById('ap-cd').oninput=function(){
+  this.value=this.value.replace(/\D/g,'').slice(0,4);
+};
 
 window.AP_enviar=async function(){
   const cat=document.getElementById('ap-cat').value;
@@ -277,11 +427,13 @@ window.AP_enviar=async function(){
   const tm=document.getElementById('ap-tm').value.trim();
   const imgEl=document.getElementById('ap-img');
   const imgBlob=imgEl._blob;
+  const imgExt=imgEl._ext||'.webp';
   if(!cat||!id||!nb||!pcRaw)return AP_toast('Faltan datos obligatorios','warn');
+  if(nu.length<12)return AP_toast('Numero invalido (min 12 digitos)','warn');
   if(!imgBlob)return AP_toast('Imagen requerida','warn');
   const md=_AP_mde?_AP_mde.value():'';
   const idEl=document.getElementById('ap-id');
-  const body={usuario:_AP_usr,password:_AP_pwd,categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),CD:cd!==''?parseInt(cd):null,TM:tm||null,md,imgData:await AP_blobToB64(imgBlob),imgExt:'.webp'};
+  const body={usuario:_AP_usr,password:_AP_pwd,categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),CD:cd!==''?parseInt(cd):null,TM:tm||null,md,imgData:await AP_blobToB64(imgBlob),imgExt};
   if(idEl._idOriginal)body.idOriginal=idEl._idOriginal;
   const btn=document.getElementById('ap-submit');
   btn.disabled=true;btn.textContent='Enviando...';
@@ -298,9 +450,11 @@ window.AP_enviar=async function(){
 function AP_resetForm(){
   ['ap-id','ap-nb','ap-pc','ap-cd','ap-tm','ap-nu'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('ap-imgnm').textContent='';
-  document.getElementById('ap-imgprev').style.display='none';
-  document.getElementById('ap-imgprev').src='';
+  const prev=document.getElementById('ap-imgprev');
+  prev.style.display='none';prev.src='';
+  document.getElementById('ap-img-icon').style.display='';
   document.getElementById('ap-img')._blob=null;
+  document.getElementById('ap-img')._ext=null;
   if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;setTimeout(AP_initMDE,50);}
   document.getElementById('ap-id').disabled=false;
   document.getElementById('ap-id')._idOriginal=null;
@@ -325,19 +479,23 @@ function AP_TS(t){return new Date(t).toLocaleDateString('es-PY',{day:'2-digit',m
 window.AP_loadSolicitudes=async function(noFetch){
   const lst=document.getElementById('ap-sol-list');
   if(!noFetch){
-    lst.innerHTML='<div style="text-align:center;color:var(--ap-txt2);padding:40px">Cargando...</div>';
+    lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
     const{ok,data}=await AP_fetch('historial',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd})});
-    if(!ok){lst.innerHTML=`<div style="color:var(--ap-err);padding:20px">${data.error||'Error'}</div>`;return;}
+    if(!ok){lst.innerHTML=`<div style="color:var(--err);padding:20px">${data.error||'Error'}</div>`;return;}
     _AP_entries=(data.entries||[]).slice().reverse();
   }
-  if(!_AP_entries.length){lst.innerHTML='<div style="text-align:center;color:var(--ap-txt2);padding:40px">Sin historial aun</div>';return;}
+  if(!_AP_entries.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Sin historial aun</div>';return;}
   lst.innerHTML='';
-  const badges={pendiente:'<span class="ap-badge pend">Pendiente</span>',negado:'<span class="ap-badge neg">Rechazado</span>',aprobado:'<span class="ap-badge" style="background:#1a3320;color:#4ade80">Aprobado</span>',solicitaBorrado:'<span class="ap-badge" style="background:#3b1a00;color:#fb923c">Borrado Pendiente</span>'};
+  const badges={
+    pendiente:'<span class="ap-badge pend">Pendiente</span>',
+    negado:'<span class="ap-badge neg">Rechazado</span>',
+    aprobado:'<span class="ap-badge" style="background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)">Aprobado</span>',
+    solicitaBorrado:'<span class="ap-badge" style="background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)">Borrado Pendiente</span>'
+  };
   _AP_entries.forEach(e=>{
     const div=document.createElement('div');div.className='ap-sol-item';
     const eJson=encodeURIComponent(JSON.stringify(e));
-    div.innerHTML=`<img class="ap-sol-img" alt="" onerror="this.style.display='none'" style="${e.estado!=='pendiente'?'display:none':''}"
-      data-id="${e.ID}">
+    div.innerHTML=`<img class="ap-sol-img" alt="" onerror="this.style.display='none'" style="${e.estado!=='pendiente'?'display:none':''}" data-id="${e.ID}">
     <div class="ap-sol-info">
       <div class="nm">${e.NB} ${badges[e.estado]||''}</div>
       <div class="dt">ID: ${e.ID} &middot; ${e.categoria}${e.subcategoria?'/'+e.subcategoria:''} &middot; ${AP_TS(e.tsUpdate)}</div>
@@ -394,20 +552,13 @@ window.AP_reenviarSol=function(btn){
   document.getElementById('ap-cat').value=e.categoria||'';
   AP_updSub();
   setTimeout(()=>{document.getElementById('ap-sub').value=e.subcategoria||'';},50);
-  if(_AP_mde)_AP_mde.value(e.md||'');
+  if(_AP_mde){
+    const cm=_AP_mde.codemirror;
+    cm.execCommand('selectAll');
+    _AP_mde.value(e.md||'');
+  }
   document.getElementById('ap-submit').textContent='&#128260; Reenviar Solicitud';
   AP_toast('Completa la imagen para reenviar','warn',5000);
-};
-
-document.getElementById('ap-pc').oninput=function(){
-  let v=this.value.replace(/\D/g,'');
-  if(v)this.value=AP_FP(parseInt(v));
-};
-document.getElementById('ap-tm').oninput=function(){
-  let v=this.value.replace(/\D/g,''),r='',ii=0;
-  const seg=[2,2,4,2,2];
-  for(let s=0;s<seg.length&&ii<v.length;s++){r+=v.slice(ii,ii+seg[s]);ii+=seg[s];if(ii<v.length)r+='.';}
-  this.value=r;
 };
 
 if(_AP_usr&&_AP_pwd){
