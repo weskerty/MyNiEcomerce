@@ -3,74 +3,69 @@
     {
       "month": 0,
       "type": "image",
-      "src": "web/otros/Archivos/Imagenes/pexels5834608AñoNuevo.avif",
-      "comment": "Enero Año Nuvo"
+      "src": "web/otros/Archivos/Imagenes/pexels5834608AñoNuevo.avif"
     },
     {
       "month": 1,
       "type": "image",
-      "src": "web/otros/Archivos/Imagenes/pexels-henkephotoart-29775986.jpg",
-      "comment": "Febrero"
+      "src": "web/otros/Archivos/Imagenes/pexels-henkephotoart-29775986.jpg"
     },
     {
       "month": 2,
       "type": "image",
-      "src": "web/otros/Archivos/Imagenes/",
-      "comment": "Marzo"
+      "src": "web/otros/Archivos/Imagenes/"
     },
     {
       "month": 3,
       "type": "image",
-      "src": "",
-      "comment": "Abril Recordatorio Ambiente"
+      "src": ""
     },
     {
       "month": 4,
       "type": "image",
-      "src": "web/otros/Archivos/Imagenes/",
-      "comment": "Mayo Independencia Paraguay"
+      "src": "web/otros/Archivos/Imagenes/"
     },
     {
       "month": 5,
       "type": "image",
-      "src": "",
-      "comment": "Junio"
+      "src": ""
     },
     {
       "month": 6,
       "type": "image",
-      "src": "",
-      "comment": "Julio Recordatorio Ambiente"
+      "src": ""
     },
     {
       "month": 7,
       "type": "image",
-      "src": "web/otros/Archivos/Imagenes/benjamin-shurance-dUcQLRcZpmk-unsplash.jpg",
-      "comment": "Agosto"
+      "src": "web/otros/Archivos/Imagenes/benjamin-shurance-dUcQLRcZpmk-unsplash.jpg"
     },
     {
       "month": 8,
-      "type": "image",
-      "src": "web/otros/Archivos/Imagenes/",
-      "comment": "Septiembre"
+      "type": "video",
+      "src": "https://github.com/user-attachments/assets/fd54742d-a7e9-49f4-b268-da16689918c1"
     },
     {
       "month": 9,
       "type": "image",
-      "src": "web/otros/Archivos/Imagenes/pexels-vilas-5688958.jpg",
-      "comment": "Octubre"
+      "src": "web/otros/Archivos/Imagenes/pexels-vilas-5688958.jpg"
     },
     {
       "month": 10,
       "type": "image",
-      "src": "web/otros/Archivos/Imagenes/benjamin-shurance-W7zJGqbp6Xw-unsplash.jpg",
-      "comment": "Noviembre"
+      "src": "web/otros/Archivos/Imagenes/benjamin-shurance-W7zJGqbp6Xw-unsplash.jpg"
     },
     {
       "month": 11,
       "type": "video",
-      "src": "https://github.com/user-attachments/assets/b746d91d-55ae-4679-add6-fcf71e05dcd4",
-      "comment": "Diciembre - Video navideño"
+      "src": "https://github.com/user-attachments/assets/b746d91d-55ae-4679-add6-fcf71e05dcd4"
+    }
+  ],
+  "routes": [
+    {
+      "path": "web/Dinamico/Juegos/",
+      "type": "video",
+      "src": "https://github.com/user-attachments/assets/fd54742d-a7e9-49f4-b268-da16689918c1"
     }
   ]
 }
