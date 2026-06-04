@@ -1,0 +1,281 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<style>
+:root{
+--g1:rgba(255,255,255,0.06);--g2:rgba(255,255,255,0.10);--gb:rgba(255,255,255,0.13);--gbb:rgba(255,255,255,0.18);
+--acc:#4f8ef7;--acc2:#a78bfa;--ok:#34d399;--err:#f87171;--warn:#fbbf24;
+--txt:rgba(255,255,255,0.92);--txt2:rgba(255,255,255,0.45);--r:16px;--ri:12px;
+}
+#bp-wrap{color:var(--txt);font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;padding:0 0 90px;-webkit-font-smoothing:antialiased}
+#bp-wrap *{box-sizing:border-box}
+.bp-top{padding:22px 18px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--gb)}
+.bp-top h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.3px}
+.bp-top span{font-size:12px;color:var(--txt2);margin-top:2px;display:block}
+.bp-logo{width:42px;height:42px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;box-shadow:0 4px 14px rgba(79,142,247,.28)}
+.bp-sect{max-width:680px;margin:0 auto;padding:18px 14px 0}
+.bp-card{background:var(--g1);border:1px solid var(--gb);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.bp-card h2{margin:0 0 14px;font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:5px;letter-spacing:.03em}
+.fg input,.fg select{width:100%;background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);color:var(--txt);padding:10px 13px;font-size:15px;outline:none;transition:border .15s;-webkit-appearance:none;font-family:inherit}
+.fg input:focus,.fg select:focus{border-color:rgba(79,142,247,.6);background:var(--g2)}
+.fg select option{background:#1a1a2e;color:#fff}
+.bp-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.bp-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 18px;border:none;border-radius:var(--ri);font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;font-family:inherit}
+.bp-btn:active{transform:scale(.97)}
+.bp-btn.pri{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 4px 18px rgba(79,142,247,.3);width:100%}
+.bp-btn.sm{padding:5px 12px;font-size:12px;border-radius:50px;background:var(--g1);color:var(--txt);border:1px solid var(--gb)}
+.bp-btn.sm:hover{background:var(--g2)}
+.bp-btn.sm.del{border-color:rgba(248,113,113,.3);color:#fca5a5}
+.bp-btn.sm.ok{border-color:rgba(52,211,153,.3);color:#34d399}
+.bp-btn:disabled{opacity:.4;cursor:not-allowed}
+.bp-tabs{display:flex;gap:2px;background:var(--g1);border:1px solid var(--gb);border-radius:50px;padding:3px;margin-bottom:18px}
+.bp-tab{flex:1;padding:8px;border:none;background:transparent;color:var(--txt2);border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.bp-tab.act{background:var(--g2);color:var(--txt);border:1px solid var(--gb)}
+.bp-msg{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(20,20,35,.9);border:1px solid var(--gb);border-radius:50px;padding:10px 22px;font-size:13px;font-weight:500;color:var(--txt);z-index:9999;pointer-events:none;white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis;box-shadow:0 8px 32px rgba(0,0,0,.35)}
+.bp-msg.ok{border-color:rgba(52,211,153,.4);color:var(--ok)}
+.bp-msg.err{border-color:rgba(248,113,113,.4);color:var(--err)}
+.bp-msg.warn{border-color:rgba(251,191,36,.4);color:var(--warn)}
+.bp-badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:700}
+.bp-badge.on{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)}
+.bp-badge.off{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+.bp-usr-item{background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bp-usr-info{flex:1;min-width:0}
+.bp-usr-nm{font-size:14px;font-weight:600}
+.bp-usr-dt{font-size:11px;color:var(--txt2);margin-top:2px}
+.bp-usr-acts{display:flex;gap:6px;flex-wrap:wrap}
+.bp-blog-item{background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .15s}
+.bp-blog-item:hover{background:var(--g2)}
+.bp-blog-nm{flex:1;font-size:14px;font-weight:500}
+.bp-divider{margin:18px 0 14px;display:flex;align-items:center;gap:10px;color:var(--txt2);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.bp-divider::before,.bp-divider::after{content:'';flex:1;height:1px;background:var(--gb)}
+.bp-mde-wrap .EasyMDEContainer{background:transparent!important;border-radius:var(--ri);overflow:hidden}
+.bp-mde-wrap .CodeMirror{background:var(--g1)!important;color:var(--txt)!important;min-height:200px;border-radius:0 0 var(--ri) var(--ri)!important;border:1px solid var(--gb)!important;border-top:none!important}
+.bp-mde-wrap .editor-toolbar{background:var(--g1)!important;border:1px solid var(--gb)!important;border-bottom:1px solid var(--gb)!important;border-radius:var(--ri) var(--ri) 0 0!important}
+.bp-mde-wrap .editor-toolbar button{color:var(--txt2)!important}
+.bp-mde-wrap .editor-toolbar button:hover,.bp-mde-wrap .editor-toolbar button.active{background:var(--g2)!important;border-color:var(--gb)!important}
+.bp-mde-wrap .editor-toolbar i.separator{border-color:var(--gb)!important}
+.bp-mde-lbl{font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.bp-exp-row{display:flex;gap:8px;align-items:flex-end}
+.bp-exp-row input{flex:1}
+</style>
+
+<div id="bp-wrap">
+<div class="bp-top">
+  <div class="bp-logo">🔐</div>
+  <div><h1>Blog Privado</h1><span>Gestion de usuarios y contenido</span></div>
+</div>
+<div class="bp-sect">
+  <div id="bp-auth">
+    <div class="bp-card">
+      <h2>Acceso Admin</h2>
+      <div class="fg"><label>Usuario</label><input id="bp-au" type="text" placeholder="admin" autocomplete="username"></div>
+      <div class="fg"><label>Contrasena</label><input id="bp-ap" type="password" placeholder="••••••" autocomplete="current-password"></div>
+      <button class="bp-btn pri" id="bp-aok">Entrar</button>
+    </div>
+  </div>
+  <div id="bp-main" style="display:none">
+    <div class="bp-tabs">
+      <button class="bp-tab act" id="bp-tu" onclick="BP_tab('u')">👥 Usuarios</button>
+      <button class="bp-tab" id="bp-tb" onclick="BP_tab('b')">📝 Blogs</button>
+    </div>
+    <div id="bp-panel-u">
+      <div class="bp-card">
+        <h2>Nuevo Usuario</h2>
+        <div class="bp-row">
+          <div class="fg"><label>Usuario</label><input id="bp-nu" type="text" placeholder="nuevo_user" autocomplete="off"></div>
+          <div class="fg"><label>Contrasena</label><input id="bp-np" type="password" placeholder="minimo 6 chars"></div>
+        </div>
+        <div class="fg">
+          <label>Expira (opcional, fecha limite)</label>
+          <div class="bp-exp-row">
+            <input id="bp-nexp" type="date">
+            <button class="bp-btn sm" onclick="document.getElementById('bp-nexp').value=''">Limpiar</button>
+          </div>
+        </div>
+        <button class="bp-btn pri" onclick="BP_crearUsuario()">➕ Crear Usuario</button>
+      </div>
+      <div class="bp-divider">Usuarios Existentes</div>
+      <div id="bp-usr-list"><div style="text-align:center;color:var(--txt2);padding:30px">Cargando...</div></div>
+    </div>
+    <div id="bp-panel-b" style="display:none">
+      <div class="bp-card">
+        <h2>Nombre del Blog</h2>
+        <div class="fg">
+          <label>Nombre (sera el nombre del archivo)</label>
+          <input id="bp-bnm" type="text" placeholder="Mi Blog Privado" maxlength="120">
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <button class="bp-btn sm" onclick="BP_loadBlog()">📂 Cargar Existente</button>
+          <button class="bp-btn sm" onclick="BP_resetBlog()">🆕 Nuevo</button>
+        </div>
+      </div>
+      <div class="bp-card">
+        <h2>Contenido Publico</h2>
+        <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Visible para todos. Incluye aqui el marcador <code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:5px;font-size:11px">&lt;div id="privado"&gt;&lt;/div&gt;</code> donde quieres que aparezca el contenido privado.</p>
+        <button class="bp-btn sm" style="margin-bottom:10px" onclick="BP_insertPrivado()">📌 Insertar marcador privado</button>
+        <div class="bp-mde-wrap"><div class="bp-mde-lbl">Editor Publico</div><textarea id="bp-pub"></textarea></div>
+      </div>
+      <div class="bp-card">
+        <h2>Contenido Privado</h2>
+        <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Solo visible para usuarios con login valido.</p>
+        <div class="bp-mde-wrap"><div class="bp-mde-lbl">Editor Privado</div><textarea id="bp-priv"></textarea></div>
+      </div>
+      <button class="bp-btn pri" onclick="BP_publicar()">📤 Publicar Blog</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+const API='/api/privado';
+let _AU=null,_AP=null,_mdPub=null,_mdPriv=null,_msg=null;
+
+function BP_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
+function BP_sck(k,v){const sec=location.protocol==='https:'?';Secure':'';document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=86400;SameSite=Strict${sec}`;}
+
+function BP_toast(t,tp='ok',d=3000){
+  if(_msg)_msg.remove();
+  _msg=document.createElement('div');_msg.className='bp-msg '+tp;_msg.textContent=t;
+  document.body.appendChild(_msg);
+  setTimeout(()=>{if(_msg){_msg.remove();_msg=null;}},d);
+}
+
+async function BP_fetch(action,extra={}){
+  const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action,usuario:_AU,password:_AP,...extra})});
+  let data;try{data=await res.json();}catch{data={};}
+  return{ok:res.ok,status:res.status,data};
+}
+
+function BP_fmtDate(ts){if(!ts)return'—';return new Date(ts).toLocaleDateString('es-PY',{day:'2-digit',month:'2-digit',year:'2-digit'});}
+
+window.BP_tab=function(t){
+  document.getElementById('bp-panel-u').style.display=t==='u'?'block':'none';
+  document.getElementById('bp-panel-b').style.display=t==='b'?'block':'none';
+  document.getElementById('bp-tu').classList.toggle('act',t==='u');
+  document.getElementById('bp-tb').classList.toggle('act',t==='b');
+  if(t==='b'&&!_mdPub)BP_initMDE();
+  if(t==='u')BP_loadUsuarios();
+};
+
+function BP_initMDE(){
+  const toolbar=['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','|','preview','guide'];
+  _mdPub=new EasyMDE({element:document.getElementById('bp-pub'),spellChecker:false,autofocus:false,status:false,toolbar,initialValue:''});
+  _mdPriv=new EasyMDE({element:document.getElementById('bp-priv'),spellChecker:false,autofocus:false,status:false,toolbar,initialValue:''});
+}
+
+window.BP_insertPrivado=function(){
+  if(!_mdPub)return;
+  const cm=_mdPub.codemirror;
+  const cur=cm.getCursor();
+  cm.replaceRange('\n\n<div id="privado"></div>\n\n',cur);
+  cm.focus();
+};
+
+window.BP_resetBlog=function(){
+  document.getElementById('bp-bnm').value='';
+  if(_mdPub){_mdPub.value('');}
+  if(_mdPriv){_mdPriv.value('');}
+};
+
+window.BP_loadBlog=async function(){
+  const nm=document.getElementById('bp-bnm').value.trim();
+  if(!nm)return BP_toast('Escribe el nombre del blog','warn');
+  const{ok,data}=await BP_fetch('admin_blog_leer',{nombre:nm});
+  if(!ok)return BP_toast(data.error||'Error','err');
+  if(_mdPub)_mdPub.value(data.publico||'');
+  if(_mdPriv)_mdPriv.value(data.privado||'');
+  BP_toast('Blog cargado');
+};
+
+window.BP_publicar=async function(){
+  const nm=document.getElementById('bp-bnm').value.trim();
+  if(!nm)return BP_toast('Nombre requerido','warn');
+  const pub=_mdPub?_mdPub.value():'';
+  const priv=_mdPriv?_mdPriv.value():'';
+  if(!pub&&!priv)return BP_toast('Ambos editores estan vacios','warn');
+  const{ok,data}=await BP_fetch('admin_publicar',{nombre:nm,publico:pub,privado:priv});
+  if(!ok)return BP_toast(data.error||'Error al publicar','err');
+  BP_toast('Blog publicado!');
+};
+
+async function BP_loadUsuarios(){
+  const lst=document.getElementById('bp-usr-list');
+  lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:30px">Cargando...</div>';
+  const{ok,data}=await BP_fetch('admin_usuarios_list');
+  if(!ok){lst.innerHTML=`<div style="color:var(--err);padding:20px">${data.error||'Error'}</div>`;return;}
+  const usuarios=data.usuarios||[];
+  if(!usuarios.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:30px">Sin usuarios aun</div>';return;}
+  lst.innerHTML='';
+  usuarios.forEach(u=>{
+    const div=document.createElement('div');div.className='bp-usr-item';
+    const exp=u.expira?BP_fmtDate(u.expira):'Sin limite';
+    div.innerHTML=`<div class="bp-usr-info"><div class="bp-usr-nm">${u.usuario} <span class="bp-badge ${u.activo?'on':'off'}">${u.activo?'Activo':'Inactivo'}</span></div><div class="bp-usr-dt">Registro: ${BP_fmtDate(u.registrado)} &middot; Ultimo login: ${BP_fmtDate(u.ultimoLogin)} &middot; Expira: ${exp}</div></div><div class="bp-usr-acts"><button class="bp-btn sm ${u.activo?'del':'ok'}" onclick="BP_toggle('${u.usuario}',${!u.activo})">${u.activo?'Desactivar':'Activar'}</button><button class="bp-btn sm" onclick="BP_editExp('${u.usuario}')">Expira</button><button class="bp-btn sm del" onclick="BP_borrarUsuario('${u.usuario}')">Borrar</button></div>`;
+    lst.appendChild(div);
+  });
+}
+
+window.BP_crearUsuario=async function(){
+  const nu=document.getElementById('bp-nu').value.trim();
+  const np=document.getElementById('bp-np').value;
+  const expInput=document.getElementById('bp-nexp').value;
+  if(!nu||!np)return BP_toast('Completa los campos','warn');
+  if(np.length<6)return BP_toast('Password minimo 6 chars','warn');
+  const expira=expInput?new Date(expInput).getTime():null;
+  const{ok,data}=await BP_fetch('admin_usuario_crear',{nuevoUsuario:nu,nuevaPassword:np,expira});
+  if(!ok)return BP_toast(data.error||'Error','err');
+  BP_toast('Usuario creado!');
+  document.getElementById('bp-nu').value='';
+  document.getElementById('bp-np').value='';
+  document.getElementById('bp-nexp').value='';
+  BP_loadUsuarios();
+};
+
+window.BP_toggle=async function(target,activo){
+  const{ok,data}=await BP_fetch('admin_usuario_toggle',{target,activo});
+  if(!ok)return BP_toast(data.error||'Error','err');
+  BP_toast(activo?'Usuario activado':'Usuario desactivado',activo?'ok':'warn');
+  BP_loadUsuarios();
+};
+
+window.BP_editExp=async function(target){
+  const val=prompt('Nueva fecha de expiracion (YYYY-MM-DD) o vacio para sin limite:');
+  if(val===null)return;
+  const expira=val.trim()?new Date(val.trim()).getTime():null;
+  if(val.trim()&&isNaN(expira))return BP_toast('Fecha invalida','err');
+  const{ok,data}=await BP_fetch('admin_usuario_expira',{target,expira});
+  if(!ok)return BP_toast(data.error||'Error','err');
+  BP_toast('Expiracion actualizada');
+  BP_loadUsuarios();
+};
+
+window.BP_borrarUsuario=async function(target){
+  if(!confirm(`Borrar usuario "${target}"?`))return;
+  const{ok,data}=await BP_fetch('admin_usuario_borrar',{target});
+  if(!ok)return BP_toast(data.error||'Error','err');
+  BP_toast('Usuario borrado','warn');
+  BP_loadUsuarios();
+};
+
+document.getElementById('bp-aok').addEventListener('click',async function(){
+  const u=document.getElementById('bp-au').value.trim();
+  const p=document.getElementById('bp-ap').value;
+  if(!u||!p)return BP_toast('Completa los campos','warn');
+  this.disabled=true;this.textContent='Verificando...';
+  const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action:'admin_login',usuario:u,password:p})});
+  let data;try{data=await res.json();}catch{data={};}
+  this.disabled=false;this.textContent='Entrar';
+  if(!res.ok)return BP_toast(data.error||'Error','err');
+  _AU=u;_AP=p;
+  document.getElementById('bp-auth').style.display='none';
+  document.getElementById('bp-main').style.display='block';
+  BP_loadUsuarios();
+});
+
+document.getElementById('bp-au').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('bp-aok').click();});
+document.getElementById('bp-ap').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('bp-aok').click();});
+})();
+</script>
