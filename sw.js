@@ -49,7 +49,7 @@ const EXT_CACHE=[
   {origin:'tetunori.github.io',ttl:0}
 ];
 const EXT_C='ext-fonts';
-const DJ=/\/data\.json(\?|$)/;
+const DJ=/\/Dinamico\/data\.json(\?|$)/;
 const DJ_URL='web/Dinamico/data.json';
 const DJ_ABS=new URL(DJ_URL,self.location).href;
 const TS_CK='__chk_ts';
