@@ -69,10 +69,17 @@ async function loadPrivado(div,u,p){
   div.innerHTML=md.render(data);
 }
 
+function gOC(){
+  let d=document.getElementById('privado');
+  if(d)return d;
+  d=document.createElement('div');d.id='privado';
+  const mc=document.querySelector('#content .markdown-content')||document.getElementById('content');
+  (mc||document.body).appendChild(d);
+  return d;
+}
 function run(){
   if(!isPrivado())return;
-  const div=document.getElementById('privado');
-  if(!div)return;
+  const div=gOC();
   const u=gU(),p=gP();
   if(!u||!p){mkLogin(div,(nu,np)=>loadPrivado(div,nu,np));return;}
   loadPrivado(div,u,p);
