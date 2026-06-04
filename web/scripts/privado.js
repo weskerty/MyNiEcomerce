@@ -2,7 +2,7 @@
 if(window.__PG)return;window.__PG=true;
 
 const API='/api/privado';
-const PREFIX='web/Privado/';
+const PREFIX='web/otros/Privado/';
 const SK_U='pg_u',SK_P='pg_p';
 
 const CSS=`
