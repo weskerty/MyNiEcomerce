@@ -85,6 +85,6 @@ function run(){
   loadPrivado(div,u,p);
 }
 
-document.addEventListener('contentLoaded',run);
-run();
+document.addEventListener('contentLoaded',()=>requestAnimationFrame(()=>requestAnimationFrame(run)));
+requestAnimationFrame(()=>requestAnimationFrame(run));
 }();
