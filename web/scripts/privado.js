@@ -6,8 +6,9 @@ const PREFIX='web/Privado/';
 const SK_U='pg_u',SK_P='pg_p';
 
 const CSS=`
-.pg-ov{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:9998;padding:20px}
-.pg-box{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:24px;width:100%;max-width:340px;color:#fff;font-family:inherit}
+#privado{position:relative}
+.pg-ov{display:flex;align-items:center;justify-content:center;padding:24px 16px;background:rgba(0,0,0,.45);border-radius:16px;border:1px solid rgba(255,255,255,.1);margin:8px 0}
+.pg-box{width:100%;max-width:340px;color:#fff;font-family:inherit}
 .pg-box h3{margin:0 0 16px;font-size:17px;font-weight:700;text-align:center}
 .pg-fg{margin-bottom:10px}
 .pg-fg label{display:block;font-size:12px;color:rgba(255,255,255,.5);margin-bottom:4px}
@@ -16,7 +17,7 @@ const CSS=`
 .pg-btn{width:100%;padding:10px;border:none;border-radius:10px;background:linear-gradient(135deg,#4f8ef7,#a78bfa);color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px}
 .pg-btn:disabled{opacity:.5;cursor:not-allowed}
 .pg-err{font-size:12px;color:#f87171;text-align:center;margin-top:8px;min-height:16px}
-.pg-load{text-align:center;color:rgba(255,255,255,.5);padding:32px 0;font-size:14px}
+.pg-load{text-align:center;color:rgba(255,255,255,.5);padding:32px 16px;font-size:14px;background:rgba(0,0,0,.35);border-radius:16px;border:1px solid rgba(255,255,255,.1);margin:8px 0}
 `;
 const st=document.createElement('style');st.textContent=CSS;document.head.appendChild(st);
 
