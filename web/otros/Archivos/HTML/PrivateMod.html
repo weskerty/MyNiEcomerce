@@ -44,9 +44,6 @@
 .bp-usr-nm{font-size:14px;font-weight:600}
 .bp-usr-dt{font-size:11px;color:var(--txt2);margin-top:2px}
 .bp-usr-acts{display:flex;gap:6px;flex-wrap:wrap}
-.bp-blog-item{background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .15s}
-.bp-blog-item:hover{background:var(--g2)}
-.bp-blog-nm{flex:1;font-size:14px;font-weight:500}
 .bp-divider{margin:18px 0 14px;display:flex;align-items:center;gap:10px;color:var(--txt2);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
 .bp-divider::before,.bp-divider::after{content:'';flex:1;height:1px;background:var(--gb)}
 .bp-mde-wrap .EasyMDEContainer{background:transparent!important;border-radius:var(--ri);overflow:hidden}
@@ -58,12 +55,30 @@
 .bp-mde-lbl{font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
 .bp-exp-row{display:flex;gap:8px;align-items:flex-end}
 .bp-exp-row input{flex:1}
+.bp-blog-list{margin-bottom:8px}
+.bp-blog-item{background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);padding:11px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px;transition:background .15s}
+.bp-blog-item:hover{background:var(--g2)}
+.bp-blog-nm{flex:1;font-size:14px;font-weight:500;cursor:pointer;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bp-blog-acts{display:flex;gap:6px;flex-shrink:0}
+.bp-confirm-bar{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);border-radius:var(--ri);padding:12px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bp-confirm-bar span{flex:1;font-size:13px;color:#fca5a5;min-width:120px}
+.bp-confirm-acts{display:flex;gap:6px}
+.bp-img-pick{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.bp-img-cube{width:44px;height:44px;border-radius:10px;background:var(--g2);border:1.5px dashed var(--gb);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;transition:border-color .15s,background .15s;flex-shrink:0}
+.bp-img-cube:hover{border-color:var(--acc);background:var(--g1)}
+.bp-img-cube.has-img{border-style:solid;border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.07)}
+.bp-img-info{flex:1;min-width:0}
+.bp-img-name{font-size:12px;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bp-img-hint{font-size:11px;color:var(--txt2);margin-top:2px}
+.bp-editor-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.bp-editor-hd h3{margin:0;font-size:14px;font-weight:700;flex:1}
+.bp-editor-nm{font-size:12px;color:var(--acc);font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 
 <div id="bp-wrap">
 <div class="bp-top">
   <div class="bp-logo">🔐</div>
-  <div><h1>Blog </h1><span>Gestion </span></div>
+  <div><h1>Blog</h1><span>Gestion</span></div>
 </div>
 <div class="bp-sect">
   <div id="bp-auth">
@@ -98,30 +113,52 @@
       <div class="bp-divider">Usuarios Existentes</div>
       <div id="bp-usr-list"><div style="text-align:center;color:var(--txt2);padding:30px">Cargando...</div></div>
     </div>
+
     <div id="bp-panel-b" style="display:none">
-      <div class="bp-card">
-        <h2>Nombre del Blog</h2>
-        <div class="fg">
-          <label>Nombre Blog</label>
-          <input id="bp-bnm" type="text" placeholder=" " maxlength="120">
+      <div id="bp-blog-list-view">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <span style="font-size:13px;font-weight:600;color:var(--txt2)">Blogs publicados</span>
+          <button class="bp-btn sm ok" onclick="BP_nuevoEditor()">✏️ Nuevo Blog</button>
         </div>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <button class="bp-btn sm" onclick="BP_loadBlog()">📂 Cargar </button>
-          <button class="bp-btn sm" onclick="BP_resetBlog()">🆕 Limpiar</button>
+        <div id="bp-blog-list"><div style="text-align:center;color:var(--txt2);padding:30px">Cargando...</div></div>
+      </div>
+
+      <div id="bp-blog-editor" style="display:none">
+        <div class="bp-card">
+          <div class="bp-editor-hd">
+            <button class="bp-btn sm" onclick="BP_backToList()">← Volver</button>
+            <h3 id="bp-editor-title">Nuevo Blog</h3>
+            <span class="bp-editor-nm" id="bp-editor-nm-label"></span>
+          </div>
+          <div class="fg">
+            <label>Nombre Blog</label>
+            <input id="bp-bnm" type="text" placeholder="nombre-del-blog" maxlength="120">
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Imagen</div>
+            <div class="bp-img-pick">
+              <div class="bp-img-cube" id="bp-img-cube" onclick="document.getElementById('bp-img-input').click()">🖼️</div>
+              <div class="bp-img-info">
+                <div class="bp-img-name" id="bp-img-name">Sin imagen seleccionada</div>
+                <div class="bp-img-hint" id="bp-img-hint">Requerida para blog nuevo · max 200KB · webp/avif</div>
+              </div>
+              <input type="file" id="bp-img-input" accept="image/*" style="display:none">
+            </div>
+          </div>
         </div>
+        <div class="bp-card">
+          <h2>Parte Publica</h2>
+          <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Visible para todos.</p>
+          <button class="bp-btn sm" style="margin-bottom:10px" onclick="BP_insertPrivado()">📌 Insertar seccion privada</button>
+          <div class="bp-mde-wrap"><div class="bp-mde-lbl">Editor Publico</div><textarea id="bp-pub"></textarea></div>
+        </div>
+        <div class="bp-card">
+          <h2>Parte Privada</h2>
+          <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Solo visible para quien inicia sesion.</p>
+          <div class="bp-mde-wrap"><div class="bp-mde-lbl">Editor Privado</div><textarea id="bp-priv"></textarea></div>
+        </div>
+        <button class="bp-btn pri" onclick="BP_publicar()">📤 Publicar</button>
       </div>
-      <div class="bp-card">
-        <h2>Parte Publica</h2>
-        <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Visible para todos.</p>
-        <button class="bp-btn sm" style="margin-bottom:10px" onclick="BP_insertPrivado()">📌 Insertar seccion privada</button>
-        <div class="bp-mde-wrap"><div class="bp-mde-lbl">Editor Publico</div><textarea id="bp-pub"></textarea></div>
-      </div>
-      <div class="bp-card">
-        <h2>Parte Privada</h2>
-        <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Solo visible para quien inicia sesion.</p>
-        <div class="bp-mde-wrap"><div class="bp-mde-lbl">Editor Privado</div><textarea id="bp-priv"></textarea></div>
-      </div>
-      <button class="bp-btn pri" onclick="BP_publicar()">📤 Publicar </button>
     </div>
   </div>
 </div>
@@ -131,6 +168,7 @@
 (function(){
 const API='/api/privado';
 let _AU=null,_AP=null,_mdPub=null,_mdPriv=null,_msg=null;
+let _imgData=null,_imgExt=null,_editingNombre=null,_editingHasImg=false;
 
 function BP_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
 function BP_sck(k,v){const sec=location.protocol==='https:'?';Secure':'';document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=86400;SameSite=Strict${sec}`;}
@@ -156,7 +194,7 @@ window.BP_tab=function(t){
   document.getElementById('bp-panel-b').style.display=t==='b'?'block':'none';
   document.getElementById('bp-tu').classList.toggle('act',t==='u');
   document.getElementById('bp-tb').classList.toggle('act',t==='b');
-  if(t==='b'&&!_mdPub)BP_initMDE();
+  if(t==='b'){if(!_mdPub)BP_initMDE();BP_loadBlogList();}
   if(t==='u')BP_loadUsuarios();
 };
 
@@ -166,28 +204,133 @@ function BP_initMDE(){
   _mdPriv=new EasyMDE({element:document.getElementById('bp-priv'),spellChecker:false,autofocus:false,status:false,toolbar,initialValue:''});
 }
 
+function BP_resetImgState(){
+  _imgData=null;_imgExt=null;
+  document.getElementById('bp-img-cube').className='bp-img-cube';
+  document.getElementById('bp-img-cube').textContent='🖼️';
+  document.getElementById('bp-img-name').textContent='Sin imagen seleccionada';
+  document.getElementById('bp-img-input').value='';
+}
+
+document.getElementById('bp-img-input').addEventListener('change',function(){
+  const file=this.files[0];
+  if(!file)return;
+  if(file.size>5*1024*1024){BP_toast('Imagen muy grande','err');this.value='';return;}
+  const img=new Image();
+  const url=URL.createObjectURL(file);
+  img.onload=function(){
+    const MAX=900;
+    let w=img.width,h=img.height;
+    if(w>MAX||h>MAX){const s=Math.min(MAX/w,MAX/h);w=Math.round(w*s);h=Math.round(h*s);}
+    const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+    const ctx=cv.getContext('2d');ctx.drawImage(img,0,0,w,h);
+    URL.revokeObjectURL(url);
+    const tryEncode=(fmt,q)=>new Promise(res=>{
+      cv.toBlob(b=>{
+        if(!b)return res(null);
+        const r=new FileReader();
+        r.onload=e=>res({data:e.target.result.split(',')[1],ext:fmt===`image/avif`?'.avif':'.webp',size:b.size});
+        r.readAsDataURL(b);
+      },fmt,q);
+    });
+    (async()=>{
+      let best=null;
+      for(const[fmt,q]of[['image/avif',.82],['image/webp',.88]]){
+        const r=await tryEncode(fmt,q);
+        if(r&&(!best||r.size<best.size))best=r;
+      }
+      if(!best){BP_toast('Error procesando imagen','err');return;}
+      if(best.size>200*1024){BP_toast(`Imagen muy grande tras comprimir (${Math.round(best.size/1024)}KB > 200KB)`,'err');return;}
+      _imgData=best.data;_imgExt=best.ext;
+      const cube=document.getElementById('bp-img-cube');
+      cube.className='bp-img-cube has-img';cube.textContent='✅';
+      document.getElementById('bp-img-name').textContent=`${file.name} → ${Math.round(best.size/1024)}KB${best.ext}`;
+    })();
+  };
+  img.src=url;
+});
+
 window.BP_insertPrivado=function(){
   if(!_mdPub)return;
   const cm=_mdPub.codemirror;
-  const cur=cm.getCursor();
-  cm.replaceRange('\n\n<div id="privado"></div>\n\n',cur);
+  cm.replaceRange('\n\n<div id="privado"></div>\n\n',cm.getCursor());
   cm.focus();
 };
 
-window.BP_resetBlog=function(){
-  document.getElementById('bp-bnm').value='';
-  if(_mdPub){_mdPub.value('');}
-  if(_mdPriv){_mdPriv.value('');}
+function BP_showEditor(nombre,hasImg){
+  _editingNombre=nombre||null;
+  _editingHasImg=!!hasImg;
+  document.getElementById('bp-blog-list-view').style.display='none';
+  document.getElementById('bp-blog-editor').style.display='block';
+  document.getElementById('bp-editor-title').textContent=nombre?'Editar Blog':'Nuevo Blog';
+  document.getElementById('bp-editor-nm-label').textContent=nombre||'';
+  document.getElementById('bp-bnm').value=nombre||'';
+  document.getElementById('bp-bnm').readOnly=!!nombre;
+  const hint=document.getElementById('bp-img-hint');
+  hint.textContent=hasImg?'Opcional · reemplaza la imagen existente · max 200KB · webp/avif':'Requerida para blog nuevo · max 200KB · webp/avif';
+  BP_resetImgState();
+  if(!_mdPub)BP_initMDE();
+  if(_mdPub)_mdPub.value('');
+  if(_mdPriv)_mdPriv.value('');
+}
+
+window.BP_backToList=function(){
+  document.getElementById('bp-blog-editor').style.display='none';
+  document.getElementById('bp-blog-list-view').style.display='block';
+  _editingNombre=null;_editingHasImg=false;
+  BP_resetImgState();
 };
 
-window.BP_loadBlog=async function(){
-  const nm=document.getElementById('bp-bnm').value.trim();
-  if(!nm)return BP_toast('Escribe el nombre del blog','warn');
-  const{ok,data}=await BP_fetch('admin_blog_leer',{nombre:nm});
-  if(!ok)return BP_toast(data.error||'Error','err');
+window.BP_nuevoEditor=function(){BP_showEditor(null,false);};
+
+async function BP_loadBlogList(){
+  const lst=document.getElementById('bp-blog-list');
+  lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:30px">Cargando...</div>';
+  const{ok,data}=await BP_fetch('admin_blogs_list');
+  if(!ok){lst.innerHTML=`<div style="color:var(--err);padding:20px">${data.error||'Error'}</div>`;return;}
+  const blogs=data.blogs||[];
+  if(!blogs.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:30px">Sin blogs aun</div>';return;}
+  lst.innerHTML='';
+  blogs.forEach(b=>lst.appendChild(BP_mkBlogItem(b)));
+}
+
+function BP_mkBlogItem(b){
+  const div=document.createElement('div');div.className='bp-blog-item';div.id=`bli-${b.nombre}`;
+  div.innerHTML=`<span class="bp-blog-nm">${b.nombre}</span><div class="bp-blog-acts"><button class="bp-btn sm" onclick="BP_editBlog('${b.nombre}',true)">✏️ Editar</button><button class="bp-btn sm del" onclick="BP_confirmarBorrar('${b.nombre}')">🗑️</button></div>`;
+  return div;
+}
+
+window.BP_editBlog=async function(nombre,hasImg){
+  BP_showEditor(nombre,hasImg);
+  const{ok,data}=await BP_fetch('admin_blog_leer',{nombre});
+  if(!ok)return BP_toast(data.error||'Error cargando','err');
   if(_mdPub)_mdPub.value(data.publico||'');
   if(_mdPriv)_mdPriv.value(data.privado||'');
+  _editingHasImg=data.imgExists||false;
+  document.getElementById('bp-img-hint').textContent=_editingHasImg?'Opcional · reemplaza la imagen existente · max 200KB · webp/avif':'Requerida · max 200KB · webp/avif';
   BP_toast('Blog cargado');
+};
+
+window.BP_confirmarBorrar=function(nombre){
+  const lst=document.getElementById('bp-blog-list');
+  const existing=document.getElementById(`bconf-${nombre}`);
+  if(existing){existing.remove();return;}
+  const bar=document.createElement('div');bar.className='bp-confirm-bar';bar.id=`bconf-${nombre}`;
+  bar.innerHTML=`<span>Borrar "${nombre}"? Esta accion no se puede deshacer.</span><div class="bp-confirm-acts"><button class="bp-btn sm del" onclick="BP_borrarBlog('${nombre}')">Borrar</button><button class="bp-btn sm" onclick="document.getElementById('bconf-${nombre}').remove()">Cancelar</button></div>`;
+  const item=document.getElementById(`bli-${nombre}`);
+  if(item)item.after(bar);else lst.appendChild(bar);
+};
+
+window.BP_borrarBlog=async function(nombre){
+  const bar=document.getElementById(`bconf-${nombre}`);
+  if(bar)bar.remove();
+  const{ok,data}=await BP_fetch('admin_blog_borrar',{nombre});
+  if(!ok)return BP_toast(data.error||'Error al borrar','err');
+  const item=document.getElementById(`bli-${nombre}`);
+  if(item)item.remove();
+  BP_toast('Blog borrado','warn');
+  const lst=document.getElementById('bp-blog-list');
+  if(lst&&!lst.querySelector('.bp-blog-item'))lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:30px">Sin blogs aun</div>';
 };
 
 window.BP_publicar=async function(){
@@ -196,9 +339,15 @@ window.BP_publicar=async function(){
   const pub=_mdPub?_mdPub.value():'';
   const priv=_mdPriv?_mdPriv.value():'';
   if(!pub&&!priv)return BP_toast('Ambos editores estan vacios','warn');
-  const{ok,data}=await BP_fetch('admin_publicar',{nombre:nm,publico:pub,privado:priv});
+  const isNuevo=!_editingNombre;
+  if(isNuevo&&!_imgData)return BP_toast('Imagen requerida para blog nuevo','warn');
+  const payload={nombre:nm,publico:pub,privado:priv};
+  if(_imgData){payload.imgData=_imgData;payload.imgExt=_imgExt;}
+  const{ok,data}=await BP_fetch('admin_publicar',payload);
   if(!ok)return BP_toast(data.error||'Error al publicar','err');
   BP_toast('Blog publicado!');
+  BP_backToList();
+  BP_loadBlogList();
 };
 
 async function BP_loadUsuarios(){
