@@ -49,9 +49,8 @@ const EXT_CACHE=[
   {origin:'tetunori.github.io',ttl:0}
 ];
 const EXT_C='ext-fonts';
-const DJ=/\/Dinamico\/data\.json(\?|$)/;
-const DJ_URL='web/Dinamico/data.json';
-const DJ_ABS=new URL(DJ_URL,self.location).href;
+const DJ=/\/data\.json(\?|$)/;
+const DJ_NOTIFY=[new URL('web/Dinamico/data.json',self.location).href];
 const TS_CK='__chk_ts';
 const CHK_INT=86400000;
 const TEMP_C=V+'-tmp';
@@ -167,15 +166,15 @@ async function syncMD(nArr,oArr){
   }catch{}
 }
 
-async function chkDJ(){
+async function chkDJ(djUrl){
   try{
-    const r=await fetch(DJ_ABS,{cache:'no-store'});
+    const r=await fetch(djUrl,{cache:'no-store'});
     if(!r?.ok)return false;
     const txt=await r.text();
     const c=await caches.open(V);
-    const prev=await c.match(DJ_ABS);
+    const prev=await c.match(djUrl);
     const prevTxt=prev?await prev.text():null;
-    await c.put(DJ_ABS,new Response(txt,{status:200,headers:new Headers(r.headers)}));
+    await c.put(djUrl,new Response(txt,{status:200,headers:new Headers(r.headers)}));
     _ts=Date.now();
     await c.put(TS_CK,new Response(String(_ts)));
     const nArr=EP(JSON.parse(txt));
@@ -193,7 +192,7 @@ async function chkDJ(){
   }catch{return null;}
 }
 
-async function chkAll(){return chkDJ();}
+async function chkAll(){return chkDJ(DJ_NOTIFY[0]);}
 
 async function maybeCHK(){
   if(Date.now()-_ts<CHK_INT)return;
@@ -326,23 +325,25 @@ self.addEventListener('fetch',e=>{
   if(url.origin!==self.location.origin)return;
 
   if(DJ.test(url.pathname)){
+    const djHref=url.href;
+    const isNotify=DJ_NOTIFY.includes(djHref);
     e.respondWith((async()=>{
       const c=await caches.open(V);
-      const cc=await c.match(DJ_ABS);
+      const cc=await c.match(djHref);
       if(cc){
         e.waitUntil((async()=>{
           try{
             const etag=cc.headers.get('etag');
-            const r=await fetch(DJ_ABS,{cache:'no-store',...(etag&&{headers:{'If-None-Match':etag}})});
+            const r=await fetch(djHref,{cache:'no-store',...(etag&&{headers:{'If-None-Match':etag}})});
             if(r.status===304||!r?.ok)return;
             const txt=await r.text();
-            const prev=await c.match(DJ_ABS);
+            const prev=await c.match(djHref);
             const prevTxt=prev?await prev.text():null;
             if(txt===prevTxt)return;
-            await c.put(DJ_ABS,new Response(txt,{status:200,headers:new Headers(r.headers)}));
+            await c.put(djHref,new Response(txt,{status:200,headers:new Headers(r.headers)}));
             _ts=Date.now();
             await c.put(TS_CK,new Response(String(_ts)));
-            if(prevTxt!==null){
+            if(isNotify&&prevTxt!==null){
               const nA=EP(JSON.parse(txt)),oA=EP(JSON.parse(prevTxt));
               await syncMD(nA,oA);
               const oIDs=new Set(oA.map(eID));
@@ -354,10 +355,10 @@ self.addEventListener('fetch',e=>{
         return cc;
       }
       try{
-        const r=await fetch(DJ_ABS,{cache:'no-store'});
+        const r=await fetch(djHref,{cache:'no-store'});
         if(r?.ok){
           const txt=await r.text();
-          await c.put(DJ_ABS,new Response(txt,{status:200,headers:new Headers(r.headers)}));
+          await c.put(djHref,new Response(txt,{status:200,headers:new Headers(r.headers)}));
           return new Response(txt,{headers:{'Content-Type':'application/json'}});
         }
         return r;

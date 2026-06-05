@@ -96,6 +96,7 @@ const MS_LOCAL='web/scripts/Otros/MiniSearch/index.js';
 
 let curList=[],curPg=0,imgIO=null,fetchAC=null;
 let allItems=[],ms=null,msReady=false,dbt=null;
+let _done=false;
 
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 function mL(p){return p.replace(/\.[^.]+$/,'.md')}
@@ -233,6 +234,7 @@ function closeSearch(){
 }
 
 async function init(){
+  if(_done)return;_done=true;
   const gr=document.getElementById('pb-gr');
   const ld=document.getElementById('pb-ld');
   const cnt=document.getElementById('pb-cnt');
@@ -271,6 +273,7 @@ function bindUI(){
 let _escBound=false;
 function onCL(){
   if(!document.getElementById('pb-wrap'))return;
+  _done=false;
   curList=[];curPg=0;allItems=[];ms=null;msReady=false;
   bindUI();
   if(!_escBound){_escBound=true;document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSearch();});}
