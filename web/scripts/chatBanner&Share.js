@@ -2,7 +2,7 @@
 const WA_BASE="https://wa.me/595972184435?text=";
 const IMG_BASE="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/";
 const OFICIALPROVIDER=["595972184435"];
-const HIDE_PATHS=["web/Dinamico/Apps/","web/Dinamico/Juegos/","web/otros/Archivos/HTML/centralPage.html","web/otros/Archivos/HTML/PrivateMod.html","web/otros/Archivos/HTML/AgregarProducto.html"];
+const HIDE_PATHS=["web/Dinamico/Apps/","web/Dinamico/Juegos/","web/otros/Archivos/HTML/centralPage.html","web/otros/Archivos/HTML/PrivateMod.html","web/otros/Archivos/HTML/AgregarProducto.html","web/otros/Archivos/HTML/moi.html","web/otros/"];
 const NB_ROUTES=[
   {path:'web/es.html',label:'Tienda',emoji:'🛍️'},
   {path:'web/blogs.html',label:'Blog',emoji:'🔔'},
