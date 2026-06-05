@@ -139,8 +139,8 @@
             <div class="bp-img-pick">
               <div class="bp-img-cube" id="bp-img-cube" onclick="document.getElementById('bp-img-input').click()">🖼️</div>
               <div class="bp-img-info">
-                <div class="bp-img-name" id="bp-img-name">Sin imagen seleccionada</div>
-                <div class="bp-img-hint" id="bp-img-hint">Requerida para blog nuevo · max 200KB · webp/avif</div>
+                <div class="bp-img-name" id="bp-img-name">Selecciona Imagen</div>
+                <div class="bp-img-hint" id="bp-img-hint">Imagen Requerida - webp/avif</div>
               </div>
               <input type="file" id="bp-img-input" accept="image/*" style="display:none">
             </div>
@@ -267,7 +267,7 @@ function BP_showEditor(nombre,hasImg){
   document.getElementById('bp-bnm').value=nombre||'';
   document.getElementById('bp-bnm').readOnly=!!nombre;
   const hint=document.getElementById('bp-img-hint');
-  hint.textContent=hasImg?'Opcional · reemplaza la imagen existente · max 200KB · webp/avif':'Requerida para blog nuevo · max 200KB · webp/avif';
+  hint.textContent=hasImg?'Opcional · reemplazar imagen · webp/avif':'Requiere Imagen · webp/avif';
   BP_resetImgState();
   if(!_mdPub)BP_initMDE();
   if(_mdPub)_mdPub.value('');
