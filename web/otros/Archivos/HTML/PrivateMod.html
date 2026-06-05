@@ -63,7 +63,7 @@
 <div id="bp-wrap">
 <div class="bp-top">
   <div class="bp-logo">🔐</div>
-  <div><h1>Blog Privado</h1><span>Gestion de usuarios y contenido</span></div>
+  <div><h1>Blog </h1><span>Gestion </span></div>
 </div>
 <div class="bp-sect">
   <div id="bp-auth">
@@ -84,7 +84,7 @@
         <h2>Nuevo Usuario</h2>
         <div class="bp-row">
           <div class="fg"><label>Usuario</label><input id="bp-nu" type="text" placeholder="nuevo_user" autocomplete="off"></div>
-          <div class="fg"><label>Contrasena</label><input id="bp-np" type="password" placeholder="minimo 6 chars"></div>
+          <div class="fg"><label>Contrasena</label><input id="bp-np" type="password" placeholder="minimo 6 caracter"></div>
         </div>
         <div class="fg">
           <label>Expira (opcional, fecha limite)</label>
@@ -102,26 +102,26 @@
       <div class="bp-card">
         <h2>Nombre del Blog</h2>
         <div class="fg">
-          <label>Nombre (sera el nombre del archivo)</label>
-          <input id="bp-bnm" type="text" placeholder="Mi Blog Privado" maxlength="120">
+          <label>Nombre Blog</label>
+          <input id="bp-bnm" type="text" placeholder=" " maxlength="120">
         </div>
         <div style="display:flex;gap:8px;margin-bottom:8px">
-          <button class="bp-btn sm" onclick="BP_loadBlog()">📂 Cargar Existente</button>
-          <button class="bp-btn sm" onclick="BP_resetBlog()">🆕 Nuevo</button>
+          <button class="bp-btn sm" onclick="BP_loadBlog()">📂 Cargar </button>
+          <button class="bp-btn sm" onclick="BP_resetBlog()">🆕 Limpiar</button>
         </div>
       </div>
       <div class="bp-card">
-        <h2>Contenido Publico</h2>
-        <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Visible para todos. Incluye aqui el marcador <code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:5px;font-size:11px">&lt;div id="privado"&gt;&lt;/div&gt;</code> donde quieres que aparezca el contenido privado.</p>
-        <button class="bp-btn sm" style="margin-bottom:10px" onclick="BP_insertPrivado()">📌 Insertar marcador privado</button>
+        <h2>Parte Publica</h2>
+        <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Visible para todos.</p>
+        <button class="bp-btn sm" style="margin-bottom:10px" onclick="BP_insertPrivado()">📌 Insertar seccion privada</button>
         <div class="bp-mde-wrap"><div class="bp-mde-lbl">Editor Publico</div><textarea id="bp-pub"></textarea></div>
       </div>
       <div class="bp-card">
-        <h2>Contenido Privado</h2>
-        <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Solo visible para usuarios con login valido.</p>
+        <h2>Parte Privada</h2>
+        <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Solo visible para quien inicia sesion.</p>
         <div class="bp-mde-wrap"><div class="bp-mde-lbl">Editor Privado</div><textarea id="bp-priv"></textarea></div>
       </div>
-      <button class="bp-btn pri" onclick="BP_publicar()">📤 Publicar Blog</button>
+      <button class="bp-btn pri" onclick="BP_publicar()">📤 Publicar </button>
     </div>
   </div>
 </div>
@@ -222,7 +222,7 @@ window.BP_crearUsuario=async function(){
   const np=document.getElementById('bp-np').value;
   const expInput=document.getElementById('bp-nexp').value;
   if(!nu||!np)return BP_toast('Completa los campos','warn');
-  if(np.length<6)return BP_toast('Password minimo 6 chars','warn');
+  if(np.length<6)return BP_toast('Password minimo 6 caracter','warn');
   const expira=expInput?new Date(expInput).getTime():null;
   const{ok,data}=await BP_fetch('admin_usuario_crear',{nuevoUsuario:nu,nuevaPassword:np,expira});
   if(!ok)return BP_toast(data.error||'Error','err');
