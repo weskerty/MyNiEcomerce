@@ -1,0 +1,22 @@
+{
+  "home": "web/es.html",
+  "exit": "web/otros/Archivos/HTML/centralPage.html",
+  "404": "web/404.html",
+  "historyDepth": 2,
+  "cacheSize": 3,
+  "videoTimeout": 5000,
+  "loadingDelay": 1000,
+  "mobBreakpoint": 768,
+  "disqus": "amigos-steam",
+  "pluginsPath": "web/scripts/",
+  "plugins": ["chatBanner&Share.js", "Galerias.js", "install.js", "perfBench.js", "privado.js"],
+  "bg": [
+    { "month": 0,  "type": "image", "src": "web/otros/Archivos/Imagenes/pexels5834608AñoNuevo.avif" },
+    { "month": 1,  "type": "image", "src": "web/otros/Archivos/Imagenes/pexels-henkephotoart-29775986.jpg" },
+    { "month": 7,  "type": "image", "src": "web/otros/Archivos/Imagenes/benjamin-shurance-dUcQLRcZpmk-unsplash.jpg" },
+    { "month": 8,  "type": "video", "src": "https://github.com/user-attachments/assets/fd54742d-a7e9-49f4-b268-da16689918c1" },
+    { "month": 9,  "type": "image", "src": "web/otros/Archivos/Imagenes/pexels-vilas-5688958.jpg" },
+    { "month": 10, "type": "image", "src": "web/otros/Archivos/Imagenes/benjamin-shurance-W7zJGqbp6Xw-unsplash.jpg" },
+    { "month": 11, "type": "video", "src": "https://github.com/user-attachments/assets/b746d91d-55ae-4679-add6-fcf71e05dcd4" }
+  ]
+}
