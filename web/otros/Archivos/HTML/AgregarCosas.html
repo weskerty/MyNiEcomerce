@@ -1,25 +1,16 @@
 <style>
 :root{
---g1:rgba(255,255,255,0.06);
---g2:rgba(255,255,255,0.10);
---gb:rgba(255,255,255,0.13);
---gbb:rgba(255,255,255,0.18);
---acc:#4f8ef7;
---acc2:#a78bfa;
---ok:#34d399;
---err:#f87171;
---warn:#fbbf24;
---txt:rgba(255,255,255,0.92);
---txt2:rgba(255,255,255,0.45);
---r:16px;
---ri:12px;
+--g1:rgba(255,255,255,0.06);--g2:rgba(255,255,255,0.10);--gb:rgba(255,255,255,0.13);
+--gbb:rgba(255,255,255,0.18);--acc:#4f8ef7;--acc2:#a78bfa;--ok:#34d399;
+--err:#f87171;--warn:#fbbf24;--txt:rgba(255,255,255,0.92);--txt2:rgba(255,255,255,0.45);
+--r:16px;--ri:12px;
 }
-#ac-wrap{color:var(--txt);font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;padding:0 0 80px;-webkit-font-smoothing:antialiased}
+#ac-wrap{color:var(--txt);font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;padding:0 0 90px;-webkit-font-smoothing:antialiased}
 #ac-wrap *{box-sizing:border-box}
 .ac-top{padding:22px 18px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--gb)}
 .ac-top h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.3px}
 .ac-top span{font-size:12px;color:var(--txt2);margin-top:2px;display:block}
-.ac-logo{width:42px;height:42px;background:linear-gradient(135deg,#62d258,#1a8f12);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;box-shadow:0 4px 14px rgba(98,210,88,.28)}
+.ac-logo{width:42px;height:42px;background:linear-gradient(135deg,#62d258,#2563eb);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;box-shadow:0 4px 14px rgba(98,210,88,.25)}
 .ac-sect{max-width:600px;margin:0 auto;padding:18px 14px 0}
 .ac-card{background:var(--g1);border:1px solid var(--gb);border-radius:var(--r);padding:18px;margin-bottom:14px}
 .ac-card h2{margin:0 0 14px;font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em}
@@ -28,7 +19,7 @@
 .ac-tab.act{background:var(--g2);color:var(--txt);border:1px solid var(--gb)}
 .ac-type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
 .ac-type-btn{background:var(--g1);border:1px solid var(--gb);border-radius:var(--r);padding:14px 8px;cursor:pointer;text-align:center;transition:all .2s;font-family:inherit;color:var(--txt2)}
-.ac-type-btn:hover:not(:disabled){background:var(--g2);border-color:var(--gbb);color:var(--txt)}
+.ac-type-btn:not(:disabled):hover{background:var(--g2);border-color:var(--gbb);color:var(--txt)}
 .ac-type-btn.act{background:rgba(79,142,247,.12);border-color:rgba(79,142,247,.4);color:var(--acc)}
 .ac-type-btn:disabled{opacity:.35;cursor:not-allowed}
 .ac-type-btn .t-ico{font-size:22px;display:block;margin-bottom:5px}
@@ -38,38 +29,37 @@
 .fg input,.fg select,.fg textarea{width:100%;background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);color:var(--txt);padding:11px 13px;font-size:15px;outline:none;transition:border .15s,background .15s;-webkit-appearance:none;font-family:inherit}
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:rgba(79,142,247,.6);background:var(--g2)}
 .fg select option{background:#1a1a2e;color:#fff}
-.fg textarea{resize:vertical;min-height:80px;line-height:1.5}
+.fg textarea{resize:vertical;min-height:78px;line-height:1.5}
 .ac-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ac-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
 .ac-hint{font-size:11px;color:var(--txt2);margin-top:4px}
 .ac-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 20px;border:none;border-radius:var(--ri);font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s,box-shadow .15s;width:100%;font-family:inherit;letter-spacing:-.1px}
 .ac-btn.pri{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 4px 18px rgba(79,142,247,.3)}
 .ac-btn.pri:hover{box-shadow:0 6px 22px rgba(79,142,247,.45)}
-.ac-btn.sec{background:transparent;color:var(--txt);border:1px solid var(--gbb)}
-.ac-btn.sec:hover{background:var(--g2)}
 .ac-btn:active{transform:scale(.97)}
 .ac-btn:disabled{opacity:.4;cursor:not-allowed}
-.ac-img-preview{width:56px;height:56px;border-radius:10px;border:1.5px dashed var(--gb);background:var(--g1);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden}
-.ac-img-preview img{width:100%;height:100%;object-fit:cover;display:none;border-radius:9px}
 .ac-img-row{display:flex;gap:12px;align-items:center;margin-bottom:12px}
 .ac-img-row .fg{flex:1;margin:0}
-.ac-user-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);margin-bottom:16px;font-size:13px}
-.ac-user-bar span{color:var(--txt2)}
-.ac-user-bar strong{color:var(--txt)}
-.ac-user-bar button{background:transparent;border:1px solid var(--gb);color:var(--txt2);border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit}
-.ac-user-bar button:hover{background:var(--g2);color:var(--txt)}
+.ac-thumb{width:52px;height:52px;border-radius:10px;border:1.5px dashed var(--gb);background:var(--g1);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden}
+.ac-thumb img{width:100%;height:100%;object-fit:cover;display:none;border-radius:9px}
+.ac-ubar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);margin-bottom:16px;font-size:13px}
+.ac-ubar span{color:var(--txt2)}
+.ac-ubar strong{color:var(--txt)}
+.ac-ubar button{background:transparent;border:1px solid var(--gb);color:var(--txt2);border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s}
+.ac-ubar button:hover{background:var(--g2);color:var(--txt)}
 .ac-entry{background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);padding:13px;margin-bottom:10px;display:flex;gap:11px;align-items:flex-start}
-.ac-entry-thumb{width:48px;height:48px;border-radius:9px;background:var(--g1);border:1px solid var(--gb);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px}
-.ac-entry-thumb img{width:100%;height:100%;object-fit:cover}
+.ac-entry-ico{width:48px;height:48px;border-radius:9px;background:var(--g1);border:1px solid var(--gb);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px}
+.ac-entry-ico img{width:100%;height:100%;object-fit:cover}
 .ac-entry-info{flex:1;min-width:0}
-.ac-entry-info .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ac-entry-info .dt{font-size:11px;color:var(--txt2);margin-top:3px}
+.ac-entry-nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ac-entry-dt{font-size:11px;color:var(--txt2);margin-top:3px}
 .ac-entry-acts{display:flex;gap:6px;margin-top:8px}
 .ac-entry-acts button{padding:5px 12px;border-radius:50px;border:1px solid var(--gb);background:var(--g1);color:var(--txt);font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s}
 .ac-entry-acts button:hover{background:var(--g2)}
 .ac-entry-acts button.del{border-color:rgba(248,113,113,.3);color:#fca5a5}
 .ac-entry-acts button.del:hover{background:rgba(248,113,113,.08)}
-.ac-msg{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(20,20,35,0.88);border:1px solid var(--gb);border-radius:50px;padding:10px 22px;font-size:13px;font-weight:500;color:var(--txt);z-index:9999;pointer-events:none;white-space:nowrap;max-width:88vw;text-overflow:ellipsis;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.35)}
+.ac-auth-note{font-size:12px;color:var(--txt2);text-align:center;margin-top:10px}
+.ac-auth-note a{color:var(--acc);cursor:pointer}
+.ac-msg{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(20,20,35,0.9);border:1px solid var(--gb);border-radius:50px;padding:10px 22px;font-size:13px;font-weight:500;color:var(--txt);z-index:9999;pointer-events:none;white-space:nowrap;max-width:88vw;text-overflow:ellipsis;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.35)}
 .ac-msg.ok{border-color:rgba(52,211,153,.4);color:var(--ok)}
 .ac-msg.err{border-color:rgba(248,113,113,.4);color:var(--err)}
 .ac-msg.warn{border-color:rgba(251,191,36,.4);color:var(--warn)}
@@ -78,89 +68,102 @@
 <div id="ac-wrap">
   <div class="ac-top">
     <div class="ac-logo">➕</div>
-    <div><h1>Agregar al Sitio</h1><span>Agrega tu servidor, lugar o evento</span></div>
+    <div><h1>Agregar al Sitio</h1><span>Servidores, lugares y mas</span></div>
   </div>
-  <div class="ac-sect" id="ac-loading" style="padding-top:40px;text-align:center;color:var(--txt2);font-size:.9em">Verificando...</div>
-  <div class="ac-sect" id="ac-main" style="display:none">
-    <div class="ac-user-bar">
-      <span>Sesion: <strong id="ac-uname"></strong></span>
-      <button onclick="AC_logout()">Cerrar Sesion</button>
-    </div>
-    <div class="ac-tabs">
-      <button class="ac-tab act" id="ac-tnuevo" onclick="AC_mainTab('nuevo')">➕ Agregar</button>
-      <button class="ac-tab" id="ac-tmis" onclick="AC_mainTab('mis')">📋 Mis Entradas</button>
-    </div>
-    <div id="ac-tab-nuevo">
-      <div class="ac-type-grid">
-        <button class="ac-type-btn act" id="ac-tmc" onclick="AC_setType('minecraft')">
-          <span class="t-ico">⛏️</span>
-          <span class="t-lbl">Minecraft</span>
-        </button>
-        <button class="ac-type-btn" disabled>
-          <span class="t-ico">♻️</span>
-          <span class="t-lbl">Reciclaje</span>
-        </button>
-        <button class="ac-type-btn" disabled>
-          <span class="t-ico">👕</span>
-          <span class="t-lbl">Lavanderia</span>
-        </button>
+  <div class="ac-sect">
+    <div id="ac-auth">
+      <div class="ac-tabs">
+        <button class="ac-tab act" id="ac-tlogin" onclick="AC_showTab('login')">Iniciar Sesion</button>
+        <button class="ac-tab" id="ac-treg" onclick="AC_showTab('reg')">Registrarse</button>
       </div>
-      <div id="ac-form-minecraft">
-        <div class="ac-card">
-          <h2>Servidor Minecraft</h2>
-          <div class="fg">
-            <label>Nombre del Servidor</label>
-            <input id="ac-mc-name" type="text" placeholder="Mi Server Paraguay" maxlength="80">
-          </div>
-          <div class="ac-row">
-            <div class="fg">
-              <label>Direccion (IP o dominio)</label>
-              <input id="ac-mc-url" type="text" placeholder="play.miserver.com" maxlength="100" autocomplete="off" autocapitalize="none">
-            </div>
-            <div class="fg">
-              <label>Puerto</label>
-              <input id="ac-mc-port" type="text" inputmode="numeric" placeholder="19132" maxlength="5">
-            </div>
-          </div>
-          <div class="fg">
-            <label>Modo</label>
-            <select id="ac-mc-mtype">
-              <option value="B">Bedrock</option>
-              <option value="J">Java</option>
-            </select>
-          </div>
-          <div class="ac-img-row">
-            <div class="ac-img-preview" id="ac-mc-thumb">
-              <span id="ac-mc-ico">⛏️</span>
-              <img id="ac-mc-img-prev" alt="">
-            </div>
-            <div class="fg">
-              <label>URL Imagen (opcional)</label>
-              <input id="ac-mc-img" type="url" placeholder="https://..." maxlength="500" autocomplete="off">
-            </div>
-          </div>
-          <p class="ac-hint">La imagen carga en segundo plano — si falla se muestra el icono por defecto.</p>
-          <div class="fg">
-            <label>Descripcion (opcional)</label>
-            <textarea id="ac-mc-desc" placeholder="Descripcion corta del servidor..." maxlength="300"></textarea>
-          </div>
+      <div class="ac-card" id="ac-login-box">
+        <h2>Acceso</h2>
+        <div class="fg"><label>Usuario</label><input id="ac-lu" type="text" placeholder="tu_usuario" autocomplete="username"></div>
+        <div class="fg"><label>Contrasena</label><input id="ac-lp" type="password" placeholder="••••••" autocomplete="current-password"></div>
+        <button class="ac-btn pri" id="ac-lbtn" onclick="AC_login()">Entrar</button>
+        <p class="ac-auth-note">Sin cuenta? <a onclick="AC_showTab('reg')">Registrate aqui</a></p>
+      </div>
+      <div class="ac-card" id="ac-reg-box" style="display:none">
+        <h2>Nuevo Usuario</h2>
+        <div class="fg"><label>Usuario</label><input id="ac-ru" type="text" placeholder="mi_usuario (3-32 chars)" autocomplete="username"></div>
+        <div class="fg"><label>Contrasena</label><input id="ac-rp" type="password" placeholder="minimo 6 chars" autocomplete="new-password"></div>
+        <div class="fg"><label>Confirmar</label><input id="ac-rp2" type="password" placeholder="••••••" autocomplete="new-password"></div>
+        <button class="ac-btn pri" id="ac-rbtn" onclick="AC_registro()">Crear Cuenta</button>
+        <p class="ac-auth-note">Ya tenes cuenta? <a onclick="AC_showTab('login')">Inicia sesion</a></p>
+      </div>
+    </div>
+    <div id="ac-main" style="display:none">
+      <div class="ac-ubar">
+        <span>Sesion: <strong id="ac-uname"></strong></span>
+        <button onclick="AC_logout()">Cerrar Sesion</button>
+      </div>
+      <div class="ac-tabs">
+        <button class="ac-tab act" id="ac-tnuevo" onclick="AC_mainTab('nuevo')">➕ Agregar</button>
+        <button class="ac-tab" id="ac-tmis" onclick="AC_mainTab('mis')">📋 Mis Entradas</button>
+      </div>
+      <div id="ac-tab-nuevo">
+        <div class="ac-type-grid">
+          <button class="ac-type-btn act" id="ac-tmc" onclick="AC_setType('minecraft')">
+            <span class="t-ico">⛏️</span><span class="t-lbl">Minecraft</span>
+          </button>
+          <button class="ac-type-btn" disabled title="Proximamente">
+            <span class="t-ico">♻️</span><span class="t-lbl">Reciclaje</span>
+          </button>
+          <button class="ac-type-btn" disabled title="Proximamente">
+            <span class="t-ico">👕</span><span class="t-lbl">Lavanderia</span>
+          </button>
         </div>
-        <button class="ac-btn pri" id="ac-mc-submit" onclick="AC_enviarMC()">📤 Publicar Servidor</button>
+        <div id="ac-form-mc">
+          <div class="ac-card">
+            <h2>Servidor Minecraft</h2>
+            <div class="fg"><label>Nombre del Servidor</label>
+              <input id="ac-mc-name" type="text" placeholder="Mi Server Paraguay" maxlength="80">
+            </div>
+            <div class="ac-row">
+              <div class="fg"><label>Direccion (IP o dominio)</label>
+                <input id="ac-mc-url" type="text" placeholder="play.miserver.com" maxlength="100" autocomplete="off" autocapitalize="none" spellcheck="false">
+              </div>
+              <div class="fg"><label>Puerto</label>
+                <input id="ac-mc-port" type="text" inputmode="numeric" placeholder="19132" maxlength="5">
+              </div>
+            </div>
+            <div class="fg"><label>Modo</label>
+              <select id="ac-mc-mtype">
+                <option value="B">Bedrock</option>
+                <option value="J">Java</option>
+              </select>
+            </div>
+            <div class="ac-img-row">
+              <div class="ac-thumb" id="ac-mc-thumb">
+                <span id="ac-mc-ico">⛏️</span>
+                <img id="ac-mc-iprev" alt="" onerror="this.style.display='none';document.getElementById('ac-mc-ico').style.display=''">
+              </div>
+              <div class="fg"><label>URL Imagen (opcional)</label>
+                <input id="ac-mc-img" type="url" placeholder="https://..." maxlength="500" autocomplete="off" spellcheck="false">
+              </div>
+            </div>
+            <p class="ac-hint">La imagen carga en segundo plano — si falla muestra el icono por defecto.</p>
+            <div class="fg"><label>Descripcion (opcional)</label>
+              <textarea id="ac-mc-desc" placeholder="Descripcion corta del servidor..." maxlength="300"></textarea>
+            </div>
+          </div>
+          <button class="ac-btn pri" id="ac-mc-submit" onclick="AC_enviarMC()">📤 Publicar Servidor</button>
+        </div>
       </div>
-    </div>
-    <div id="ac-tab-mis" style="display:none">
-      <div id="ac-mis-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
+      <div id="ac-tab-mis" style="display:none">
+        <div id="ac-mis-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
 (function(){
-const AC_URL=(()=>{const b=document.querySelector('meta[name=api-base]')?.content||'';return b||'/api/publico';})();
-const LOGIN_PATH='web/otros/Archivos/HTML/login.html';
+const AC_URL='/api/publico';
 let _usr=null,_pwd=null,_mis=[],_msg=null;
 
 function AC_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
+function AC_sck(k,v){const sec=location.protocol==='https:'?';Secure':'';document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=31536000;SameSite=Strict${sec}`;}
 function AC_dck(k){document.cookie=`${k}=;path=/;max-age=0`;}
 
 function AC_toast(t,tp='ok',d=3000){
@@ -178,23 +181,11 @@ async function AC_post(action,payload){
   return{ok:res.ok,data};
 }
 
-function AC_showMain(){
-  document.getElementById('ac-loading').style.display='none';
-  document.getElementById('ac-main').style.display='block';
-  document.getElementById('ac-uname').textContent=_usr;
-}
-
-window.AC_logout=function(){
-  AC_dck('ap_u');AC_dck('ap_p');
-  _usr=null;_pwd=null;
-  document.getElementById('ac-main').style.display='none';
-  document.getElementById('ac-loading').style.display='block';
-  document.getElementById('ac-loading').textContent='Sesion cerrada.';
-  AC_toast('Sesion cerrada','warn');
-  setTimeout(()=>{
-    if(window.l)l(LOGIN_PATH);
-    else window.location.hash='#'+LOGIN_PATH;
-  },900);
+window.AC_showTab=function(t){
+  document.getElementById('ac-login-box').style.display=t==='login'?'block':'none';
+  document.getElementById('ac-reg-box').style.display=t==='reg'?'block':'none';
+  document.getElementById('ac-tlogin').classList.toggle('act',t==='login');
+  document.getElementById('ac-treg').classList.toggle('act',t==='reg');
 };
 
 window.AC_mainTab=function(t){
@@ -207,17 +198,64 @@ window.AC_mainTab=function(t){
 
 window.AC_setType=function(type){
   document.querySelectorAll('.ac-type-btn:not(:disabled)').forEach(b=>b.classList.remove('act'));
-  document.getElementById('ac-tmc').classList.toggle('act',type==='minecraft');
-  document.getElementById('ac-form-minecraft').style.display=type==='minecraft'?'block':'none';
+  if(type==='minecraft')document.getElementById('ac-tmc').classList.add('act');
+  document.getElementById('ac-form-mc').style.display=type==='minecraft'?'block':'none';
+};
+
+function AC_showMain(){
+  document.getElementById('ac-auth').style.display='none';
+  document.getElementById('ac-main').style.display='block';
+  document.getElementById('ac-uname').textContent=_usr;
+}
+
+window.AC_logout=function(){
+  AC_dck('ap_u');AC_dck('ap_p');
+  _usr=null;_pwd=null;_mis=[];
+  document.getElementById('ac-main').style.display='none';
+  document.getElementById('ac-auth').style.display='block';
+  AC_showTab('login');
+  AC_toast('Sesion cerrada','warn');
+};
+
+window.AC_login=async function(){
+  const u=document.getElementById('ac-lu').value.trim();
+  const p=document.getElementById('ac-lp').value;
+  if(!u||!p)return AC_toast('Completa los campos','warn');
+  const btn=document.getElementById('ac-lbtn');
+  btn.disabled=true;btn.textContent='Verificando...';
+  const{ok,data}=await AC_post('login',{usuario:u,password:p});
+  btn.disabled=false;btn.textContent='Entrar';
+  if(!ok)return AC_toast(data.error||'Error','err');
+  _usr=u;_pwd=p;
+  AC_sck('ap_u',u);AC_sck('ap_p',p);
+  AC_toast('Bienvenido '+u);
+  AC_showMain();
+};
+
+window.AC_registro=async function(){
+  const u=document.getElementById('ac-ru').value.trim();
+  const p=document.getElementById('ac-rp').value;
+  const p2=document.getElementById('ac-rp2').value;
+  if(!u||!p)return AC_toast('Completa los campos','warn');
+  if(p!==p2)return AC_toast('Las contrasenas no coinciden','warn');
+  const btn=document.getElementById('ac-rbtn');
+  btn.disabled=true;btn.textContent='Creando...';
+  const{ok,data}=await AC_post('registro',{usuario:u,password:p});
+  btn.disabled=false;btn.textContent='Crear Cuenta';
+  if(!ok)return AC_toast(data.error||'Error','err');
+  AC_toast('Cuenta creada!');
+  document.getElementById('ac-lu').value=u;
+  document.getElementById('ac-lp').value=p;
+  AC_showTab('login');
+  await AC_login();
 };
 
 document.getElementById('ac-mc-img').addEventListener('input',function(){
-  const prev=document.getElementById('ac-mc-img-prev');
+  const prev=document.getElementById('ac-mc-iprev');
   const ico=document.getElementById('ac-mc-ico');
   const url=this.value.trim();
   if(!url){prev.style.display='none';ico.style.display='';return;}
   prev.onload=()=>{prev.style.display='block';ico.style.display='none';};
-  prev.onerror=()=>{prev.style.display='none';ico.style.display='';};
   prev.src=url;
 });
 
@@ -238,26 +276,19 @@ window.AC_enviarMC=async function(){
   const btn=document.getElementById('ac-mc-submit');
   btn.disabled=true;btn.textContent='Publicando...';
   const{ok,data}=await AC_post('agregar',{
-    usuario:_usr,password:_pwd,
-    type:'minecraft',
+    usuario:_usr,password:_pwd,type:'minecraft',
     data:{name,url,port,mtype,img:img||null,desc:desc||null}
   });
   btn.disabled=false;btn.textContent='📤 Publicar Servidor';
   if(!ok)return AC_toast(data.error||'Error al publicar','err');
   AC_toast('Servidor publicado!');
-  AC_resetMC();
+  ['ac-mc-name','ac-mc-url','ac-mc-port','ac-mc-img','ac-mc-desc'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('ac-mc-iprev').style.display='none';
+  document.getElementById('ac-mc-ico').style.display='';
+  document.getElementById('ac-mc-mtype').value='B';
   _mis=[];
   AC_mainTab('mis');
 };
-
-function AC_resetMC(){
-  ['ac-mc-name','ac-mc-url','ac-mc-port','ac-mc-img','ac-mc-desc'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('ac-mc-img-prev').style.display='none';
-  document.getElementById('ac-mc-ico').style.display='';
-  document.getElementById('ac-mc-mtype').value='B';
-}
-
-function AC_TS(t){return new Date(t).toLocaleDateString('es-PY',{day:'2-digit',month:'2-digit',year:'2-digit'});}
 
 const TYPE_ICO={minecraft:'⛏️',reciclaje:'♻️',lavanderia:'👕'};
 const TYPE_LBL={minecraft:'Minecraft',reciclaje:'Reciclaje',lavanderia:'Lavanderia'};
@@ -274,14 +305,19 @@ window.AC_loadMis=async function(){
   lst.innerHTML='';
   _mis.forEach(e=>{
     const div=document.createElement('div');div.className='ac-entry';
-    div.innerHTML=`<div class="ac-entry-thumb">${TYPE_ICO[e.type]||'📌'}</div>
-    <div class="ac-entry-info">
-      <div class="nm">${e.name||e.nombre||'Sin nombre'}</div>
-      <div class="dt">${TYPE_LBL[e.type]||e.type} &middot; ${AC_TS(e.ts)}</div>
-      <div class="ac-entry-acts">
-        <button class="del" onclick="AC_borrar('${e.type}','${e.id}')">🗑️ Borrar</button>
-      </div>
-    </div>`;
+    const ico=document.createElement('div');ico.className='ac-entry-ico';
+    ico.textContent=TYPE_ICO[e.type]||'📌';
+    const info=document.createElement('div');info.className='ac-entry-info';
+    const nm=document.createElement('div');nm.className='ac-entry-nm';
+    nm.textContent=e.name||e.nombre||'Sin nombre';
+    const dt=document.createElement('div');dt.className='ac-entry-dt';
+    dt.textContent=`${TYPE_LBL[e.type]||e.type} · ${new Date(e.ts).toLocaleDateString('es-PY',{day:'2-digit',month:'2-digit',year:'2-digit'})}`;
+    const acts=document.createElement('div');acts.className='ac-entry-acts';
+    const del=document.createElement('button');del.className='del';del.textContent='🗑️ Borrar';
+    del.onclick=()=>AC_borrar(e.type,e.id);
+    acts.appendChild(del);
+    info.appendChild(nm);info.appendChild(dt);info.appendChild(acts);
+    div.appendChild(ico);div.appendChild(info);
     lst.appendChild(div);
   });
 };
@@ -295,28 +331,18 @@ window.AC_borrar=async function(type,entryId){
   AC_loadMis();
 };
 
-async function AC_init(){
+function AC_init(){
   const u=AC_ck('ap_u');
   const p=AC_ck('ap_p');
-  if(!u||!p){
-    document.getElementById('ac-loading').style.display='none';
-    if(window.l)l(LOGIN_PATH);
-    else window.location.hash='#'+LOGIN_PATH;
-    return;
-  }
-  const{ok}=await AC_post('login',{usuario:u,password:p});
-  if(!ok){
-    AC_dck('ap_u');AC_dck('ap_p');
-    document.getElementById('ac-loading').style.display='none';
-    if(window.l)l(LOGIN_PATH);
-    else window.location.hash='#'+LOGIN_PATH;
-    return;
-  }
-  _usr=u;_pwd=p;
-  AC_showMain();
+  if(!u||!p)return;
+  AC_post('login',{usuario:u,password:p}).then(({ok})=>{
+    if(!ok){AC_dck('ap_u');AC_dck('ap_p');return;}
+    _usr=u;_pwd=p;
+    AC_showMain();
+  });
 }
 
-document.addEventListener('contentLoaded',AC_init,{once:true});
-if(document.readyState!=='loading')AC_init();
+AC_init();
+document.addEventListener('contentLoaded',AC_init);
 })();
 </script>
