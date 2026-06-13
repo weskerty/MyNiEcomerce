@@ -210,9 +210,10 @@ function C_onConn(conn){
     conns[conn.peer]=conn;
     if(!pNick[conn.peer])pNick[conn.peer]=conn.metadata?.nick||conn.peer.slice(0,8);
     conn.send({t:'nick',v:NICK});
-    C_addSys(pNick[conn.peer]+' se unio');
+    C_addSys((pNick[conn.peer]||conn.peer.slice(0,8))+' se unio');
     C_renderP();
     if(aS){const c=peer.call(conn.peer,aS,{metadata:{nick:NICK}});C_hCall(c);}
+    if(vS){const c=peer.call(conn.peer,vS,{metadata:{nick:NICK}});C_hCall(c);}
   });
   conn.on('data',d=>C_onData(d,conn.peer));
   conn.on('close',()=>C_discP(conn.peer));
@@ -269,7 +270,6 @@ async function C_enterR(id,name,pw){
     const conn=peer.connect(p.pid,{metadata:{nick:NICK},reliable:true});
     C_onConn(conn);
   });
-  C_renderP();
 
   startAudio();
 
