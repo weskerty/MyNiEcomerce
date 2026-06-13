@@ -114,7 +114,7 @@
 const API    = '/api/chat';
 const PEER_HOST = location.hostname;
 const PEER_PORT = 443;
-const PEER_PATH = '/api/chat';
+const PEER_PATH = '/api/chat/peerjs';
 const NICK   = 'U' + Math.random().toString(36).slice(2,6).toUpperCase();
 const POLL_MS = 5000;
 const PING_MS = 8000;
@@ -210,12 +210,7 @@ EL.iJP.onkeydown=e=>{if(e.key==='Enter')EL.bJJ.onclick();};
 async function initPeer(){
   return new Promise((resolve,reject)=>{
     if(peer&&!peer.destroyed&&peer.id){resolve(peer);return;}
-    peer=new Peer({
-      host:PEER_HOST,
-      port:PEER_PORT,
-      path:PEER_PATH,
-      secure:location.protocol==='https:',
-    });
+    peer=new Peer();
     peer.on('open',id=>{myPid=id;resolve(peer);});
     peer.on('error',e=>{reject(e);});
     peer.on('connection',conn=>onConn(conn));
