@@ -11,7 +11,7 @@ export async function onRequest(context) {
 
   const url    = new URL(request.url);
   const target = url.pathname.replace(/^\/chat/, '') || '/';
-  const fwd    = `${env.SIGNAL_URL}${target}${url.search}`;
+  const fwd    = `${env.SERVER_URL}/chat${target}${url.search}`;
 
   const init = {
     method: request.method,
