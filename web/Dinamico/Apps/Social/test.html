@@ -5,290 +5,315 @@
 <style data-content>
 :root{--a:#c8ff00;--r:#ff2d4e;--d:#ffffff18;--t:#e8e8e8;--m:'Courier New',monospace;}
 *{box-sizing:border-box;margin:0;padding:0;}
-#W{width:100%;min-height:100vh;font-family:var(--m);color:var(--t);background:transparent;display:flex;flex-direction:column;}
-.S{display:none;flex-direction:column;flex:1;}.S.on{display:flex;}
-#LB{padding:20px 16px;gap:10px;max-width:460px;width:100%;margin:0 auto;}
-#LB h1{font-size:2rem;letter-spacing:6px;color:var(--a);text-shadow:0 0 20px #c8ff0033;text-align:center;}
-.lb{font-size:.6rem;color:#ffffff44;letter-spacing:2px;text-transform:uppercase;}
-.dv{height:1px;background:var(--d);}
-.ip{width:100%;padding:8px 12px;background:transparent;border:1px solid #ffffff33;color:var(--t);font-family:var(--m);font-size:.82rem;outline:none;transition:border-color .2s;}
-.ip:focus{border-color:var(--a);}
-.rw{display:flex;gap:8px;}.rw .ip{flex:1;}
-.bt{padding:7px 13px;background:transparent;border:1px solid var(--a);color:var(--a);font-family:var(--m);font-size:.74rem;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:background .15s,color .15s;white-space:nowrap;}
-.bt:hover{background:var(--a);color:#060608;}
-.bt.r{border-color:var(--r);color:var(--r);}.bt.r:hover{background:var(--r);color:#fff;}
-.bt.d{border-color:#ffffff33;color:#ffffff55;}.bt.d:hover{background:#ffffff11;color:#fff;}
-#ST{font-size:.6rem;letter-spacing:1px;color:#ffffff33;text-align:right;}
-#ST.ok{color:var(--a);}#ST.er{color:var(--r);}
-#RL{display:flex;flex-direction:column;gap:6px;min-height:44px;}
-.ri{border:1px solid #ffffff1a;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color .15s,background .15s;}
-.ri:hover{border-color:var(--a);background:#c8ff0006;}
-.rn{font-size:.85rem;color:var(--a);}.rm{font-size:.6rem;color:#ffffff44;}
-.nt{font-size:.7rem;color:#ffffff33;text-align:center;padding:8px;}
-.mo{position:fixed;inset:0;background:#000000aa;display:none;align-items:center;justify-content:center;z-index:100;}
-.mo.on{display:flex;}
-.mb{width:min(290px,90vw);border:1px solid var(--d);background:#0b0b14;padding:20px 16px;display:flex;flex-direction:column;gap:9px;}
-.mb h2{font-size:.88rem;letter-spacing:2px;color:var(--a);text-align:center;}
-#CH{flex:1;display:none;flex-direction:column;}#CH.on{display:flex;}
-#HD{padding:8px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--d);flex-shrink:0;}
-#NM{font-size:.86rem;letter-spacing:2px;color:var(--a);flex:1;}
-#PC{font-size:.6rem;color:#ffffff44;}
-#VG{display:none;flex-wrap:wrap;gap:5px;padding:6px 10px;border-bottom:1px solid var(--d);max-height:175px;overflow-y:auto;}
-#VG.on{display:flex;}
-.ve{position:relative;border-radius:4px;overflow:hidden;background:#000;border:1px solid var(--d);flex:1;min-width:88px;max-width:155px;}
-.ve video{width:100%;display:block;max-height:108px;object-fit:cover;}
-.vl{position:absolute;bottom:3px;left:4px;font-size:.57rem;background:rgba(0,0,0,.65);padding:1px 4px;border-radius:3px;}
-#MG{flex:1;overflow-y:auto;padding:8px 12px;display:flex;flex-direction:column;gap:3px;}
-.ms{display:flex;gap:7px;align-items:flex-end;}.ms.me{flex-direction:row-reverse;}
-.av{width:21px;height:21px;border-radius:50%;border:1px solid var(--d);display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:900;flex-shrink:0;color:var(--a);}
-.bu{max-width:72%;padding:6px 10px;border:1px solid var(--d);font-size:.8rem;line-height:1.4;word-break:break-word;}
-.me .bu{border-color:#ffffff22;background:#ffffff0a;}
-.sn{font-size:.57rem;color:#ffffff44;margin-bottom:2px;}
-.sy{font-size:.62rem;color:#ffffff2a;text-align:center;padding:2px 0;letter-spacing:1px;}
-#IB{display:flex;gap:8px;padding:8px 11px;border-top:1px solid var(--d);flex-shrink:0;}
-#IB .ip{flex:1;}
-#PP{position:fixed;top:0;right:-210px;width:195px;height:100%;border-left:1px solid var(--d);background:#0b0b14f0;z-index:50;transition:right .2s;display:flex;flex-direction:column;padding:11px;gap:6px;overflow-y:auto;}
-#PP.on{right:0;}
-#PP h3{font-size:.62rem;color:#ffffff44;letter-spacing:2px;padding-bottom:5px;border-bottom:1px solid var(--d);}
-.pr{display:flex;align-items:center;gap:6px;padding:4px 2px;}
-.pn{font-size:.74rem;flex:1;}
-.pm{background:transparent;border:1px solid #ffffff22;color:#fff;font-size:.6rem;padding:2px 5px;cursor:pointer;}
-.pm.mu{border-color:var(--r);color:var(--r);}
+#SC_W{width:100%;min-height:100vh;font-family:var(--m);color:var(--t);background:transparent;display:flex;flex-direction:column;}
+.SC_s{display:none;flex-direction:column;flex:1;}.SC_s.on{display:flex;}
+#SC_lb{padding:20px 16px;gap:10px;max-width:460px;width:100%;margin:0 auto;}
+#SC_lb h1{font-size:2rem;letter-spacing:6px;color:var(--a);text-shadow:0 0 20px #c8ff0033;text-align:center;}
+.SC_lbl{font-size:.6rem;color:#ffffff44;letter-spacing:2px;text-transform:uppercase;}
+.SC_dv{height:1px;background:var(--d);}
+.SC_ip{width:100%;padding:8px 12px;background:transparent;border:1px solid #ffffff33;color:var(--t);font-family:var(--m);font-size:.82rem;outline:none;transition:border-color .2s;}
+.SC_ip:focus{border-color:var(--a);}
+.SC_rw{display:flex;gap:8px;}.SC_rw .SC_ip{flex:1;}
+.SC_bt{padding:7px 13px;background:transparent;border:1px solid var(--a);color:var(--a);font-family:var(--m);font-size:.74rem;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:background .15s,color .15s;white-space:nowrap;}
+.SC_bt:hover{background:var(--a);color:#060608;}
+.SC_bt.r{border-color:var(--r);color:var(--r);}.SC_bt.r:hover{background:var(--r);color:#fff;}
+.SC_bt.d{border-color:#ffffff33;color:#ffffff55;}.SC_bt.d:hover{background:#ffffff11;color:#fff;}
+.SC_bt.sm{padding:5px 8px;font-size:.7rem;}
+#SC_st{font-size:.6rem;letter-spacing:1px;color:#ffffff33;text-align:right;}
+#SC_st.ok{color:var(--a);}#SC_st.er{color:var(--r);}
+#SC_rl{display:flex;flex-direction:column;gap:6px;min-height:44px;}
+.SC_ri{border:1px solid #ffffff1a;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color .15s,background .15s;}
+.SC_ri:hover{border-color:var(--a);background:#c8ff0006;}
+.SC_rn{font-size:.85rem;color:var(--a);}.SC_rm{font-size:.6rem;color:#ffffff44;}
+.SC_nt{font-size:.7rem;color:#ffffff33;text-align:center;padding:8px;}
+.SC_mo{position:fixed;inset:0;background:#000000aa;display:none;align-items:center;justify-content:center;z-index:100;}
+.SC_mo.on{display:flex;}
+.SC_mb{width:min(290px,90vw);border:1px solid var(--d);background:#0b0b14;padding:20px 16px;display:flex;flex-direction:column;gap:9px;}
+.SC_mb h2{font-size:.88rem;letter-spacing:2px;color:var(--a);text-align:center;}
+#SC_ch{flex:1;display:none;flex-direction:column;}#SC_ch.on{display:flex;}
+#SC_hd{padding:8px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--d);flex-shrink:0;}
+#SC_nm{font-size:.86rem;letter-spacing:2px;color:var(--a);flex:1;}
+#SC_pc{font-size:.6rem;color:#ffffff44;}
+#SC_vg{display:none;flex-wrap:wrap;gap:5px;padding:6px 10px;border-bottom:1px solid var(--d);max-height:175px;overflow-y:auto;}
+#SC_vg.on{display:flex;}
+.SC_ve{position:relative;border-radius:4px;overflow:hidden;background:#000;border:1px solid var(--d);flex:1;min-width:88px;max-width:155px;}
+.SC_ve video{width:100%;display:block;max-height:108px;object-fit:cover;}
+.SC_vl{position:absolute;bottom:3px;left:4px;font-size:.57rem;background:rgba(0,0,0,.65);padding:1px 4px;border-radius:3px;}
+#SC_mg{flex:1;overflow-y:auto;padding:8px 12px;display:flex;flex-direction:column;gap:3px;}
+.SC_ms{display:flex;gap:7px;align-items:flex-end;}.SC_ms.me{flex-direction:row-reverse;}
+.SC_av{width:21px;height:21px;border-radius:50%;border:1px solid var(--d);display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:900;flex-shrink:0;color:var(--a);}
+.SC_bu{max-width:72%;padding:6px 10px;border:1px solid var(--d);font-size:.8rem;line-height:1.4;word-break:break-word;}
+.SC_ms.me .SC_bu{border-color:#ffffff22;background:#ffffff0a;}
+.SC_sn{font-size:.57rem;color:#ffffff44;margin-bottom:2px;}
+.SC_sy{font-size:.62rem;color:#ffffff2a;text-align:center;padding:2px 0;letter-spacing:1px;}
+#SC_ib{display:flex;gap:8px;padding:8px 11px;border-top:1px solid var(--d);flex-shrink:0;}
+#SC_ib .SC_ip{flex:1;}
+#SC_pp{position:fixed;top:0;right:-210px;width:195px;height:100%;border-left:1px solid var(--d);background:#0b0b14f0;z-index:50;transition:right .2s;display:flex;flex-direction:column;padding:11px;gap:6px;overflow-y:auto;}
+#SC_pp.on{right:0;}
+#SC_pp h3{font-size:.62rem;color:#ffffff44;letter-spacing:2px;padding-bottom:5px;border-bottom:1px solid var(--d);}
+.SC_pr{display:flex;align-items:center;gap:6px;padding:4px 2px;}
+.SC_pn{font-size:.74rem;flex:1;}
+.SC_pm{background:transparent;border:1px solid #ffffff22;color:#fff;font-size:.6rem;padding:2px 5px;cursor:pointer;}
+.SC_pm.mu{border-color:var(--r);color:var(--r);}
 </style>
 
-<div id="W">
-  <div id="moC" class="mo">
-    <div class="mb">
+<div id="SC_W">
+  <div id="SC_moC" class="SC_mo">
+    <div class="SC_mb">
       <h2>NUEVA SALA</h2>
-      <input id="iRN" class="ip" placeholder="Nombre de sala..." maxlength="32">
-      <input id="iRP" class="ip" type="password" placeholder="Contrasena (opcional)" maxlength="48">
-      <button id="bRC" class="bt">Crear</button>
-      <button id="bRX" class="bt d">Cancelar</button>
+      <input id="SC_iRN" class="SC_ip" placeholder="Nombre de sala..." maxlength="32">
+      <input id="SC_iRP" class="SC_ip" type="password" placeholder="Contrasena (opcional)" maxlength="48">
+      <button id="SC_bRC" class="SC_bt">Crear</button>
+      <button id="SC_bRX" class="SC_bt d">Cancelar</button>
     </div>
   </div>
-  <div id="moP" class="mo">
-    <div class="mb">
+  <div id="SC_moP" class="SC_mo">
+    <div class="SC_mb">
       <h2>SALA PRIVADA</h2>
-      <div id="mPN" class="nt"></div>
-      <input id="iJP" class="ip" type="password" placeholder="Contrasena">
-      <button id="bJJ" class="bt">Unirse</button>
-      <button id="bJX" class="bt d">Cancelar</button>
+      <div id="SC_mPN" class="SC_nt"></div>
+      <input id="SC_iJP" class="SC_ip" type="password" placeholder="Contrasena">
+      <button id="SC_bJJ" class="SC_bt">Unirse</button>
+      <button id="SC_bJX" class="SC_bt d">Cancelar</button>
     </div>
   </div>
 
-  <div id="LB" class="S on">
+  <div id="SC_lb" class="SC_s on">
     <h1>CHAT</h1>
-    <div style="font-size:.6rem;color:#ffffff33;letter-spacing:2px;text-align:center;">P2P · TRYSTERO · SIN SERVIDOR</div>
-    <div class="dv"></div>
-    <div class="rw">
-      <input id="iFI" class="ip" placeholder="Filtrar salas...">
-      <button id="bNB" class="bt">+ Nueva</button>
+    <div style="font-size:.6rem;color:#ffffff33;letter-spacing:2px;text-align:center;">P2P · PEERJS · SIN SERVIDOR</div>
+    <div class="SC_dv"></div>
+    <div class="SC_rw">
+      <input id="SC_iFI" class="SC_ip" placeholder="Filtrar salas...">
+      <button id="SC_bNB" class="SC_bt">+ Nueva</button>
     </div>
-    <div class="lb">Salas activas</div>
-    <div id="RL"><div class="nt">Buscando salas...</div></div>
-    <div id="ST"></div>
+    <div class="SC_lbl">Salas activas</div>
+    <div id="SC_rl"><div class="SC_nt">Buscando salas...</div></div>
+    <div id="SC_st"></div>
   </div>
 
-  <div id="CH" class="S">
-    <div id="HD">
-      <div style="flex:1"><div id="NM">—</div><div id="PC"></div></div>
-      <button id="bMC" class="bt d" style="padding:5px 8px;font-size:.7rem;">🎤</button>
-      <button id="bVC" class="bt d" style="padding:5px 8px;font-size:.7rem;">📷</button>
-      <button id="bPC" class="bt d" style="padding:5px 8px;font-size:.7rem;">👥</button>
-      <button id="bLV" class="bt r" style="padding:5px 8px;font-size:.7rem;">Salir</button>
+  <div id="SC_ch" class="SC_s">
+    <div id="SC_hd">
+      <div style="flex:1"><div id="SC_nm">—</div><div id="SC_pc"></div></div>
+      <button id="SC_bMC" class="SC_bt d sm">🎤</button>
+      <button id="SC_bVC" class="SC_bt d sm">📷</button>
+      <button id="SC_bPC" class="SC_bt d sm">👥</button>
+      <button id="SC_bLV" class="SC_bt r sm">Salir</button>
     </div>
-    <div id="VG"></div>
-    <div id="MG"></div>
-    <div id="IB">
-      <input id="iMI" class="ip" placeholder="Mensaje...">
-      <button id="bSB" class="bt" style="padding:7px 11px;">➤</button>
+    <div id="SC_vg"></div>
+    <div id="SC_mg"></div>
+    <div id="SC_ib">
+      <input id="SC_iMI" class="SC_ip" placeholder="Mensaje...">
+      <button id="SC_bSB" class="SC_bt sm">➤</button>
     </div>
   </div>
-
-  <div id="PP"><h3>PARTICIPANTES</h3><div id="PL"></div></div>
+  <div id="SC_pp"><h3>PARTICIPANTES</h3><div id="SC_pl"></div></div>
 </div>
 
 <script>
 (function(){
-const AID={appId:'cheagana-chat-v3'};
-const LID='cheagana-chat-lobby-v3';
-const MY_ID=Math.random().toString(36).slice(2,8).toUpperCase();
-const CDN='https://esm.run/trystero@0.23.0';
+
+const API    = '/chat';
+const PEER_HOST = location.hostname;
+const PEER_PORT = 443;
+const PEER_PATH = '/chat/peerjs';
+const NICK   = 'U' + Math.random().toString(36).slice(2,6).toUpperCase();
+const POLL_MS = 5000;
+const PING_MS = 8000;
 
 const $=id=>document.getElementById(id);
 const EL={
-  LB:$('LB'),CH:$('CH'),iFI:$('iFI'),bNB:$('bNB'),RL:$('RL'),ST:$('ST'),
-  moC:$('moC'),iRN:$('iRN'),iRP:$('iRP'),bRC:$('bRC'),bRX:$('bRX'),
-  moP:$('moP'),mPN:$('mPN'),iJP:$('iJP'),bJJ:$('bJJ'),bJX:$('bJX'),
-  NM:$('NM'),PC:$('PC'),bMC:$('bMC'),bVC:$('bVC'),bPC:$('bPC'),bLV:$('bLV'),
-  VG:$('VG'),MG:$('MG'),iMI:$('iMI'),bSB:$('bSB'),PP:$('PP'),PL:$('PL'),
+  lb:$('SC_lb'),ch:$('SC_ch'),
+  iFI:$('SC_iFI'),bNB:$('SC_bNB'),rl:$('SC_rl'),st:$('SC_st'),
+  moC:$('SC_moC'),iRN:$('SC_iRN'),iRP:$('SC_iRP'),bRC:$('SC_bRC'),bRX:$('SC_bRX'),
+  moP:$('SC_moP'),mPN:$('SC_mPN'),iJP:$('SC_iJP'),bJJ:$('SC_bJJ'),bJX:$('SC_bJX'),
+  nm:$('SC_nm'),pc:$('SC_pc'),
+  bMC:$('SC_bMC'),bVC:$('SC_bVC'),bPC:$('SC_bPC'),bLV:$('SC_bLV'),
+  vg:$('SC_vg'),mg:$('SC_mg'),iMI:$('SC_iMI'),bSB:$('SC_bSB'),
+  pp:$('SC_pp'),pl:$('SC_pl'),
 };
 
-let lrm=null,rm=null,jr=null;
-let annAct=null,byeAct=null,msgAct=null,nmAct=null;
-let aS=null,vS=null,muted=false,vidOn=false;
-let pN={},pAu={},pVi={},pMu={};
-let curR=null,rooms={},pendJ=null;
-let annIv=null,pruneIv=null;
-let lobbyReady=false;
-
-function setST(t,c){EL.ST.textContent=t;EL.ST.className=c||'';}
+function setST(t,c){EL.st.textContent=t;EL.st.className=c||'';}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function showLB(){EL.LB.classList.add('on');EL.CH.classList.remove('on');}
-function showCH(){EL.LB.classList.remove('on');EL.CH.classList.add('on');}
+function showLB(){EL.lb.classList.add('on');EL.ch.classList.remove('on');}
+function showCH(){EL.lb.classList.remove('on');EL.ch.classList.add('on');}
 
-async function initLobby(){
-  setST('Conectando...');
-  try{
-    const mod=await import(CDN);
-    jr=mod.joinRoom;
+let peer=null,myPid=null;
+let curRoom=null,curPw='';
+let conns={},calls={},pAu={},pVi={},pMu={},pNick={};
+let aS=null,vS=null,muted=false,vidOn=false;
+let pollIv=null,pingIv=null,pendJ=null;
 
-    lrm=jr(AID,LID);
-
-    annAct=lrm.makeAction('ann');
-    byeAct=lrm.makeAction('bye');
-
-    lrm.onPeerJoin=()=>{
-      if(curR&&curR.mine)annAct.send({id:curR.id,name:curR.name,hasPw:curR.hasPw});
-    };
-
-    annAct.onMessage=({id,name,hasPw},peerId)=>{
-      rooms[id]={id,name,hasPw,from:peerId,ts:Date.now()};
-      renderRooms();
-    };
-
-    byeAct.onMessage=({id})=>{
-      delete rooms[id];
-      renderRooms();
-    };
-
-    lobbyReady=true;
-    setST('');
-    renderRooms();
-
-    annIv=setInterval(()=>{
-      if(curR&&curR.mine)annAct.send({id:curR.id,name:curR.name,hasPw:curR.hasPw});
-    },8000);
-    pruneIv=setInterval(()=>{
-      const now=Date.now();let ch=false;
-      Object.keys(rooms).forEach(k=>{if(now-rooms[k].ts>20000){delete rooms[k];ch=true;}});
-      if(ch)renderRooms();
-    },5000);
-
-  }catch(e){setST('Error de red','er');}
+async function api(method,path,body){
+  const opts={method,headers:{'Content-Type':'application/json'}};
+  if(body)opts.body=JSON.stringify(body);
+  const r=await fetch(API+path,opts);
+  if(!r.ok)throw new Error(r.status);
+  return r.json();
 }
 
-function renderRooms(){
+async function loadRooms(){
+  try{
+    const list=await api('GET','/rooms');
+    renderRooms(list);
+    setST('');
+  }catch(e){setST('Error red','er');}
+}
+
+function renderRooms(list){
   const fv=EL.iFI.value.trim().toLowerCase();
-  const arr=Object.values(rooms).filter(r=>!fv||r.name.toLowerCase().includes(fv));
-  if(!arr.length){EL.RL.innerHTML='<div class="nt">Sin salas — crea una</div>';return;}
-  arr.sort((a,b)=>b.ts-a.ts);
-  EL.RL.innerHTML='';
-  arr.forEach(r=>{
-    const d=document.createElement('div');d.className='ri';
-    d.innerHTML=`<span class="rn">${esc(r.name)}</span><span class="rm">${r.hasPw?'🔒 privada':'🌐 publica'}</span>`;
+  const arr=(list||[]).filter(r=>!fv||r.name.toLowerCase().includes(fv));
+  if(!arr.length){EL.rl.innerHTML='<div class="SC_nt">Sin salas — crea una</div>';return;}
+  EL.rl.innerHTML='';
+  arr.sort((a,b)=>b.ts-a.ts).forEach(r=>{
+    const d=document.createElement('div');d.className='SC_ri';
+    d.innerHTML=`<span class="SC_rn">${esc(r.name)}</span><span class="SC_rm">${r.hasPw?'🔒':''} ${r.count} peer${r.count!==1?'s':''}</span>`;
     d.onclick=()=>clickRoom(r);
-    EL.RL.appendChild(d);
+    EL.rl.appendChild(d);
   });
 }
 
-EL.iFI.oninput=renderRooms;
+setST('Cargando...');
+loadRooms();
+setInterval(loadRooms, POLL_MS);
+EL.iFI.oninput=loadRooms;
+
 EL.bNB.onclick=()=>{EL.moC.classList.add('on');EL.iRN.focus();};
 EL.bRX.onclick=()=>EL.moC.classList.remove('on');
 EL.bRC.onclick=createRoom;
 EL.iRN.onkeydown=e=>{if(e.key==='Enter')createRoom();};
 
-function hashPw(s){
-  let h=5381;
-  for(let i=0;i<s.length;i++)h=((h<<5)+h)+s.charCodeAt(i);
-  return(h>>>0).toString(36);
-}
-
-function createRoom(){
-  if(!lobbyReady){setST('Aun conectando...','er');return;}
+async function createRoom(){
   const name=EL.iRN.value.trim();if(!name)return;
   const pw=EL.iRP.value;
-  const base='sc'+Math.random().toString(36).slice(2,8);
-  const rid=pw?base+hashPw(pw):base;
-  curR={id:rid,name,hasPw:!!pw,mine:true};
-  annAct.send({id:rid,name,hasPw:!!pw});
-  EL.iRN.value='';EL.iRP.value='';
-  EL.moC.classList.remove('on');
-  enterChat(curR);
+  try{
+    const{id}=await api('POST','/rooms',{name,pw});
+    EL.iRN.value='';EL.iRP.value='';
+    EL.moC.classList.remove('on');
+    await enterRoom(id,name,pw);
+  }catch(e){setST('Error crear sala','er');}
 }
 
 function clickRoom(r){
   if(r.hasPw){
     pendJ=r;EL.mPN.textContent=r.name;
     EL.iJP.value='';EL.moP.classList.add('on');EL.iJP.focus();
-  }else enterChat(r);
+  }else enterRoom(r.id,r.name,'');
 }
 EL.bJX.onclick=()=>{EL.moP.classList.remove('on');pendJ=null;};
-EL.bJJ.onclick=joinPw;
-EL.iJP.onkeydown=e=>{if(e.key==='Enter')joinPw();};
-function joinPw(){
+EL.bJJ.onclick=()=>{
   if(!pendJ)return;
   const r=pendJ;pendJ=null;
   const pw=EL.iJP.value;EL.iJP.value='';EL.moP.classList.remove('on');
-  const base=r.id.match(/^sc[a-z0-9]{6}/)?r.id.match(/^sc[a-z0-9]{6}/)[0]:r.id;
-  enterChat({...r,id:base+hashPw(pw)});
+  enterRoom(r.id,r.name,pw);
+};
+EL.iJP.onkeydown=e=>{if(e.key==='Enter')EL.bJJ.onclick();};
+
+async function initPeer(){
+  return new Promise((resolve,reject)=>{
+    if(peer&&!peer.destroyed&&peer.id){resolve(peer);return;}
+    peer=new Peer({
+      host:PEER_HOST,
+      port:PEER_PORT,
+      path:PEER_PATH,
+      secure:location.protocol==='https:',
+    });
+    peer.on('open',id=>{myPid=id;resolve(peer);});
+    peer.on('error',e=>{reject(e);});
+    peer.on('connection',conn=>onConn(conn));
+    peer.on('call',call=>{
+      if(!aS&&!vS)return;
+      const s=vS||aS;
+      call.answer(s);
+      handleCall(call);
+    });
+  });
 }
 
-async function enterChat(r){
-  curR=r;showCH();
-  EL.MG.innerHTML='';EL.VG.innerHTML='';EL.VG.classList.remove('on');
-  pN={};pAu={};pVi={};pMu={};
-  renderPeers();
-  EL.NM.textContent=r.name.toUpperCase();
-  EL.PC.textContent=r.hasPw?'🔒 privada':'🌐 publica';
-  addSys('Uniéndote a '+r.name+'...');
+function onConn(conn){
+  conn.on('open',()=>{
+    conns[conn.peer]=conn;
+    pNick[conn.peer]=conn.metadata?.nick||conn.peer.slice(0,6);
+    conn.send({type:'nick',nick:NICK});
+    renderPeers();
+  });
+  conn.on('data',d=>onData(d,conn.peer));
+  conn.on('close',()=>{disconnectPeer(conn.peer);});
+  conn.on('error',()=>{disconnectPeer(conn.peer);});
+}
 
-  const voiceP=startAudio();
+function onData(d,pid){
+  if(!d||!d.type)return;
+  if(d.type==='msg')addMsg(pNick[pid]||pid,d.text,false);
+  if(d.type==='nick'){pNick[pid]=d.nick;renderPeers();}
+}
+
+function handleCall(call){
+  call.on('stream',stream=>{
+    const pid=call.peer;
+    calls[pid]=call;
+    if(stream.getVideoTracks().length)addVE(pid,stream);
+    else{
+      let a=pAu[pid];
+      if(!a){a=document.createElement('audio');a.autoplay=1;a.playsInline=1;document.body.appendChild(a);pAu[pid]=a;}
+      a.srcObject=stream;if(pMu[pid])a.muted=true;
+    }
+  });
+  call.on('close',()=>{rmVE(call.peer);});
+}
+
+function disconnectPeer(pid){
+  addSys((pNick[pid]||pid)+' salio');
+  delete conns[pid];delete pNick[pid];
+  if(pAu[pid]){pAu[pid].pause();pAu[pid].srcObject=null;pAu[pid].remove();delete pAu[pid];}
+  rmVE(pid);renderPeers();
+}
+
+async function enterRoom(id,name,pw){
+  showCH();
+  EL.mg.innerHTML='';EL.vg.innerHTML='';EL.vg.classList.remove('on');
+  conns={};calls={};pAu={};pVi={};pMu={};pNick={};
+  renderPeers();
+  EL.nm.textContent=name.toUpperCase();
+  EL.pc.textContent=pw?'🔒 privada':'🌐 publica';
+  addSys('Conectando...');
 
   try{
-    rm=jr(AID,r.id);
+    await initPeer();
+  }catch(e){addSys('Error PeerJS: '+e.message);showLB();return;}
 
-    msgAct=rm.makeAction('msg');
-    nmAct=rm.makeAction('nm');
+  let data;
+  try{
+    data=await api('POST',`/rooms/${id}/join`,{pw,pid:myPid,nick:NICK});
+  }catch(e){
+    addSys(e.message==='403'?'Contrasena incorrecta':'Error al unirse');
+    showLB();return;
+  }
 
-    msgAct.onMessage=(data,peerId)=>addMsg(pN[peerId]||peerId,data,false);
+  curRoom=id;curPw=pw;
+  addSys('Conectado como '+NICK);
 
-    nmAct.onMessage=(data,peerId)=>{
-      pN[peerId]=data;
-      const lbl=$('VL_'+peerId);if(lbl)lbl.textContent=data;
-      renderPeers();
-    };
+  const voiceP=startAudio();
+  await voiceP;
 
-    rm.onPeerJoin=peerId=>{
-      pN[peerId]=peerId;
-      nmAct.send(MY_ID,{target:peerId});
-      addSys(peerId+' se unio');
-      renderPeers();
-      voiceP.then(()=>{if(aS)rm.addStream(aS,{target:peerId});});
-      if(vS)rm.addStream(vS,{target:peerId});
-    };
+  const others=(data.peers||[]).filter(p=>p.pid!==myPid);
+  for(const p of others){
+    const conn=peer.connect(p.pid,{metadata:{nick:NICK}});
+    onConn(conn);
+    if(aS){const call=peer.call(p.pid,aS);handleCall(call);}
+  }
 
-    rm.onPeerLeave=peerId=>{
-      addSys((pN[peerId]||peerId)+' salio');
-      delete pN[peerId];
-      if(pAu[peerId]){pAu[peerId].pause();pAu[peerId].srcObject=null;pAu[peerId].remove();delete pAu[peerId];}
-      rmVE(peerId);
-      renderPeers();
-    };
+  pingIv=setInterval(async()=>{
+    if(!curRoom)return;
+    try{
+      const d=await api('POST',`/rooms/${curRoom}/ping`,{pid:myPid});
+      const active=(d.peers||[]).map(p=>p.pid);
+      Object.keys(conns).forEach(pid=>{if(!active.includes(pid))disconnectPeer(pid);});
+      peerCount(d.peers||[]);
+    }catch(e){}
+  },PING_MS);
+}
 
-    rm.onPeerStream=(stream,peerId)=>{
-      if(stream.getVideoTracks().length){addVE(peerId,stream);return;}
-      let a=pAu[peerId];
-      if(!a){a=document.createElement('audio');a.autoplay=1;a.playsInline=1;document.body.appendChild(a);pAu[peerId]=a;}
-      a.srcObject=stream;
-      if(pMu[peerId])a.muted=true;
-    };
-
-    addSys('Conectado');
-    await voiceP;
-    if(aS)rm.addStream(aS);
-
-  }catch(e){addSys('Error: '+e.message);}
+function peerCount(peers){
+  EL.pc.textContent=(curPw?'🔒 ':'🌐 ')+peers.length+' peer'+(peers.length!==1?'s':'');
 }
 
 async function startAudio(){
@@ -308,46 +333,45 @@ EL.bVC.onclick=async()=>{
   if(!vidOn){
     try{
       vS=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
-      mkVE('me',MY_ID+' (tu)',vS,true);
-      if(rm)rm.addStream(vS);
-      EL.VG.classList.add('on');vidOn=true;EL.bVC.textContent='📷✓';
+      mkVE('me',NICK+' (tu)',vS,true);
+      Object.keys(conns).forEach(pid=>{const c=peer.call(pid,vS);handleCall(c);});
+      EL.vg.classList.add('on');vidOn=true;EL.bVC.textContent='📷✓';
     }catch(e){addSys('Sin camara');}
   }else{
     if(vS){vS.getTracks().forEach(t=>t.stop());vS=null;}
     rmVE('me');vidOn=false;EL.bVC.textContent='📷';
-    if(!Object.keys(pVi).length)EL.VG.classList.remove('on');
+    if(!Object.keys(pVi).length)EL.vg.classList.remove('on');
   }
 };
 
 function mkVE(id,label,stream,sm){
-  if($('VE_'+id))return $('VE_'+id);
-  const ve=document.createElement('div');ve.className='ve';ve.id='VE_'+id;
+  if($('SC_VE_'+id))return $('SC_VE_'+id);
+  const ve=document.createElement('div');ve.className='SC_ve';ve.id='SC_VE_'+id;
   const vid=document.createElement('video');vid.autoplay=1;vid.playsInline=1;if(sm)vid.muted=1;
   vid.srcObject=stream;
-  const lbl=document.createElement('div');lbl.className='vl';lbl.id='VL_'+id;lbl.textContent=label;
-  ve.appendChild(vid);ve.appendChild(lbl);EL.VG.appendChild(ve);
+  const lbl=document.createElement('div');lbl.className='SC_vl';lbl.id='SC_VL_'+id;lbl.textContent=label;
+  ve.appendChild(vid);ve.appendChild(lbl);EL.vg.appendChild(ve);
   return ve;
 }
 function addVE(id,s){
-  const ve=mkVE(id,pN[id]||id,s,false);
-  pVi[id]=ve;ve.querySelector('video').srcObject=s;EL.VG.classList.add('on');
+  const ve=mkVE(id,pNick[id]||id,s,false);
+  pVi[id]=ve;ve.querySelector('video').srcObject=s;EL.vg.classList.add('on');
 }
 function rmVE(id){
-  const v=$('VE_'+id);if(v)v.remove();delete pVi[id];
-  if(!Object.keys(pVi).length&&!vidOn)EL.VG.classList.remove('on');
+  const v=$('SC_VE_'+id);if(v)v.remove();delete pVi[id];
+  if(!Object.keys(pVi).length&&!vidOn)EL.vg.classList.remove('on');
 }
 
-EL.bPC.onclick=()=>EL.PP.classList.toggle('on');
+EL.bPC.onclick=()=>EL.pp.classList.toggle('on');
 function renderPeers(){
-  const pids=Object.keys(pN);
-  EL.PC.textContent=(curR?.hasPw?'🔒 ':'🌐 ')+(pids.length+1)+' participante'+(pids.length?'s':'');
-  EL.PL.innerHTML=`<div class="pr"><div class="pn">${MY_ID} (tu)</div></div>`;
+  const pids=Object.keys(conns);
+  EL.pl.innerHTML=`<div class="SC_pr"><div class="SC_pn">${NICK} (tu)</div></div>`;
   pids.forEach(pid=>{
-    const d=document.createElement('div');d.className='pr';const mu=pMu[pid];
-    d.innerHTML=`<div class="pn">${esc(pN[pid]||pid)}</div><button class="pm${mu?' mu':''}" data-p="${pid}">${mu?'🔇':'🔊'}</button>`;
-    EL.PL.appendChild(d);
+    const d=document.createElement('div');d.className='SC_pr';const mu=pMu[pid];
+    d.innerHTML=`<div class="SC_pn">${esc(pNick[pid]||pid.slice(0,8))}</div><button class="SC_pm${mu?' mu':''}" data-p="${pid}">${mu?'🔇':'🔊'}</button>`;
+    EL.pl.appendChild(d);
   });
-  EL.PL.querySelectorAll('.pm').forEach(b=>{
+  EL.pl.querySelectorAll('.SC_pm').forEach(b=>{
     b.onclick=()=>{
       const p=b.dataset.p;pMu[p]=!pMu[p];
       if(pAu[p])pAu[p].muted=pMu[p];
@@ -356,18 +380,22 @@ function renderPeers(){
   });
 }
 
-EL.bLV.onclick=leaveChat;
-function leaveChat(){
-  if(rm){
-    if(curR&&curR.mine&&byeAct)try{byeAct.send({id:curR.id});}catch(e){}
-    try{rm.leave();}catch(e){}rm=null;
+EL.bLV.onclick=leaveRoom;
+async function leaveRoom(){
+  clearInterval(pingIv);pingIv=null;
+  if(curRoom&&myPid){
+    api('DELETE',`/rooms/${curRoom}/leave`,{pid:myPid}).catch(()=>{});
   }
+  Object.values(conns).forEach(c=>{try{c.close();}catch(e){}});
+  Object.values(calls).forEach(c=>{try{c.close();}catch(e){}});
   if(aS){aS.getTracks().forEach(t=>t.stop());aS=null;}
   if(vS){vS.getTracks().forEach(t=>t.stop());vS=null;}
   Object.values(pAu).forEach(a=>{a.pause();a.srcObject=null;a.remove();});
-  pAu={};pVi={};pN={};msgAct=null;nmAct=null;curR=null;
-  EL.VG.innerHTML='';EL.VG.classList.remove('on');
-  EL.PP.classList.remove('on');
+  if(peer){try{peer.destroy();}catch(e){}peer=null;myPid=null;}
+  conns={};calls={};pAu={};pVi={};pMu={};pNick={};
+  curRoom=null;curPw='';
+  EL.vg.innerHTML='';EL.vg.classList.remove('on');
+  EL.pp.classList.remove('on');
   EL.bMC.textContent='🎤';EL.bVC.textContent='📷';
   muted=false;vidOn=false;
   showLB();
@@ -376,29 +404,28 @@ function leaveChat(){
 EL.bSB.onclick=sendMsg;
 EL.iMI.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}};
 function sendMsg(){
-  const v=EL.iMI.value.trim();if(!v||!msgAct)return;
-  msgAct.send(v);addMsg(MY_ID,v,true);EL.iMI.value='';
+  const v=EL.iMI.value.trim();if(!v||!Object.keys(conns).length)return;
+  Object.values(conns).forEach(c=>{try{c.send({type:'msg',text:v});}catch(e){}});
+  addMsg(NICK,v,true);EL.iMI.value='';
 }
 function addMsg(nm,txt,me){
-  const d=document.createElement('div');d.className='ms'+(me?' me':'');
-  d.innerHTML=`<div class="av">${esc(nm).slice(0,2)}</div><div>${!me?'<div class="sn">'+esc(nm)+'</div>':''}<div class="bu">${esc(txt)}</div></div>`;
-  EL.MG.appendChild(d);EL.MG.scrollTop=EL.MG.scrollHeight;
+  const d=document.createElement('div');d.className='SC_ms'+(me?' me':'');
+  d.innerHTML=`<div class="SC_av">${esc(nm).slice(0,2)}</div><div>${!me?'<div class="SC_sn">'+esc(nm)+'</div>':''}<div class="SC_bu">${esc(txt)}</div></div>`;
+  EL.mg.appendChild(d);EL.mg.scrollTop=EL.mg.scrollHeight;
 }
 function addSys(t){
-  const d=document.createElement('div');d.className='sy';d.textContent=t;
-  EL.MG.appendChild(d);EL.MG.scrollTop=EL.MG.scrollHeight;
+  const d=document.createElement('div');d.className='SC_sy';d.textContent=t;
+  EL.mg.appendChild(d);EL.mg.scrollTop=EL.mg.scrollHeight;
 }
 
 const cont=$('content');
 if(cont)cont.addEventListener('contentUnload',()=>{
-  leaveChat();
-  clearInterval(annIv);clearInterval(pruneIv);annIv=null;pruneIv=null;
-  if(lrm){try{lrm.leave();}catch(e){}lrm=null;}
-  lobbyReady=false;
+  leaveRoom();
+  clearInterval(pollIv);
 },{once:true});
 
-initLobby();
 })();
 </script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 </body>
 </html>
