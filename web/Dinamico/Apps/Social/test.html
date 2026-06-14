@@ -12,10 +12,7 @@
 .CS.on{display:flex;}
 
 /* setup */
-#CSU{padding:20px 16px;gap:14px;max-width:400px;width:100%;margin:auto;display:flex;flex-direction:column;}
-#CSU h2{font-size:1.2rem;letter-spacing:4px;color:var(--a);text-align:center;}
-#C_AVp{width:72px;height:72px;border-radius:50%;border:2px solid var(--a);object-fit:cover;display:block;margin:0 auto;background:#ffffff11;}
-#C_AVc{display:none;}
+#C_MOc_ac{display:none;}
 
 /* lobby */
 #CLB{padding:20px 16px;gap:10px;max-width:460px;width:100%;margin:0 auto;display:flex;flex-direction:column;}
@@ -140,25 +137,8 @@
 
 <div id="CW">
 
-  <!-- setup screen -->
-  <div id="CSU" class="CS on">
-    <h2>CHAT</h2>
-    <div style="text-align:center">
-      <img id="C_AVp" src="" alt="">
-      <canvas id="C_AVc" width="50" height="50"></canvas>
-      <div style="margin-top:8px">
-        <label class="Cbt sm" style="cursor:pointer">Foto <input type="file" id="C_AVi" accept="image/*" style="display:none"></label>
-      </div>
-    </div>
-    <div>
-      <div class="Clbl">Nombre</div>
-      <input id="C_NKi" class="Cip" placeholder="Nombre..." maxlength="24">
-    </div>
-    <button id="C_BEN" class="Cbt">Entrar</button>
-  </div>
-
   <!-- lobby screen -->
-  <div id="CLB" class="CS">
+  <div id="CLB" class="CS on">
     <h1>CHAT</h1>
     <div class="Crw">
       <input id="C_FI" class="Cip" placeholder="Buscar sala...">
@@ -287,40 +267,25 @@ function loadProfile(){myNick=localStorage.getItem('cn_nick')||'';myAvB64=localS
 function saveProfile(){localStorage.setItem('cn_nick',myNick);localStorage.setItem('cn_av',myAvB64);}
 loadProfile();
 
-const avPrev=$('C_AVp');
-const avCanvas=$('C_AVc');
-if(myAvB64)avPrev.src=myAvB64;
-if(myNick)$('C_NKi').value=myNick;
-
 function processAvatar(file,cb){
   const img=new Image(),url=URL.createObjectURL(file);
   img.onload=()=>{
-    const ctx=avCanvas.getContext('2d');
-    ctx.drawImage(img,0,0,50,50);
-    cb(avCanvas.toDataURL('image/jpeg',0.4));
+    const c=document.createElement('canvas');c.width=50;c.height=50;
+    c.getContext('2d').drawImage(img,0,0,50,50);
+    cb(c.toDataURL('image/jpeg',0.4));
     URL.revokeObjectURL(url);
   };
   img.src=url;
 }
 
-$('C_AVi').onchange=function(){
-  const f=this.files[0];if(!f)return;
-  processAvatar(f,b64=>{myAvB64=b64;avPrev.src=b64;});
-};
-
-$('C_BEN').onclick=()=>{
-  const n=$('C_NKi').value.trim();if(!n)return;
-  myNick=n;saveProfile();showLB();
-};
-
 function showScreen(id){
-  ['CSU','CLB','CCH'].forEach(s=>{const el=$(s);if(el)el.classList.toggle('on',s===id);});
+  ['CLB','CCH'].forEach(s=>{const el=$(s);if(el)el.classList.toggle('on',s===id);});
 }
 function showLB(){showScreen('CLB');setST('');loadRooms();}
 function showCH(){showScreen('CCH');}
 const setST=(t,c)=>{$('C_ST').textContent=t;$('C_ST').className=c||'';};
 
-if(myNick)showLB();
+showLB();
 
 async function api(method,path,body){
   const o={method,headers:{'Content-Type':'application/json'}};
