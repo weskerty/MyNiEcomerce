@@ -38,8 +38,7 @@
 .CMO.on{display:flex;}
 .CMB{width:min(300px,90vw);border:1px solid var(--d);background:#0b0b14;padding:20px 16px;display:flex;flex-direction:column;gap:9px;}
 .CMB h2{font-size:.88rem;letter-spacing:2px;color:var(--a);text-align:center;}
-#CCH{flex:1;display:none;flex-direction:column;min-width:0;}
-#CCH.on{display:flex;}
+#CCH{flex:1;flex-direction:column;min-width:0;}
 #CHD{padding:8px 12px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--d);flex-shrink:0;}
 #CNM{font-size:.86rem;letter-spacing:2px;color:var(--a);flex:1;}
 #CPC{font-size:.6rem;color:#ffffff44;}
@@ -149,8 +148,12 @@
 
   <div class="CMO" id="CMOc">
     <div class="CMB">
-      <h2>NUEVA SALA</h2>
-      <div class="Clbl">Nombre</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <img id="CMOav" style="width:36px;height:36px;border-radius:50%;border:1px solid var(--d);object-fit:cover;background:#ffffff11" src="" alt="">
+        <span id="CMOnk" style="font-size:.82rem;color:var(--a)"></span>
+      </div>
+      <div class="Cdv"></div>
+      <div class="Clbl">Nombre sala</div>
       <input id="CiRN" class="Cip" placeholder="Nombre sala...">
       <div class="Clbl">Contrasena (opcional)</div>
       <input id="CiRP" class="Cip" type="password" placeholder="...">
@@ -284,7 +287,11 @@ setST('Cargando...');
 let pollIv=setInterval(loadRooms,POLL);
 $('CiFI').oninput=loadRooms;
 
-$('CBnb').onclick=()=>{$('CMOc').classList.add('on');$('CiRN').focus();};
+$('CBnb').onclick=()=>{
+  $('CMOav').src=myAvB64||'';
+  $('CMOnk').textContent=myNick;
+  $('CMOc').classList.add('on');$('CiRN').focus();
+};
 $('CBrx').onclick=()=>$('CMOc').classList.remove('on');
 $('CBrc').onclick=createRoom;
 $('CiRN').onkeydown=e=>{if(e.key==='Enter')createRoom();};
@@ -397,10 +404,39 @@ function onData(d,pid){
     if(fm.chunks.length>=fm.total){
       const blob=new Blob(fm.chunks.map(c=>Uint8Array.from(atob(c),x=>x.charCodeAt(0))),{type:fm.mime});
       const url=URL.createObjectURL(blob);
-      const a=document.getElementById('CFA_'+d.id);
-      if(a){a.href=url;a.download=fm.name;a.textContent='Descargar '+fm.name;}
       const pp=document.getElementById('CFP_'+d.id);
-      if(pp)pp.textContent='Listo';
+      const wrap=document.getElementById('CFA_'+d.id);
+      const isImg=/^image\//.test(fm.mime);
+      const isVid=/^video\//.test(fm.mime);
+      const small=fm.size<1048576;
+      const isSticker=/^image\/(avif|webp)$/.test(fm.mime)&&fm.w>0&&fm.w<=512&&fm.h>0&&fm.h<=512;
+      if(pp)pp.remove();
+      if(wrap){
+        if(isSticker){
+          wrap.innerHTML='';
+          const si=document.createElement('img');
+          si.src=url;si.style.cssText='width:80px;height:80px;object-fit:contain;border-radius:4px;display:block;';
+          wrap.appendChild(si);
+        } else if(isImg&&small){
+          wrap.innerHTML='';
+          const im=document.createElement('img');
+          im.src=url;im.style.cssText='max-width:220px;max-height:200px;border-radius:10px;display:block;cursor:pointer;';
+          im.onclick=()=>window.open(url,'_blank');
+          wrap.appendChild(im);
+        } else if(isVid&&small){
+          wrap.innerHTML='';
+          const vl=document.createElement('video');
+          vl.src=url;vl.controls=1;vl.playsInline=1;
+          vl.style.cssText='max-width:220px;border-radius:10px;display:block;';
+          wrap.appendChild(vl);
+        } else {
+          wrap.innerHTML='';
+          const a=document.createElement('a');
+          a.href='#';a.textContent='Descargar '+fm.name;
+          a.onclick=e=>{e.preventDefault();const dl=document.createElement('a');dl.href=url;dl.download=fm.name;dl.click();};
+          wrap.appendChild(a);
+        }
+      }
       delete filesMeta[d.id];
     }
   }
@@ -656,23 +692,24 @@ function sendFile(file){
   const id=Math.random().toString(36).slice(2,10);
   const total=Math.ceil(file.size/CHUNK);
   const col=getUC(myPid||'me');
-  broadcast({t:'file_meta',id,name:file.name,size:file.size,mime:file.type||'application/octet-stream',total});
-  addOwnFileMsg(file,id);
-  pushHist({t:'msg',from:myPid||'me',nick:myNick,v:`[Archivo: ${file.name}]`,col,av:myAvB64});
-
-  const reader=new FileReader();
-  let offset=0,idx=0;
-  function readChunk(){
-    const slice=file.slice(offset,offset+CHUNK);
-    reader.readAsArrayBuffer(slice);
+  function doSend(w,h){
+    broadcast({t:'file_meta',id,name:file.name,size:file.size,mime:file.type||'application/octet-stream',total,w:w||0,h:h||0});
+    addOwnFileMsg(file,id);
+    pushHist({t:'msg',from:myPid||'me',nick:myNick,v:`[${file.name}]`,col,av:myAvB64});
+    const r2=new FileReader();let off=0,ix=0;
+    const rc=()=>r2.readAsArrayBuffer(file.slice(off,off+CHUNK));
+    r2.onload=e=>{
+      broadcast({t:'file_chunk',id,data:btoa(String.fromCharCode(...new Uint8Array(e.target.result))),idx:ix});
+      off+=CHUNK;ix++;if(off<file.size)rc();
+    };
+    rc();
   }
-  reader.onload=e=>{
-    const b64=btoa(String.fromCharCode(...new Uint8Array(e.target.result)));
-    broadcast({t:'file_chunk',id,data:b64,idx});
-    offset+=CHUNK;idx++;
-    if(offset<file.size)readChunk();
-  };
-  readChunk();
+  if(/^image\//.test(file.type)){
+    const u=URL.createObjectURL(file),i=new Image();
+    i.onload=()=>{doSend(i.naturalWidth,i.naturalHeight);URL.revokeObjectURL(u);};
+    i.onerror=()=>{doSend(0,0);URL.revokeObjectURL(u);};
+    i.src=u;
+  } else doSend(0,0);
 }
 
 function addOwnFileMsg(file,id){
@@ -700,8 +737,9 @@ function addFileMsg(pid,d){
     `<div style="max-width:75%">`+
     `<div class="CSN" style="color:${col}">${esc(nm)}</div>`+
     `<div class="CBU" style="background:${col}cc;color:#222">`+
-    `📎 <a id="CFA_${d.id}" href="#">${esc(d.name)}</a>`+
-    `<div class="CFP" id="CFP_${d.id}">0/${d.total} fragmentos</div>`+
+    `<span style="font-size:.7rem;opacity:.6">📎 ${esc(d.name)}</span>`+
+    `<div id="CFA_${d.id}" style="margin-top:4px"></div>`+
+    `<div class="CFP" id="CFP_${d.id}" style="font-size:.58rem;color:#ffffff66;margin-top:2px">0/${d.total}</div>`+
     `</div></div>`;
   mg.appendChild(el);mg.scrollTop=mg.scrollHeight;
 }
