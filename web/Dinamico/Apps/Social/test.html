@@ -140,6 +140,9 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 #OV.on{display:block}
 
 /* scrollbar */
+.QT{border-left:3px solid var(--ac);padding:4px 8px;margin-bottom:6px;border-radius:4px;background:#ffffff0a;cursor:pointer}
+.QT_n{font-size:.62rem;color:var(--ac);font-weight:600}
+.QT_t{font-size:.72rem;color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
@@ -177,6 +180,11 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
   <div id="VG"><div id="VL"></div></div>
   <div id="MG"></div>
   <div id="IW">
+    <div id="QB" style="display:none;align-items:center;gap:8px;padding:6px 12px;background:var(--s2);border-top:1px solid var(--bd)">
+      <div style="width:3px;background:var(--ac);align-self:stretch;border-radius:2px;flex-shrink:0"></div>
+      <div style="flex:1;min-width:0"><div id="QB_nm" style="font-size:.65rem;color:var(--ac);font-weight:600"></div><div id="QB_tx" style="font-size:.75rem;color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div></div>
+      <button class="B Bi" id="QB_x" style="width:28px;height:28px;font-size:.8rem;background:none">✕</button>
+    </div>
     <div id="EP">
       <div id="ET">
         <button class="ETb on" id="ET_e">Emoji</button>
@@ -200,6 +208,25 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--tx);font-
 <div id="PP">
   <h3>PARTICIPANTES</h3>
   <div id="PL"></div>
+</div>
+
+<!-- MODAL: perfil rapido -->
+<div class="MO" id="MO_pr">
+  <div class="MB">
+    <h2>Tu perfil</h2>
+    <div class="AW">
+      <img class="AV" id="PR_av" src="" alt="" style="cursor:pointer">
+      <input type="file" id="PR_avi" accept="image/*" style="display:none">
+      <div class="AV_nm">
+        <div class="ML">Nombre</div>
+        <input class="MI" id="PR_nk" placeholder="Tu nombre..." maxlength="24" style="border-radius:0;background:transparent">
+      </div>
+    </div>
+    <div class="MR">
+      <button class="B Bp Bac" id="PR_ok">Continuar</button>
+      <button class="B Bp Bs" id="PR_cx">Cancelar</button>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL: nueva sala -->
