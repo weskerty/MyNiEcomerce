@@ -1,0 +1,96 @@
+# Video prueba
+
+<div id="VP_BTNS" style="position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;pointer-events:auto">
+<button id="V1" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Video Content</button>
+<button id="V2" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Video Overlay</button>
+<button id="IM1" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Imagen Overlay</button>
+<button id="CT" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Anular Content</button>
+<button id="BGV" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Reemplazar Video Real</button>
+<button id="BGI" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Reemplazar Imagen Real</button>
+</div>
+
+<div id="V1W" style="display:none;margin-top:60px">
+<video id="V1E" src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" muted loop playsinline style="width:100%;border-radius:12px"></video>
+</div>
+
+<video id="V2E" src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" muted loop playsinline style="display:none;position:fixed;top:50%;left:50%;width:100%;min-height:100dvh;height:100%;object-fit:cover;transform:translate(-50%,-50%);z-index:0;pointer-events:none"></video>
+
+<img id="IM1E" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" style="display:none;position:fixed;top:50%;left:50%;width:100%;min-height:100dvh;height:100%;object-fit:cover;transform:translate(-50%,-50%);z-index:0;pointer-events:none">
+
+<script>
+!function(){
+const b1=document.getElementById('V1'),b2=document.getElementById('V2'),bi=document.getElementById('IM1'),bc=document.getElementById('CT'),bgv=document.getElementById('BGV'),bgi=document.getElementById('BGI');
+const w1=document.getElementById('V1W'),e1=document.getElementById('V1E'),e2=document.getElementById('V2E'),i1=document.getElementById('IM1E');
+const ct=document.getElementById('content');
+const bg=document.getElementById('bg'),bgVid=document.getElementById('bg-video');
+let s1=!1,s2=!1,si=!1,sc=!1,sbv=!1,sbi=!1;
+let ctPrev=null,bgPrev=null,bgVidPrev=null;
+const onC='rgba(34,197,94,.35)',offC='rgba(255,255,255,.15)';
+
+b1.onclick=()=>{
+s1=!s1;
+w1.style.display=s1?'block':'none';
+s1?e1.play():e1.pause();
+b1.style.background=s1?onC:offC;
+};
+
+b2.onclick=()=>{
+s2=!s2;
+e2.style.display=s2?'block':'none';
+s2?e2.play():e2.pause();
+b2.style.background=s2?onC:offC;
+};
+
+bi.onclick=()=>{
+si=!si;
+i1.style.display=si?'block':'none';
+bi.style.background=si?onC:offC;
+};
+
+bc.onclick=()=>{
+sc=!sc;
+if(sc){
+ctPrev=ct.getAttribute('style');
+ct.style.background='transparent';
+ct.style.backdropFilter='none';
+ct.style.webkitBackdropFilter='none';
+ct.style.boxShadow='none';
+ct.style.border='none';
+ct.style.padding='0';
+ct.style.margin='0';
+ct.style.maxWidth='none';
+}else{
+ct.setAttribute('style',ctPrev||'');
+}
+bc.style.background=sc?onC:offC;
+};
+
+bgv.onclick=()=>{
+sbv=!sbv;
+if(sbv){
+bgVidPrev=bgVid.getAttribute('style');
+bgVid.querySelector('source').src='https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4';
+bgVid.load();
+bgVid.play();
+bgVid.style.display='block';
+}else{
+bgVid.pause();
+bgVid.setAttribute('style',bgVidPrev||'');
+}
+bgv.style.background=sbv?onC:offC;
+};
+
+bgi.onclick=()=>{
+sbi=!sbi;
+if(sbi){
+bgPrev=bg.getAttribute('style');
+bg.style.backgroundImage="url('https://images.unsplash.com/photo-1506744038136-46273834b3fb')";
+bg.style.backgroundSize='cover';
+bg.style.backgroundPosition='center';
+}else{
+bg.setAttribute('style',bgPrev||'');
+}
+bgi.style.background=sbi?onC:offC;
+};
+}();
+</script>
