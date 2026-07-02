@@ -3,13 +3,13 @@ Vivimos en un mundo donde se venden dispositivos con obsolesencia artificial, iP
 <div class="galeriaMD">
 <img width="750" height="685" alt="No Permite Instalar" src="https://github.com/user-attachments/assets/85bc813a-9312-44ed-9bfc-da0461a7aad8" />
 <img width="748" height="827" alt="Ni Exel" src="https://github.com/user-attachments/assets/728b73a9-1897-48dc-81f3-e82ddc50e3f6" />
-<img width="748" height="871" alt="image" src="https://github.com/user-attachments/assets/aecea436-2bc0-464e-b44d-54dae9165b70" />
-<img width="748" height="917" alt="image" src="https://github.com/user-attachments/assets/6ba6d352-58f4-4ed7-b515-bc309b70457d" />
-<img width="748" height="631" alt="image" src="https://github.com/user-attachments/assets/74eb3a3d-5f45-4529-a1bb-cded7c9cb5a4" />
-<img width="748" height="827" alt="image" src="https://github.com/user-attachments/assets/28b2d213-620c-42b7-8603-41ded3e9d6d5" />
+<img width="748" height="871" alt="Ni Netflix" src="https://github.com/user-attachments/assets/aecea436-2bc0-464e-b44d-54dae9165b70" />
+<img width="748" height="917" alt="Ni Uber" src="https://github.com/user-attachments/assets/6ba6d352-58f4-4ed7-b515-bc309b70457d" />
+<img width="748" height="631" alt="Nisiquiera Fotos" src="https://github.com/user-attachments/assets/74eb3a3d-5f45-4529-a1bb-cded7c9cb5a4" />
+<img width="748" height="827" alt="Ni el Correo" src="https://github.com/user-attachments/assets/28b2d213-620c-42b7-8603-41ded3e9d6d5" />
 </div>
 
-Y eso que el iPhone X llego en 2018 en Paraguay. Muchos podran decir que ya tiene 6 años y que ya fue... Pero no, el telefono aun funciona, y que te bloqueen a usar lectores de correo y documentos asi de la nada no da, estas cosas hasta una PC del 1990 aun puede hacerlo, es una medida artificial (ya que se puede forzar funcionamiento con metodos que veremos mas abajo)
+Aplicaciones basicas ya no permiten instalar como se aprecian en las imagenes. Y eso que el iPhone X llego en 2018 en Paraguay. Muchos podran decir que ya tiene 6 años y que ya fue... Pero no, el telefono aun funciona, y que te bloqueen a usar lectores de correo y documentos asi de la nada no da, estas cosas hasta una PC del 1990 aun puede hacerlo, es una medida artificial (ya que se puede forzar funcionamiento con metodos que veremos mas abajo)
 
 Y no solo eso, tambien dejan vulnerables a fallas de seguridad como el que te hackeen con solo enviarte un mensaje (varios CVE de Android 10 e inferior e iOS 18 e inferior)
 
