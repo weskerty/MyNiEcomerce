@@ -18,7 +18,11 @@ En caso de tener un iPhone antiguo puedes ir a [Esta pagina Web](https://jailbre
 Se te instala una tienda de apps extra en donde podes descargar aplicaciones sin limite asi por ejemplo volver a hacer funcionar youtube entre otras aplicaciones.
 
 ### Android
-Este es un poco mas libre, en el pasado muchas marcas permitian el desbloqueo de bootloader de manera mas facil o directamente venian desbloqueadas para instalar cualquier sistema (ROM). Esto Permitia que cuando la empresa deje de actualizar el dispositivo, la comunidad aun pueda mantener actualizado, un ejemplo es el Samsung Galaxy S3 (Lanzado en 2012) que quedo con Android 4, pero la comunidad lo mantiene actualizado hasta Android actuales, con funcionamiento de WhatsApp, TiktTok, YouTube y cualquier otra app. Este telefono tuvo mas de 100M de unidades vendidas, muchos no saben que pueden hacer esto. Hoy en dia Samsung prohibe reutilizar de esta manera los telefonos, asi que es una marca a evitar al comprar un nuevo telefono.
+Este es un poco mas libre, en el pasado muchas marcas permitian el desbloqueo de bootloader de manera mas facil o directamente venian desbloqueadas para instalar cualquier sistema (ROM). Esto Permitia que cuando la empresa deje de actualizar el dispositivo, la comunidad aun pueda mantener actualizado, un ejemplo es el Samsung Galaxy S3 (Lanzado en 2012) 
+<img width="216" height="320" alt="image" src="https://github.com/user-attachments/assets/b9aec82c-e758-48bb-bee8-6d46c34402e3" />
+
+
+A dia de hoy pese a que quedo con Android 4 la comunidad lo mantiene actualizado con parches de seguridad y versiones de Android actuales, con funcionamiento de WhatsApp, TiktTok, YouTube y cualquier otra app. Este telefono tuvo mas de 100M de unidades vendidas, muchos no saben que pueden hacer esto. Hoy en dia Samsung prohibe reutilizar de esta manera los telefonos, asi que es una marca a evitar al comprar un nuevo telefono.
 
 Continuando con las cosas que podemos hacer con un telefono Viejo:
 
