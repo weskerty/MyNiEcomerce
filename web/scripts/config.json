@@ -9,11 +9,10 @@
   "mobBreakpoint": 768,
   "disqus": "amigos-steam",
   "pluginsPath": "web/scripts/",
-  "plugins": ["chatBanner&Share.js", "Galerias.js", "install.js", "perfBench.js", "privado.js"],
+  "plugins": ["chatBanner&Share.js", "Galerias.js", "install.js", "perfBench.js"],
   "bg": [
     { "month": 0,  "type": "image", "src": "web/otros/Archivos/Imagenes/pexels5834608AñoNuevo.avif" },
     { "month": 1,  "type": "image", "src": "web/otros/Archivos/Imagenes/pexels-henkephotoart-29775986.jpg" },
-    { "month": 6,  "type": "image", "src": "web/otros/Archivos/Imagenes/pexels-henkephotoart-29775986.jpg" },
     { "month": 8,  "type": "video", "src": "https://github.com/user-attachments/assets/fd54742d-a7e9-49f4-b268-da16689918c1" },
     { "month": 9,  "type": "image", "src": "web/otros/Archivos/Imagenes/pexels-vilas-5688958.jpg" },
     { "month": 10, "type": "image", "src": "web/otros/Archivos/Imagenes/benjamin-shurance-W7zJGqbp6Xw-unsplash.jpg" },
