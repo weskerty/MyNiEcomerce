@@ -1,49 +1,71 @@
-# Video prueba
 
-<div id="VP_BTNS" style="position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:99999;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;pointer-events:auto">
-<button id="V1" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Video Content</button>
+<div id="VP_BTNS" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:12px">
 <button id="V2" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Video Overlay</button>
 <button id="IM1" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Imagen Overlay</button>
 <button id="CT" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Anular Content</button>
-<button id="BGV" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Reemplazar Video Real</button>
-<button id="BGI" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Reemplazar Imagen Real</button>
+<button id="BGV" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Video Fondo</button>
+<button id="BGI" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Imagen CSS&Fondo</button>
+<button id="DQ1" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">Anular Disqus</button>
+<button id="LG1" style="padding:8px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;cursor:pointer">LiquidGlass</button>
 </div>
 
-<div id="V1W" style="display:none;margin-top:60px">
-<video id="V1E" src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" muted loop playsinline style="width:100%;border-radius:12px"></video>
+<div id="VP_URLS" style="display:flex;flex-direction:column;gap:6px;max-width:500px;margin:0 auto 20px">
+<input id="U_V2" placeholder="URL video overlay (vacio = default)" style="padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.5);color:#fff">
+<input id="U_IM1" placeholder="URL imagen overlay (vacio = default)" style="padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.5);color:#fff">
+<input id="U_BGV" placeholder="URL video (vacio = default)" style="padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.5);color:#fff">
+<input id="U_BGI" placeholder="URL imagen (vacio = default)" style="padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.5);color:#fff">
 </div>
 
-<video id="V2E" src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" muted loop playsinline style="display:none;position:fixed;top:50%;left:50%;width:100%;min-height:100dvh;height:100%;object-fit:cover;transform:translate(-50%,-50%);z-index:0;pointer-events:none"></video>
-
-<img id="IM1E" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" style="display:none;position:fixed;top:50%;left:50%;width:100%;min-height:100dvh;height:100%;object-fit:cover;transform:translate(-50%,-50%);z-index:0;pointer-events:none">
+<div>
+<video id="V2E" muted loop playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0"></video>
+<img id="IM1E" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0">
+<p style="position:relative;padding:16px">ejemplo</p>
+</div>
 
 <script>
 !function(){
-const b1=document.getElementById('V1'),b2=document.getElementById('V2'),bi=document.getElementById('IM1'),bc=document.getElementById('CT'),bgv=document.getElementById('BGV'),bgi=document.getElementById('BGI');
-const w1=document.getElementById('V1W'),e1=document.getElementById('V1E'),e2=document.getElementById('V2E'),i1=document.getElementById('IM1E');
-const ct=document.getElementById('content');
-const bg=document.getElementById('bg'),bgVid=document.getElementById('bg-video');
-let s1=!1,s2=!1,si=!1,sc=!1,sbv=!1,sbi=!1;
-let ctPrev=null,bgPrev=null,bgVidPrev=null;
-const onC='rgba(34,197,94,.35)',offC='rgba(255,255,255,.15)';
+const D_V2='https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4';
+const D_IM1='https://images.unsplash.com/photo-1506744038136-46273834b3fb';
+const D_BGV=D_V2;
+const D_BGI=D_IM1;
 
-b1.onclick=()=>{
-s1=!s1;
-w1.style.display=s1?'block':'none';
-s1?e1.play():e1.pause();
-b1.style.background=s1?onC:offC;
-};
+const b2=document.getElementById('V2'),bi=document.getElementById('IM1'),bc=document.getElementById('CT'),bgv=document.getElementById('BGV'),bgi=document.getElementById('BGI'),dq1=document.getElementById('DQ1'),lg1=document.getElementById('LG1');
+const e2=document.getElementById('V2E'),i1=document.getElementById('IM1E');
+const ct=document.getElementById('content');
+const bg=document.getElementById('bg');
+const dq=document.getElementById('disqus-container');
+const uV2=document.getElementById('U_V2'),uIM1=document.getElementById('U_IM1'),uBGV=document.getElementById('U_BGV'),uBGI=document.getElementById('U_BGI');
+
+let s2=!1,si=!1,sc=!1,sbv=!1,sbi=!1,sdq=!1,slg=!1;
+let ctPrev=null,bgPrev=null;
+let bgvExisted=!1,bgvSrcPrev=null,bgvStylePrev=null;
+let bgvHiddenByBgi=!1;
+let lgInst=null;
+const onC='rgba(34,197,94,.35)',offC='rgba(255,255,255,.15)';
 
 b2.onclick=()=>{
 s2=!s2;
-e2.style.display=s2?'block':'none';
-s2?e2.play():e2.pause();
+if(s2){
+ct.style.position='relative';
+e2.src=uV2.value.trim()||D_V2;
+e2.style.display='block';
+e2.play();
+}else{
+e2.style.display='none';
+e2.pause();
+}
 b2.style.background=s2?onC:offC;
 };
 
 bi.onclick=()=>{
 si=!si;
-i1.style.display=si?'block':'none';
+if(si){
+ct.style.position='relative';
+i1.src=uIM1.value.trim()||D_IM1;
+i1.style.display='block';
+}else{
+i1.style.display='none';
+}
 bi.style.background=si?onC:offC;
 };
 
@@ -67,30 +89,95 @@ bc.style.background=sc?onC:offC;
 
 bgv.onclick=()=>{
 sbv=!sbv;
+let bgVid=document.getElementById('bg-video');
 if(sbv){
-bgVidPrev=bgVid.getAttribute('style');
-bgVid.querySelector('source').src='https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4';
+bgvExisted=!!bgVid;
+if(!bgVid){
+bgVid=document.createElement('video');
+bgVid.id='bg-video';
+bgVid.autoplay=!0;
+bgVid.muted=!0;
+bgVid.loop=!0;
+bgVid.setAttribute('playsinline','');
+bgVid.innerHTML='<source type="video/mp4">';
+document.body.insertBefore(bgVid,ct);
+}else{
+bgvStylePrev=bgVid.getAttribute('style');
+bgvSrcPrev=bgVid.querySelector('source').src;
+}
+bgVid.style.display='block';
+bgVid.style.position='fixed';
+bgVid.style.top='50%';
+bgVid.style.left='50%';
+bgVid.style.width='100%';
+bgVid.style.minHeight='100dvh';
+bgVid.style.height='100%';
+bgVid.style.objectFit='cover';
+bgVid.style.transform='translate(-50%,-50%)';
+bgVid.style.zIndex='-1';
+bgVid.querySelector('source').src=uBGV.value.trim()||D_BGV;
 bgVid.load();
 bgVid.play();
-bgVid.style.display='block';
 }else{
-bgVid.pause();
-bgVid.setAttribute('style',bgVidPrev||'');
+if(!bgVid)return;
+if(!bgvExisted){
+bgVid.remove();
+}else{
+bgVid.setAttribute('style',bgvStylePrev||'');
+bgVid.querySelector('source').src=bgvSrcPrev||'';
+bgVid.load();
+bgVid.play();
+}
 }
 bgv.style.background=sbv?onC:offC;
 };
 
 bgi.onclick=()=>{
 sbi=!sbi;
+const bgVid=document.getElementById('bg-video');
 if(sbi){
 bgPrev=bg.getAttribute('style');
-bg.style.backgroundImage="url('https://images.unsplash.com/photo-1506744038136-46273834b3fb')";
+bg.style.backgroundImage=`url('${uBGI.value.trim()||D_BGI}')`;
 bg.style.backgroundSize='cover';
 bg.style.backgroundPosition='center';
+if(bgVid&&bgVid.style.display!=='none'){
+bgvHiddenByBgi=!0;
+bgVid.style.display='none';
+bgVid.pause();
+}
 }else{
 bg.setAttribute('style',bgPrev||'');
+if(bgvHiddenByBgi&&bgVid){
+bgVid.style.display='block';
+bgVid.play();
+bgvHiddenByBgi=!1;
+}
 }
 bgi.style.background=sbi?onC:offC;
+};
+
+dq1.onclick=()=>{
+sdq=!sdq;
+dq.style.display=sdq?'none':'';
+dq1.style.background=sdq?onC:offC;
+};
+
+lg1.onclick=async()=>{
+slg=!slg;
+if(slg){
+try{
+const{LiquidGlass}=await import('https://cdn.jsdelivr.net/npm/@ybouane/liquidglass/dist/index.js');
+await document.fonts.ready;
+lgInst=await LiquidGlass.init({root:document.body,glassElements:[ct,dq]});
+lg1.style.background=onC;
+}catch(err){
+alert('Error LG: '+err.message);
+slg=!1;
+}
+}else{
+if(lgInst){lgInst.destroy();lgInst=null;}
+lg1.style.background=offC;
+}
 };
 }();
 </script>
