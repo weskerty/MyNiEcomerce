@@ -7,8 +7,8 @@
 .bl-head{margin-bottom:clamp(16px,3vw,32px)}
 .bl-head h1{font-size:clamp(1.6rem,5vw,2.8rem);font-weight:700;color:rgba(255,255,255,.95);letter-spacing:-.02em;text-shadow:0 2px 20px rgba(0,0,0,.3);line-height:1.1;border-bottom:2px solid #1a73e8;padding-bottom:.5rem;display:inline-block;font-family:var(--font-h)}
 .bl-head p{font-size:.8rem;color:rgba(255,255,255,.5);margin-top:5px;font-weight:300;letter-spacing:.06em;text-transform:uppercase}
-.bl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px;align-items:start}
-.bl-card{position:relative;border-radius:20px;overflow:hidden;cursor:pointer;text-decoration:none;display:block;min-height:200px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);box-shadow:0 4px 24px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.15);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease}
+.bl-grid{column-width:300px;column-gap:16px}
+.bl-card{position:relative;border-radius:20px;overflow:hidden;cursor:pointer;text-decoration:none;display:block;min-height:200px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);box-shadow:0 4px 24px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.15);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease;break-inside:avoid;margin-bottom:16px}
 .bl-card:hover{will-change:transform;transform:translateY(-5px) scale(1.01);box-shadow:0 16px 40px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.2);text-decoration:none}
 .bl-card:active{transform:scale(.98)}
 .bl-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s cubic-bezier(.2,.8,.2,1),filter .3s ease;filter:brightness(.5) saturate(1.2)}
@@ -21,19 +21,21 @@
 .bl-title{font-family:var(--font-h);font-size:clamp(1rem,2.5vw,1.3rem);font-weight:700;color:rgba(255,255,255,.95);line-height:1.25;text-shadow:0 2px 10px rgba(0,0,0,.4)}
 .bl-arr{position:absolute;bottom:18px;right:18px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-size:13px;transition:transform .25s cubic-bezier(.2,.8,.2,1),background .25s ease}
 .bl-card:hover .bl-arr{transform:translate(2px,-2px);background:rgba(255,255,255,.22)}
-.bl-empty{grid-column:1/-1;text-align:center;padding:50px 20px;color:rgba(255,255,255,.4)}
+.bl-empty{text-align:center;padding:50px 20px;color:rgba(255,255,255,.4)}
 .bl-empty span{display:block;font-size:2rem;margin-bottom:10px}
 .bl-dots{display:flex;align-items:center;justify-content:center;gap:7px;padding:50px}
 .bl-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);animation:blP .8s ease-in-out infinite}
 .bl-dot:nth-child(2){animation-delay:.15s}
 .bl-dot:nth-child(3){animation-delay:.3s}
 @keyframes blP{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
-#nt-btn,#BN_RB{display:none;margin:10px 6px 0;padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:.78rem;letter-spacing:.05em;cursor:pointer;transition:background .2s,transform .15s}
+.BN_BR{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+#nt-btn,#BN_RB{padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:.78rem;letter-spacing:.05em;cursor:pointer;transition:background .2s,transform .15s;line-height:1.2}
+#nt-btn{display:none}
 #nt-btn:hover,#BN_RB:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
 #nt-btn:disabled{opacity:.5;cursor:default;transform:none}
-#BN_RB{display:inline-block;text-decoration:none;border-color:rgba(255,140,0,.35);background:rgba(255,140,0,.08);color:#ffaa33}
+#BN_RB{display:inline-flex;align-items:center;text-decoration:none;border-color:rgba(255,140,0,.35);background:rgba(255,140,0,.08);color:#ffaa33}
 #BN_RB:hover{background:rgba(255,140,0,.18)}
-.bl-pg{display:flex;justify-content:center;gap:12px;margin-top:16px;grid-column:1/-1}
+.bl-pg{display:flex;justify-content:center;gap:12px;margin-top:16px}
 .bl-pg button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:white;padding:6px 18px;cursor:pointer;font-size:.85em;transition:background .2s}
 .bl-pg button:hover{background:rgba(255,255,255,.22)}
 .bl-pg button:disabled{opacity:.3;cursor:default}
@@ -48,7 +50,7 @@
 .BN_TT .bl-title{font-size:clamp(.95rem,2.3vw,1.15rem)}
 .BN_BGN .BN_TT{position:static;padding:14px 18px 4px}
 .BN_DS{padding:10px 18px 18px;font-size:.85rem;line-height:1.55;color:rgba(255,255,255,.75)}
-@media(max-width:480px){.bl-grid{grid-template-columns:1fr}}
+@media(max-width:480px){.bl-grid{column-width:100%}}
 </style>
 
 <a class="bl-nb bl-nb-l" href="web/es.html">🏠</a>
@@ -58,14 +60,15 @@
 <div id="bl-wrap">
 <div class="bl-head">
 <h2>BLOG</h2>
+<div class="BN_BR">
 <button id="nt-btn"></button>
 <a id="BN_RB" href="/api/rss?url=telegram%2Fchannel%2Fparaguayley" target="_blank" rel="noopener noreferrer">📡 RSS</a>
+</div>
 <div class="section">
   <div class="gallery-container">
     <div id="BPinned-gallery" class="contenedor-imagenes-animado"></div>
   </div>
 </div>
-<p id="bl-cnt"></p>
 </div>
 <div class="bl-dots" id="bl-ld"><div class="bl-dot"></div><div class="bl-dot"></div><div class="bl-dot"></div></div>
 <div class="bl-grid" id="bl-gr" style="display:none"></div>
@@ -221,7 +224,6 @@ function renderPage(gr,list,p,animate){
 async function init(){
   const gr=document.getElementById('bl-gr');
   const ld=document.getElementById('bl-ld');
-  const cnt=document.getElementById('bl-cnt');
   if(!gr)return;
   gr.innerHTML='';
   const[galleries,nw]=await Promise.all([fetchData(),BN_FR()]);
@@ -229,7 +231,6 @@ async function init(){
   gr.style.display='';
   const bl=galleries?parseBlogs(galleries):[];
   const items=BN_MIX(bl,nw);
-  if(cnt)cnt.textContent=items.length+(items.length===1?' articulo':' articulos');
   curList=items;curPg=0;
   renderPage(gr,items,0,false);
 }
