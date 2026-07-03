@@ -117,22 +117,21 @@ async function SB_fetchPage(off){
   catch(e){return [];}
 }
 
-async function SB_render(off,append){
+async function SB_render(off){
   const gd=document.getElementById('SB_GD'),ld=document.getElementById('SB_LD');
   const posts=await SB_fetchPage(off);
   if(ld)ld.style.display='none';
   gd.style.display='';
-  if(!append){gd.innerHTML='';SB_posts=[];}
-  gd.querySelectorAll('.SB_PG').forEach(n=>n.remove());
-  if(!posts.length&&!append){gd.innerHTML='<div class="SB_EMP">🕳️ Sin publicaciones aun</div>';return;}
-  SB_posts=SB_posts.concat(posts);
+  gd.innerHTML='';
+  SB_posts=posts;
+  if(!posts.length&&off===0){gd.innerHTML='<div class="SB_EMP">🕳️ Sin publicaciones aun</div>';return;}
   posts.forEach(p=>gd.appendChild(SB_mkItem(p)));
-  if(posts.length===SB_PG){
-    const nav=document.createElement('div');nav.className='SB_PG';
-    const b=document.createElement('button');b.textContent='Cargar mas';
-    b.onclick=()=>{SB_off+=SB_PG;SB_render(SB_off,true);};
-    nav.appendChild(b);gd.appendChild(nav);
-  }
+  const nav=document.createElement('div');nav.className='SB_PG';
+  const bP=document.createElement('button');bP.textContent='Anterior';bP.disabled=off===0;
+  const bN=document.createElement('button');bN.textContent='Siguiente';bN.disabled=posts.length<SB_PG;
+  bP.onclick=()=>{SB_off=Math.max(0,off-SB_PG);SB_render(SB_off);};
+  bN.onclick=()=>{SB_off=off+SB_PG;SB_render(SB_off);};
+  nav.appendChild(bP);nav.appendChild(bN);gd.appendChild(nav);
 }
 
 async function SB_loadCmts(pid,coff,append){
@@ -205,11 +204,10 @@ async function SB_publish(){
     const r=await fetch(SB_API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({txt:c})});
     if(r.status===429){alert('Limite diario alcanzado');btn.disabled=false;return;}
     if(!r.ok){btn.disabled=false;return;}
-    const p=await r.json();
+    await r.json();
     SB_closeForm();
-    const gd=document.getElementById('SB_GD');
-    gd.insertBefore(SB_mkItem(p),gd.firstChild);
-    SB_posts.unshift(p);
+    SB_off=0;
+    SB_render(0);
   }catch(e){}
   btn.disabled=false;
 }
@@ -242,7 +240,7 @@ function SB_init(){
   document.getElementById('SB_MSD').addEventListener('click',SB_sendCmt);
   document.getElementById('SB_MIN').addEventListener('keydown',e=>{if(e.key==='Enter')SB_sendCmt();});
   document.addEventListener('keydown',SB_onKey);
-  SB_render(0,false);
+  SB_render(0);
 }
 
 function SB_cleanup(){
