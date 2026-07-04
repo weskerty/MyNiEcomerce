@@ -1,8 +1,0 @@
-Hacer data.json de bliog separado. 
-Search y sw js descargar ambos data.json
-Glass https://github.com/ybouane/liquidglass para fondo carrito search
-
-
-
-
-
