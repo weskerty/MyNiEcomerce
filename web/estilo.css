@@ -9,7 +9,7 @@
 
 :root {
     --font: 'Comfortaa', 'Fluent Emoji Color', sans-serif;
-    --font-h: 'Libre Baskerville', 'Merriweather', 'Times New Roman', 'Georgia', 'Fluent Emoji Color', serif;
+    --font-h: 'Comfortaa', 'Fluent Emoji Color', sans-serif;
     color-scheme: only dark;
 }
 

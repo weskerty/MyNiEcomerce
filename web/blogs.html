@@ -1,5 +1,4 @@
 <style>
-:root{--font-h:'Libre Baskerville','Merriweather','Times New Roman','Georgia','Fluent Emoji Color',serif}
 #bl-wrap *{box-sizing:border-box}
 .bl-nb{position:absolute;top:0;font-size:1.8rem;text-decoration:none;z-index:10}
 .bl-nb-l{left:0}
@@ -9,6 +8,8 @@
 .bl-head p{font-size:.8rem;color:rgba(255,255,255,.5);margin-top:5px;font-weight:300;letter-spacing:.06em;text-transform:uppercase}
 .bl-grid{column-width:300px;column-gap:16px}
 .bl-card{position:relative;border-radius:20px;overflow:hidden;cursor:pointer;text-decoration:none;display:block;min-height:200px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);box-shadow:0 4px 24px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.15);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease;break-inside:avoid;margin-bottom:16px}
+.bl-card::after{content:'';position:absolute;inset:0;z-index:3;background:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.12),transparent 60%);transform:translateX(-120%);transition:.6s;pointer-events:none}
+.bl-card:hover::after{transform:translateX(120%)}
 .bl-card:hover{will-change:transform;transform:translateY(-5px) scale(1.01);box-shadow:0 16px 40px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.2);text-decoration:none}
 .bl-card:active{transform:scale(.98)}
 .bl-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s cubic-bezier(.2,.8,.2,1),filter .3s ease;filter:brightness(.5) saturate(1.2)}
@@ -19,8 +20,6 @@
 .bl-cat{font-size:.68rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:7px;display:flex;align-items:center;gap:5px}
 .bl-cat::before{content:'';display:inline-block;width:14px;height:1px;background:rgba(255,255,255,.35)}
 .bl-title{font-family:var(--font-h);font-size:clamp(1rem,2.5vw,1.3rem);font-weight:700;color:rgba(255,255,255,.95);line-height:1.25;text-shadow:0 2px 10px rgba(0,0,0,.4)}
-.bl-arr{position:absolute;bottom:18px;right:18px;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);font-size:13px;transition:transform .25s cubic-bezier(.2,.8,.2,1),background .25s ease}
-.bl-card:hover .bl-arr{transform:translate(2px,-2px);background:rgba(255,255,255,.22)}
 .bl-empty{text-align:center;padding:50px 20px;color:rgba(255,255,255,.4)}
 .bl-empty span{display:block;font-size:2rem;margin-bottom:10px}
 .bl-dots{display:flex;align-items:center;justify-content:center;gap:7px;padding:50px}
@@ -51,6 +50,7 @@
 .BN_BGN .BN_TT{position:static;padding:14px 18px 4px}
 .BN_DS{padding:10px 18px 18px;font-size:.85rem;line-height:1.55;color:rgba(255,255,255,.75)}
 @media(max-width:480px){.bl-grid{column-width:100%}}
+@media(prefers-reduced-motion:reduce){.bl-card:hover{transform:none}.bl-card:hover .bl-bg,.bl-card:hover .BN_BG{transform:none}.bl-card::after{display:none}}
 </style>
 
 <a class="bl-nb bl-nb-l" href="web/es.html">🏠</a>
@@ -177,8 +177,7 @@ function mkCard(item){
     const gl=document.createElement('div');gl.className='bl-gloss';
     const bd=document.createElement('div');bd.className='bl-body';
     bd.innerHTML='<div class="bl-cat">'+item.cat+'</div><div class="bl-title">'+item.name+'</div>';
-    const ar=document.createElement('div');ar.className='bl-arr';ar.textContent='↗';
-    a.append(bg,gl,bd,ar);
+    a.append(bg,gl,bd);
   }
   return a;
 }
