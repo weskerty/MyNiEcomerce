@@ -1,4 +1,4 @@
-const V='v70';
+const V='v71';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -47,6 +47,9 @@ const TEMP_ROUTES=[{match:'/api/',ttl:18000000}];
 const EXT_CACHE=[
   {origin:'tetunori.github.io',ttl:0}
 ];
+const MIRRORS=['https://weskerty.github.io/MyNiEcomerce'];
+const MIRROR_TIMEOUT=5000;
+let serverIsDown=false;
 const EXT_C='ext-fonts';
 const DJ=/\/data\.json(\?|$)/;
 const DJ_NOTIFY=[new URL('web/Dinamico/data.json',self.location).href];
@@ -83,6 +86,33 @@ function eID(p){
   if(p.includes('/Blogs/')||p.includes('/Apps/')||p.includes('/Juegos/'))return fname;
   const m=fname.match(/ID=([^-]+)/);
   return m?m[1]:fname;
+}
+
+async function tryMirrors(pathname,init){
+  for(const base of MIRRORS){
+    const ac=new AbortController();
+    const tid=setTimeout(()=>ac.abort(),MIRROR_TIMEOUT);
+    try{
+      const mirrorUrl=base.replace(/\/$/,'')+pathname;
+      const r=await fetch(mirrorUrl,{...init,signal:ac.signal,mode:'cors'});
+      if(r&&r.ok){serverIsDown=true;return r;}
+    }catch{}
+    finally{clearTimeout(tid);}
+  }
+  serverIsDown=false;
+  return null;
+}
+
+async function fetchWithMirrors(input,init){
+  const pathname=new URL(input instanceof Request?input.url:input,self.location).pathname;
+  if(!serverIsDown){
+    try{
+      return await fetch(input,init);
+    }catch{}
+  }
+  const mirrored=await tryMirrors(pathname,init);
+  if(mirrored)return mirrored;
+  return fetch(input,init);
 }
 
 
@@ -167,7 +197,7 @@ async function syncMD(nArr,oArr){
 
 async function chkDJ(djUrl){
   try{
-    const r=await fetch(djUrl,{cache:'no-store'});
+    const r=await fetchWithMirrors(djUrl,{cache:'no-store'});
     if(!r?.ok)return false;
     const txt=await r.text();
     const c=await caches.open(V);
@@ -354,7 +384,7 @@ self.addEventListener('fetch',e=>{
         return cc;
       }
       try{
-        const r=await fetch(djHref,{cache:'no-store'});
+        const r=await fetchWithMirrors(djHref,{cache:'no-store'});
         if(r?.ok){
           const txt=await r.text();
           await c.put(djHref,new Response(txt,{status:200,headers:new Headers(r.headers)}));
@@ -382,7 +412,7 @@ self.addEventListener('fetch',e=>{
         return cc;
       }
       try{
-        const r=await fetch(e.request);
+        const r=await fetchWithMirrors(e.request);
         if(r?.ok)await c.put(e.request,r.clone());
         return r;
       }catch{return new Response('',{status:503});}
@@ -407,7 +437,7 @@ self.addEventListener('fetch',e=>{
   e.respondWith(
     caches.match(e.request).then(h=>{
       if(h)return h;
-      return fetch(e.request).then(r=>{
+      return fetchWithMirrors(e.request).then(r=>{
         if(r?.status===200){const rc=r.clone();caches.open(V).then(c=>c.put(e.request,rc));}
         return r;
       }).catch(()=>caches.match('web/404.html'));
