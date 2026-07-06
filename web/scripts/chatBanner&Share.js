@@ -47,9 +47,9 @@ css.textContent=`
 .cb-mb{padding:20px;overflow-y:auto;flex:1;color:#fff;overscroll-behavior:contain}
 .cb-cp{margin-bottom:12px;border:1px solid rgba(255,255,255,0.25);border-radius:14px;padding:14px;background:rgba(255,255,255,0.04)}
 .cb-cn{font-size:12px;font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.2);opacity:.85;letter-spacing:.07em;text-transform:uppercase}
-.cb-ci{background:rgba(255,255,255,0.1);border-radius:12px;padding:10px 15px;margin-bottom:8px;transition:opacity 0.4s ease,transform 0.4s ease;display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,0.06)}
+.cb-ci{background:rgba(255,255,255,0.1);border-radius:12px;padding:10px 15px;margin-bottom:8px;transition:opacity 0.4s ease,transform 0.4s ease;display:flex;flex-direction:column;gap:6px;border:1px solid rgba(255,255,255,0.06)}
 .cb-ci.cb-rm{opacity:0;transform:translateY(-20px)}
-.cb-ct{font-size:15px;font-weight:bold;flex:1;min-width:0}
+.cb-ct{font-size:15px;font-weight:bold;width:100%}
 .cb-cr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:14px}
 .cb-cc{display:flex;align-items:center;gap:10px}
 .cb-cc button{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.3);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
@@ -331,15 +331,15 @@ function renderCart(){
     html+=`<div class="cb-cp" data-gk="${k}"><p class="cb-cn">📦 ${g.n}</p>`;
     g.items.forEach(x=>{
       const sub=x.p*x.d;
-      html+=`<div class="cb-ci" data-key="${x.t}-${x.n}-${x.i}"><span class="cb-ct">${x.b}</span><span class="cb-cs">💰 ${fmt(sub)}Gs</span><div class="cb-cc"><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="-">−</button><span>${x.d}</span><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="+">+</button></div></div>`;
+      html+=`<div class="cb-ci" data-key="${x.t}-${x.n}-${x.i}"><span class="cb-ct">${x.b}</span><div class="cb-cr"><span class="cb-cs">💰 ${fmt(sub)}Gs</span><div class="cb-cc"><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="-">−</button><span>${x.d}</span><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="+">+</button></div></div></div>`;
     });
     const msg="Hola quiero%0A"+g.items.map(x=>`[${x.d}] de ${encodeURIComponent(x.b)} [ID=${x.i}]`).join("%0A");
     const svgWA=`<img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg" style="width:28px;height:28px;vertical-align:middle">`;
     const svgTG=`<img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg" style="width:28px;height:28px;vertical-align:middle">`;
     let btns="";
-    if("wt"===g.t)btns=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}↗️</button><button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}↗️</button><button class="cb-bt cb-sm" data-l="sms:+${g.n}?body=${msg}" data-gk="${k}" data-lbl="SMS">✉️↗️</button>`;
-    else if("w"===g.t)btns=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}↗️</button><button class="cb-bt cb-sm" data-l="sms:+${g.n}?body=${msg}" data-gk="${k}" data-lbl="SMS">✉️↗️</button>`;
-    else if("t"===g.t)btns=`<button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}↗️</button><button class="cb-bt cb-sm" data-l="sms:+${g.n}?body=${msg}" data-gk="${k}" data-lbl="SMS">✉️↗️</button>`;
+    if("wt"===g.t)btns=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}↗️</button><button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}↗️</button><button class="cb-bt cb-sm" data-l="sms:+${g.n}?body=${msg}&body=${msg}" data-gk="${k}" data-lbl="SMS">✉️↗️</button>`;
+    else if("w"===g.t)btns=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}↗️</button><button class="cb-bt cb-sm" data-l="sms:+${g.n}?body=${msg}&body=${msg}" data-gk="${k}" data-lbl="SMS">✉️↗️</button>`;
+    else if("t"===g.t)btns=`<button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}↗️</button><button class="cb-bt cb-sm" data-l="sms:+${g.n}?body=${msg}&body=${msg}" data-gk="${k}" data-lbl="SMS">✉️↗️</button>`;
     html+=`<div class="cb-cf"><h5 class="cb-ch">Termina la Compra en</h5><div class="cb-ca">${btns}</div></div></div>`;
   });
   modal.querySelector(".cb-mb").innerHTML=html;
@@ -404,9 +404,13 @@ modal.addEventListener("click",ev=>{
       const grp=st.c.filter(x=>x.t+"-"+x.n===gk);
       const newMsg="Hola quiero%0A"+grp.map(x=>`[${x.d}] de ${encodeURIComponent(x.b)} [ID=${x.i}]`).join("%0A");
       modal.querySelectorAll(`.cb-cp[data-gk="${gk}"] button[data-gk]`).forEach(btn=>{
-        const sep=btn.dataset.l.includes("?body=")?"?body=":"?text=";
-        const base=btn.dataset.l.split(sep)[0];
-        btn.dataset.l=base+sep+newMsg;
+        if(btn.dataset.l.startsWith("sms:")){
+          const base=btn.dataset.l.split("?body=")[0];
+          btn.dataset.l=base+"?body="+newMsg+"&body="+newMsg;
+        }else{
+          const base=btn.dataset.l.split("?text=")[0];
+          btn.dataset.l=base+"?text="+newMsg;
+        }
       });
       updMHT();
     }
