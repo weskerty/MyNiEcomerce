@@ -1,8 +1,7 @@
 
 
 ### Opcional
-Search puede tener bloques escalonados como /Blog.html o SecretNotes para entradas que son cortas. Las entradas largas mantienen su ancho, las cortas añadirian otras cortas alado de su categoria y sub categoria. No se puede mezclar con otra sub categoria.
-En Pruebas hay un sistema de Organizacion. orden.html
+sw.js notifica pero no descarga el elemento, haciendo que al entrar en notificacion solo lleve al inicio, no a la nueva entrada
 
 
 
