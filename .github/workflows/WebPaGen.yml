@@ -1,40 +1,35 @@
-name: WebPageGen
+name: WebPaGenerador
 
 on:
   push:
+    branches: [main]
     paths:
-      - web/Dinamico/data.json
+      - 'web/Dinamico/data.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  WebPageGen:
-    name: WebPageGen - build on change
-    runs-on: ubuntu-latest
-
+  deploy:
+    runs-on: ubuntu-slim
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
         with:
-          fetch-depth: 0
+          path: '.'
 
-      - id: A1
-        run: |
-          git fetch origin main
-          F1=$(git diff --name-only origin/main HEAD || true)
-          echo "CH=$F1" >> $GITHUB_OUTPUT
-
-      - id: B1
-        env:
-          P1: "web/Dinamico/data.json"
-        run: |
-          echo "${{ steps.A1.outputs.CH }}" | tr ' ' '\n' > f1.txt
-          I=0
-          for P in $(echo "$P1" | tr ';' ' '); do
-            grep -qx "$P" f1.txt && I=1
-          done
-          echo "I=$I" >> $GITHUB_ENV
-
-      - if: env.I == '1'
-        run: |
-          echo "build"
-          # npm ci
-          # npm run build
-          # deploy
+      - uses: actions/deploy-pages@v4
+        id: deployment
