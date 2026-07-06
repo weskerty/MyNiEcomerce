@@ -131,10 +131,13 @@ const modal=document.createElement("div");
 
 function fmt(t){return t.toString().replace(/\B(?=(\d{3})+(?!\d))/g,".")}
 
-const _iPWA=/iP(hone|od|ad)/.test(navigator.userAgent)&&!!navigator.standalone;
+const _iOS=/iP(hone|od|ad)/.test(navigator.userAgent);
 function openExt(url){
-  if(url.startsWith('sms:')){location.href=url;return;}
-  if(_iPWA&&url.includes('wa.me')){
+  if(url.startsWith('sms:')){
+    if(_iOS)url=url.split('&body=')[0].replace('?body=','&body=');
+    location.href=url;return;
+  }
+  if(_iOS&&url.includes('wa.me')){
     const m=url.match(/wa\.me\/(\d+)\?text=(.*)/s);
     if(m){location.href=`whatsapp://send?phone=${m[1]}&text=${m[2]}`;return;}
   }
