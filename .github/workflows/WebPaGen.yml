@@ -2,14 +2,14 @@ name: WebPageGen
 
 on:
   push:
-
-env:
-  P1: "web/Dinamico/data.json"
+    paths:
+      - web/Dinamico/data.json
 
 jobs:
   WebPageGen:
-    name: WebPageGen - build on file change
-    runs-on: ubuntu-slim
+    name: WebPageGen - build on change
+    runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -17,10 +17,13 @@ jobs:
 
       - id: A1
         run: |
-          F1=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || true)
+          git fetch origin main
+          F1=$(git diff --name-only origin/main HEAD || true)
           echo "CH=$F1" >> $GITHUB_OUTPUT
 
       - id: B1
+        env:
+          P1: "web/Dinamico/data.json"
         run: |
           echo "${{ steps.A1.outputs.CH }}" | tr ' ' '\n' > f1.txt
           I=0
@@ -32,3 +35,6 @@ jobs:
       - if: env.I == '1'
         run: |
           echo "build"
+          # npm ci
+          # npm run build
+          # deploy
