@@ -1,0 +1,34 @@
+name: WebPageGen
+
+on:
+  push:
+
+env:
+  P1: "web/Dinamico/data.json"
+
+jobs:
+  WebPageGen:
+    name: WebPageGen - build on file change
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: A1
+        run: |
+          F1=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || true)
+          echo "CH=$F1" >> $GITHUB_OUTPUT
+
+      - id: B1
+        run: |
+          echo "${{ steps.A1.outputs.CH }}" | tr ' ' '\n' > f1.txt
+          I=0
+          for P in $(echo "$P1" | tr ';' ' '); do
+            grep -qx "$P" f1.txt && I=1
+          done
+          echo "I=$I" >> $GITHUB_ENV
+
+      - if: env.I == '1'
+        run: |
+          echo "build"
