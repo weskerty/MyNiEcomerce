@@ -2,6 +2,9 @@
 ._nb{position:absolute;top:0;font-size:1.8rem;text-decoration:none;z-index:10}
 ._nb.l{left:0}
 ._nb.r{right:0}
+.section{position:relative;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;margin-top:14px}
+.section>a>h2{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);padding:0 14px;margin:0;border:none!important;display:inline-block}
+h1{border:none!important}
 </style>
 <a class="_nb l" href="web/blogs.html">🔔</a>
 <a class="_nb r" href="web/search.html">🔍</a>
@@ -35,137 +38,25 @@
     </div>
 </div>
 
-<style>
-
-.btn-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 20px 0;
-}
-
-@media (min-width: 600px) {
-  .btn-list {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.btn-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  padding: 7px 11px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.25) 0%,
-    rgba(255, 255, 255, 0.05) 50%,
-    rgba(255, 255, 255, 0.15) 100%
-  );
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 24px;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-  text-decoration: none;
-  color: white;
-  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-  overflow: hidden;
-  position: relative;
-}
-
-.btn-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -50%;
-  width: 200%;
-  height: 50%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.15) 0%,
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-.btn-item:hover {
-  transform: translateY(-3px);
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(255, 255, 255, 0.1) 50%,
-    rgba(255, 255, 255, 0.25) 100%
-  );
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
-  text-decoration: none;
-}
-
-.btn-cnt {
-  flex: 1;
-  text-align: center;
-  padding: 6px 8px;
-  position: relative;
-  z-index: 2;
-}
-
-.btn-cnt h3 {
-  margin: 0 0 3px 0;
-  font-size: 1.4em;
-  color: white;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.btn-cnt p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.95em;
-  line-height: 1.4;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-}
-
-@media (max-width: 600px) {
-  .btn-item {
-    flex-direction: column;
-    text-align: center;
-    text-decoration: none;
-  }
-}
-
-</style>
-
-
-
 <h2>🫂 Recursos Utiles</h2>
 <p>Selecciona a donde quieres ir 🤗</p>
 
-<div class="btn-list">
-  </a>
-  <a href="web/otros/Archivos/MarkDowns/SerParte.md" class="btn-item">
+<div class="BOTON-L1-LST">
+  <a href="web/otros/Archivos/MarkDowns/SerParte.md" class="BOTON-L1">
     <img src="">
-    <div class="btn-cnt"><h3>🤝 Ser Parte</h3><p>Añade tus Juegos a este Catalogo</p></div>
+    <div class="BOTON-L1-CN"><h3>🤝 Ser Parte</h3><p>Añade tus Juegos a este Catalogo</p></div>
 
-  </a>
-
-  <a href="web/otros/Archivos/MarkDowns/Install.md" class="btn-item">
-    <img src="">
-    <div class="btn-cnt"><h3>📱 Instala la App</h3><p>Ahorra Saldo y Recibe Ofertas</p></div>
   </a>
 
-
-  <a href="web/otros/Archivos/HTML/centralPage.html" class="btn-item">
+  <a href="web/otros/Archivos/MarkDowns/Install.md" class="BOTON-L1">
     <img src="">
-    <div class="btn-cnt"><h3>🎳 Mas Utilidades</h3><p>Contenido Extra no Relacionado.</p></div>
+    <div class="BOTON-L1-CN"><h3>📱 Instala la App</h3><p>Ahorra Saldo y Recibe Ofertas</p></div>
+  </a>
+
+
+  <a href="web/otros/Archivos/HTML/centralPage.html" class="BOTON-L1">
+    <img src="">
+    <div class="BOTON-L1-CN"><h3>🎳 Mas Utilidades</h3><p>Contenido Extra no Relacionado.</p></div>
   </a>
   
 </div>
