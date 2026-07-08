@@ -113,10 +113,6 @@ display:flex;gap:11px;align-items:flex-start;
 .ap-sol-info{flex:1;min-width:0}
 .ap-sol-info .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ap-sol-info .dt{font-size:11px;color:var(--txt2);margin-top:3px}
-.ap-sol-neg{
-background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);
-border-radius:8px;padding:7px 10px;font-size:12px;color:#fca5a5;margin-top:6px
-}
 .ap-sol-acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .ap-sol-acts button{
 padding:5px 12px;border-radius:50px;
@@ -128,7 +124,7 @@ font-family:inherit;transition:background .15s;
 .ap-sol-acts button.del{border-color:rgba(248,113,113,.3);color:#fca5a5}
 .ap-badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.04em}
 .ap-badge.pend{background:rgba(79,142,247,.15);color:#93c5fd;border:1px solid rgba(79,142,247,.25)}
-.ap-badge.neg{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+.ap-badge.apr{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)}
 .ap-auth-note{font-size:12px;color:var(--txt2);text-align:center;margin-top:10px}
 .ap-auth-note a{color:var(--acc);cursor:pointer}
 
@@ -430,18 +426,14 @@ window.AP_enviar=async function(){
   const imgExt=imgEl._ext||'.webp';
   if(!cat||!id||!nb||!pcRaw)return AP_toast('Faltan datos obligatorios','warn');
   if(nu.length<12)return AP_toast('Numero invalido (min 12 digitos)','warn');
-  if(!imgBlob)return AP_toast('Imagen requerida','warn');
   const md=_AP_mde?_AP_mde.value():'';
-  const idEl=document.getElementById('ap-id');
-  const body={usuario:_AP_usr,password:_AP_pwd,categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),CD:cd!==''?parseInt(cd):null,TM:tm||null,md,imgData:await AP_blobToB64(imgBlob),imgExt};
-  if(idEl._idOriginal)body.idOriginal=idEl._idOriginal;
+  const body={usuario:_AP_usr,password:_AP_pwd,categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),CD:cd!==''?parseInt(cd):null,TM:tm||null,md};
+  if(imgBlob){body.imgData=await AP_blobToB64(imgBlob);body.imgExt=imgExt;}
   const btn=document.getElementById('ap-submit');
   btn.disabled=true;btn.textContent='Enviando...';
   const{ok,data}=await AP_fetch('enviar',{method:'POST',body:JSON.stringify(body)});
   btn.disabled=false;btn.textContent='📤 Enviar Solicitud';
   if(!ok)return AP_toast(data.error||'Error al enviar','err');
-  const{ok:_ok2,data:_d2}=await AP_fetch('historial',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd})});
-  if(_ok2)_AP_entries=(_d2.entries||[]).slice().reverse();
   AP_toast('Solicitud enviada!');
   AP_resetForm();
   AP_mainTab('mis');
@@ -456,8 +448,6 @@ function AP_resetForm(){
   document.getElementById('ap-img')._blob=null;
   document.getElementById('ap-img')._ext=null;
   if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;setTimeout(AP_initMDE,50);}
-  document.getElementById('ap-id').disabled=false;
-  document.getElementById('ap-id')._idOriginal=null;
   document.getElementById('ap-submit').textContent='📤 Enviar Solicitud';
 }
 
@@ -474,35 +464,29 @@ async function AP_loadImgs(container){
   }));
 }
 
-function AP_TS(t){return new Date(t).toLocaleDateString('es-PY',{day:'2-digit',month:'2-digit',year:'2-digit'});}
-
 window.AP_loadSolicitudes=async function(noFetch){
   const lst=document.getElementById('ap-sol-list');
   if(!noFetch){
     lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
     const{ok,data}=await AP_fetch('historial',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd})});
     if(!ok){lst.innerHTML=`<div style="color:var(--err);padding:20px">${data.error||'Error'}</div>`;return;}
-    _AP_entries=(data.entries||[]).slice().reverse();
+    _AP_entries=data.entries||[];
   }
   if(!_AP_entries.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Sin historial aun</div>';return;}
   lst.innerHTML='';
   const badges={
     pendiente:'<span class="ap-badge pend">Pendiente</span>',
-    negado:'<span class="ap-badge neg">Rechazado</span>',
-    aprobado:'<span class="ap-badge" style="background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)">Aprobado</span>',
-    solicitaBorrado:'<span class="ap-badge" style="background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)">Borrado Pendiente</span>'
+    aprobado:'<span class="ap-badge apr">Aprobado</span>'
   };
   _AP_entries.forEach(e=>{
     const div=document.createElement('div');div.className='ap-sol-item';
-    const eJson=encodeURIComponent(JSON.stringify(e));
-    div.innerHTML=`<img class="ap-sol-img" alt="" onerror="this.style.display='none'" style="${e.estado!=='pendiente'?'display:none':''}" data-id="${e.ID}">
+    div.innerHTML=`<img class="ap-sol-img" alt="" onerror="this.style.display='none'" data-id="${e.ID}">
     <div class="ap-sol-info">
-      <div class="nm">${e.NB} ${badges[e.estado]||''}</div>
-      <div class="dt">ID: ${e.ID} &middot; ${e.categoria}${e.subcategoria?'/'+e.subcategoria:''} &middot; ${AP_TS(e.tsUpdate)}</div>
-      ${e.estado==='negado'&&e.motivo?`<div class="ap-sol-neg">&#10060; ${e.motivo}</div>`:''}
+      <div class="nm">${e.ID} ${badges[e.estado]||''}</div>
+      <div class="dt">${e.categoria}${e.sub?'/'+e.sub:''}</div>
       <div class="ap-sol-acts">
-        ${e.estado!=='solicitaBorrado'?`<button data-e="${eJson}" onclick="AP_reenviarSol(this)">&#128260; ${e.estado==='aprobado'?'Editar':'Reenviar'}</button>`:''}
-        ${e.estado==='solicitaBorrado'?`<button onclick="AP_cancelarBorrado('${e.ID}')">&#10006; Cancelar Borrado</button>`:`<button class="del" onclick="AP_borrarSol('${e.ID}')">&#128465; ${e.estado==='aprobado'?'Solicitar Borrado':'Borrar'}</button>`}
+        <button onclick="AP_editarSol('${e.ID}')">✏️ Editar</button>
+        <button class="del" onclick="AP_borrarSol('${e.ID}')">🗑️ Borrar</button>
       </div>
     </div>`;
     lst.appendChild(div);
@@ -511,54 +495,33 @@ window.AP_loadSolicitudes=async function(noFetch){
 };
 
 window.AP_borrarSol=async function(ID){
-  const e=_AP_entries.find(en=>en.ID===ID);
-  const esAprobado=e&&e.estado==='aprobado';
-  if(!confirm(esAprobado?'Solicitar borrado al administrador?':'Borrar esta entrada?'))return;
+  if(!confirm('Borrar esta entrada?'))return;
   const{ok,data}=await AP_fetch('borrar',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd,ID})});
   if(!ok)return AP_toast(data.error||'Error','err');
-  if(data.entry){
-    const idx=_AP_entries.findIndex(en=>en.ID===ID);
-    if(idx>=0)_AP_entries[idx]=data.entry;
-    AP_toast('Solicitud de borrado enviada','warn');
-  }else{
-    _AP_entries=_AP_entries.filter(en=>en.ID!==ID);
-    AP_toast('Entrada borrada');
-  }
+  _AP_entries=_AP_entries.filter(en=>en.ID!==ID);
+  AP_toast('Entrada borrada');
   AP_loadSolicitudes(true);
 };
 
-window.AP_cancelarBorrado=async function(ID){
-  if(!confirm('Cancelar la solicitud de borrado?'))return;
-  const{ok,data}=await AP_fetch('cancelarBorrado',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd,ID})});
+window.AP_editarSol=async function(ID){
+  const{ok,data}=await AP_fetch('md',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd,ID})});
   if(!ok)return AP_toast(data.error||'Error','err');
-  const idx=_AP_entries.findIndex(e=>e.ID===ID);
-  if(idx>=0)_AP_entries[idx]=data.entry;
-  AP_toast('Borrado cancelado');AP_loadSolicitudes(true);
-};
-
-window.AP_reenviarSol=function(btn){
-  const e=JSON.parse(decodeURIComponent(btn.dataset.e));
+  const e=data.meta;
   AP_mainTab('nuevo');
   const nmParts=(e.NM||'').match(/^(WATG|WA|TG)(.*)$/);
   document.getElementById('ap-nm').value=nmParts?nmParts[1]:'WATG';
   document.getElementById('ap-nu').value=nmParts?nmParts[2]:'';
   document.getElementById('ap-id').value=e.ID||'';
-  document.getElementById('ap-id').disabled=!!e.aprobadoAlgezVez;
-  document.getElementById('ap-id')._idOriginal=e.aprobadoAlgezVez?(e.ID||''):null;
   document.getElementById('ap-nb').value=e.NB||'';
   document.getElementById('ap-pc').value=AP_FP(e.PC||0);
   document.getElementById('ap-cd').value=e.CD!=null?e.CD:'';
   document.getElementById('ap-tm').value=e.TM||'';
-  document.getElementById('ap-cat').value=e.categoria||'';
+  document.getElementById('ap-cat').value=data.categoria||'';
   AP_updSub();
-  setTimeout(()=>{document.getElementById('ap-sub').value=e.subcategoria||'';},50);
-  if(_AP_mde){
-    const cm=_AP_mde.codemirror;
-    cm.execCommand('selectAll');
-    _AP_mde.value(e.md||'');
-  }
-  document.getElementById('ap-submit').textContent='&#128260; Reenviar Solicitud';
-  AP_toast('Completa la imagen para reenviar','warn',5000);
+  setTimeout(()=>{document.getElementById('ap-sub').value=data.subcategoria||'';},50);
+  if(_AP_mde)_AP_mde.value(data.md||'');
+  document.getElementById('ap-submit').textContent='✏️ Guardar Edicion';
+  AP_toast('Agrega la imagen si queres cambiarla, sino se mantiene','warn',5000);
 };
 
 if(_AP_usr&&_AP_pwd){
