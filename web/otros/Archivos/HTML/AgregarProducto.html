@@ -126,6 +126,7 @@ font-family:inherit;transition:background .15s;
 .ap-badge.pend{background:rgba(79,142,247,.15);color:#93c5fd;border:1px solid rgba(79,142,247,.25)}
 .ap-badge.apr{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)}
 .ap-badge.rej{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+.ap-badge.delp{background:rgba(251,146,60,.12);color:#fb923c;border:1px solid rgba(251,146,60,.2)}
 .ap-sol-neg{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:7px 10px;font-size:12px;color:#fca5a5;margin-top:6px}
 @keyframes ap-shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 .ap-shake{animation:ap-shake .4s ease 3;border-color:var(--err)!important}
@@ -519,18 +520,21 @@ window.AP_loadSolicitudes=async function(noFetch){
   const badges={
     pendiente:'<span class="ap-badge pend">Pendiente</span>',
     aprobado:'<span class="ap-badge apr">Aprobado</span>',
-    rechazado:'<span class="ap-badge rej">Rechazado</span>'
+    rechazado:'<span class="ap-badge rej">Rechazado</span>',
+    borrado_pendiente:'<span class="ap-badge delp">Borrado Pendiente</span>'
   };
   _AP_entries.forEach(e=>{
+    const isDelP=e.estado==='borrado_pendiente';
     const div=document.createElement('div');div.className='ap-sol-item';
     div.innerHTML=`<img class="ap-sol-img" alt="" onerror="this.style.display='none'" data-id="${e.ID}">
     <div class="ap-sol-info">
       <div class="nm">${e.ID} ${badges[e.estado]||''}</div>
       <div class="dt">${e.categoria}${e.sub?'/'+e.sub:''}</div>
       ${e.estado==='rechazado'&&e.motivo?`<div class="ap-sol-neg">❌ ${e.motivo}</div>`:''}
+      ${isDelP?`<div class="ap-sol-neg" style="background:rgba(251,146,60,.08);border-color:rgba(251,146,60,.2);color:#fdba74">🗑️ Solicitud de borrado en revision. Podes editar para cancelarla.</div>`:''}
       <div class="ap-sol-acts">
         <button onclick="AP_editarSol('${e.ID}')">✏️ Editar</button>
-        <button class="del" onclick="AP_borrarSol('${e.ID}')">🗑️ Borrar</button>
+        ${isDelP?'':`<button class="del" onclick="AP_borrarSol('${e.ID}')">🗑️ Borrar</button>`}
       </div>
     </div>`;
     lst.appendChild(div);
@@ -542,6 +546,13 @@ window.AP_borrarSol=async function(ID){
   if(!confirm('Borrar esta entrada?'))return;
   const{ok,data}=await AP_fetch('borrar',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd,ID})});
   if(!ok)return AP_toast(data.error||'Error','err');
+  if(data.pendiente){
+    const e=_AP_entries.find(en=>en.ID===ID);
+    if(e)e.estado='borrado_pendiente';
+    AP_toast('Solicitud de borrado enviada','warn');
+    AP_loadSolicitudes(true);
+    return;
+  }
   _AP_entries=_AP_entries.filter(en=>en.ID!==ID);
   AP_toast('Entrada borrada');
   AP_loadSolicitudes(true);
