@@ -125,6 +125,10 @@ font-family:inherit;transition:background .15s;
 .ap-badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.04em}
 .ap-badge.pend{background:rgba(79,142,247,.15);color:#93c5fd;border:1px solid rgba(79,142,247,.25)}
 .ap-badge.apr{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)}
+.ap-badge.rej{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+.ap-sol-neg{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:7px 10px;font-size:12px;color:#fca5a5;margin-top:6px}
+@keyframes ap-shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.ap-shake{animation:ap-shake .4s ease 3;border-color:var(--err)!important}
 .ap-auth-note{font-size:12px;color:var(--txt2);text-align:center;margin-top:10px}
 .ap-auth-note a{color:var(--acc);cursor:pointer}
 
@@ -167,6 +171,7 @@ font-family:inherit;transition:background .15s;
     <div class="ap-tabs">
       <button class="ap-tab act" id="ap-tnuevo" onclick="AP_mainTab('nuevo')">➕ Nueva Solicitud</button>
       <button class="ap-tab" id="ap-tmis" onclick="AP_mainTab('mis')">📋 Mis Solicitudes</button>
+      <button class="ap-tab" id="ap-tcuenta" onclick="AP_mainTab('cuenta')">⚙️ Cuenta</button>
     </div>
     <div id="ap-tab-nuevo">
       <div class="ap-card">
@@ -215,6 +220,15 @@ font-family:inherit;transition:background .15s;
     </div>
     <div id="ap-tab-mis" style="display:none">
       <div id="ap-sol-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
+    </div>
+    <div id="ap-tab-cuenta" style="display:none">
+      <div class="ap-card">
+        <h2>Cambiar Contrasena</h2>
+        <div class="fg"><label>Contrasena Actual</label><input id="ap-cpa" type="password" placeholder="••••••" autocomplete="current-password"></div>
+        <div class="fg"><label>Nueva Contrasena</label><input id="ap-cpn" type="password" placeholder="minimo 6 chars" autocomplete="new-password"></div>
+        <div class="fg"><label>Confirmar Nueva</label><input id="ap-cpn2" type="password" placeholder="••••••" autocomplete="new-password"></div>
+        <button class="ap-btn pri" onclick="AP_cambiarPass()">💾 Guardar Nueva Contrasena</button>
+      </div>
     </div>
   </div>
 </div>
@@ -265,9 +279,24 @@ window.AP_showTab=function(t){
 window.AP_mainTab=function(t){
   document.getElementById('ap-tab-nuevo').style.display=t==='nuevo'?'block':'none';
   document.getElementById('ap-tab-mis').style.display=t==='mis'?'block':'none';
+  document.getElementById('ap-tab-cuenta').style.display=t==='cuenta'?'block':'none';
   document.getElementById('ap-tnuevo').classList.toggle('act',t==='nuevo');
   document.getElementById('ap-tmis').classList.toggle('act',t==='mis');
+  document.getElementById('ap-tcuenta').classList.toggle('act',t==='cuenta');
   if(t==='mis')AP_loadSolicitudes();
+};
+
+window.AP_cambiarPass=async function(){
+  const pa=document.getElementById('ap-cpa').value;
+  const pn=document.getElementById('ap-cpn').value;
+  const pn2=document.getElementById('ap-cpn2').value;
+  if(!pa||!pn)return AP_toast('Completa los campos','warn');
+  if(pn!==pn2)return AP_toast('Las contrasenas nuevas no coinciden','warn');
+  const{ok,data}=await AP_fetch('cambiarPass',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:pa,passwordNuevo:pn})});
+  if(!ok)return AP_toast(data.error||'Error','err');
+  _AP_pwd=pn;AP_sck('ap_p',pn);
+  ['ap-cpa','ap-cpn','ap-cpn2'].forEach(i=>document.getElementById(i).value='');
+  AP_toast('Contrasena actualizada');
 };
 
 async function AP_loadCats(){
@@ -411,6 +440,15 @@ document.getElementById('ap-cd').oninput=function(){
   this.value=this.value.replace(/\D/g,'').slice(0,4);
 };
 
+function AP_flagField(elId){
+  const el=document.getElementById(elId);
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.remove('ap-shake');
+  void el.offsetWidth;
+  el.classList.add('ap-shake');
+  setTimeout(()=>el.classList.remove('ap-shake'),1300);
+}
+
 window.AP_enviar=async function(){
   const cat=document.getElementById('ap-cat').value;
   const sub=document.getElementById('ap-sub').value;
@@ -424,8 +462,12 @@ window.AP_enviar=async function(){
   const imgEl=document.getElementById('ap-img');
   const imgBlob=imgEl._blob;
   const imgExt=imgEl._ext||'.webp';
-  if(!cat||!id||!nb||!pcRaw)return AP_toast('Faltan datos obligatorios','warn');
-  if(nu.length<12)return AP_toast('Numero invalido (min 12 digitos)','warn');
+  const isEdit=document.getElementById('ap-submit').textContent.includes('Guardar');
+  if(!id)return AP_flagField('ap-id');
+  if(!nb)return AP_flagField('ap-nb');
+  if(!pcRaw)return AP_flagField('ap-pc');
+  if(nu.length<12)return AP_flagField('ap-nu');
+  if(!imgBlob&&!isEdit)return AP_flagField('ap-img-thumb');
   const md=_AP_mde?_AP_mde.value():'';
   const body={usuario:_AP_usr,password:_AP_pwd,categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),CD:cd!==''?parseInt(cd):null,TM:tm||null,md};
   if(imgBlob){body.imgData=await AP_blobToB64(imgBlob);body.imgExt=imgExt;}
@@ -476,7 +518,8 @@ window.AP_loadSolicitudes=async function(noFetch){
   lst.innerHTML='';
   const badges={
     pendiente:'<span class="ap-badge pend">Pendiente</span>',
-    aprobado:'<span class="ap-badge apr">Aprobado</span>'
+    aprobado:'<span class="ap-badge apr">Aprobado</span>',
+    rechazado:'<span class="ap-badge rej">Rechazado</span>'
   };
   _AP_entries.forEach(e=>{
     const div=document.createElement('div');div.className='ap-sol-item';
@@ -484,6 +527,7 @@ window.AP_loadSolicitudes=async function(noFetch){
     <div class="ap-sol-info">
       <div class="nm">${e.ID} ${badges[e.estado]||''}</div>
       <div class="dt">${e.categoria}${e.sub?'/'+e.sub:''}</div>
+      ${e.estado==='rechazado'&&e.motivo?`<div class="ap-sol-neg">❌ ${e.motivo}</div>`:''}
       <div class="ap-sol-acts">
         <button onclick="AP_editarSol('${e.ID}')">✏️ Editar</button>
         <button class="del" onclick="AP_borrarSol('${e.ID}')">🗑️ Borrar</button>
