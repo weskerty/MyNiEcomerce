@@ -112,7 +112,6 @@ background:var(--g1);border:1px solid var(--gb);
 border-radius:var(--ri);padding:13px;margin-bottom:10px;
 display:flex;gap:11px;align-items:flex-start;
 }
-.ap-sol-img{width:52px;height:52px;object-fit:cover;border-radius:9px;flex-shrink:0;background:rgba(255,255,255,.05)}
 .ap-sol-info{flex:1;min-width:0}
 .ap-sol-info .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ap-sol-info .dt{font-size:11px;color:var(--txt2);margin-top:3px}
@@ -532,19 +531,6 @@ function AP_resetForm(){
   document.getElementById('ap-submit').textContent='📤 Enviar Solicitud';
 }
 
-async function AP_loadImgs(container){
-  const imgs=container.querySelectorAll('img[data-id]');
-  await Promise.all([...imgs].map(async img=>{
-    try{
-      const res=await fetch(AP_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'img',token:_AP_tk,ID:img.dataset.id})});
-      if(!res.ok)return;
-      const blob=await res.blob();
-      img.src=URL.createObjectURL(blob);
-    }catch{}
-  }));
-}
-
 window.AP_loadSolicitudes=async function(noFetch){
   const lst=document.getElementById('ap-sol-list');
   if(!noFetch){
@@ -560,13 +546,12 @@ window.AP_loadSolicitudes=async function(noFetch){
     aprobado:'<span class="ap-badge apr">Aprobado</span>',
     rechazado:'<span class="ap-badge rej">Rechazado</span>',
     borrado_pendiente:'<span class="ap-badge delp">Borrado Pendiente</span>',
-    auto_pendiente:'<span class="ap-badge pend">Aprobacion Automatica</span>'
+    auto_pendiente:'<span class="ap-badge apr">Actualizando...</span>'
   };
   _AP_entries.forEach(e=>{
     const isDelP=e.estado==='borrado_pendiente';
     const div=document.createElement('div');div.className='ap-sol-item';
-    div.innerHTML=`<img class="ap-sol-img" alt="" onerror="this.style.display='none'" data-id="${e.ID}">
-    <div class="ap-sol-info">
+    div.innerHTML=`<div class="ap-sol-info">
       <div class="nm">${e.ID} ${badges[e.estado]||''}</div>
       <div class="dt">${e.categoria}${e.sub?'/'+e.sub:''}</div>
       ${e.estado==='rechazado'&&e.motivo?`<div class="ap-sol-neg">❌ ${e.motivo}</div>`:''}
@@ -578,7 +563,6 @@ window.AP_loadSolicitudes=async function(noFetch){
     </div>`;
     lst.appendChild(div);
   });
-  AP_loadImgs(lst);
 };
 
 window.AP_borrarSol=async function(ID){
