@@ -1,6 +1,20 @@
 # Que hacer Teniendo una TV Antigua?
 
+<details>
+  <summary style="">🍪 Cookies</summary>
 
+[🖥 Que son las Cookies ↗️]()
+
+CheAgana por si misma no guarda cookies ni rastrea usuarios.
+Aunque esta Web puede generar cookies por la caja de comentarios [Disqus](https://help.disqus.com/en/articles/1717155-use-of-cookies) que encontras al final de la pagina.
+
+
+Para deshabilitar las cookies de Disqus tienes Multiples Opciones;
+1. "Bloquear Cookies de Terceros" (esta activado por defecto) 
+2. Borrar datos del Sitio.
+3. Instalar uBlock o demas Extensiones que Bloqueen estas Cookies.
+
+</details>
 
 * hola
 * como

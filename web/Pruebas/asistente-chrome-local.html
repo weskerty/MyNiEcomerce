@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome Local AI Assistant - Autónomo</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+    <!-- ========================================================== -->
+    <!-- CONFIGURACIÓN DE VARIABLES DEL ASISTENTE (Fácil de Editar) -->
+    <!-- ========================================================== -->
+    <script>
+        // Define aquí los valores predeterminados para tu asistente
+        const DEFAULT_CONFIG = {
+            systemPrompt: `Eres un asistente de IA local súper inteligente y conciso que responde en español.`,
+            temperature: 0.8,
+            topK: 3,
+            variables: [
+    { key: "nombre", value: "Marco" },
+    { key: "idioma", value: "Español" }
+            ]
+        };
+    </script>
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex flex-wrap justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-600 text-white p-2 rounded-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/><path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5Z"/><path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1Z"/></svg>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-slate-900 tracking-tight">Chrome Local AI Assistant</h1>
+                <p class="text-xs text-slate-500">Procesamiento local y privado en el navegador</p>
+            </div>
+        </div>
+
+        <div id="api-status-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
+            <span class="w-2 height-2 rounded-full bg-amber-500 animate-pulse"></span>
+            Comprobando window.ai...
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Column: Settings -->
+        <section class="lg:col-span-4 bg-white border border-slate-200 rounded-2xl p-5 flex flex-col gap-6 shadow-sm">
+            <div>
+                <h2 class="text-md font-semibold text-slate-900 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-600"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Ajustes de Personalización
+                </h2>
+                <p class="text-xs text-slate-500 mt-1">Personaliza el comportamiento del modelo local en tiempo real.</p>
+            </div>
+
+            <!-- System Prompt -->
+            <div class="flex flex-col gap-2">
+                <label class="text-xs font-semibold text-slate-700">System Prompt</label>
+                <textarea id="system-prompt" class="w-full h-24 p-3 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none"></textarea>
+            </div>
+
+            <!-- Parameters Grid -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-semibold text-slate-700">Temperatura</label>
+                        <span id="temp-val" class="text-xs font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">0.8</span>
+                    </div>
+                    <input id="temp-slider" type="range" min="0" max="1" step="0.1" class="w-full accent-blue-600">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-semibold text-slate-700">Top K</label>
+                        <span id="topk-val" class="text-xs font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">3</span>
+                    </div>
+                    <input id="topk-slider" type="range" min="1" max="10" step="1" class="w-full accent-blue-600">
+                </div>
+            </div>
+
+            <!-- Custom Variables -->
+            <div class="border-t border-slate-100 pt-4">
+                <div class="flex justify-between items-center mb-3">
+                    <label class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                        Variables Personalizadas
+                    </label>
+                    <button id="add-var-btn" class="text-blue-600 hover:text-blue-800 text-xs font-medium flex items-center gap-0.5">
+                        + Añadir
+                    </button>
+                </div>
+                <div id="variables-container" class="flex flex-col gap-2 max-h-44 overflow-y-auto pr-1">
+                    <!-- Dynamic variable rows here -->
+                </div>
+                <p class="text-[10px] text-slate-400 mt-2">Puedes usar <code class="bg-slate-100 text-slate-600 px-1 rounded">{{nombre_variable}}</code> en tu mensaje para el asistente.</p>
+            </div>
+
+            <!-- Help Guide Link -->
+            <div id="guide-info-box" class="bg-slate-50 border border-slate-100 rounded-xl p-3 text-xs text-slate-600 flex flex-col gap-2">
+                <span class="font-semibold flex items-center gap-1.5 text-slate-800">
+                    💡 ¿Cómo activar Chrome Local AI?
+                </span>
+                <p>Esta página requiere un navegador compatible con la API experimental <code>window.ai</code>.</p>
+                <button id="toggle-instructions-btn" class="text-blue-600 font-medium hover:underline text-left">Ver guía de activación ↗</button>
+            </div>
+        </section>
+
+        <!-- Right Column: Chat Window -->
+        <section class="lg:col-span-8 bg-white border border-slate-200 rounded-2xl flex flex-col shadow-sm overflow-hidden h-[600px] lg:h-auto min-h-[500px]">
+            <!-- Chat Header -->
+            <div class="bg-slate-50 border-b border-slate-100 px-5 py-3 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" id="header-status-indicator"></span>
+                    <span class="text-sm font-semibold text-slate-700">Sesión de Chat Local</span>
+                </div>
+                <button id="clear-chat-btn" class="text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1 text-xs">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                    Limpiar chat
+                </button>
+            </div>
+
+            <!-- Chat Area -->
+            <div id="chat-messages" class="flex-1 overflow-y-auto p-5 flex flex-col gap-4">
+                <!-- Messages render here -->
+            </div>
+
+            <!-- Loader / Stream text holder -->
+            <div id="stream-holder" class="hidden px-5 py-3 bg-blue-50 border-t border-blue-100 text-sm text-slate-600">
+                <span class="font-medium text-blue-800">IA Local generando...</span>
+                <div id="stream-text" class="mt-1 font-mono text-xs whitespace-pre-wrap"></div>
+            </div>
+
+            <!-- Input Area -->
+            <form id="chat-form" class="border-t border-slate-100 p-4 flex gap-3 bg-white">
+                <input id="chat-input" type="text" placeholder="Escribe tu mensaje aquí..." class="flex-1 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm">
+                <button id="send-btn" type="submit" class="bg-blue-600 text-white px-5 py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors flex items-center gap-1.5 text-sm shrink-0">
+                    <span>Enviar</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Chrome Flag Instructions Modal/Panel -->
+    <div id="instructions-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 shadow-xl border border-slate-200 flex flex-col gap-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    🔧 Guía de Activación: Chrome Built-in AI
+                </h3>
+                <button id="close-modal-btn" class="text-slate-400 hover:text-slate-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            
+            <div class="text-sm text-slate-600 flex flex-col gap-4 overflow-y-auto max-h-[400px] pr-2">
+                <p>Google Chrome integra un modelo local de Gemini Nano que te permite procesar prompts sin salir de tu máquina. Para habilitarlo en tu navegador:</p>
+                
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-start gap-2.5">
+                        <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold text-xs shrink-0 mt-0.5">1</span>
+                        <div>
+                            <p class="font-medium text-slate-800">Habilitar modelo local:</p>
+                            <p class="text-slate-500">Pega esto en la barra de direcciones de Chrome y actívalo (establece en <strong>Enabled BypassPrefRequirement</strong>):</p>
+                            <code class="block bg-slate-100 p-2 rounded-lg mt-1 select-all font-mono text-xs">chrome://flags/#optimization-guide-on-device-model</code>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-2.5 mt-2">
+                        <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold text-xs shrink-0 mt-0.5">2</span>
+                        <div>
+                            <p class="font-medium text-slate-800">Habilitar Prompt API:</p>
+                            <p class="text-slate-500">Pega esto en Chrome y actívalo (establece en <strong>Enabled</strong>):</p>
+                            <code class="block bg-slate-100 p-2 rounded-lg mt-1 select-all font-mono text-xs">chrome://flags/#prompt-api-for-gemini-nano</code>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-2.5 mt-2">
+                        <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold text-xs shrink-0 mt-0.5">3</span>
+                        <div>
+                            <p class="font-medium text-slate-800">Reiniciar Chrome:</p>
+                            <p class="text-slate-500">Presiona el botón <strong>Relaunch</strong> que aparece en la esquina inferior derecha.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-2.5 mt-2">
+                        <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold text-xs shrink-0 mt-0.5">4</span>
+                        <div>
+                            <p class="font-medium text-slate-800">Verificar descarga:</p>
+                            <p class="text-slate-500">Para asegurar que el modelo se ha descargado correctamente:</p>
+                            <code class="block bg-slate-100 p-2 rounded-lg mt-1 select-all font-mono text-xs">chrome://components</code>
+                            <p class="text-slate-500 mt-1">Busca <strong>Optimization Guide On Device Model</strong>. El número de versión debe ser diferente de 0.0.0.0. Si es 0.0.0.0, haz clic en "Buscar actualizaciones" y espera unos minutos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-100 pt-3 flex justify-end">
+                <button id="close-modal-btn-2" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700">
+                    Entendido, cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-400 mt-auto">
+        Chrome Local AI Assistant &bull; Ejecución de IA 100% libre de servidores de terceros.
+    </footer>
+
+    <!-- ========================================================== -->
+    <!-- LOGICA DE CONTROL DE LA INTERFAZ Y CONEXIÓN CON WINDOW.AI -->
+    <!-- ========================================================== -->
+    <script>
+        // Variables de estado
+        let systemPromptInput = document.getElementById('system-prompt');
+        let tempSlider = document.getElementById('temp-slider');
+        let tempVal = document.getElementById('temp-val');
+        let topKSlider = document.getElementById('topk-slider');
+        let topKVal = document.getElementById('topk-val');
+        let varContainer = document.getElementById('variables-container');
+        let addVarBtn = document.getElementById('add-var-btn');
+        let chatMessages = document.getElementById('chat-messages');
+        let chatForm = document.getElementById('chat-form');
+        let chatInput = document.getElementById('chat-input');
+        let apiBadge = document.getElementById('api-status-badge');
+        let headerIndicator = document.getElementById('header-status-indicator');
+        let clearChatBtn = document.getElementById('clear-chat-btn');
+        let streamHolder = document.getElementById('stream-holder');
+        let streamText = document.getElementById('stream-text');
+
+        let isGenerating = false;
+        let messagesList = [
+            { id: "welcome", role: "assistant", text: "¡Hola! Soy tu asistente de IA que se ejecuta localmente en tu navegador Chrome. He cargado la configuración preestablecida. Escribe un mensaje para probar." }
+        ];
+
+        // Cargar config inicial
+        systemPromptInput.value = DEFAULT_CONFIG.systemPrompt;
+        tempSlider.value = DEFAULT_CONFIG.temperature;
+        tempVal.innerText = DEFAULT_CONFIG.temperature;
+        topKSlider.value = DEFAULT_CONFIG.topK;
+        topKVal.innerText = DEFAULT_CONFIG.topK;
+
+        let variables = [...DEFAULT_CONFIG.variables];
+
+        // Eventos de Parámetros
+        tempSlider.addEventListener('input', (e) => {
+            tempVal.innerText = e.target.value;
+        });
+        topKSlider.addEventListener('input', (e) => {
+            topKVal.innerText = e.target.value;
+        });
+
+        // Manejar Variables
+        function renderVariables() {
+            varContainer.innerHTML = '';
+            variables.forEach((variable, index) => {
+                let div = document.createElement('div');
+                div.className = 'flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl p-1.5';
+                div.innerHTML = `
+                    <span class="text-xs font-mono text-slate-400 pl-1.5">{{</span>
+                    <input type="text" value="${variable.key}" placeholder="llave" class="w-1/3 text-xs bg-transparent border-0 focus:outline-none focus:ring-0 p-0 font-medium font-mono text-slate-700" onchange="updateVariable(${index}, 'key', this.value)">
+                    <span class="text-xs font-mono text-slate-400">}} =</span>
+                    <input type="text" value="${variable.value}" placeholder="valor" class="flex-1 text-xs bg-transparent border-0 focus:outline-none focus:ring-0 p-0 text-slate-600" onchange="updateVariable(${index}, 'value', this.value)">
+                    <button class="text-slate-400 hover:text-red-500 p-1" onclick="deleteVariable(${index})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                `;
+                varContainer.appendChild(div);
+            });
+        }
+
+        window.updateVariable = function(index, field, val) {
+            variables[index][field] = val;
+        }
+
+        window.deleteVariable = function(index) {
+            variables.splice(index, 1);
+            renderVariables();
+        }
+
+        addVarBtn.addEventListener('click', () => {
+            variables.push({ key: 'variable_' + (variables.length + 1), value: '' });
+            renderVariables();
+        });
+
+        // Reemplazar variables en el prompt
+        function processTextVariables(text) {
+            let processed = text;
+            variables.forEach(v => {
+                if(v.key && v.key.trim()) {
+                    let regex = new RegExp('{{\\s*' + v.key.trim() + '\\s*}}', 'g');
+                    processed = processed.replace(regex, v.value);
+                }
+            });
+            return processed;
+        }
+
+        // Render Chat
+        function renderChat() {
+            chatMessages.innerHTML = '';
+            messagesList.forEach(m => {
+                let isUser = m.role === 'user';
+                let isError = m.role === 'error';
+                
+                let container = document.createElement('div');
+                container.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+                
+                let bubble = document.createElement('div');
+                if (isUser) {
+                    bubble.className = "bg-blue-600 text-white max-w-[80%] rounded-2xl rounded-tr-sm px-4 py-3 text-sm shadow-sm";
+                } else if (isError) {
+                    bubble.className = "bg-red-50 border border-red-100 text-red-800 max-w-[80%] rounded-2xl rounded-tl-sm px-4 py-3 text-sm shadow-sm";
+                } else {
+                    bubble.className = "bg-slate-100 text-slate-800 border border-slate-200/50 max-w-[80%] rounded-2xl rounded-tl-sm px-4 py-3 text-sm shadow-sm whitespace-pre-wrap";
+                }
+                
+                bubble.innerText = m.text;
+                container.appendChild(bubble);
+                chatMessages.appendChild(container);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        clearChatBtn.addEventListener('click', () => {
+            messagesList = [
+                { id: "cleared", role: "assistant", text: "Conversación restablecida." }
+            ];
+            renderChat();
+        });
+
+        // Comprobación de window.ai
+        async function checkAI() {
+            // @ts-ignore
+            let hasAI = typeof window !== 'undefined' && window.ai;
+            if (!hasAI) {
+                setApiStatusUI('unavailable', 'window.ai no detectada');
+                return null;
+            }
+
+            try {
+                let lm = window.ai.languageModel || window.ai.assistant || window.ai;
+                if (lm.capabilities) {
+                    let caps = await lm.capabilities();
+                    if (caps.available === 'readily') {
+                        setApiStatusUI('ready', 'Listo para usar');
+                        return lm;
+                    } else if (caps.available === 'after-download') {
+                        setApiStatusUI('downloading', 'Modelo descargándose...');
+                        return lm;
+                    }
+                }
+                setApiStatusUI('ready', 'window.ai disponible');
+                return lm;
+            } catch (e) {
+                setApiStatusUI('unavailable', 'Error comprobando capacidades');
+                return null;
+            }
+        }
+
+        function setApiStatusUI(status, text) {
+            if (status === 'ready') {
+                apiBadge.className = "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-green-50 text-green-700 border border-green-200";
+                apiBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-green-500"></span> ' + text;
+                headerIndicator.className = "w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse";
+            } else if (status === 'downloading') {
+                apiBadge.className = "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200";
+                apiBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span> ' + text;
+                headerIndicator.className = "w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse";
+            } else {
+                apiBadge.className = "flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200";
+                apiBadge.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span> ' + text;
+                headerIndicator.className = "w-2.5 h-2.5 rounded-full bg-red-500";
+            }
+        }
+
+        // Simulación para fallbacks
+        function runSimulation(promptText) {
+            streamHolder.classList.remove('hidden');
+            streamText.innerText = "Simulando conexión local de IA...";
+            
+            setTimeout(() => {
+                streamText.innerText += "\nCargando System Prompt...";
+                setTimeout(() => {
+                    streamText.innerText += "\nGenerando respuesta de simulación...";
+                    setTimeout(() => {
+                        messagesList.push({
+                            id: Date.now().toString(),
+                            role: "assistant",
+                            text: "⚠️ [SIMULACIÓN] No se pudo encontrar 'window.ai' en tu navegador.\n\nConfigura las banderas en chrome://flags para activar Gemini Nano localmente y poder usar esta herramienta de forma 100% local.\n\nRecibí: '" + promptText + "'"
+                        });
+                        streamHolder.classList.add('hidden');
+                        isGenerating = false;
+                        renderChat();
+                    }, 500);
+                }, 500);
+            }, 500);
+        }
+
+        // Enviar Prompt a window.ai
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let promptText = chatInput.value.trim();
+            if (!promptText || isGenerating) return;
+
+            isGenerating = true;
+            chatInput.value = '';
+
+            // Guardar y renderizar mensaje del usuario
+            messagesList.push({ id: Date.now().toString(), role: "user", text: promptText });
+            renderChat();
+
+            let lm = await checkAI();
+            let processedPrompt = processTextVariables(promptText);
+
+            if (!lm) {
+                runSimulation(processedPrompt);
+                return;
+            }
+
+            try {
+                let options = {
+                    systemPrompt: processTextVariables(systemPromptInput.value),
+                    temperature: parseFloat(tempSlider.value),
+                    topK: parseInt(topKSlider.value)
+                };
+
+                let session;
+                if (lm.create) {
+                    session = await lm.create(options);
+                } else if (lm.createTextSession) {
+                    session = await lm.createTextSession(options);
+                }
+
+                streamHolder.classList.remove('hidden');
+                streamText.innerText = '';
+
+                if (session.promptStreaming) {
+                    let stream = session.promptStreaming(processedPrompt);
+                    let lastText = '';
+                    for await (let chunk of stream) {
+                        lastText = chunk;
+                        streamText.innerText = chunk;
+                    }
+                    messagesList.push({ id: Date.now().toString(), role: "assistant", text: lastText });
+                } else {
+                    let text = await session.prompt(processedPrompt);
+                    messagesList.push({ id: Date.now().toString(), role: "assistant", text: text });
+                }
+
+                if (session.destroy) session.destroy();
+                else if (session.close) session.close();
+
+            } catch (err) {
+                messagesList.push({ 
+                    id: Date.now().toString(), 
+                    role: "error", 
+                    text: "Error de ejecución: " + (err.message || err) 
+                });
+            } finally {
+                streamHolder.classList.add('hidden');
+                isGenerating = false;
+                renderChat();
+            }
+        });
+
+        // Modales e Instrucciones
+        let modal = document.getElementById('instructions-modal');
+        let toggleBtn = document.getElementById('toggle-instructions-btn');
+        let closeModalBtn = document.getElementById('close-modal-btn');
+        let closeModalBtn2 = document.getElementById('close-modal-btn-2');
+
+        function openModal() {
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+
+        toggleBtn.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+        closeModalBtn2.addEventListener('click', closeModal);
+
+        // Inicializar
+        renderVariables();
+        renderChat();
+        checkAI();
+
+    </script>
+</body>
+</html>

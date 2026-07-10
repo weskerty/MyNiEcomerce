@@ -104,7 +104,7 @@ code {
 
 blockquote {
     margin: 8px 0;
-    padding: 8px 12px 8px 34px;
+    padding: 0px 0px 0px 34px;
     border: 1px solid rgba(255,255,255,.08);
     border-radius: 18px;
     color: white;
@@ -114,10 +114,10 @@ blockquote {
     background-color: rgba(255,255,255,.03);
 }
 blockquote::before {
-    content: '❗';
+    content: '⚠️';
     position: absolute;
     left: 10px;
-    top: 8px;
+    top: 0px;
     font-size: 1.1em;
 }
 blockquote p {

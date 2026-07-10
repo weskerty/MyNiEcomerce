@@ -1,4 +1,5 @@
-Vivimos en un mundo donde se venden dispositivos con obsolescencia artificial. iPhones que dejan de actualizarse por motivos que no tienen nada que ver con el hardware, y que de un día para otro ya no te dejan instalar aplicaciones básicas.
+
+Vivimos en un mundo donde se venden dispositivos con obsolescencia artificial. iPhones que dejan de actualizarse por motivos que no tienen nada que ver con el [https://es.wikipedia.org/wiki/Hardware](hardware), y que de un día para otro ya no te dejan instalar aplicaciones básicas.
 
 <div class="galeriaMD">
 <img width="750" height="685" alt="No Permite Instalar" src="https://github.com/user-attachments/assets/85bc813a-9312-44ed-9bfc-da0461a7aad8" />
@@ -9,130 +10,234 @@ Vivimos en un mundo donde se venden dispositivos con obsolescencia artificial. i
 <img width="748" height="827" alt="Ni el Correo" src="https://github.com/user-attachments/assets/28b2d213-620c-42b7-8603-41ded3e9d6d5" />
 </div>
 
-Aplicaciones básicas ya no te dejan instalarlas, tal como se ve en las imágenes. Y eso que el iPhone X llegó a Paraguay en 2018. Vas a escuchar que "ya tiene 6 años, ya fue" — pero no. El teléfono funciona. Y que te bloqueen usar un lector de correo o de documentos así, de la nada, no tiene sentido: eso lo hace hasta una PC de 1990. Es una barrera artificial, no una limitación real, porque se puede forzar el funcionamiento con los métodos que vas a ver más abajo.
+Aplicaciones básicas ya no te dejan instalarlas, tal como se ve en las imágenes. Y eso que el iPhone X llegó a Paraguay en 2018. Podes decir que "ya tiene 6 años, ya fue" si, es cierto, pero el teléfono aun funciona. Y que te bloqueen usar una app basica como un lector de correos asi de la nada es sumamente estupido y codicios, hasta una PC del 2001 aun puede leer correos y seguir viendo videos de YouTube etc gracias a que la comunidad aun Mantiene Navegadores como Thorium o [Supermium](https://win32subsystem.live/supermium/).
 
-Y no es solo la incomodidad de no poder instalar una app. Te deja expuesto a fallas de seguridad reales — hay CVEs donde te pueden comprometer el teléfono con solo mandarte un mensaje, en Android 10 e inferior y en iOS 18 e inferior. Es decir, la misma empresa que te dice "este teléfono ya no es compatible" es la que te deja sin el parche que te protegería.
+Gran parte del limite es artificial, no una limitación real. Hay algunas mitigaciones que podemos hacer para seguir usando estos Dispositivos que se mencionaran mas abajo. 
 
-La mayoría de estas empresas, además, prohíben que la comunidad siga dando mantenimiento por su cuenta. Apple no permite desbloquear el bootloader ni libera el código fuente de sus drivers — no hay forma legítima de reutilizar ese hardware una vez que ellos deciden que se acabó. Algunos iPhones viejos, como el iPhone X o anteriores, todavía se pueden hackear (Jailbreak) gracias a una falla de seguridad que nadie planeó que existiera — no porque Apple lo haya permitido, sino a pesar de Apple. Y en esos casos puntuales, sí se puede seguir usando el teléfono con libertad.
+<details>
+  <summary style="font-size: 1.0em; font-weight: bold;">🧸🎬 Resumen del Blog en Video </summary>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/7J9x16irofc?si=cp_GO720xz8qq6R-&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+</details>
+
+Que dejen asi un dispositivo que VOS pagaste Te deja expuesto a fallas de seguridad que bien TU podris solucionar. Hay CVEs donde te pueden comprometer el teléfono con solo mandarte un mensaje, en Android 10 e inferior y en iOS 18 e inferior. Es decir, la misma empresa que te dice "este teléfono ya no es compatible" es la que te deja sin el parche que te protegería, y lo peor, tampoco te deja que vos apliques el parche para protegerte.
+
+Se entiende que a la empresa ya no le es rentable mantener el dispositivo. Pero por que Bloquearte que tu mismo lo corrijas? Eso ya no es un limite monetario por parte de la empresa, es codicia para que compres otro modelo.
+
+Apple no permite desbloquear el bootloader ni libera el código fuente de nada, no hay forma legítima de reutilizar ese hardware una vez que ellos deciden que se acabó. Algunos iPhones viejos, como el iPhone X o anteriores, todavía se pueden reutilizar gracias al "Jailbreak" que de por si es una falla de seguridad. Y en esos casos puntuales, sí se puede seguir usando el teléfono con libertad.
+
+Lo que vos Compras DEBE SER TUYO. Al final los telefonos y demas dispositivos bloqueados son una suscripcion que estas obligado a pagar cada cierto tiempo para seguir usando apps basicas de Comunicacion, que al dia de hoy son una Necesidad.
 
 ### No a la Obsolescencia Artificial
-No apoyes esta práctica con tu próxima compra. Antes de elegir marca, mirá qué fabricantes sí ofrecen métodos reales de desbloqueo — [acá hay una lista](https://github.com/zenfyrdev/bootloader-unlock-wall-of-shame#%EF%B8%8F-proceed-with-caution) (arriba del todo están las marcas a evitar, justamente por hacer obsolescencia artificial).
+La mejor manera de evitar esto es NO APOYANDO estas prácticas en tu próxima compra. Antes de elegir marca, mirá qué fabricantes sí te dan libertad [acá hay una lista ↗️](https://github.com/zenfyrdev/bootloader-unlock-wall-of-shame#%EF%B8%8F-proceed-with-caution) (arriba del todo están las marcas a evitar, justamente por hacer obsolescencia artificial).
 
-### Esto no es un capricho: es basura tóxica real
+### Que pasa con estos Telefonos sin Solucion?
 
-Cuando un fabricante decide que tu teléfono "ya fue", no es una decisión inocente — tiene un costo ambiental medible, y es enorme. En 2022 se generaron 62 millones de toneladas de basura electrónica en el mundo, un 82% más que en 2010. De eso, solo el 22.3% se reciclÓ como corresponde. El resto terminó quemado, en vertederos, o procesado de forma informal que contamina tanto el ambiente como a la gente que vive cerca.
+Cuando un fabricante decide que tu teléfono "ya fue", no es una decisión inocente, tiene un costo ambiental medible, y es enorme. En 2022 se generaron 62 millones de toneladas de basura electrónica en el mundo, un 82% más que en 2010. De eso, solo el 22.3% se "reciclo" (solo ciertas partes utiles). El resto terminó quemados o en vertederos
 
-Y no es basura cualquiera: el e-waste es apenas el 2% de todo lo que llega a los vertederos del mundo, pero representa el 70% de los desechos tóxicos que contienen — plomo, mercurio, cadmio, filtrándose al suelo y al agua. Fabricar un teléfono nuevo, además, exige minería de tierras raras, transporte global, y procesos industriales que consumen muchísima energía. Cada reemplazo prematuro multiplica ese costo, aunque el teléfono viejo siga funcionando perfecto.
+![Contaminacion](https://unearthed.greenpeace.org/wp-content/uploads/2018/04/GP01QL2_Web_size-1.jpg)
 
-Lo más frustrante es que casi nunca es un límite físico real. El chip sigue siendo capaz. La batería a veces todavía aguanta. Lo único que "murió" es la voluntad del fabricante de seguir dando soporte — y en la mayoría de los casos, ni siquiera te dejan que la comunidad lo mantenga por su cuenta, porque no liberan el código necesario para hacerlo.
+Esta basura apenas el 2% de todo lo que llega a los vertederos del mundo, podes decir "ah que pokito" pero eso representa el 70% de los desechos tóxicos, contienen plomo, mercurio, cadmio, filtrándose al suelo y al agua. Fabricar un teléfono nuevo, además, exige minería de tierras raras, transporte global, y procesos industriales que consumen muchísima energía. Cada reemplazo prematuro multiplica ese costo, aunque el teléfono viejo siga funcionando perfecto.
 
-### La industria va cerrando la puerta cada vez más
+Lo más triste es que casi nunca es un límite físico real. El chip sigue siendo capaz. La batería todavia aguanta o se puede reemplazar. Lo único que "murió" es la voluntad del fabricante de seguir dando soporte y en la mayoría de los casos, ni siquiera te dejan que la comunidad lo mantenga por su cuenta, porque no liberan el código necesario para hacerlo.
 
-Y esto no es un problema fijo que ya tocó fondo — va empeorando. El caso del Samsung Galaxy S3 que mencionamos arriba fue posible porque en 2012 desbloquear el bootloader era relativamente común: muchas marcas lo permitían de fábrica o con un proceso simple. Ese margen se fue cerrando modelo tras modelo. Samsung, que en su momento fue de las marcas más abiertas, hoy bloquea esa posibilidad en buena parte de su catálogo. Apple nunca lo permitió, y cada versión de iOS agrega más capas de verificación de hardware que hacen más difícil hasta el Jailbreak, que ya de por sí depende de encontrar fallas que la empresa no planeó.
+### Telefonos por Suscripcion
 
-Cada bootloader que se cierra es, en la práctica, una fecha de caducidad puesta a mano sobre hardware que podría durar años más. No es que la tecnología para mantenerlo vivo no exista — la comunidad ya demostró con el S3 que sí funciona. Es que cada vez menos fabricantes te dejan usarla. Y esa tendencia, multiplicada por los miles de millones de dispositivos que se venden por año, es exactamente lo que empuja hacia arriba esas 62 millones de toneladas: no es que la gente tire teléfonos rotos, es que cada vez hay menos alternativa legal a tirar uno que todavía funciona.
+Y esto no es un problema fijo que ya tocó fondo, va empeorando. El caso de los Viejos Telefonos como el Samsung Galaxy como el S3 fue posible porque en 2012 desbloquear el bootloader era mas facil; muchas marcas lo permitían de fábrica o con un proceso simple. Pero esto fue cerrandose modelo tras modelo. Samsung, que en su momento fue de las marcas más abiertas, hoy bloquea esa posibilidad en buena parte de su catálogo. Apple nunca lo permitió, y cada versión de iOS agrega más capas de verificación de hardware que hacen más difícil hasta el Jailbreak.
 
-### Lo que ya se está haciendo al respecto
+Cada bootloader que se cierra es, en la práctica, una fecha de caducidad puesta a mano sobre hardware que podría durar años más. No es que la tecnología para mantenerlo vivo no exista la gente ya demostró con el S3 que sí funciona a dia de hoy
+<details>
+  <summary style="font-size: 1.0em; font-weight: bold;">🧸🎬 Samsung Galaxy S3 a Dia de Hoy </summary>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JGLImRi6pBE?si=HCvieTyaldxG2a39&amp;controls=0&amp;start=461" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-Esto no es solo indignación sin salida — hay movimiento legal real empujando en contra de esta práctica, aunque todavía incompleto.
+</details>
 
-**En Europa**, el 31 de julio de 2026 entra en vigor la Directiva de Right to Repair de la Unión Europea, aprobada con una votación casi unánime (584 a favor contra 3 en el Parlamento Europeo). Obliga a que reparar sea una opción real y accesible, con precios razonables, disponibilidad de repuestos, y una extensión de garantía de 12 meses si elegís reparar en vez de reemplazar.
+Un Telefono de hace <span id="an"></span>
+<script>
+document.getElementById("an").textContent = (new Date().getFullYear() - 2011) + " años";
+</script>
 
-**En Estados Unidos** no hay todavía una ley federal, pero sí una ola creciente a nivel estatal. Colorado tiene, desde enero de 2026, la ley más amplia del país — cubre celulares, computadoras, electrodomésticos, y directamente prohíbe el "parts pairing" (la práctica de bloquear por software una pieza de repuesto que no venga "autorizada" digitalmente por el fabricante). Nueva York, Oregon, Minnesota y Washington ya tienen leyes similares, y en enero de 2026 se presentaron más de 33 proyectos de ley nuevos en 13 estados distintos.
 
-Esta presión ya está moviendo comportamiento real: Apple mejoró su política de repuestos y calibración de piezas usadas directamente como respuesta a la ley de Colorado.
 
-**El límite que todavía queda:** estas leyes obligan a dar acceso a piezas físicas, herramientas de diagnóstico y documentación de reparación — pero no siempre al código fuente completo del software de más bajo nivel (como el firmware que controla el chip de radio). Ahí la batalla sigue abierta, y es probablemente el motivo por el que casos como el del iPhone X o el Galaxy S3 dependen todavía de que la comunidad encuentre una falla de seguridad para poder intervenir, en lugar de que el fabricante simplemente lo permita.
+La tendencia de ir limitando mas la libertad de poder hacer lo que quiera con algo que compraste, multiplicada por los miles de millones de dispositivos que se venden por año, es exactamente lo que empuja hacia arriba esas 62 millones de toneladas: de desechos. 
 
-Mientras la ley termina de alcanzar ese punto, lo que sí está en tus manos es esto: elegir con tu compra marcas que ya apoyan la reparación y el desbloqueo, y — lo que ocupa el resto de este blog — sacarle el jugo real a lo que ya tenés en un cajón, en vez de sumarlo a esa montaña de 62 millones de toneladas.
+Si esta roto se entiende el desechar en un centro de reciclaje (aun se puede reparar). Pero tener que hacerlo cuando la empresa ajena a ti lo queira solo por que considero que quiere sacarte mas dinero?
+
+No sumes a esa montaña de +62 millones de toneladas 😢
 
 ### Teléfonos Viejos
 
-Antes de tirar o dejar en un cajón un teléfono que ya no "sirve" para lo que el fabricante decidió, hay bastante que se puede hacer. Depende del sistema, pero en casi todos los casos hay una segunda vida real, no un parche cosmético.
+Antes de tirar o dejar en un cajón un teléfono que ya no "sirve" para lo que el fabricante decidió, hay bastante que se puede hacer. Depende del sistema, pero en casi todos los casos hay una segunda vida real. Se listara por Modelo y Soluciones de la Mas Facil a la mas Completa.
 
-### iOS
-Si tenés un iPhone viejo, andá a [esta página web](https://jailbreaks.app/). Si arriba te aparece un led verde, podés hacer Jailbreak con un solo clic. Si no funciona, todavía hay otros métodos, pero esos sí requieren una PC.
+<details>
+  <summary style="font-size: 1.0em; font-weight: bold;"> Apple iOS </summary>
 
-Con el Jailbreak se instala una tienda de apps alternativa desde donde podés descargar sin las restricciones que Apple te fue poniendo — volver a tener YouTube funcionando, por ejemplo, entre otras aplicaciones que quedaron bloqueadas.
+### Jailbreak
+Si tenés un iPhone viejo, anda a [esta página web  ↗️](https://jailbreaks.app/). Si arriba te aparece un led verde, podés hacer Jailbreak con un solo clic, es lo mas facil, un solo click. Esto se aprovecha de una vulnerabilidad del sistema, pero para bien.
+
+Si no funciona, todavía hay otros métodos, pero esos sí requieren una PC para hacerlo.
+
+Con el Jailbreak se instala una tienda de apps alternativa desde donde podés descargar apps extra y apps de YouTube funcionales.
+
+<details>
+  <summary style="font-size: 1.0em; font-weight: bold;"> Vidrio Liquido en iPhone 7 </summary>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/vWJdhlPAqvw?si=9-wJZ_EGg23tyDuz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+</details>
+
+Una vez que ya lo tengas ya podras instalar las Apps que Quieras con Sileo.
+![Sileo](https://getsileo.app/img/comp-dark.png)
+
+
+</details>
+
+
+
+<details>
+  <summary style="font-size: 1.0em; font-weight: bold;"> Android </summary>
 
 ### Android
-Acá hay más margen de maniobra. En el pasado, muchas marcas permitían desbloquear el bootloader con relativa facilidad, o directamente venían desbloqueadas de fábrica — eso te dejaba instalar cualquier sistema operativo (ROM). Así, cuando la empresa dejaba de dar soporte, la comunidad podía seguir actualizando el teléfono por su cuenta. El ejemplo más claro es el Samsung Galaxy S3, lanzado en 2012.
+Acá hay más margen de maniobra. En el pasado, muchas marcas permitían desbloquear el bootloader con relativa facilidad, o directamente venían desbloqueadas de fábrica eso te dejaba instalar cualquier sistema operativo (ROM). Así, cuando la empresa dejaba de dar soporte, la gente podía seguir actualizando el teléfono por su cuenta.
 
 <img width="216" height="320" alt="image" src="https://github.com/user-attachments/assets/b9aec82c-e758-48bb-bee8-6d46c34402e3" />
 
-Hoy, pese a haber quedado oficialmente en Android 4, la comunidad lo sigue manteniendo actualizado con parches de seguridad y versiones modernas de Android — corriendo WhatsApp, TikTok, YouTube, y cualquier otra app sin problema. Este teléfono vendió más de 100 millones de unidades, y la mayoría de esas personas nunca se enteró de que esto era posible. Hoy Samsung ya no permite este tipo de reutilización en sus modelos nuevos, así que es una marca a tener en cuenta (para evitar) si te importa esto al comprar tu próximo teléfono.
+Hoy, pese a haber quedado oficialmente en Android 4, la comunidad lo sigue manteniendo actualizado con parches de seguridad y versiones modernas de Android, corriendo WhatsApp, TikTok, YouTube, y cualquier otra app sin problema. Este teléfono vendió más de 100 millones de unidades, y la mayoría de esas personas nunca se enteró de que esto era posible. Hoy Samsung ya no permite este tipo de reutilización en sus modelos nuevos, así que es una marca a tener en cuenta (para evitar) si te importa esto al comprar tu próximo teléfono.
 
-## Lo que un teléfono viejo puede llegar a ser
+## No Root:
 
-Acá está la parte que más sorprende: un teléfono Android viejo, con **Termux** (una terminal Linux completa que corre sin necesidad de root), deja de ser "un teléfono que ya no sirve" y pasa a ser una computadora Linux de bolsillo, silenciosa, que consume casi nada de electricidad, y que podés dejar prendida 24/7 sin que se note en la factura de luz.
+Un teléfono Android 5 y Superior con **Termux** deja de ser "un teléfono que ya no sirve" y pasa a ser una computadora Linux de bolsillo, silenciosa, que consume casi nada de electricidad, y que podés dejar prendida 24/7 sin que la electricidad venga alta.
 
-Termux se instala gratis desde [F-Droid](https://f-droid.org/packages/com.termux/) (mejor que la Play Store, que suele tener una versión desactualizada). Una vez adentro, tenés acceso a miles de programas que corren en Linux, exactamente los mismos que usaría cualquier servidor real. Estos son los usos más concretos, con proyectos reales que ya podés instalar hoy:
+Termux se instala gratis desde [F-Droid](https://f-droid.org/packages/com.termux/) (La version de PlayStore es una version Desactualizada.). 
 
-### Servidor de Minecraft
+O Presionando Aqui Directamente dependiendo de que Version de Android Tengas:
+
+
+
+Una vez adentro, tenés acceso a miles de programas que corren en Linux, exactamente los mismos que usaría cualquier PC real. Estos son los usos más concretos, con proyectos reales que ya podés instalar hoy:
+
+#### Servidor de Minecraft Java y Bedrock
 Convertí ese teléfono en el servidor donde tus amigos se conectan a jugar, sin depender de tu PC ni pagar hosting.
+Este apartado tiene muchisimas alternativas, desde PowerNukkitX hasta Geyser, cuestion de Leer como Ejecutar y Listo.
 
-* **julien-jacob/termux-minecraft-server**
-> Instala y corre un servidor de Minecraft Java o Bedrock directo en tu teléfono, sin necesidad de root.
-[Link](https://github.com/julien-jacob/termux-minecraft-server)
+* PowerNukkitX**
+Servidor No Oficial de Bedrock
+[Link](https://github.com/PowerNukkitX/PowerNukkitX)
 
-* **drmatoi/minecraft**
-> Un script que automatiza todo el proceso, con selector de versiones y un menú simple para manejar el servidor.
-[Link](https://github.com/drmatoi/minecraft)
+De esta manera dejas el servidor siempre abierto para amigos, consumo electrico minimo. Yo lo hago en un Redmi Note 6, pueden entrar hasta 16 personas antes que empiece a notarse el hardware.
 
-### Servidor de archivos y nube privada
+#### Servidor de archivos y nube privada
 Tu propio "Google Drive", corriendo desde un teléfono que ya pagaste, sin mensualidades ni límite de espacio artificial.
 
 * **Syncthing**
-> Sincroniza archivos entre tu teléfono viejo y tus otros dispositivos de forma automática y cifrada, sin pasar por ningún servidor de una empresa.
+Sincroniza archivos entre tu teléfono viejo y tus otros dispositivos de forma automática y cifrada, sin pasar por ningún servidor de una empresa.
 [Link](https://syncthing.net/)
 
-* **SSH/SFTP (incluido en Termux)**
-> Convertí el teléfono en un disco de red al que te conectás desde la PC como si fuera una carpeta más, usando FileZilla o cualquier cliente SFTP.
-[Guía de referencia](https://kistu.dev/articles/005-servers-on-android/)
+Pudiendo usar tu Telefono como un Almacenamiento gracias a Herramientas como el [USB OTG ↗️](#web/search.html#USB)
 
-### Servidor web
-Para probar páginas, alojar un proyecto pequeño, o simplemente entender cómo funciona internet por dentro.
+#### Servidor web
+Incluso podes iniciar tu Propia pagina Web con Nginx, Apache o [Caddy](https://caddyserver.com/)
 
-* **Nginx / Apache en Termux**
-> Corré tu propia página web desde el teléfono, accesible en tu red local o, con las herramientas correctas, desde cualquier parte del mundo.
-[Guía completa](https://codelivly.com/ultimate-guide-hosting-a-live-website-in-termux-with-nginx-apache/)
+Hay muchas guias para esto, primero debes familiarizarte con la herramienta ya que es literalmente como tener una PC con Linux. Una vez en Termux solo es Ejecutar apt i caddy para tenerlo
 
-### Bots de Telegram y Discord
-Andá armando ese bot que administra tu grupo, avisa novedades, o responde comandos, corriendo gratis en un teléfono que ya no ibas a usar.
+#### Bots de Telegram, Discord y WhatsApp
+Un Bot que administra tu grupo, avisa novedades, o responde comandos, borra Spam, corriendo gratis en un teléfono que ya no ibas a usar.
 
-* **Termux Telegram Bot**
-> Base lista para levantar un bot de Telegram propio desde Termux.
-[Link](https://github.com/MFarelS/telegram-bot)
+Para instalar el bot de WhatsApp solo debes instalar Termux y Pegar:
 
-* **Hosting de bots de Discord con Hikari**
-> Guía para dejar un bot de Discord corriendo 24/7 desde el teléfono, con un ícono en la pantalla de inicio para prenderlo con un toque.
-[Link](https://gist.github.com/supershadoe/cd3ced74ffb1ef1b4e4dbafe85a4d5e0)
+Y Luego iniciar Sesion como Dispositivo Vinculado y ya lo tendras. Luego ya veras como confugurarlo desde WhatsApp.
 
-### Cámara de seguridad
+Ese bot tiene monton de funciones que puedes ir instalando.
+
+Para Bots de Telegram y Discord es el mismo procedimiento como si lo instalas en una Computadora Linux. 
+
+
+
+#### Cámara de seguridad
 Tu teléfono viejo, mirando la puerta de tu casa o tu negocio, avisándote directo al celular que sí usás.
+Para esta opcion existen diversas alternativas, incluso apps en PlayStore, unas mas faciles que otras, solo cuestion de Probar cual te agrada mas. 
 
-* **Damoon7/Security-Camera-Termux**
-> Toma fotos con la cámara del teléfono a intervalos que vos definís, y las manda automáticamente a un bot de Telegram.
+Dejo aqui esta, es complicada de instalar para alguien que no toco nunca termux ni bots. Solo lo dejo como Idea ya que hay apps mas faciles en PlayStore que puedes usar para un resultado similar.
+* **Security-Camera-Termux**
+Toma fotos con la cámara del teléfono a intervalos que vos definís, y las manda automáticamente a un bot de Telegram.
 [Link](https://github.com/Damoon7/Security-Camera-Termux)
 
-### GPS y rastreo de ubicación
-Sabé dónde está tu mochila, tu auto, o tu propio recorrido, sin pagar un rastreador GPS aparte.
+#### GPS, Rastreo, Grabacion remota.
+Basicamente usar tu telefono como esos Tag de Ubicacion pero con camara, parlante y microfono
 
-* **BuriXon-code/Termux-GPS-tracker**
-> Registra tu posición en tiempo real y genera un archivo que podés abrir en Google Earth para ver el recorrido completo.
-[Link](https://github.com/BuriXon-code/Termux-GPS-tracker)
-
-### Automatización y sensores (Termux:API)
-Acá es donde el teléfono deja de ser solo "un servidor" y empieza a reaccionar solo a lo que pasa a su alrededor.
-
-* **Termux:API**
-> Le da a tu terminal acceso directo a la cámara, el GPS, el micrófono, la batería, las notificaciones y más de 70 funciones del teléfono — todo controlable con comandos simples.
-[Link](https://f-droid.org/packages/com.termux.api/)
+Para esto tambien existen muchas alternativas, pero aqui hablaremos como se hace con una App de Automatizacion:
 
 * **Termux:Tasker**
-> Conecta Termux con Tasker para armar automatizaciones del tipo "cuando pase X, hacé Y": grabar audio si detecta un sonido fuerte, sacar una foto y avisarte, correr un backup apenas se conecta a upa cargador, y más.
-[Link](https://github.com/termux/termux-tasker)
+ Tasker es una app para armar automatizaciones del tipo "cuando pase X, hacé Y": grabar audio si detecta un sonido fuerte, sacar una foto y avisarte, correr un backup apenas se conecta a un cargador, Pedirle a la IA que controle el Telefono o Lea la Pantalla y toda automatizacion que quieras.
+[Link](https://play.google.com/store/apps/details?id=net.dinglisch.android.taskerm&hl=es_419)
+
+#### Torrent; Buscadores y Semillas 
+* **aMule y qBittorrent**
+* 
+Todavia no complete esta guia pero ya lo tengo funcionando.
+
+### Mas Cosas:
+Aqui una lista de muchas mas cosas y tambien parches para arreglar posibles problemas (como que se cierre todo en Android 12 por que Androod cada vez va limitando mas la libertad tambien.)
+[Lista Aqui](https://github.com/weskerty/TermuxGod#termux-good) 
+
+### Android ROOT
+
+#### Cambiar Sistema Operativo GSI Android 8+ 
+
+
+#### Usar con Pantalla Rota
+
+
+
+</details>
 
 ---
 
-Nada de esto pide hardware nuevo, nada pide gastar plata en un servidor en la nube. Es la misma computadora que ya tenías, olvidada en un cajón, haciendo un trabajo real. La próxima vez que pienses "este teléfono ya no sirve", valdría la pena preguntarse primero quién decidió eso — y si en realidad no fue el fabricante el que decidió por vos.
+
+
+
+<details>
+  <summary style="font-size: 1.0em; font-weight: bold;"> Computadoras </summary>
+Esta seccion es mas facil por ahora. Ya que tambien van cerrando la libertad aqui. Las nuevas PC con ARM o Chips Todo en Uno no liberan nada, no tienen estandarizacion y te quedas bloqueado en un sistema sin poder hacer nada.
+
+Pero mientras aun podemos hacer esto:
+
+#### Navegador de Internet en Windows XP y Superior
+#### [Supermium](https://win32subsystem.live/supermium/)
+Esto es lo mas rapido para seguir utilizando, solo Descargas e Instalas.
+
+Aca te Dejo para Descarga Directa: https://github.com/win32ss/supermium/releases/download/v144-r4_01/supermium_144_32_setup.exe
+
+> 64Bits es para PCs con mas de 4GB de RAM
+
+Si no funciona ve el paquete que va para tu PC aqui: https://github.com/win32ss/supermium/releases
+
+
+#### Ejecutar programas Nuevos en Windows Viejos
+
+Esto es una instalacion que hace cambios mayores a Windows, Para instalar lee cual va para tu PC
+https://github.com/shorthorn-project/One-Core-API-Binaries/releases
+
+Despues de instalar correctamente muchos programas vuelven a funcionar, como Steam, incluso juegos como Repo (en caso de Windows 7)
+No es perfecto pero cubre ciertos programas.
+
+#### Instalar Linux
+Este metodo es util cuando la PC tiene drivers compatibles... Osea, cuando la empresa libero el dispositivo completamente.
+En ese caso usar Linux es la opcion mas viable para seguir manteniendo compatibilidad a posteridad.
+
+Podes Pedir para ir a Ayudarte a Instalar Linux en tu PC. Cualquier cosa, puedes preguntar abajo :)
+
+</details>
+
+---
+
+Nada de esto requiere nueva contaminacion, Es la misma computadora que ya tenías, olvidada en un cajón, haciendo un trabajo real. La próxima vez que pienses "este teléfono ya no sirve", valdría la pena preguntarse primero quién decidió eso y si en realidad no fue la Empresa el que decidió por vos.
+
+### Solucion Real
+
+La verdadera Solucion es presionar a los politicos para tener Regulaciones que abogen por el Ambiente y Nuestra Libertad. No a las Suscripciones. En Europa por ejemplo, presionan y logran cambios.
+
+**En Europa**, el 31 de julio de 2026 entra en vigor la Directiva de Right to Repair de la Unión Europea Obliga a que reparar sea una opción real y accesible, con precios razonables, disponibilidad de repuestos, y una extensión de garantía de 12 meses si elegís reparar en vez de reemplazar. Tambien ejemplos como el del USB C. Este es el unico camino real.
+
+Pero mientras, podes elegir con tu billetera; Comprando de la lista de Telefonos que te dan la libertad [acá hay una lista ↗️](https://github.com/zenfyrdev/bootloader-unlock-wall-of-shame#%EF%B8%8F-proceed-with-caution) 
+
+Cualquier cosa, puedes preguntar abajo :)
