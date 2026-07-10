@@ -26,6 +26,12 @@ Y no es basura cualquiera: el e-waste es apenas el 2% de todo lo que llega a los
 
 Lo más frustrante es que casi nunca es un límite físico real. El chip sigue siendo capaz. La batería a veces todavía aguanta. Lo único que "murió" es la voluntad del fabricante de seguir dando soporte — y en la mayoría de los casos, ni siquiera te dejan que la comunidad lo mantenga por su cuenta, porque no liberan el código necesario para hacerlo.
 
+### La industria va cerrando la puerta cada vez más
+
+Y esto no es un problema fijo que ya tocó fondo — va empeorando. El caso del Samsung Galaxy S3 que mencionamos arriba fue posible porque en 2012 desbloquear el bootloader era relativamente común: muchas marcas lo permitían de fábrica o con un proceso simple. Ese margen se fue cerrando modelo tras modelo. Samsung, que en su momento fue de las marcas más abiertas, hoy bloquea esa posibilidad en buena parte de su catálogo. Apple nunca lo permitió, y cada versión de iOS agrega más capas de verificación de hardware que hacen más difícil hasta el Jailbreak, que ya de por sí depende de encontrar fallas que la empresa no planeó.
+
+Cada bootloader que se cierra es, en la práctica, una fecha de caducidad puesta a mano sobre hardware que podría durar años más. No es que la tecnología para mantenerlo vivo no exista — la comunidad ya demostró con el S3 que sí funciona. Es que cada vez menos fabricantes te dejan usarla. Y esa tendencia, multiplicada por los miles de millones de dispositivos que se venden por año, es exactamente lo que empuja hacia arriba esas 62 millones de toneladas: no es que la gente tire teléfonos rotos, es que cada vez hay menos alternativa legal a tirar uno que todavía funciona.
+
 ### Lo que ya se está haciendo al respecto
 
 Esto no es solo indignación sin salida — hay movimiento legal real empujando en contra de esta práctica, aunque todavía incompleto.

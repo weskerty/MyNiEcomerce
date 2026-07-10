@@ -103,8 +103,8 @@ code {
 }
 
 blockquote {
-    margin: 20px 0;
-    padding: 15px;
+    margin: 8px 0;
+    padding: 8px 12px 8px 34px;
     border: 1px solid rgba(255,255,255,.08);
     border-radius: 18px;
     color: white;
@@ -113,11 +113,19 @@ blockquote {
     transition: box-shadow 0.3s ease;
     background-color: rgba(255,255,255,.03);
 }
-
+blockquote::before {
+    content: '❗';
+    position: absolute;
+    left: 10px;
+    top: 8px;
+    font-size: 1.1em;
+}
+blockquote p {
+    margin: 0;
+}
 blockquote:hover {
     box-shadow: 0 8px 12px rgba(0,0,0,0.15);
 }
-
 blockquote.red {
     background-color: rgba(0,0,0,0.336);
     animation: backgroundColorChange 5s infinite;
@@ -130,21 +138,18 @@ blockquote.red {
 
 /* listas */
 ul, ol {
-    margin: 12px 0;
+    margin: 6px 0;
     padding-left: 4px;
     list-style: none;
 }
-
 li {
     position: relative;
-    padding: 8px 0 8px 26px;
+    padding: 3px 0 3px 18px;
     border-bottom: 1px solid rgba(255,255,255,.07);
 }
-
 li:last-child { border-bottom: none }
-
 li::before {
-    content: '›';
+    content: '•';
     position: absolute;
     left: 4px;
     color: rgba(255,255,255,.5);
