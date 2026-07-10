@@ -521,7 +521,8 @@ window.AP_loadSolicitudes=async function(noFetch){
     pendiente:'<span class="ap-badge pend">Pendiente</span>',
     aprobado:'<span class="ap-badge apr">Aprobado</span>',
     rechazado:'<span class="ap-badge rej">Rechazado</span>',
-    borrado_pendiente:'<span class="ap-badge delp">Borrado Pendiente</span>'
+    borrado_pendiente:'<span class="ap-badge delp">Borrado Pendiente</span>',
+    auto_pendiente:'<span class="ap-badge pend">Aprobacion Automatica</span>'
   };
   _AP_entries.forEach(e=>{
     const isDelP=e.estado==='borrado_pendiente';
