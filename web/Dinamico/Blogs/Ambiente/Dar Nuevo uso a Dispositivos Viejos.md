@@ -104,6 +104,8 @@ Acá hay más margen de maniobra. En el pasado, muchas marcas permitían desbloq
 Hoy, pese a haber quedado oficialmente en Android 4, la comunidad lo sigue manteniendo actualizado con parches de seguridad y versiones modernas de Android, corriendo WhatsApp, TikTok, YouTube, y cualquier otra app sin problema. Este teléfono vendió más de 100 millones de unidades, y la mayoría de esas personas nunca se enteró de que esto era posible. Hoy Samsung ya no permite este tipo de reutilización en sus modelos nuevos, así que es una marca a tener en cuenta (para evitar) si te importa esto al comprar tu próximo teléfono.
 
 ## No Root:
+	
+	![Termux](web/otros/Archivos/Imagenes/DarNuevousoaDispositivosViejos/Termux.avif)
 
 Un teléfono Android 5 y Superior con **Termux** deja de ser "un teléfono que ya no sirve" y pasa a ser una computadora Linux de bolsillo, silenciosa, que consume casi nada de electricidad, y que podés dejar prendida 24/7 sin que la electricidad venga alta.
 
@@ -227,6 +229,11 @@ En ese caso usar Linux es la opcion mas viable para seguir manteniendo compatibi
 Podes Pedir para ir a Ayudarte a Instalar Linux en tu PC. Cualquier cosa, puedes preguntar abajo :)
 
 </details>
+
+
+### Televisores:
+Hay un Blog diferente que explica como Reutilizar, pasa a Leer [Aqui >](#web/Dinamico/Blogs/Ambiente/Reutilizar%20Viejas%20TV.md)
+
 
 ---
 

@@ -67,7 +67,6 @@ border:1px solid var(--gbb);
 }
 .ap-btn.sec:hover{background:var(--g2)}
 .ap-btn:disabled{opacity:.4;cursor:not-allowed}
-.ap-btn-gen{width:auto;padding:8px 14px;font-size:12px;margin-top:6px}
 .ap-msg{
 position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
 background:rgba(20,20,35,0.85);
@@ -170,7 +169,6 @@ font-family:inherit;transition:background .15s;
         <label>Contrasena</label>
         <input id="ap-rp" type="password" placeholder="minimo 10 chars, 1 simbolo" autocomplete="new-password" oninput="AP_checkPwStrength()">
         <div class="fg-hint" id="ap-rp-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
-        <button type="button" class="ap-btn sec ap-btn-gen" onclick="AP_genPassword()">🎲 Generar contrasena segura</button>
       </div>
       <div class="fg"><label>Confirmar</label><input id="ap-rp2" type="password" placeholder="••••••" autocomplete="new-password"></div>
       <button type="submit" class="ap-btn pri" onclick="event.preventDefault();AP_registro()">Crear Cuenta</button>
@@ -239,7 +237,6 @@ font-family:inherit;transition:background .15s;
           <label>Nueva Contrasena</label>
           <input id="ap-cpn" type="password" placeholder="minimo 10 chars, 1 simbolo" autocomplete="new-password" oninput="AP_checkPwStrength('ap-cpn','ap-cpn-hint')">
           <div class="fg-hint" id="ap-cpn-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
-          <button type="button" class="ap-btn sec ap-btn-gen" onclick="AP_genPassword('ap-cpn')">🎲 Generar contrasena segura</button>
         </div>
         <div class="fg"><label>Confirmar Nueva</label><input id="ap-cpn2" type="password" placeholder="••••••" autocomplete="new-password"></div>
         <button type="submit" class="ap-btn pri" onclick="event.preventDefault();AP_cambiarPass()">💾 Guardar Nueva Contrasena</button>
@@ -294,25 +291,6 @@ window.AP_checkPwStrength=function(inputId='ap-rp',hintId='ap-rp-hint'){
   if(!v){hint.className='fg-hint';hint.textContent='Minimo 10 caracteres, incluyendo al menos 1 simbolo';return;}
   if(okLen&&okSym){hint.className='fg-hint ok';hint.textContent='Contrasena segura';}
   else{hint.className='fg-hint err';hint.textContent=`Falta: ${!okLen?'largo (10+)':''}${!okLen&&!okSym?', ':''}${!okSym?'un simbolo':''}`;}
-};
-
-window.AP_genPassword=function(targetId='ap-rp'){
-  const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%^&*-_=+';
-  const arr=new Uint32Array(14);
-  crypto.getRandomValues(arr);
-  let pw=Array.from(arr,n=>chars[n%chars.length]).join('');
-  if(!AP_PW_SYMBOLS.test(pw))pw=pw.slice(0,-1)+'!';
-  const input=document.getElementById(targetId);
-  input.type='text';
-  input.value=pw;
-  setTimeout(()=>{input.type='password';},4000);
-  if(targetId==='ap-rp'){
-    document.getElementById('ap-rp2').value=pw;
-    AP_checkPwStrength('ap-rp','ap-rp-hint');
-  }else{
-    AP_checkPwStrength(targetId,targetId+'-hint');
-  }
-  AP_toast('Contrasena generada, se oculta en unos segundos','warn',4000);
 };
 
 window.AP_showTab=function(t){
