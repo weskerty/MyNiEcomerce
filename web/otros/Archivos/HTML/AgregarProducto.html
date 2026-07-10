@@ -42,6 +42,9 @@ font-family:inherit;
 }
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:rgba(79,142,247,.6);background:var(--g2)}
 .fg select option{background:#1a1a2e;color:#fff}
+.fg-hint{font-size:11px;color:var(--txt2);margin-top:4px}
+.fg-hint.ok{color:var(--ok)}
+.fg-hint.err{color:var(--err)}
 .ap-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .ap-btn{
 display:inline-flex;align-items:center;justify-content:center;gap:7px;
@@ -64,6 +67,7 @@ border:1px solid var(--gbb);
 }
 .ap-btn.sec:hover{background:var(--g2)}
 .ap-btn:disabled{opacity:.4;cursor:not-allowed}
+.ap-btn-gen{width:auto;padding:8px 14px;font-size:12px;margin-top:6px}
 .ap-msg{
 position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
 background:rgba(20,20,35,0.85);
@@ -152,21 +156,26 @@ font-family:inherit;transition:background .15s;
       <button class="ap-tab act" id="ap-tlogin" onclick="AP_showTab('login')">Iniciar Sesion</button>
       <button class="ap-tab" id="ap-treg" onclick="AP_showTab('reg')">Registrarse</button>
     </div>
-    <div class="ap-card" id="ap-login-box">
+    <form id="ap-login-box" class="ap-card">
       <h2>Acceso</h2>
       <div class="fg"><label>Usuario</label><input id="ap-lu" type="text" placeholder="tu_usuario" autocomplete="username"></div>
       <div class="fg"><label>Contrasena</label><input id="ap-lp" type="password" placeholder="••••••" autocomplete="current-password"></div>
-      <button class="ap-btn pri" onclick="AP_login()">Entrar</button>
+      <button type="submit" class="ap-btn pri" onclick="event.preventDefault();AP_login()">Entrar</button>
       <p class="ap-auth-note">Sin cuenta? <a onclick="AP_showTab('reg')">Registrate aqui</a></p>
-    </div>
-    <div class="ap-card" id="ap-reg-box" style="display:none">
+    </form>
+    <form id="ap-reg-box" class="ap-card" style="display:none">
       <h2>Nuevo Usuario</h2>
       <div class="fg"><label>Usuario</label><input id="ap-ru" type="text" placeholder="mi_usuario (3-32 chars)" autocomplete="username"></div>
-      <div class="fg"><label>Contrasena</label><input id="ap-rp" type="password" placeholder="minimo 6 chars" autocomplete="new-password"></div>
+      <div class="fg">
+        <label>Contrasena</label>
+        <input id="ap-rp" type="password" placeholder="minimo 10 chars, 1 simbolo" autocomplete="new-password" oninput="AP_checkPwStrength()">
+        <div class="fg-hint" id="ap-rp-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
+        <button type="button" class="ap-btn sec ap-btn-gen" onclick="AP_genPassword()">🎲 Generar contrasena segura</button>
+      </div>
       <div class="fg"><label>Confirmar</label><input id="ap-rp2" type="password" placeholder="••••••" autocomplete="new-password"></div>
-      <button class="ap-btn pri" onclick="AP_registro()">Crear Cuenta</button>
+      <button type="submit" class="ap-btn pri" onclick="event.preventDefault();AP_registro()">Crear Cuenta</button>
       <p class="ap-auth-note">Ya tenes cuenta? <a onclick="AP_showTab('login')">Inicia sesion</a></p>
-    </div>
+    </form>
   </div>
   <div id="ap-main" style="display:none">
     <div class="ap-tabs">
@@ -189,7 +198,7 @@ font-family:inherit;transition:background .15s;
               <option value="TG">Solo Telegram</option>
             </select>
           </div>
-          <div class="fg"><label>Numero</label><input id="ap-nu" type="tel" placeholder="595972184435" inputmode="numeric" minlength="12" maxlength="20"></div>
+          <div class="fg"><label>Numero</label><input id="ap-nu" type="tel" placeholder="595972184435" inputmode="numeric" minlength="12" maxlength="20" autocomplete="off"></div>
         </div>
         <div class="ap-card" style="padding:12px;margin-bottom:0;background:var(--g1);border-radius:var(--ri)">
           <div class="ap-img-row">
@@ -198,8 +207,8 @@ font-family:inherit;transition:background .15s;
               <img id="ap-imgprev" alt="">
             </div>
             <div class="ap-img-fields">
-              <div class="fg"><label>Nombre</label><input id="ap-nb" type="text" placeholder="Nombre del producto" maxlength="100"></div>
-              <div class="fg"><label>Codigo ID</label><input id="ap-id" type="text" placeholder="SKU123" maxlength="50"></div>
+              <div class="fg"><label>Nombre</label><input id="ap-nb" type="text" placeholder="Nombre del producto" maxlength="100" autocomplete="off"></div>
+              <div class="fg"><label>Codigo ID</label><input id="ap-id" type="text" placeholder="SKU123" maxlength="50" autocomplete="off"></div>
             </div>
           </div>
           <div class="ap-img-size" id="ap-imgnm"></div>
@@ -207,10 +216,10 @@ font-family:inherit;transition:background .15s;
         </div>
         <div style="height:12px"></div>
         <div class="ap-row">
-          <div class="fg"><label>Precio (Gs)</label><input id="ap-pc" type="text" placeholder="50.000" inputmode="numeric" maxlength="14"></div>
-          <div class="fg"><label>Cantidad (opcional)</label><input id="ap-cd" type="text" placeholder="10" inputmode="numeric" maxlength="4"></div>
+          <div class="fg"><label>Precio (Gs)</label><input id="ap-pc" type="text" placeholder="50.000" inputmode="numeric" maxlength="14" autocomplete="off"></div>
+          <div class="fg"><label>Cantidad (opcional)</label><input id="ap-cd" type="text" placeholder="10" inputmode="numeric" maxlength="4" autocomplete="off"></div>
         </div>
-        <div class="fg"><label>Fecha Limite (opcional)</label><input id="ap-tm" type="text" placeholder="DD.MM.YYYY.HH.MM" maxlength="16" inputmode="numeric"></div>
+        <div class="fg"><label>Fecha Limite (opcional)</label><input id="ap-tm" type="text" placeholder="DD.MM.YYYY.HH.MM" maxlength="16" inputmode="numeric" autocomplete="off"></div>
       </div>
       <div class="ap-card" id="ap-mde">
         <h2>Descripcion (Markdown)</h2>
@@ -223,13 +232,19 @@ font-family:inherit;transition:background .15s;
       <div id="ap-sol-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
     </div>
     <div id="ap-tab-cuenta" style="display:none">
-      <div class="ap-card">
+      <form class="ap-card">
         <h2>Cambiar Contrasena</h2>
         <div class="fg"><label>Contrasena Actual</label><input id="ap-cpa" type="password" placeholder="••••••" autocomplete="current-password"></div>
-        <div class="fg"><label>Nueva Contrasena</label><input id="ap-cpn" type="password" placeholder="minimo 6 chars" autocomplete="new-password"></div>
+        <div class="fg">
+          <label>Nueva Contrasena</label>
+          <input id="ap-cpn" type="password" placeholder="minimo 10 chars, 1 simbolo" autocomplete="new-password" oninput="AP_checkPwStrength('ap-cpn','ap-cpn-hint')">
+          <div class="fg-hint" id="ap-cpn-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
+          <button type="button" class="ap-btn sec ap-btn-gen" onclick="AP_genPassword('ap-cpn')">🎲 Generar contrasena segura</button>
+        </div>
         <div class="fg"><label>Confirmar Nueva</label><input id="ap-cpn2" type="password" placeholder="••••••" autocomplete="new-password"></div>
-        <button class="ap-btn pri" onclick="AP_cambiarPass()">💾 Guardar Nueva Contrasena</button>
-      </div>
+        <button type="submit" class="ap-btn pri" onclick="event.preventDefault();AP_cambiarPass()">💾 Guardar Nueva Contrasena</button>
+        <button type="button" class="ap-btn sec" style="margin-top:8px" onclick="AP_logout()">🚪 Cerrar Sesion</button>
+      </form>
     </div>
   </div>
 </div>
@@ -242,12 +257,13 @@ const AP_URL=(()=>{
   return base||'/api/productos';
 })();
 const AP_MAX_SIZE=200*1024;
+const AP_PW_SYMBOLS=/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~`]/;
 
 function AP_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
-function AP_sck(k,v){const sec=location.protocol==="https:"?";Secure":"";document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=31536000;SameSite=Strict${sec}`;}
+function AP_sck(k,v){const sec=location.protocol==="https:"?";Secure":"";document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=7776000;SameSite=Strict${sec}`;}
 function AP_dck(k){document.cookie=`${k}=;path=/;max-age=0`;}
 
-let _AP_usr=AP_ck("ap_u"),_AP_pwd=AP_ck("ap_p"),_AP_cats={},_AP_mde=null,_AP_entries=[];
+let _AP_usr=AP_ck("ap_u"),_AP_tk=AP_ck("ap_tk"),_AP_cats={},_AP_mde=null,_AP_entries=[];
 let _AP_msg=null;
 
 function AP_toast(t,tp='ok',d=3000){
@@ -264,11 +280,40 @@ function AP_FP(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
 async function AP_fetch(action,opts={}){
   const isGet=!opts.method||opts.method==="GET";
   const url=isGet?`${AP_URL}?action=${action}`:AP_URL;
-  if(!isGet&&opts.body){const _b=JSON.parse(opts.body);_b.action=action;opts.body=JSON.stringify(_b);}
+  if(!isGet&&opts.body){const _b=JSON.parse(opts.body);_b.action=action;if(_AP_tk&&!_b.token)_b.token=_AP_tk;opts.body=JSON.stringify(_b);}
   const res=await fetch(url,{headers:{"Content-Type":"application/json"},...opts});
   const data=await res.json().catch(()=>({}));
+  if(res.status===401){AP_dck('ap_u');AP_dck('ap_tk');_AP_usr=null;_AP_tk=null;}
   return{ok:res.ok,status:res.status,data};
 }
+
+window.AP_checkPwStrength=function(inputId='ap-rp',hintId='ap-rp-hint'){
+  const v=document.getElementById(inputId).value;
+  const hint=document.getElementById(hintId);
+  const okLen=v.length>=10,okSym=AP_PW_SYMBOLS.test(v);
+  if(!v){hint.className='fg-hint';hint.textContent='Minimo 10 caracteres, incluyendo al menos 1 simbolo';return;}
+  if(okLen&&okSym){hint.className='fg-hint ok';hint.textContent='Contrasena segura';}
+  else{hint.className='fg-hint err';hint.textContent=`Falta: ${!okLen?'largo (10+)':''}${!okLen&&!okSym?', ':''}${!okSym?'un simbolo':''}`;}
+};
+
+window.AP_genPassword=function(targetId='ap-rp'){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%^&*-_=+';
+  const arr=new Uint32Array(14);
+  crypto.getRandomValues(arr);
+  let pw=Array.from(arr,n=>chars[n%chars.length]).join('');
+  if(!AP_PW_SYMBOLS.test(pw))pw=pw.slice(0,-1)+'!';
+  const input=document.getElementById(targetId);
+  input.type='text';
+  input.value=pw;
+  setTimeout(()=>{input.type='password';},4000);
+  if(targetId==='ap-rp'){
+    document.getElementById('ap-rp2').value=pw;
+    AP_checkPwStrength('ap-rp','ap-rp-hint');
+  }else{
+    AP_checkPwStrength(targetId,targetId+'-hint');
+  }
+  AP_toast('Contrasena generada, se oculta en unos segundos','warn',4000);
+};
 
 window.AP_showTab=function(t){
   document.getElementById('ap-login-box').style.display=t==='login'?'block':'none';
@@ -293,11 +338,19 @@ window.AP_cambiarPass=async function(){
   const pn2=document.getElementById('ap-cpn2').value;
   if(!pa||!pn)return AP_toast('Completa los campos','warn');
   if(pn!==pn2)return AP_toast('Las contrasenas nuevas no coinciden','warn');
-  const{ok,data}=await AP_fetch('cambiarPass',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:pa,passwordNuevo:pn})});
+  if(pn.length<10||!AP_PW_SYMBOLS.test(pn))return AP_toast('La nueva contrasena necesita 10+ chars y 1 simbolo','warn');
+  const{ok,data}=await AP_fetch('cambiarPass',{method:'POST',body:JSON.stringify({password:pa,passwordNuevo:pn})});
   if(!ok)return AP_toast(data.error||'Error','err');
-  _AP_pwd=pn;AP_sck('ap_p',pn);
+  _AP_tk=data.token;AP_sck('ap_tk',_AP_tk);
   ['ap-cpa','ap-cpn','ap-cpn2'].forEach(i=>document.getElementById(i).value='');
   AP_toast('Contrasena actualizada');
+};
+
+window.AP_logout=async function(){
+  await AP_fetch('logout',{method:'POST',body:JSON.stringify({})});
+  AP_dck('ap_u');AP_dck('ap_tk');
+  _AP_usr=null;_AP_tk=null;
+  location.reload();
 };
 
 async function AP_loadCats(){
@@ -341,8 +394,8 @@ window.AP_login=async function(){
   if(!u||!p)return AP_toast('Completa los campos','warn');
   const{ok,data}=await AP_fetch('login',{method:'POST',body:JSON.stringify({usuario:u,password:p})});
   if(!ok)return AP_toast(data.error||'Error','err');
-  _AP_usr=u;_AP_pwd=p;
-  AP_sck('ap_u',u);AP_sck('ap_p',p);
+  _AP_usr=u;_AP_tk=data.token;
+  AP_sck('ap_u',u);AP_sck('ap_tk',_AP_tk);
   AP_toast('Bienvenido '+u);
   AP_showMain();
 };
@@ -353,6 +406,7 @@ window.AP_registro=async function(){
   const p2=document.getElementById('ap-rp2').value;
   if(!u||!p)return AP_toast('Completa los campos','warn');
   if(p!==p2)return AP_toast('Las contrasenas no coinciden','warn');
+  if(p.length<10||!AP_PW_SYMBOLS.test(p))return AP_toast('La contrasena necesita 10+ chars y 1 simbolo','warn');
   const{ok,data}=await AP_fetch('registro',{method:'POST',body:JSON.stringify({usuario:u,password:p})});
   if(!ok)return AP_toast(data.error||'Error','err');
   AP_toast('Cuenta creada! Iniciando sesion...');
@@ -440,6 +494,12 @@ document.getElementById('ap-nu').oninput=function(){
 document.getElementById('ap-cd').oninput=function(){
   this.value=this.value.replace(/\D/g,'').slice(0,4);
 };
+document.getElementById('ap-id').oninput=function(){
+  this.value=this.value.replace(/[^a-zA-Z0-9_-]/g,'').slice(0,50);
+};
+document.getElementById('ap-nb').oninput=function(){
+  this.value=this.value.replace(/[/\\<>"'`\x00-\x1f]/g,'').slice(0,100);
+};
 
 function AP_flagField(elId){
   const el=document.getElementById(elId);
@@ -470,7 +530,7 @@ window.AP_enviar=async function(){
   if(nu.length<12)return AP_flagField('ap-nu');
   if(!imgBlob&&!isEdit)return AP_flagField('ap-img-thumb');
   const md=_AP_mde?_AP_mde.value():'';
-  const body={usuario:_AP_usr,password:_AP_pwd,categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),CD:cd!==''?parseInt(cd):null,TM:tm||null,md};
+  const body={categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),CD:cd!==''?parseInt(cd):null,TM:tm||null,md};
   if(imgBlob){body.imgData=await AP_blobToB64(imgBlob);body.imgExt=imgExt;}
   const btn=document.getElementById('ap-submit');
   btn.disabled=true;btn.textContent='Enviando...';
@@ -499,7 +559,7 @@ async function AP_loadImgs(container){
   await Promise.all([...imgs].map(async img=>{
     try{
       const res=await fetch(AP_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({action:'img',usuario:_AP_usr,password:_AP_pwd,ID:img.dataset.id})});
+        body:JSON.stringify({action:'img',token:_AP_tk,ID:img.dataset.id})});
       if(!res.ok)return;
       const blob=await res.blob();
       img.src=URL.createObjectURL(blob);
@@ -511,7 +571,7 @@ window.AP_loadSolicitudes=async function(noFetch){
   const lst=document.getElementById('ap-sol-list');
   if(!noFetch){
     lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
-    const{ok,data}=await AP_fetch('historial',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd})});
+    const{ok,data}=await AP_fetch('historial',{method:'POST',body:JSON.stringify({})});
     if(!ok){lst.innerHTML=`<div style="color:var(--err);padding:20px">${data.error||'Error'}</div>`;return;}
     _AP_entries=data.entries||[];
   }
@@ -545,7 +605,7 @@ window.AP_loadSolicitudes=async function(noFetch){
 
 window.AP_borrarSol=async function(ID){
   if(!confirm('Borrar esta entrada?'))return;
-  const{ok,data}=await AP_fetch('borrar',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd,ID})});
+  const{ok,data}=await AP_fetch('borrar',{method:'POST',body:JSON.stringify({ID})});
   if(!ok)return AP_toast(data.error||'Error','err');
   if(data.pendiente){
     const e=_AP_entries.find(en=>en.ID===ID);
@@ -560,7 +620,7 @@ window.AP_borrarSol=async function(ID){
 };
 
 window.AP_editarSol=async function(ID){
-  const{ok,data}=await AP_fetch('md',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd,ID})});
+  const{ok,data}=await AP_fetch('md',{method:'POST',body:JSON.stringify({ID})});
   if(!ok)return AP_toast(data.error||'Error','err');
   const e=data.meta;
   AP_mainTab('nuevo');
@@ -580,9 +640,9 @@ window.AP_editarSol=async function(ID){
   AP_toast('Agrega la imagen si queres cambiarla, sino se mantiene','warn',5000);
 };
 
-if(_AP_usr&&_AP_pwd){
-  AP_fetch('login',{method:'POST',body:JSON.stringify({usuario:_AP_usr,password:_AP_pwd})})
-    .then(({ok})=>{if(ok)AP_showMain();else{AP_dck('ap_u');AP_dck('ap_p');_AP_usr=null;_AP_pwd=null;}});
+if(_AP_usr&&_AP_tk){
+  AP_fetch('historial',{method:'POST',body:JSON.stringify({})})
+    .then(({ok})=>{if(ok)AP_showMain();else{AP_dck('ap_u');AP_dck('ap_tk');_AP_usr=null;_AP_tk=null;}});
 }
 })();
 </script>
