@@ -1,6 +1,8 @@
 
 
 ### Opcional
+Search buscar ID= tambien
+
 sw.js notifica pero no descarga el elemento, haciendo que al entrar en notificacion solo lleve al inicio, no a la nueva entrada
 
 
