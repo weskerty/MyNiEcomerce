@@ -2,109 +2,179 @@
 <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.11/dist/purify.min.js"></script>
 <style>
-#NV_W{padding:8px 12px;max-width:640px;margin:0 auto 60px}
-.NV_SCR{display:none}
-.NV_SCR.on{display:block}
+:root{
+--g1:rgba(255,255,255,0.06);
+--g2:rgba(255,255,255,0.10);
+--gb:rgba(255,255,255,0.13);
+--gbb:rgba(255,255,255,0.18);
+--acc:#4f8ef7;
+--acc2:#a78bfa;
+--ok:#34d399;
+--err:#f87171;
+--warn:#fbbf24;
+--txt:rgba(255,255,255,0.92);
+--txt2:rgba(255,255,255,0.45);
+--r:16px;
+--ri:12px;
+}
+#nv-wrap{color:var(--txt);font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;padding:0 0 90px;-webkit-font-smoothing:antialiased}
+#nv-wrap *{box-sizing:border-box}
+.nv-top{padding:22px 18px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--gb)}
+.nv-top h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.3px}
+.nv-top span{font-size:12px;color:var(--txt2);margin-top:2px;display:block}
+.nv-logo{width:42px;height:42px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;box-shadow:0 4px 14px rgba(79,142,247,.28)}
+.nv-sect{max-width:600px;margin:0 auto;padding:18px 14px 0}
+.nv-card{background:var(--g1);border:1px solid var(--gb);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.nv-card h2{margin:0 0 14px;font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:5px;letter-spacing:.03em}
+.fg input,.fg textarea{
+width:100%;background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);color:var(--txt);
+padding:10px 13px;font-size:15px;outline:none;transition:border .15s,background .15s;
+-webkit-appearance:none;font-family:inherit;
+}
+.fg input:focus{border-color:rgba(79,142,247,.6);background:var(--g2)}
 
-.NV_TB{display:flex;gap:10px;align-items:center;margin-bottom:14px}
-.NV_TB a,.NV_TB span.back{font-size:1.3rem;text-decoration:none;opacity:.8;cursor:pointer}
-.NV_TB h1{font-size:1.1em;margin:0;flex:1}
-.NV_NEW{background:rgba(56,189,248,.18);border:1px solid rgba(56,189,248,.4);color:#7dd3fc;border-radius:20px;padding:8px 16px;cursor:pointer;font-size:.85em;font-family:inherit}
-.NV_NEW:hover{background:rgba(56,189,248,.28)}
-.NV_ITEM{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px 16px;margin-bottom:9px;cursor:pointer;transition:background .15s}
-.NV_ITEM:hover{background:rgba(255,255,255,.11)}
-.NV_ITEM .ic{font-size:1.4em}
-.NV_ITEM .info{flex:1;min-width:0}
-.NV_ITEM .nm{font-size:.95em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.NV_ITEM .dt{font-size:.72em;color:rgba(255,255,255,.45);margin-top:2px}
-.NV_MSG{text-align:center;color:rgba(255,255,255,.5);padding:40px 16px;font-size:.9em}
+.nv-btn{
+display:inline-flex;align-items:center;justify-content:center;gap:7px;
+padding:12px 20px;border:none;border-radius:var(--ri);
+font-size:15px;font-weight:600;cursor:pointer;
+transition:opacity .15s,transform .1s,box-shadow .15s;
+width:100%;font-family:inherit;letter-spacing:-.1px;
+}
+.nv-btn:active{transform:scale(.97)}
+.nv-btn.pri{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 4px 18px rgba(79,142,247,.3)}
+.nv-btn.pri:hover{box-shadow:0 6px 22px rgba(79,142,247,.45)}
+.nv-btn.sec{background:transparent;color:var(--txt);border:1px solid var(--gbb)}
+.nv-btn.sec:hover{background:var(--g2)}
+.nv-btn.danger{background:transparent;color:#fca5a5;border:1px solid rgba(248,113,113,.35)}
+.nv-btn.danger:hover{background:rgba(248,113,113,.1)}
+.nv-btn.small{width:auto;padding:9px 16px;font-size:13px}
+.nv-btn:disabled{opacity:.4;cursor:not-allowed}
+.nv-btn.icon{width:52px;height:52px;border-radius:50%;padding:0;font-size:20px;flex-shrink:0}
 
-.NE_NAME{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;padding:9px 12px;font-size:.95em;font-family:inherit;outline:none}
-.NE_NAME:focus{border-color:rgba(56,189,248,.5)}
-.NE_DELBTN{background:rgba(255,90,90,.15);border:1px solid rgba(255,90,90,.35);color:#ffb0b0;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:1.05em}
-.NE_DELBTN:hover{background:rgba(255,90,90,.28)}
+.nv-msg{
+position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+background:rgba(20,20,35,0.85);border:1px solid var(--gb);border-radius:50px;padding:10px 22px;
+font-size:13px;font-weight:500;color:var(--txt);z-index:9999;pointer-events:none;white-space:nowrap;
+max-width:88vw;text-overflow:ellipsis;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.35);
+}
+.nv-msg.ok{border-color:rgba(52,211,153,.4);color:var(--ok)}
+.nv-msg.err{border-color:rgba(248,113,113,.4);color:var(--err)}
+.nv-msg.warn{border-color:rgba(251,191,36,.4);color:var(--warn)}
 
-.NE_REC{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:16px;margin-bottom:14px}
-.NE_RECBAR{display:flex;gap:10px;justify-content:center;margin-bottom:12px}
-.NE_RECBAR button{border:none;border-radius:50%;width:54px;height:54px;font-size:1.4em;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.NE_RECBAR .rec{background:rgba(255,90,90,.85);color:#fff}
-.NE_RECBAR .pause{background:rgba(251,191,36,.85);color:#1a1a1a;display:none}
-.NE_RECBAR .resume{background:rgba(52,211,153,.85);color:#1a1a1a;display:none}
-.NE_RECBAR .stop{background:rgba(255,255,255,.15);color:#fff;display:none}
-.NE_RECST{text-align:center;font-size:.82em;color:rgba(255,255,255,.55);margin-bottom:4px;min-height:1.2em}
-.NE_RECST.on{color:#ff8080}
+.nv-item{background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);padding:13px;margin-bottom:10px;display:flex;gap:11px;align-items:center;cursor:pointer;transition:background .15s}
+.nv-item:hover{background:var(--g2)}
+.nv-item .ic{font-size:22px;flex-shrink:0}
+.nv-item .info{flex:1;min-width:0}
+.nv-item .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nv-item .dt{font-size:11px;color:var(--txt2);margin-top:3px}
+.nv-empty{text-align:center;color:var(--txt2);padding:40px 16px;font-size:13px}
 
-.NE_TRACKS{display:flex;flex-direction:column;gap:8px}
-.NE_TR{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:8px 12px}
-.NE_TR.playing{border-color:rgba(56,189,248,.5);background:rgba(56,189,248,.08)}
-.NE_TR .n{font-size:.8em;color:rgba(255,255,255,.5);width:20px;flex-shrink:0}
-.NE_TR audio{flex:1;height:32px}
-.NE_TR button{background:rgba(255,90,90,.12);border:1px solid rgba(255,90,90,.3);color:#ffb0b0;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:.8em;flex-shrink:0}
-.NE_PLAYALL{width:100%;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);color:#7dd3fc;border-radius:10px;padding:9px;cursor:pointer;font-size:.85em;margin-top:10px;font-family:inherit}
-.NE_PLAYALL:hover{background:rgba(56,189,248,.25)}
+.nv-recbar{display:flex;gap:10px;justify-content:center;margin-bottom:12px}
+.nv-recst{text-align:center;font-size:12px;color:var(--txt2);margin-bottom:10px;min-height:1.2em}
+.nv-recst.on{color:#fca5a5}
+.nv-track{display:flex;align-items:center;gap:10px;background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);padding:8px 10px;margin-bottom:8px}
+.nv-track.playing{border-color:rgba(79,142,247,.5);background:rgba(79,142,247,.08)}
+.nv-track .n{font-size:11px;color:var(--txt2);width:22px;flex-shrink:0}
+.nv-track audio{flex:1;height:32px;min-width:0}
+.nv-track button{background:transparent;border:1px solid rgba(248,113,113,.3);color:#fca5a5;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;flex-shrink:0}
 
-.NE_ATTBAR{display:flex;gap:8px;margin:14px 0 8px;flex-wrap:wrap}
-.NE_GAL{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px;margin-bottom:12px}
-.NE_GI{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
-.NE_GI img,.NE_GI video{width:100%;height:100%;object-fit:cover;display:block}
-.NE_GI .rm{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.65);border:none;color:#fff;border-radius:50%;width:22px;height:22px;font-size:.75em;cursor:pointer}
-.NE_SAVEST{text-align:center;font-size:.78em;color:rgba(255,255,255,.4);margin-top:8px}
+.nv-gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;margin-top:10px}
+.nv-gi{position:relative;aspect-ratio:1;border-radius:var(--ri);overflow:hidden;background:var(--g1);border:1px solid var(--gb)}
+.nv-gi img,.nv-gi video{width:100%;height:100%;object-fit:cover;display:block}
+.nv-gi .rm{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.65);border:none;color:#fff;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;line-height:1}
 
-#NE_MDE .EasyMDEContainer{background:transparent!important;border-radius:14px;overflow:hidden}
-#NE_MDE .CodeMirror{background:rgba(255,255,255,.05)!important;color:#fff!important;min-height:200px;border-radius:0 0 14px 14px!important;border:1px solid rgba(255,255,255,.12)!important;border-top:none!important}
-#NE_MDE .editor-toolbar{background:rgba(255,255,255,.05)!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:14px 14px 0 0!important}
-#NE_MDE .editor-toolbar button{color:rgba(255,255,255,.6)!important}
-#NE_MDE .editor-toolbar button:hover,#NE_MDE .editor-toolbar button.active{background:rgba(255,255,255,.1)!important}
+#nv-mde .EasyMDEContainer{background:transparent!important;border-radius:var(--ri);overflow:hidden}
+#nv-mde .CodeMirror{background:var(--g1)!important;color:var(--txt)!important;min-height:180px;border-radius:0 0 var(--ri) var(--ri)!important;border:1px solid var(--gb)!important;border-top:none!important}
+#nv-mde .editor-toolbar{background:var(--g1)!important;border:1px solid var(--gb)!important;border-bottom:1px solid var(--gb)!important;border-radius:var(--ri) var(--ri) 0 0!important}
+#nv-mde .editor-toolbar button{color:var(--txt2)!important}
+#nv-mde .editor-toolbar button:hover,#nv-mde .editor-toolbar button.active{background:var(--g2)!important;border-color:var(--gb)!important}
+#nv-mde .editor-toolbar i.separator{border-color:var(--gb)!important}
+
+.nv-savest{text-align:center;font-size:11px;color:var(--txt2);margin-top:8px}
 </style>
 
-<div id="NV_W">
+<div id="nv-wrap">
 
-<div class="NV_SCR on" id="NV_S_LIST">
-<div class="NV_TB">
-<a href="web/es.html">🏠</a>
-<h1>🎙️ Notas de Voz</h1>
-<button class="NV_NEW" id="NV_ADD">+ Nueva</button>
-</div>
-<div id="NV_LIST"><div class="NV_MSG">Cargando...</div></div>
-</div>
-
-<div class="NV_SCR" id="NV_S_EDIT">
-<div class="NV_TB">
-<span class="back" id="NE_BACK">←</span>
-<input type="text" id="NE_NAME" class="NE_NAME" placeholder="Nombre de la nota...">
-<button class="NE_DELBTN" id="NE_DEL">🗑️</button>
+<div id="nv-scr-list">
+  <div class="nv-top">
+    <div class="nv-logo">🎙️</div>
+    <div><h1>Notas de Voz</h1><span>Tu bitacora personal de audio</span></div>
+  </div>
+  <div class="nv-sect">
+    <button class="nv-btn pri" id="nv-add" style="margin-bottom:16px">➕ Nueva Entrada</button>
+    <div id="nv-list"><div class="nv-empty">Cargando...</div></div>
+  </div>
 </div>
 
-<div class="NE_REC">
-<div class="NE_RECST" id="NE_RECST"></div>
-<div class="NE_RECBAR">
-<button class="rec" id="NE_BREC" title="Grabar">⏺️</button>
-<button class="pause" id="NE_BPAUSE" title="Pausar">⏸️</button>
-<button class="resume" id="NE_BRESUME" title="Reanudar">▶️</button>
-<button class="stop" id="NE_BSTOP" title="Detener y guardar">⏹️</button>
-</div>
-<div class="NE_TRACKS" id="NE_TRACKS"></div>
-<button class="NE_PLAYALL" id="NE_PLAYALL" style="display:none">▶️ Reproducir todo en orden</button>
-</div>
+<div id="nv-scr-edit" style="display:none">
+  <div class="nv-top">
+    <div class="nv-logo" id="nv-back" style="cursor:pointer">←</div>
+    <div style="flex:1"><h1>Editar Entrada</h1><span>Se guarda automaticamente</span></div>
+  </div>
+  <div class="nv-sect">
 
-<div class="NE_ATTBAR">
-<button class="BOTON-L1" id="NE_ADDIMG">🖼️ Adjuntar de galeria</button>
-<input type="file" id="NE_FILEIN" accept="image/*,video/*" multiple style="display:none">
-</div>
-<div class="NE_GAL" id="NE_GAL"></div>
+    <div class="nv-card">
+      <h2>Nombre</h2>
+      <div class="fg"><input id="ne-name" type="text" placeholder="Nombre de la nota (opcional)" maxlength="80"></div>
+    </div>
 
-<div id="NE_MDE"><textarea id="NE_MDTXT"></textarea></div>
-<div class="NE_SAVEST" id="NE_SAVEST"></div>
-<br>
-<button class="BOTON-L1" id="NE_SAVE" style="width:100%">💾 Guardar</button>
+    <div class="nv-card">
+      <h2>Grabacion de Audio</h2>
+      <div class="nv-recst" id="ne-recst"></div>
+      <div class="nv-recbar">
+        <button class="nv-btn icon" id="ne-brec" style="background:rgba(248,113,113,.9);color:#fff" title="Grabar">⏺</button>
+        <button class="nv-btn icon" id="ne-bpause" style="background:rgba(251,191,36,.9);color:#1a1a1a;display:none" title="Pausar">⏸</button>
+        <button class="nv-btn icon" id="ne-bresume" style="background:rgba(52,211,153,.9);color:#1a1a1a;display:none" title="Reanudar">▶</button>
+        <button class="nv-btn icon" id="ne-bstop" style="background:var(--g2);border:1px solid var(--gbb);display:none" title="Detener y guardar">⏹</button>
+      </div>
+      <div id="ne-tracks"></div>
+      <button class="nv-btn sec" id="ne-playall" style="display:none;margin-top:6px">▶️ Reproducir todo en orden</button>
+    </div>
+
+    <div class="nv-card" id="nv-mde">
+      <h2>Nota (Markdown)</h2>
+      <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Toca "Adjuntar" para insertar imagenes o videos de tu galeria. Se guardan en esta misma entrada.</p>
+      <button class="nv-btn sec small" id="ne-addmedia" style="margin-bottom:10px">🖼️ Adjuntar de galeria</button>
+      <input type="file" id="ne-filein" accept="image/*,video/*" multiple style="display:none">
+      <div class="nv-gal" id="ne-gal"></div>
+      <textarea id="ne-mdtxt"></textarea>
+      <div class="nv-savest" id="ne-savest"></div>
+    </div>
+
+    <button class="nv-btn pri" id="ne-save">💾 Guardar</button>
+    <div style="height:10px"></div>
+    <button class="nv-btn danger" id="ne-del">🗑️ Borrar esta entrada</button>
+
+  </div>
 </div>
 
 </div>
 
 <script>
 (function(){
-  const scrList=document.getElementById('NV_S_LIST'),scrEdit=document.getElementById('NV_S_EDIT');
-  let dirH=null,mde=null,mediaRec=null,mediaStream=null,trackN=0,curId=null,saveTO=null;
+  const scrList=document.getElementById('nv-scr-list'),scrEdit=document.getElementById('nv-scr-edit');
+  let dirH=null,mde=null,mediaRec=null,mediaStream=null,trackN=0,curId=null,saveTO=null,_msg=null;
+
+  function toast(t,tp,d){
+    tp=tp||'ok';d=d||2500;
+    if(_msg)_msg.remove();
+    _msg=document.createElement('div');
+    _msg.className='nv-msg '+tp;
+    _msg.textContent=t;
+    document.body.appendChild(_msg);
+    setTimeout(function(){if(_msg){_msg.remove();_msg=null;}},d);
+  }
+
+  function waitLibs(){
+    return new Promise(function(res){
+      (function chk(){
+        if(window.EasyMDE&&window.DOMPurify)return res();
+        setTimeout(chk,50);
+      })();
+    });
+  }
 
   async function getNVRoot(){
     const root=await navigator.storage.getDirectory();
@@ -118,13 +188,13 @@
   }
 
   function showScreen(s){
-    scrList.classList.toggle('on',s==='list');
-    scrEdit.classList.toggle('on',s==='edit');
+    scrList.style.display=s==='list'?'block':'none';
+    scrEdit.style.display=s==='edit'?'block':'none';
   }
 
   async function loadList(){
-    const listEl=document.getElementById('NV_LIST');
-    listEl.innerHTML='<div class="NV_MSG">Cargando...</div>';
+    const listEl=document.getElementById('nv-list');
+    listEl.innerHTML='<div class="nv-empty">Cargando...</div>';
     try{
       const nv=await getNVRoot();
       const items=[];
@@ -135,41 +205,41 @@
           const f=await handle.getFileHandle('info.json');
           const j=JSON.parse(await (await f.getFile()).text());
           nombre=j.nombre||name;fecha=j.fecha||0;
-        }catch{}
+        }catch(e){}
         for await(const[n2,h2]of handle.entries()){
           if(h2.kind==='file'&&/^audio-\d+\./.test(n2))naudios++;
         }
-        items.push({id:name,nombre,fecha,naudios});
+        items.push({id:name,nombre:nombre,fecha:fecha,naudios:naudios});
       }
-      items.sort((a,b)=>b.fecha-a.fecha||b.id.localeCompare(a.id));
-      if(!items.length){listEl.innerHTML='<div class="NV_MSG">Sin notas de voz aun.<br>Toca "+ Nueva" para crear la primera.</div>';return;}
+      items.sort(function(a,b){return b.fecha-a.fecha||b.id.localeCompare(a.id);});
+      if(!items.length){listEl.innerHTML='<div class="nv-empty">Sin notas de voz aun.<br>Toca "Nueva Entrada" para crear la primera.</div>';return;}
       listEl.innerHTML='';
-      items.forEach(it=>{
-        const div=document.createElement('div');div.className='NV_ITEM';
+      items.forEach(function(it){
+        const div=document.createElement('div');div.className='nv-item';
         div.innerHTML='<span class="ic">🎙️</span><div class="info"><div class="nm"></div><div class="dt"></div></div>';
         div.querySelector('.nm').textContent=it.nombre;
-        div.querySelector('.dt').textContent=(it.fecha?fmtDate(it.fecha):'')+(it.naudios?' · '+it.naudios+' audio'+(it.naudios>1?'s':''):'');
-        div.onclick=()=>openEditor(it.id);
+        div.querySelector('.dt').textContent=(it.fecha?fmtDate(it.fecha):'')+(it.naudios?' · '+it.naudios+' audio'+(it.naudios>1?'s':''):' · sin audio');
+        div.onclick=function(){openEditor(it.id);};
         listEl.appendChild(div);
       });
     }catch(e){
-      listEl.innerHTML='<div class="NV_MSG">Error: '+e.message+'</div>';
+      listEl.innerHTML='<div class="nv-empty">Error: '+e.message+'</div>';
     }
   }
 
-  document.getElementById('NV_ADD').onclick=async()=>{
+  document.getElementById('nv-add').onclick=async function(){
     const id=Date.now().toString(36);
     try{
       const nv=await getNVRoot();
       await nv.getDirectoryHandle(id,{create:true});
       openEditor(id);
-    }catch(e){alert('Error al crear: '+e.message);}
+    }catch(e){toast('Error al crear: '+e.message,'err');}
   };
 
   function extFromMime(m){
-    if(m.includes('webm'))return 'webm';
-    if(m.includes('ogg'))return 'ogg';
-    if(m.includes('mp4'))return 'mp4';
+    if(m.indexOf('webm')>-1)return 'webm';
+    if(m.indexOf('ogg')>-1)return 'ogg';
+    if(m.indexOf('mp4')>-1)return 'mp4';
     return 'webm';
   }
 
@@ -177,13 +247,17 @@
     try{
       const f=await dirH.getFileHandle('info.json');
       const j=JSON.parse(await (await f.getFile()).text());
-      document.getElementById('NE_NAME').value=j.nombre||'';
+      document.getElementById('ne-name').value=j.nombre||'';
       return j;
-    }catch{return{fecha:Date.now()};}
+    }catch(e){return{fecha:Date.now()};}
   }
 
   async function saveInfo(patch){
-    const cur=await loadInfo().catch(()=>({}));
+    let cur={};
+    try{
+      const f=await dirH.getFileHandle('info.json');
+      cur=JSON.parse(await (await f.getFile()).text());
+    }catch(e){}
     const j=Object.assign({fecha:Date.now()},cur,patch);
     const fh=await dirH.getFileHandle('info.json',{create:true});
     const w=await fh.createWritable();
@@ -194,18 +268,16 @@
   async function listTracks(){
     const items=[];
     for await(const[name,handle]of dirH.entries()){
-      if(handle.kind==='file'&&/^audio-(\d+)\./.test(name)){
-        const n=parseInt(name.match(/^audio-(\d+)\./)[1]);
-        items.push({name,n});
-      }
+      const m=name.match(/^audio-(\d+)\./);
+      if(handle.kind==='file'&&m)items.push({name:name,n:parseInt(m[1])});
     }
-    items.sort((a,b)=>a.n-b.n);
+    items.sort(function(a,b){return a.n-b.n;});
     return items;
   }
 
   async function renderTracks(){
-    const tracksEl=document.getElementById('NE_TRACKS');
-    const playAllBtn=document.getElementById('NE_PLAYALL');
+    const tracksEl=document.getElementById('ne-tracks');
+    const playAllBtn=document.getElementById('ne-playall');
     const items=await listTracks();
     tracksEl.innerHTML='';
     if(!items.length){playAllBtn.style.display='none';trackN=0;return;}
@@ -214,9 +286,9 @@
       const fh=await dirH.getFileHandle(it.name);
       const file=await fh.getFile();
       const url=URL.createObjectURL(file);
-      const row=document.createElement('div');row.className='NE_TR';row.dataset.n=it.n;
+      const row=document.createElement('div');row.className='nv-track';row.dataset.n=it.n;
       row.innerHTML='<span class="n">#'+it.n+'</span><audio controls src="'+url+'"></audio><button>🗑️</button>';
-      row.querySelector('button').onclick=async()=>{
+      row.querySelector('button').onclick=async function(){
         if(!confirm('Borrar el audio #'+it.n+'?'))return;
         await dirH.removeEntry(it.name);
         renderTracks();
@@ -227,46 +299,46 @@
   }
 
   let playQueue=[],playIdx=0;
-  document.getElementById('NE_PLAYALL').onclick=async()=>{
+  document.getElementById('ne-playall').onclick=async function(){
     const items=await listTracks();
     if(!items.length)return;
     playQueue=items;playIdx=0;
     playNext();
   };
   function playNext(){
-    document.querySelectorAll('.NE_TR').forEach(r=>r.classList.remove('playing'));
+    document.querySelectorAll('.nv-track').forEach(function(r){r.classList.remove('playing');});
     if(playIdx>=playQueue.length)return;
     const it=playQueue[playIdx];
-    const row=document.querySelector('.NE_TR[data-n="'+it.n+'"]');
+    const row=document.querySelector('.nv-track[data-n="'+it.n+'"]');
     if(!row)return;
     row.classList.add('playing');
     const audioEl=row.querySelector('audio');
     audioEl.currentTime=0;
-    audioEl.onended=()=>{playIdx++;playNext();};
-    audioEl.play().catch(()=>{});
+    audioEl.onended=function(){playIdx++;playNext();};
+    audioEl.play().catch(function(){});
   }
 
-  const recBtn=document.getElementById('NE_BREC'),pauseBtn=document.getElementById('NE_BPAUSE');
-  const resumeBtn=document.getElementById('NE_BRESUME'),stopBtn=document.getElementById('NE_BSTOP');
-  const recSt=document.getElementById('NE_RECST');
+  const recBtn=document.getElementById('ne-brec'),pauseBtn=document.getElementById('ne-bpause');
+  const resumeBtn=document.getElementById('ne-bresume'),stopBtn=document.getElementById('ne-bstop');
+  const recSt=document.getElementById('ne-recst');
 
   function setRecUI(state){
     recBtn.style.display=state==='idle'?'flex':'none';
     pauseBtn.style.display=state==='recording'?'flex':'none';
     resumeBtn.style.display=state==='paused'?'flex':'none';
-    stopBtn.style.display=state==='recording'||state==='paused'?'flex':'none';
+    stopBtn.style.display=(state==='recording'||state==='paused')?'flex':'none';
     recSt.classList.toggle('on',state==='recording');
     recSt.textContent=state==='recording'?'Grabando...':state==='paused'?'En pausa':'';
   }
 
-  recBtn.onclick=async()=>{
+  recBtn.onclick=async function(){
     try{
       mediaStream=await navigator.mediaDevices.getUserMedia({audio:true});
       mediaRec=new MediaRecorder(mediaStream);
       const chunks=[];
-      mediaRec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
-      mediaRec.onstop=async()=>{
-        mediaStream.getTracks().forEach(t=>t.stop());
+      mediaRec.ondataavailable=function(e){if(e.data.size)chunks.push(e.data);};
+      mediaRec.onstop=async function(){
+        mediaStream.getTracks().forEach(function(t){t.stop();});
         if(!chunks.length)return;
         const blob=new Blob(chunks,{type:mediaRec.mimeType||'audio/webm'});
         trackN++;
@@ -277,18 +349,19 @@
         await w.close();
         await renderTracks();
         setRecUI('idle');
+        toast('Audio guardado');
       };
       mediaRec.start();
       setRecUI('recording');
-    }catch(e){alert('No se pudo acceder al microfono: '+e.message);}
+    }catch(e){toast('No se pudo acceder al microfono: '+e.message,'err',4000);}
   };
-  pauseBtn.onclick=()=>{if(mediaRec&&mediaRec.state==='recording'){mediaRec.pause();setRecUI('paused');}};
-  resumeBtn.onclick=()=>{if(mediaRec&&mediaRec.state==='paused'){mediaRec.resume();setRecUI('recording');}};
-  stopBtn.onclick=()=>{if(mediaRec&&mediaRec.state!=='inactive')mediaRec.stop();};
+  pauseBtn.onclick=function(){if(mediaRec&&mediaRec.state==='recording'){mediaRec.pause();setRecUI('paused');}};
+  resumeBtn.onclick=function(){if(mediaRec&&mediaRec.state==='paused'){mediaRec.resume();setRecUI('recording');}};
+  stopBtn.onclick=function(){if(mediaRec&&mediaRec.state!=='inactive')mediaRec.stop();};
 
   const MAX_SIZE=10*1024*1024;
-  const galEl=document.getElementById('NE_GAL');
-  document.getElementById('NE_ADDIMG').onclick=e=>{e.preventDefault();document.getElementById('NE_FILEIN').click();};
+  const galEl=document.getElementById('ne-gal');
+  document.getElementById('ne-addmedia').onclick=function(e){e.preventDefault();document.getElementById('ne-filein').click();};
 
   async function listMedia(){
     const items=[];
@@ -305,12 +378,12 @@
       const fh=await dirH.getFileHandle(name);
       const file=await fh.getFile();
       const url=URL.createObjectURL(file);
-      const gi=document.createElement('div');gi.className='NE_GI';
-      const isVid=file.type.startsWith('video/');
+      const gi=document.createElement('div');gi.className='nv-gi';
+      const isVid=file.type.indexOf('video/')===0;
       gi.innerHTML=isVid?'<video src="'+url+'" muted></video>':'<img src="'+url+'">';
       const rm=document.createElement('button');rm.className='rm';rm.textContent='✕';
-      rm.onclick=async()=>{
-        if(!confirm('Quitar este adjunto?'))return;
+      rm.onclick=async function(){
+        if(!confirm('Quitar este adjunto? Tambien se quitara la referencia del texto si la agregaste.'))return;
         await dirH.removeEntry(name);
         renderGal();
       };
@@ -319,36 +392,46 @@
     }
   }
 
-  document.getElementById('NE_FILEIN').onchange=async function(e){
-    const files=[...e.target.files];
+  document.getElementById('ne-filein').onchange=async function(e){
+    const files=[].slice.call(e.target.files);
     this.value='';
     for(const f of files){
-      if(f.size>MAX_SIZE){alert(f.name+' supera 10MB, se omite.');continue;}
-      const ext=(f.name.match(/\.(\w+)$/)||[,f.type.split('/')[1]||'bin'])[1];
+      if(f.size>MAX_SIZE){toast(f.name+' supera 10MB, se omite','warn',3500);continue;}
+      const extm=f.name.match(/\.(\w+)$/);
+      const ext=extm?extm[1]:(f.type.split('/')[1]||'bin');
       const n=Date.now()+Math.floor(Math.random()*1000);
-      const fh=await dirH.getFileHandle('media-'+n+'.'+ext,{create:true});
+      const fname='media-'+n+'.'+ext;
+      const fh=await dirH.getFileHandle(fname,{create:true});
       const w=await fh.createWritable();
       await w.write(f);
       await w.close();
+      if(mde){
+        const cm=mde.codemirror;
+        const cur=cm.getCursor();
+        cm.replaceRange('![]('+fname+')\n',cur);
+      }
     }
     renderGal();
+    clearTimeout(saveTO);
+    saveTO=setTimeout(saveMD,600);
   };
 
   function sanitizeMD(raw){
     if(!/[<>]/.test(raw))return raw;
+    if(!window.DOMPurify)return raw.replace(/<script[\s\S]*?<\/script>/gi,'');
     return window.DOMPurify.sanitize(raw,{ALLOWED_TAGS:['b','i','em','strong','a','code','pre','br','p','ul','ol','li','h1','h2','h3','blockquote','img'],ALLOWED_ATTR:['href','src','alt']});
   }
 
   function initMDE(){
     if(mde){mde.toTextArea();mde=null;}
     mde=new EasyMDE({
-      element:document.getElementById('NE_MDTXT'),
+      element:document.getElementById('ne-mdtxt'),
       spellChecker:false,autofocus:false,status:false,
       toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','preview','guide']
     });
-    mde.codemirror.on('change',()=>{
+    mde.codemirror.on('change',function(){
       clearTimeout(saveTO);
-      document.getElementById('NE_SAVEST').textContent='Editando...';
+      document.getElementById('ne-savest').textContent='Editando...';
       saveTO=setTimeout(saveMD,1500);
     });
   }
@@ -358,7 +441,7 @@
       const fh=await dirH.getFileHandle('nota.md');
       const txt=await (await fh.getFile()).text();
       mde.value(txt);
-    }catch{mde.value('');}
+    }catch(e){mde.value('');}
   }
 
   async function saveMD(){
@@ -369,24 +452,27 @@
     const w=await fh.createWritable();
     await w.write(clean);
     await w.close();
-    document.getElementById('NE_SAVEST').textContent='Guardado '+new Date().toLocaleTimeString('es-PY',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('ne-savest').textContent='Guardado '+new Date().toLocaleTimeString('es-PY',{hour:'2-digit',minute:'2-digit'});
   }
-  document.getElementById('NE_SAVE').onclick=async()=>{
+
+  document.getElementById('ne-save').onclick=async function(){
     await saveMD();
-    await saveInfo({nombre:document.getElementById('NE_NAME').value.trim()});
+    await saveInfo({nombre:document.getElementById('ne-name').value.trim()});
+    toast('Nota guardada');
   };
 
-  document.getElementById('NE_NAME').onchange=async function(){
+  document.getElementById('ne-name').onchange=async function(){
     await saveInfo({nombre:this.value.trim()});
   };
 
-  document.getElementById('NE_DEL').onclick=async()=>{
+  document.getElementById('ne-del').onclick=async function(){
     if(!confirm('Borrar esta nota de voz completa? Esto no se puede deshacer.'))return;
     try{
       const nv=await getNVRoot();
       await nv.removeEntry(curId,{recursive:true});
       backToList();
-    }catch(e){alert('Error al borrar: '+e.message);}
+      toast('Entrada borrada');
+    }catch(e){toast('Error al borrar: '+e.message,'err');}
   };
 
   function stopRecordingIfActive(){
@@ -394,7 +480,7 @@
     clearTimeout(saveTO);
   }
 
-  document.getElementById('NE_BACK').onclick=()=>{
+  document.getElementById('nv-back').onclick=function(){
     stopRecordingIfActive();
     backToList();
   };
@@ -409,18 +495,19 @@
     curId=id;
     const nv=await getNVRoot();
     dirH=await nv.getDirectoryHandle(id,{create:true});
-    document.getElementById('NE_NAME').value='';
+    document.getElementById('ne-name').value='';
     await loadInfo();
     setRecUI('idle');
     await renderTracks();
     await renderGal();
+    await waitLibs();
     initMDE();
     await loadMD();
     showScreen('edit');
   }
 
   const _el=document.getElementById('content');
-  if(_el)_el.addEventListener('contentUnload',()=>{
+  if(_el)_el.addEventListener('contentUnload',function(){
     stopRecordingIfActive();
     if(mde){mde.toTextArea();mde=null;}
   },{once:true});
