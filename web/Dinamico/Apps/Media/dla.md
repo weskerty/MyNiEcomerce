@@ -79,6 +79,28 @@
     return`${m}:${String(sc).padStart(2,'0')}`;
   }
 
+  const _hasBGF='serviceWorker' in navigator&&'BackgroundFetchManager' in self;
+  const _bgfWait=new Map();
+
+  if(_hasBGF)navigator.serviceWorker.addEventListener('message',ev=>{
+    const d=ev.data;
+    if(!d||!_bgfWait.has(d.id))return;
+    const{resolve,reject}=_bgfWait.get(d.id);
+    _bgfWait.delete(d.id);
+    d.type==='DLA_DONE'?resolve():reject();
+  });
+
+  async function fetchBlobBG(url,id){
+    const reg=await navigator.serviceWorker.ready;
+    const bgf=await reg.backgroundFetch.fetch(id,[url],{title:'Descargando media'});
+    await new Promise((resolve,reject)=>{_bgfWait.set(id,{resolve,reject});});
+    const c=await caches.open('dla-fetch');
+    const res=await c.match(url);
+    if(!res)throw 0;
+    await c.delete(url);
+    return await res.blob();
+  }
+
   async function doDownload(url,type){
     ST('');
     showOv();
@@ -94,9 +116,9 @@
       if(!j.url){hideOv();ST('Perdon, Error al Generar 😿');return;}
       hideOv();ST('Listo ✅');
       try{
-        const br=await fetch(j.url,{signal:_ac.signal});
-        if(!br.ok) throw 0;
-        const blob=await br.blob();
+        const blob=_hasBGF
+          ?await fetchBlobBG(j.url,'dla-'+Date.now())
+          :await(async()=>{const br=await fetch(j.url,{signal:_ac.signal});if(!br.ok)throw 0;return br.blob();})();
         const burl=URL.createObjectURL(blob);
         const a=document.createElement('a');
         a.href=burl;a.download=j.filename||'media';a.click();

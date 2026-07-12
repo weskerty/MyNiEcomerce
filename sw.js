@@ -62,6 +62,8 @@ const SHARE_C='share-pending';
 const SHARE_KEY='__share_data';
 const APPS_URL='web/Dinamico/Apps/es.html';
 const OPFS_DIR='notify';
+const DLA_C='dla-fetch';
+const DLA_TTL=600000;
 
 const NTL={blog:'Nuevo Blog \uD83D\uDCDD',app:'Nueva App \uD83D\uDCF1',game:'Nuevo Juego \uD83C\uDFAE',product:'Nuevo Producto \uD83D\uDED2'};
 let _ts=0;
@@ -223,6 +225,17 @@ async function chkDJ(djUrl){
 
 async function chkAll(){return chkDJ(DJ_NOTIFY[0]);}
 
+async function cleanDLA(){
+  try{
+    const c=await caches.open(DLA_C);
+    const ks=await c.keys();
+    await Promise.all(ks.map(async req=>{
+      const r=await c.match(req);
+      if(r&&Date.now()>parseInt(r.headers.get('X-Expires')||0))await c.delete(req);
+    }));
+  }catch{}
+}
+
 async function maybeCHK(){
   if(Date.now()-_ts<CHK_INT)return;
   try{
@@ -231,6 +244,7 @@ async function maybeCHK(){
     _ts=last?parseInt(await last.text()):0;
     if(Date.now()-_ts<CHK_INT)return;
     await chkAll();
+    await cleanDLA();
   }catch{}
 }
 
@@ -284,7 +298,7 @@ self.addEventListener('install',e=>{
 self.addEventListener('activate',e=>{
   e.waitUntil(
     caches.keys().then(ks=>Promise.all(
-      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==MD_C&&k!==NI_C&&k!==SHARE_C&&k!==EXT_C).map(k=>caches.delete(k))
+      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==MD_C&&k!==NI_C&&k!==SHARE_C&&k!==EXT_C&&k!==DLA_C).map(k=>caches.delete(k))
     )).then(()=>self.clients.claim())
   );
 });
@@ -471,6 +485,35 @@ self.addEventListener('notificationclick',e=>{
       return clients.openWindow(target);
     })
   );
+});
+
+self.addEventListener('backgroundfetchsuccess',e=>{
+  e.waitUntil((async()=>{
+    const bgf=e.registration;
+    const recs=await bgf.matchAll();
+    const c=await caches.open(DLA_C);
+    for(const rec of recs){
+      const res=await rec.responseReady;
+      const buf=await res.arrayBuffer();
+      const h=new Headers(res.headers);
+      h.set('X-Expires',String(Date.now()+DLA_TTL));
+      await c.put(rec.request,new Response(buf,{status:res.status,statusText:res.statusText,headers:h}));
+    }
+    const cs=await self.clients.matchAll({type:'window'});
+    cs.forEach(cl=>cl.postMessage({type:'DLA_DONE',id:bgf.id}));
+    await bgf.updateUI({title:'Descarga completa'}).catch(()=>{});
+  })());
+});
+
+self.addEventListener('backgroundfetchfail',e=>{
+  e.waitUntil((async()=>{
+    const bgf=e.registration;
+    const recs=await bgf.matchAll();
+    const c=await caches.open(DLA_C);
+    await Promise.all(recs.map(rec=>c.delete(rec.request)));
+    const cs=await self.clients.matchAll({type:'window'});
+    cs.forEach(cl=>cl.postMessage({type:'DLA_FAIL',id:bgf.id}));
+  })());
 });
 
 self.addEventListener('message',e=>{

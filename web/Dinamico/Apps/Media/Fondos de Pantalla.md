@@ -32,6 +32,11 @@
 .wp-it:hover{transform:scale(1.03);border-color:rgba(56,189,248,.4)}
 .wp-attr{position:absolute;bottom:0;left:0;right:0;padding:3px 7px;background:rgba(0,0,0,.62);font-size:.6em;color:rgba(255,255,255,.85);opacity:0;transition:opacity .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
 .wp-it:hover .wp-attr{opacity:1}
+.wp-dl{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:2}
+.wp-dl.on{display:flex}
+.wp-dl span{font-size:2rem;animation:sk-pulse 1.2s ease-in-out infinite}
+.wp-dl.ok span{animation:none}
+.wp-dl.er span{animation:none}
 .wp-mode{display:flex;justify-content:center;align-items:center;gap:8px;margin-bottom:10px}
 .wp-ml{color:rgba(255,255,255,.5);font-size:.82em}
 .wp-mo{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:10px;color:white;padding:5px 14px;cursor:pointer;font-size:.95rem;transition:background .2s}
@@ -41,10 +46,6 @@
 .wp-cat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:20px;color:white;padding:5px 13px;cursor:pointer;font-size:.82em;transition:background .2s}
 .wp-cat:hover{background:rgba(255,255,255,.18)}
 .wp-cat.wp-ca{background:rgba(56,189,248,.22);border-color:rgba(56,189,248,.45)}
-.wp-ov{display:none;position:fixed;inset:0;z-index:200;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:rgba(0,0,0,.5);align-items:center;justify-content:center;flex-direction:column;gap:10px}
-.wp-ov.open{display:flex}
-.wp-ov span:first-child{font-size:3rem;animation:sk-pulse 1.2s ease-in-out infinite}
-.wp-ov span:last-child{color:rgba(255,255,255,.8);font-size:.95em}
 </style>
 
 <img class="_ic" src="web/otros/Archivos/Imagenes/Permanente/ICON.avif" width="90px">
@@ -72,10 +73,6 @@
   <p id="wp-st" class="sk-msg"></p>
 </div>
 
-<div class="wp-ov" id="wp-ov">
-  <span id="wp-ovck">🕐</span>
-  <span>Descargando...</span>
-</div>
 <div class="sk-toast" id="wp-toast"></div>
 
 <script>
@@ -83,7 +80,7 @@
   const CD=10000;
   const CK=['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'];
   let R=[],TP=1,pg=1,CQ='',cdEnd=0,cdRaf=null,_sac=null;
-  let WM=window.innerHeight>window.innerWidth?'v':'h',_cki=0,_ckiv=null,_ckEl=null,_oviv=null,_ovck=0;
+  let WM=window.innerHeight>window.innerWidth?'v':'h',_cki=0,_ckiv=null,_ckEl=null;
 
   const gEl=document.getElementById('wp-grid');
   const pgEl=document.getElementById('wp-pg');
@@ -93,15 +90,11 @@
   const wrap=document.getElementById('wp-wrap');
   const mhEl=document.getElementById('wp-mh');
   const mvEl=document.getElementById('wp-mv');
-  const ovEl=document.getElementById('wp-ov');
-  const ovckEl=document.getElementById('wp-ovck');
   let _tt;
 
   function toast(m){tEl.textContent=m;tEl.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>tEl.classList.remove('show'),2500);}
   function ST(m){if(stEl)stEl.textContent=m;}
   function stopCK(){clearInterval(_ckiv);_ckiv=null;}
-  function showOv(){ovEl.classList.add('open');_ovck=0;_oviv=setInterval(()=>{ovckEl.textContent=CK[_ovck++%12];},150);}
-  function hideOv(){clearInterval(_oviv);_oviv=null;ovEl.classList.remove('open');}
 
   function setMode(m){
     WM=m;
@@ -154,8 +147,10 @@
       lk.style.cssText='color:inherit;text-decoration:none';
       lk.onclick=e=>e.stopPropagation();
       at.appendChild(lk);
-      d.append(img,at);
-      d.onclick=()=>dlImg(item);
+      const dl=document.createElement('div');dl.className='wp-dl';
+      dl.innerHTML='<span>🕐</span>';
+      d.append(img,at,dl);
+      d.onclick=()=>dlImg(item,dl);
       gEl.appendChild(d);
     });
     renderPG();
@@ -185,27 +180,67 @@
     }
   }
 
-  async function dlImg(item){
-    showOv();
+  const _hasBGF='serviceWorker' in navigator&&'BackgroundFetchManager' in self;
+  const _bgfWait=new Map();
+  const _busy=new WeakSet();
+
+  if(_hasBGF)navigator.serviceWorker.addEventListener('message',ev=>{
+    const d=ev.data;
+    if(!d||!_bgfWait.has(d.id))return;
+    const{resolve,reject}=_bgfWait.get(d.id);
+    _bgfWait.delete(d.id);
+    d.type==='DLA_DONE'?resolve():reject();
+  });
+
+  async function fetchBlobBG(url,id){
+    const reg=await navigator.serviceWorker.ready;
+    await reg.backgroundFetch.fetch(id,[url],{title:'Descargando wallpaper'});
+    await new Promise((resolve,reject)=>{_bgfWait.set(id,{resolve,reject});});
+    const c=await caches.open('dla-fetch');
+    const res=await c.match(url);
+    if(!res)throw 0;
+    await c.delete(url);
+    return await res.blob();
+  }
+
+  function ckStart(dl){
+    let i=0;
+    dl.classList.remove('ok','er');
+    dl.classList.add('on');
+    dl.querySelector('span').textContent=CK[0];
+    return setInterval(()=>{dl.querySelector('span').textContent=CK[++i%12];},150);
+  }
+  function ckEnd(dl,iv,ok){
+    clearInterval(iv);
+    dl.classList.add(ok?'ok':'er');
+    dl.querySelector('span').textContent=ok?'✅':'❌';
+    setTimeout(()=>dl.classList.remove('on','ok','er'),1200);
+  }
+
+  async function dlImg(item,dl){
+    if(_busy.has(dl))return;
+    _busy.add(dl);
+    const iv=ckStart(dl);
     if(item.dl)fetch('/api/wallpaper?track='+encodeURIComponent(item.dl)).catch(()=>{});
     try{
-      const r=await fetch(item.full);
-      if(!r.ok)throw new Error(r.status);
-      const blob=await r.blob();
+      const blob=_hasBGF
+        ?await fetchBlobBG(item.full,'wp-'+item.id+'-'+Date.now())
+        :await(async()=>{const r=await fetch(item.full);if(!r.ok)throw new Error(r.status);return r.blob();})();
       const fname='wallpaper-'+item.id+'.jpg';
       const url=URL.createObjectURL(blob);
       const a=document.createElement('a');
       a.href=url;a.download=fname;a.click();
       setTimeout(()=>URL.revokeObjectURL(url),15000);
-      hideOv();
+      ckEnd(dl,iv,true);
       const file=new File([blob],fname,{type:blob.type||'image/jpeg'});
       if(navigator.canShare&&navigator.canShare({files:[file]})){
         navigator.share({files:[file],title:'Wallpaper'}).catch(()=>{});
       }
     }catch{
-      hideOv();
+      ckEnd(dl,iv,false);
       toast('Error descarga');
     }
+    _busy.delete(dl);
   }
 
   function search(){
@@ -237,7 +272,7 @@
   if(_el)_el.addEventListener('contentUnload',()=>{
     if(_sac){_sac.abort();_sac=null;}
     if(cdRaf){cancelAnimationFrame(cdRaf);cdRaf=null;}
-    stopCK();hideOv();
+    stopCK();
     _ori.removeEventListener('change',arguments.callee);
   },{once:true});
 
