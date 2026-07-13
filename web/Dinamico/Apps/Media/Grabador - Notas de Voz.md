@@ -22,11 +22,6 @@
 .nv-recst.on{color:#f87171}
 .BS2-CN{width:40px;height:40px;padding:0;margin:0;border-radius:10px}
 .BS2-CN .BS4{font-size:1.3em}
-.nv-track{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:6px 8px;margin-bottom:6px}
-.nv-track.playing{border-color:rgba(79,142,247,.6)}
-.nv-track .n{font-size:.7em;color:rgba(255,255,255,.5);width:20px}
-.nv-track audio{flex:1;height:32px;min-width:0}
-.nv-track button{background:none;border:1px solid rgba(248,113,113,.35);color:#fca5a5;border-radius:8px;padding:4px 9px;cursor:pointer;font-size:.75em}
 .nv-savest{text-align:center;font-size:.72em;color:rgba(255,255,255,.4);margin-top:6px}
 .nv-msg{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:rgba(20,20,25,.92);border:1px solid rgba(255,255,255,.15);border-radius:30px;padding:9px 18px;font-size:.82em;color:#fff;z-index:9999;pointer-events:none;white-space:nowrap;max-width:88vw;overflow:hidden;text-overflow:ellipsis}
 .nv-msg.err{border-color:rgba(248,113,113,.5);color:#fca5a5}
@@ -37,6 +32,7 @@
 .nv-read a{color:#7dabff}
 .nv-read blockquote{color:rgba(255,255,255,.6);border-left:3px solid rgba(255,255,255,.25);padding-left:10px;margin:8px 0}
 .nv-read code{background:rgba(255,255,255,.1);color:#fff;padding:2px 5px;border-radius:5px}
+.nv-read audio{width:100%;display:block;margin:10px 0}
 #nv-mde{margin-bottom:14px}
 #nv-mde .EasyMDEContainer{background:transparent!important;border-radius:10px;overflow:hidden}
 #nv-mde .CodeMirror{background:rgba(255,255,255,.04)!important;color:#fff!important;height:auto!important;min-height:160px;border-radius:0 0 10px 10px!important;border:1px solid rgba(255,255,255,.15)!important;border-top:none!important}
@@ -64,8 +60,6 @@
     <div style="flex:1"><h3 id="nvr-name">Nota</h3><span id="nvr-date"></span></div>
     <div class="BS1" style="margin:0"><div class="BS2" id="nvr-edit" style="width:44px;height:44px"><div class="BS3"><span class="BS4" style="font-size:1.5em">✏️</span></div></div></div>
   </div>
-  <div id="nvr-tracks"></div>
-  <a class="back-button" id="nvr-playall" style="display:none;width:100%;text-align:center;box-sizing:border-box">▶️ Reproducir todo en orden</a>
   <div class="nv-read" id="nvr-body"></div>
 </div>
 
@@ -86,8 +80,6 @@
       </div>
     </div>
     <div class="nv-recst" id="ne-recst"></div>
-    <div id="ne-tracks"></div>
-    <a class="back-button" id="ne-playall" style="display:none;width:100%;text-align:center;box-sizing:border-box">▶️ Reproducir todo en orden</a>
   </div>
 
   <div id="nv-mde">
@@ -131,7 +123,7 @@
   const libsReady=Promise.all(LIBS.map(loadLib));
 
   const scrList=document.getElementById('nv-scr-list'),scrEdit=document.getElementById('nv-scr-edit'),scrRead=document.getElementById('nv-scr-read');
-  let dirH=null,mde=null,mediaRec=null,mediaStream=null,trackN=0,curId=null,saveTO=null,readBlobs=[];
+  let dirH=null,mde=null,mediaRec=null,mediaStream=null,curId=null,saveTO=null,readBlobs=[];
   let mdReader=null;
   const tEl=document.getElementById('nv-toast');
   let _tt;
@@ -209,18 +201,18 @@
     }catch(e){toast('Error al crear: '+e.message,'err');}
   };
 
-  async function resolveMediaImgs(root,dh){
+  async function resolveMedia(root,dh){
     if(!root||!dh)return[];
     const urls=[];
-    const imgs=root.querySelectorAll('img[src]');
-    for(const img of imgs){
-      const src=img.getAttribute('src');
+    const els=root.querySelectorAll('img[src],audio[src]');
+    for(const el of els){
+      const src=el.getAttribute('src');
       if(!src||/^(https?:|data:|blob:)/i.test(src))continue;
       try{
         const fh=await dh.getFileHandle(src);
         const file=await fh.getFile();
         const url=URL.createObjectURL(file);
-        img.src=url;
+        el.src=url;
         urls.push(url);
       }catch(e){}
     }
@@ -256,62 +248,14 @@
     await w.close();
   }
 
-  async function listTracks(){
-    const items=[];
-    for await(const[name,handle]of dirH.entries()){
-      const m=name.match(/^audio-(\d+)\./);
-      if(handle.kind==='file'&&m)items.push({name:name,n:parseInt(m[1])});
-    }
-    items.sort((a,b)=>a.n-b.n);
-    return items;
-  }
-
-  async function renderTracksInto(trackId,playId,editable){
-    const tracksEl=document.getElementById(trackId);
-    const playAllBtn=document.getElementById(playId);
-    const items=await listTracks();
-    tracksEl.innerHTML='';
-    if(!items.length){playAllBtn.style.display='none';if(editable)trackN=0;return;}
-    playAllBtn.style.display='block';
-    for(const it of items){
-      const fh=await dirH.getFileHandle(it.name);
-      const file=await fh.getFile();
-      const url=URL.createObjectURL(file);
-      const row=document.createElement('div');row.className='nv-track';row.dataset.n=it.n;
-      row.innerHTML='<span class="n">#'+it.n+'</span><audio controls src="'+url+'"></audio>'+(editable?'<button>Borrar</button>':'');
-      if(editable)row.querySelector('button').onclick=async()=>{
-        if(!confirm('Borrar el audio #'+it.n+'?'))return;
-        await dirH.removeEntry(it.name);
-        renderTracksInto(trackId,playId,editable);
+  function bindSeqPlay(root){
+    const auds=[...root.querySelectorAll('audio')];
+    auds.forEach((a,idx)=>{
+      a.onended=()=>{
+        const next=auds[idx+1];
+        if(next)next.play().catch(()=>{});
       };
-      tracksEl.appendChild(row);
-    }
-    if(editable)trackN=items[items.length-1].n;
-  }
-  function renderTracks(){return renderTracksInto('ne-tracks','ne-playall',true);}
-
-  let playQueue=[],playIdx=0;
-  function bindPlayAll(btnId){
-    document.getElementById(btnId).onclick=async()=>{
-      const items=await listTracks();
-      if(!items.length)return;
-      playQueue=items;playIdx=0;
-      playNext();
-    };
-  }
-  bindPlayAll('ne-playall');
-  bindPlayAll('nvr-playall');
-  function playNext(){
-    document.querySelectorAll('.nv-track').forEach(r=>r.classList.remove('playing'));
-    if(playIdx>=playQueue.length)return;
-    const it=playQueue[playIdx];
-    const row=document.querySelector('.nv-track[data-n="'+it.n+'"]');
-    if(!row)return;
-    row.classList.add('playing');
-    const audioEl=row.querySelector('audio');
-    audioEl.currentTime=0;
-    audioEl.onended=()=>{playIdx++;playNext();};
-    audioEl.play().catch(()=>{});
+    });
   }
 
   const recBtn=document.getElementById('ne-brec'),pauseBtn=document.getElementById('ne-bpause');
@@ -337,17 +281,23 @@
       mediaRec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
       mediaRec.onstop=async()=>{
         mediaStream.getTracks().forEach(t=>t.stop());
-        if(!chunks.length)return;
+        if(!chunks.length){setRecUI('idle');return;}
         const blob=new Blob(chunks,{type:mediaRec.mimeType||'audio/webm'});
-        trackN++;
         const ext=extFromMime(blob.type);
-        const fh=await dirH.getFileHandle('audio-'+trackN+'.'+ext,{create:true});
+        const fname='audio-'+Date.now()+Math.floor(Math.random()*1000)+'.'+ext;
+        const fh=await dirH.getFileHandle(fname,{create:true});
         const w=await fh.createWritable();
         await w.write(blob);
         await w.close();
-        await renderTracks();
+        if(mde){
+          const cm=mde.codemirror;
+          const cur=cm.getCursor();
+          cm.replaceRange('\n<audio controls src="'+fname+'"></audio>\n',cur);
+        }
         setRecUI('idle');
-        toast('Audio guardado');
+        toast('Audio agregado');
+        clearTimeout(saveTO);
+        saveTO=setTimeout(saveMD,600);
       };
       mediaRec.start();
       setRecUI('recording');
@@ -382,8 +332,8 @@
     saveTO=setTimeout(saveMD,600);
   };
 
-  const MD_ALLOWED_TAGS=['b','i','em','strong','a','code','pre','br','p','ul','ol','li','h1','h2','h3','blockquote','img'];
-  const MD_ALLOWED_ATTR=['href','src','alt'];
+  const MD_ALLOWED_TAGS=['b','i','em','strong','a','code','pre','br','p','ul','ol','li','h1','h2','h3','blockquote','img','audio','source'];
+  const MD_ALLOWED_ATTR=['href','src','alt','controls','preload','type'];
 
   function sanitizeMD(raw){
     if(!/[<>]/.test(raw))return{clean:raw,ok:true};
@@ -395,6 +345,18 @@
       FORBID_ATTR:['style','on*']
     });
     return{clean:clean,ok:true};
+  }
+
+  function renderReadHTML(txt){
+    if(!mdReader)mdReader=window.markdownit({html:!0,breaks:!0,linkify:!0,typographer:!0});
+    const raw=mdReader.render(txt);
+    if(!window.DOMPurify)return'<p style="opacity:.5">No se pudo mostrar: falta libreria de seguridad.</p>';
+    return window.DOMPurify.sanitize(raw,{
+      ALLOWED_TAGS:MD_ALLOWED_TAGS,
+      ALLOWED_ATTR:MD_ALLOWED_ATTR,
+      FORBID_TAGS:['script','style','iframe','object','embed','svg','form'],
+      FORBID_ATTR:['style','on*']
+    });
   }
 
   function initMDE(){
@@ -495,17 +457,21 @@
     const info=await loadInfo();
     document.getElementById('nvr-name').textContent=info.nombre||'Nota';
     document.getElementById('nvr-date').textContent=info.fecha?fmtDate(info.fecha):'';
-    await renderTracksInto('nvr-tracks','nvr-playall',false);
     let txt='';
     try{
       const fh=await dirH.getFileHandle('nota.md');
       txt=await (await fh.getFile()).text();
     }catch(e){}
-    if(!mdReader)mdReader=window.markdownit({html:!1,breaks:!0,linkify:!0,typographer:!0});
     const body=document.getElementById('nvr-body');
-    body.innerHTML=txt?mdReader.render(txt):'<p style="opacity:.5">Sin contenido de texto.</p>';
+    try{
+      await libsReady;
+      body.innerHTML=txt?renderReadHTML(txt):'<p style="opacity:.5">Sin contenido de texto.</p>';
+    }catch(e){
+      body.innerHTML='<p style="opacity:.5">Error mostrando la nota.</p>';
+    }
     clearReadBlobs();
-    readBlobs=await resolveMediaImgs(body,dirH);
+    readBlobs=await resolveMedia(body,dirH);
+    bindSeqPlay(body);
     showScreen('read');
   }
 
@@ -513,7 +479,6 @@
     document.getElementById('ne-name').value='';
     await loadInfo();
     setRecUI('idle');
-    await renderTracks();
     showScreen('edit');
     try{
       await libsReady;
