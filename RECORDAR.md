@@ -1,6 +1,7 @@
+notas de voz lista html. solo es md. limpiar scripts nada mas.
+
 es.html contorno de articulos, barra de nombres no se ve bien en pantalla chica, alargarse a toda la barra.
 
-sw.js descarga dice descarga completada en chrome desktop como si fuese un archivo pero no es nada, 1 descarga parece como que descarga 2 cosas pero solo 1 es la descarga, el otro no se puede abrir. se usa como notificacion un archivo de descarga.
 
 
 
