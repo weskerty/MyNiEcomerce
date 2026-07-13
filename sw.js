@@ -1,4 +1,4 @@
-const V='v75';
+const V='v76';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -26,7 +26,7 @@ const PRE=[
 'web/otros/Archivos/HTML/Grupos.html',
 'web/otros/Archivos/Imagenes/wallpaper.avif',
 'web/otros/Archivos/Imagenes/Permanente/404.avif',
-'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/man_factory_worker_animated.avif',
+'web/otros/Archivos/Imagenes/Permanente/wait.avif',
 'web/scripts/Galerias.js',
 'web/scripts/chatBanner&Share.js',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/first_quarter_moon_face_animated.avif',
