@@ -90,7 +90,7 @@
   const mvEl=document.getElementById('wp-mv');
   let _tt;
 
-  fetch('web/scripts/config.json').then(r=>r.ok?r.json():{}).then(c=>{WA=c.waitAnim||'';}).catch(()=>{});
+  if(window.__CFG){WA=window.__CFG.waitAnim||'';}else{fetch('web/scripts/config.json').then(r=>r.ok?r.json():{}).then(c=>{WA=c.waitAnim||'';}).catch(()=>{});}
 
   function toast(m){tEl.textContent=m;tEl.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>tEl.classList.remove('show'),2500);}
   function ST(m){if(stEl)stEl.textContent=m;}

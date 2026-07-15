@@ -56,14 +56,8 @@ css.textContent=`
 .cb-cf{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap}
 .cb-ch{margin:0;font-size:14px;opacity:.7;font-weight:normal;text-decoration:none;white-space:nowrap}
 .cb-cn a{text-decoration:none}
-.cb-bt{padding:9px 16px;border-radius:20px;border:1px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.2);color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:transform .15s ease,background .2s ease}
-.cb-bt:hover{background:rgba(255,255,255,0.3);transform:translateY(-2px)}
-.cb-bt.cb-wa{background:rgba(34,197,94,0.3);border-color:rgba(34,197,94,0.6)}
-.cb-bt.cb-wa:hover{background:rgba(34,197,94,0.45)}
-.cb-bt.cb-tg{background:rgba(59,130,246,0.3);border-color:rgba(59,130,246,0.6)}
-.cb-bt.cb-tg:hover{background:rgba(59,130,246,0.45)}
-.cb-bt.cb-sm{background:rgba(168,85,247,0.3);border-color:rgba(168,85,247,0.6)}
-.cb-bt.cb-sm:hover{background:rgba(168,85,247,0.45)}
+.cb-sm{background:rgba(168,85,247,0.3);border-color:rgba(168,85,247,0.6)}
+.cb-sm:hover{background:rgba(168,85,247,0.45)}
 .cb-cs{white-space:nowrap;font-size:13px;opacity:.85}
 .cb-em{text-align:center;padding:40px 20px;font-size:18px;opacity:0.7}
 #cs{background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3);border-radius:15px;padding:20px;margin:20px auto;max-width:340px;color:#fff;text-align:center;overflow:hidden}
@@ -334,10 +328,8 @@ function renderCart(){
       html+=`<div class="cb-ci" data-key="${x.t}-${x.n}-${x.i}"><span class="cb-ct">${x.b}</span><div class="cb-cr"><span class="cb-cs">💰 ${fmt(sub)}Gs</span><div class="cb-cc"><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="-">−</button><span>${x.d}</span><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="+">+</button></div></div></div>`;
     });
     const msg="Hola quiero%0A"+g.items.map(x=>`[${x.d}] de ${encodeURIComponent(x.b)} [ID=${x.i}]`).join("%0A");
-    const svgWA=`<img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg" style="width:28px;height:28px;vertical-align:middle">`;
-    const svgTG=`<img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg" style="width:28px;height:28px;vertical-align:middle">`;
-    const CH_BTN={WA:g=>`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}↗️</button>`,TG:g=>`<button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}↗️</button>`};
-    let btns=g.t.split('.').map(c=>CH_BTN[c]?CH_BTN[c](g):"").join("")+`<button class="cb-bt cb-sm" data-l="sms:+${g.n}?body=${msg}&body=${msg}" data-gk="${k}" data-lbl="SMS">✉️↗️</button>`;
+    const CH_BTN={WA:g=>`<button class="lk lk-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">WhatsApp</button>`,TG:g=>`<button class="lk lk-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">Telegram</button>`,SM:g=>`<button class="lk cb-sm" data-l="sms:+${g.n}?body=${msg}&body=${msg}" data-gk="${k}" data-lbl="SMS">✉️ SMS</button>`};
+    let btns=g.t.split('.').map(c=>CH_BTN[c]?CH_BTN[c](g):"").join("");
     html+=`<div class="cb-cf"><h5 class="cb-ch">Termina la Compra en</h5><div class="cb-ca">${btns}</div></div></div>`;
   });
   modal.querySelector(".cb-mb").innerHTML=html;
