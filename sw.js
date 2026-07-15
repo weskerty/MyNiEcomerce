@@ -101,7 +101,6 @@ async function tryMirrors(pathname,init){
     }catch{}
     finally{clearTimeout(tid);}
   }
-  serverIsDown=false;
   return null;
 }
 
@@ -114,7 +113,9 @@ async function fetchWithMirrors(input,init){
   }
   const mirrored=await tryMirrors(pathname,init);
   if(mirrored)return mirrored;
-  return fetch(input,init);
+  const r=await fetch(input,init);
+  if(r?.ok)serverIsDown=false;
+  return r;
 }
 
 
@@ -292,7 +293,9 @@ async function clearShareData(){
 }
 
 self.addEventListener('install',e=>{
-  e.waitUntil(caches.open(V).then(c=>c.addAll(PRE.map(u=>new Request(u,{cache:'reload'})))).then(()=>self.skipWaiting()));
+  e.waitUntil(caches.open(V).then(c=>Promise.all(PRE.map(u=>
+    fetch(new Request(u,{cache:'reload'})).then(r=>{if(r.ok)return c.put(u,r);console.warn('PRE 404',u,r.status);}).catch(err=>console.warn('PRE fail',u,err))
+  ))).then(()=>self.skipWaiting()));
 });
 
 self.addEventListener('activate',e=>{
