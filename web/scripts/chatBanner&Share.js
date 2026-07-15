@@ -20,11 +20,8 @@ function isHidden(){
 function getRouteWA(){
   const hash=location.hash;if(!hash)return null;
   let dec;try{dec=decodeURIComponent(hash)}catch(e){dec=hash}
-  const mNM=dec.match(/NM=([^-\s]+)/);if(!mNM)return null;
-  const nm=mNM[1];
-  if(nm.startsWith("WATG"))return nm.substring(4);
-  if(nm.startsWith("WA"))return nm.substring(2);
-  return null;
+  const mNM=dec.match(/NM=([^-\s]+)/);
+  return mNM?mNM[1]:null;
 }
 
 const css=document.createElement("style");
@@ -95,17 +92,17 @@ css.textContent=`
 .share-btn::before{content:'↗';font-size:1.15em;line-height:1}
 .share-btn:hover{transform:scale(1.06) translateY(-2px);box-shadow:0 8px 30px rgba(16,185,129,0.65),0 0 0 0 rgba(16,185,129,0);text-decoration:none}
 @keyframes SH_pulse{0%,100%{box-shadow:0 4px 18px rgba(16,185,129,0.45),0 0 0 0 rgba(16,185,129,0.35)}60%{box-shadow:0 4px 18px rgba(16,185,129,0.45),0 0 0 14px rgba(16,185,129,0)}}
-.cb-nb{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);height:62px;border-radius:34px;display:flex;align-items:center;background:rgba(255,255,255,0.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.18);z-index:9999;transition:opacity .3s,transform .3s,width .4s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 24px rgba(0,0,0,0.25);padding:0 8px;gap:2px;width:340px;overflow:hidden}
+.cb-nb{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);height:48px;border-radius:26px;display:flex;align-items:center;background:rgba(255,255,255,0.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.18);z-index:9999;transition:opacity .3s,transform .3s,width .4s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 24px rgba(0,0,0,0.25);padding:0 8px;gap:2px;width:340px;overflow:hidden}
 .cb-nb.cb-nh{opacity:0;transform:translateX(-50%) translateY(80px);pointer-events:none}
 .cb-nb.cb-ab{animation:cb-nab .6s cubic-bezier(0.22,1,0.36,1)}
 @keyframes cb-nab{0%{transform:translateX(-50%) translateY(0) rotate(0deg)}18%{transform:translateX(-50%) translateY(4px) rotate(-3deg)}36%{transform:translateX(-50%) translateY(9px) rotate(-5deg)}54%{transform:translateX(-50%) translateY(5px) rotate(-2deg)}72%{transform:translateX(-50%) translateY(2px) rotate(-1deg)}100%{transform:translateX(-50%) translateY(0) rotate(0deg)}}
-.cb-nb-i{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:66px;height:58px;padding:0 10px;border-radius:28px;cursor:pointer;transition:background .2s,transform .2s;box-sizing:border-box;flex-shrink:0}
+.cb-nb-i{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:66px;height:44px;padding:0 10px;border-radius:28px;cursor:pointer;transition:background .2s,transform .2s;box-sizing:border-box;flex-shrink:0}
 .cb-nb-i:hover{background:rgba(255,255,255,.15)}
 .cb-nb-i.cb-na{background:rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 4px 14px rgba(0,0,0,.12),0 0 0 1px rgba(255,255,255,.08);transform:scale(1.03);position:relative;overflow:hidden}
 .cb-nb-e{font-size:25px;line-height:1}
 .cb-nb-l{font-size:11px;color:rgba(255,255,255,0.75);white-space:nowrap}
 .cb-nb-i.cb-na .cb-nb-l{color:#fff;font-weight:600}
-.cb-nb-sep{width:1px;height:34px;background:rgba(255,255,255,.15);flex-shrink:0;margin:0 2px}
+.cb-nb-sep{width:1px;height:26px;background:rgba(255,255,255,.15);flex-shrink:0;margin:0 2px}
 .cb-nb-mid{display:flex;align-items:center;justify-content:center;flex:1;min-width:0;transition:opacity .25s,transform .25s}
 .cb-nb-mid.cb-fo{opacity:0;transform:scale(.9);pointer-events:none}
 .cb-nb-cart{display:flex;align-items:center;gap:6px;padding:10px 18px;border-radius:26px;background:rgba(34,197,94,0.25);border:1px solid rgba(34,197,94,0.4);cursor:pointer;color:#fff;font-size:16px;font-weight:600;white-space:nowrap;transition:background .2s}
@@ -339,10 +336,8 @@ function renderCart(){
     const msg="Hola quiero%0A"+g.items.map(x=>`[${x.d}] de ${encodeURIComponent(x.b)} [ID=${x.i}]`).join("%0A");
     const svgWA=`<img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg" style="width:28px;height:28px;vertical-align:middle">`;
     const svgTG=`<img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg" style="width:28px;height:28px;vertical-align:middle">`;
-    let btns="";
-    if("wt"===g.t)btns=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}↗️</button><button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}↗️</button><button class="cb-bt cb-sm" data-l="sms:+${g.n}?body=${msg}&body=${msg}" data-gk="${k}" data-lbl="SMS">✉️↗️</button>`;
-    else if("w"===g.t)btns=`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}↗️</button><button class="cb-bt cb-sm" data-l="sms:+${g.n}?body=${msg}&body=${msg}" data-gk="${k}" data-lbl="SMS">✉️↗️</button>`;
-    else if("t"===g.t)btns=`<button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}↗️</button><button class="cb-bt cb-sm" data-l="sms:+${g.n}?body=${msg}&body=${msg}" data-gk="${k}" data-lbl="SMS">✉️↗️</button>`;
+    const CH_BTN={WA:g=>`<button class="cb-bt cb-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">${svgWA}↗️</button>`,TG:g=>`<button class="cb-bt cb-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">${svgTG}↗️</button>`};
+    let btns=g.t.split('.').map(c=>CH_BTN[c]?CH_BTN[c](g):"").join("")+`<button class="cb-bt cb-sm" data-l="sms:+${g.n}?body=${msg}&body=${msg}" data-gk="${k}" data-lbl="SMS">✉️↗️</button>`;
     html+=`<div class="cb-cf"><h5 class="cb-ch">Termina la Compra en</h5><div class="cb-ca">${btns}</div></div></div>`;
   });
   modal.querySelector(".cb-mb").innerHTML=html;
@@ -423,7 +418,7 @@ modal.addEventListener("click",ev=>{
 function initProduct(){
   const hash=location.hash;if(!hash)return;
   let dec;try{dec=decodeURIComponent(hash)}catch(e){dec=hash}
-  const mID=dec.match(/ID=([^-\s]+)/),mPC=dec.match(/PC=([^-\s]+)/),mNB=dec.match(/NB=([^.]+)/),mNM=dec.match(/NM=([^-\s]+)/),mCD=dec.match(/CD=([^-\s]+)/),mTM=dec.match(/TM=(\d{2}\.\d{2}\.\d{4}\.\d{2}\.\d{2})/);
+  const mID=dec.match(/ID=([^-\s]+)/),mPC=dec.match(/PC=([^-\s]+)/),mNB=dec.match(/NB=([^.]+)/),mNM=dec.match(/NM=([^-\s]+)/),mCD=dec.match(/CD=([^-\s]+)/),mCM=dec.match(/CM=([^-\s]+)/),mCH=dec.match(/CH=([^-\s]+)/),mTM=dec.match(/TM=(\d{2}\.\d{2}\.\d{4}\.\d{2}\.\d{2})/);
   if(!(mID&&mPC&&mNB&&mNM))return;
   let cs=document.getElementById("cs");
   if(!cs){
@@ -433,15 +428,11 @@ function initProduct(){
     cs.id="cs";
     gal.insertAdjacentElement("afterend",cs);
   }
-  const id=mID[1],pc=parseInt(mPC[1]),nb=mNB[1],nm=mNM[1],avail=mCD?parseInt(mCD[1]):null;
+  const id=mID[1],pc=parseInt(mPC[1]),nb=mNB[1],num=mNM[1],avail=mCD?parseInt(mCD[1]):null;
   if(mTM){const[d,mo,y,h,mi]=mTM[1].split('.').map(Number);const e=new Date(y,mo-1,d,h,mi);if(e<=new Date())return void set404(cs);}
-  let tp,num;
-  if(nm.startsWith("WATG")){tp="wt";num=nm.substring(4)}
-  else if(nm.startsWith("WA")){tp="w";num=nm.substring(2)}
-  else if(nm.startsWith("TG")){tp="t";num=nm.substring(2)}
-  else return;
+  const tp=mCH?mCH[1]:"WA";
   const isOff=OFICIALPROVIDER.includes(num);
-  const minQ=parseInt(cs.getAttribute("min"))||1,maxQ=null!==avail?avail:999;
+  const minQ=mCM?parseInt(mCM[1])||1:parseInt(cs.getAttribute("min"))||1,maxQ=null!==avail?avail:999;
   if(avail===0)return void set404(cs);
   let qty=minQ,locked=!1,tmExp=null,tmInt=null;
   if(mTM){const[d,mo,y,h,mi]=mTM[1].split('.').map(Number);tmExp=new Date(y,mo-1,d,h,mi);}
