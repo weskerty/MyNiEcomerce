@@ -7,7 +7,7 @@ CentralPage contorno botones cambiar. no borroso.
 fondos de pantalla no hereda imagen wait.
 imagen wait en whatsapp stickers tambien.
 
-core.js roto, animacion de inicio core.js "cargando" no aparece al inicio, luego si, luego desaparece (correcto)
+animacion paso pestañas captura en low device desactivar
 
 
 
