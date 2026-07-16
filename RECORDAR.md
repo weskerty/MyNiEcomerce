@@ -9,6 +9,12 @@ imagen wait en whatsapp stickers tambien.
 
 animacion paso pestañas captura en low device desactivar
 
+404 hacer busqueda en search.
+
+supongo que se podria mitigar poniendo el primer caracter de la sub categoria como elemento? ya que a futuro le pondre emojis a todo...
+
+
+
 
 
 

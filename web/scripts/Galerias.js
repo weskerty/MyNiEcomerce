@@ -19,6 +19,7 @@ _S.textContent=`
 .gallery-item img{width:100%;height:${IMG_H}px;object-fit:fill}
 .gallery-item .mc{height:${TEXT_H}px;display:flex;align-items:center;justify-content:center;padding:0 6px;box-sizing:border-box;overflow:hidden}
 .gallery-item .mc p{margin:0;font-size:.8em;color:white;line-height:1.2;text-align:center;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.gi-txt{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif!important}
 .gi-section{position:relative;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;margin-top:14px}
 .gi-section:has(.grid-gallery){padding-left:0;padding-right:0}
 .gi-section>a.gi-hd{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);padding:0 14px;margin:0;background:inherit;display:inline-block;white-space:nowrap;text-decoration:none;color:inherit}
@@ -31,7 +32,7 @@ let _hidden=false;document.addEventListener('visibilitychange',()=>{_hidden=docu
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1]:n}
 function mL(p){return p.replace(/\.[^.]+$/,'.md')}
-function mkNode(p,h,a){const t=a||nN(fN(p)),x=document.createElement('a');x.href=h||mL(p);x.className='gallery-item';const i=document.createElement('img');i.alt=t;i.decoding='async';i.loading='lazy';i.src=p;const m=document.createElement('div');m.className='mc';const pt=document.createElement('p');pt.textContent=t;m.appendChild(pt);x.appendChild(i);x.appendChild(m);x._img=i;x._p=pt;x._src=p;x._raw=!!h;return x}
+function mkNode(p,h,a){const t=a||nN(fN(p)),x=document.createElement('a');x.href=h||mL(p);x.className='gallery-item';const i=document.createElement('img');i.alt=t;i.decoding='async';i.loading='lazy';i.src=p;const m=document.createElement('div');m.className='mc';const pt=document.createElement('p');pt.className='gi-txt';pt.textContent=t;m.appendChild(pt);x.appendChild(i);x.appendChild(m);x._img=i;x._p=pt;x._src=p;x._raw=!!h;return x}
 function patchNode(a,p,h,t){if(a._src===p)return;const raw=!!h,s=t||nN(fN(p));a.href=raw?p:mL(p);a._p.textContent=s;a._img.src=p;a._img.alt=s;a._src=p;a._raw=raw}
 function bIdx(g){
   const idx={};
@@ -228,12 +229,22 @@ function mkCarousel(c,imgs,isMD,altMap){
 function mkSubBtns(c,subcats,onPick){
   const bar=document.createElement('div');bar.className='BS1';
   let active=null;
+const _seg=typeof Intl!=='undefined'&&Intl.Segmenter?new Intl.Segmenter('es',{granularity:'grapheme'}):null;
+const _emoRe=/\p{Extended_Pictographic}/u;
+const _EMO_FALLBACK='🗂️';
+function splitEmoji(name){
+  if(!_seg)return{emo:_EMO_FALLBACK,txt:name};
+  const g=[..._seg.segment(name)][0]?.segment||'';
+  if(g&&_emoRe.test(g))return{emo:g,txt:name.slice(g.length).trim()};
+  return{emo:_EMO_FALLBACK,txt:name};
+}
   for(const name in subcats){
     if(!subcats[name].length)continue;
+    const{emo,txt}=splitEmoji(name);
     const a=document.createElement('a');a.className='BS2';a.href='#';
     const box=document.createElement('div');box.className='BS3';
-    const sp=document.createElement('span');sp.className='BS4';
-    const pt=document.createElement('p');pt.className='BS5';pt.textContent=name;
+    const sp=document.createElement('span');sp.className='BS4';sp.textContent=emo;
+    const pt=document.createElement('p');pt.className='BS5 gi-txt';pt.textContent=txt;
     box.appendChild(sp);box.appendChild(pt);a.appendChild(box);
     a.addEventListener('click',ev=>{
       ev.preventDefault();
