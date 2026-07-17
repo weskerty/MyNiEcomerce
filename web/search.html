@@ -87,10 +87,10 @@ function buildItems(galleries){
   let id=0;
   Object.entries(galleries).forEach(([cat,val])=>{
     if(Array.isArray(val)){
-      val.forEach(p=>allItems.push({id:id++,name:nN(fN(p)),cat,sub:'',img:p,md:mL(p)}));
+      val.forEach(p=>{const f=fN(p);allItems.push({id:id++,name:nN(f),cat,sub:'',img:p,md:mL(p),hasNB:/NB=/.test(f)})});
     }else{
       Object.entries(val).forEach(([sub,arr])=>{
-        arr.forEach(p=>allItems.push({id:id++,name:nN(fN(p)),cat,sub,img:p,md:mL(p)}));
+        arr.forEach(p=>{const f=fN(p);allItems.push({id:id++,name:nN(f),cat,sub,img:p,md:mL(p),hasNB:/NB=/.test(f)})});
       });
     }
   });
@@ -163,7 +163,7 @@ function showSkeleton(){
 function doSearch(){
   const q=inp.value.trim();
   clr.classList.toggle('sh-vis',q.length>0);
-  if(!q){curList=allItems;curPg=0;renderPage(curList,0,false);return;}
+  if(!q){curList=allItems.filter(it=>it.hasNB);curPg=0;renderPage(curList,0,false);return;}
   const ids=new Set(ms.search(q).map(x=>x.id));
   curList=allItems.filter(it=>ids.has(it.id));
   curPg=0;renderPage(curList,0,false);
@@ -181,7 +181,7 @@ function initMS(){
     curList=allItems.filter(it=>ids.has(it.id));
     curPg=0;renderPage(curList,0,true);
   }else{
-    curList=allItems;curPg=0;
+    curList=allItems.filter(it=>it.hasNB);curPg=0;
     renderPage(curList,0,false);
   }
 }
@@ -214,7 +214,7 @@ inp.addEventListener('input',()=>{
 
 clr.addEventListener('click',()=>{
   inp.value='';clr.classList.remove('sh-vis');inp.focus();
-  if(ready){curList=allItems;curPg=0;renderPage(curList,0,false);}
+  if(ready){curList=allItems.filter(it=>it.hasNB);curPg=0;renderPage(curList,0,false);}
 });
 
 function onCL(){

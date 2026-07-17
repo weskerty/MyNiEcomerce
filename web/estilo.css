@@ -11,6 +11,7 @@
     --font: 'Comfortaa', 'Fluent Emoji Color', sans-serif;
     --font-h: 'Comfortaa', 'Fluent Emoji Color', sans-serif;
     --gap-btn-l:12px;
+    color-scheme: only dark;
 }
 .BOTON-L1{display:flex;flex-direction:column;align-items:center;gap:0;padding:7px 11px;background:linear-gradient(135deg,rgba(255,255,255,.25) 0%,rgba(255,255,255,.05) 50%,rgba(255,255,255,.15) 100%);border:1px solid rgba(255,255,255,.2);border-bottom:1px solid rgba(255,255,255,.05);border-radius:24px;box-shadow:0 8px 32px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(255,255,255,.05);text-decoration:none;color:#fff;transition:transform .3s ease,background .3s ease,box-shadow .3s ease;cursor:pointer;overflow:hidden;position:relative}
 .BOTON-L1::before{content:'';position:absolute;top:0;left:-50%;width:200%;height:50%;background:linear-gradient(180deg,rgba(255,255,255,.15) 0%,transparent 100%);pointer-events:none;z-index:1}
@@ -22,8 +23,6 @@
 .BOTON-L1-CN p{margin:0;color:rgba(255,255,255,.8);font-size:.95em;line-height:1.4;text-shadow:0 1px 3px rgba(0,0,0,.25)}
 .BOTON-L1-LST{display:flex;flex-direction:column;gap:var(--gap-btn-l);margin:20px 0}
 @media(min-width:600px){.BOTON-L1-LST{display:grid;grid-template-columns:1fr 1fr}}
-    color-scheme: only dark;
-}
 
 /* base body fondo */
 button, a, label, input {

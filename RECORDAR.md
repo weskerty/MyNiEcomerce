@@ -1,24 +1,16 @@
 
 
-es.html contorno de articulos, barra de nombres no se ve bien en pantalla chica, alargarse a toda la barra. Css de circunferencia en plugin galeria.
+
 
 CentralPage contorno botones cambiar. no borroso.
 
-fondos de pantalla no hereda imagen wait.
 imagen wait en whatsapp stickers tambien.
 
-animacion paso pestañas captura en low device desactivar
-
-404 hacer busqueda en search.
-
-supongo que se podria mitigar poniendo el primer caracter de la sub categoria como elemento? ya que a futuro le pondre emojis a todo...
+animacion paso pestañas captura en low device desactivar. low device sera el mismo que reducemotion
 
 
 
-
-
-
-
+404 hacer busqueda en search. No completado necesita cambios en core.js
 
 ### Opcional
 
