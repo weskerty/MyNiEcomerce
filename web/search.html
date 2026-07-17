@@ -18,7 +18,7 @@
 @keyframes sh-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .sh-cat{border:1px solid var(--bd2);border-radius:18px;background:rgba(255,255,255,.03);padding:16px;position:relative;margin-top:14px}
 .sh-cat-hd{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);padding:0 14px;margin:0}
-.sh-cat-hd h2{margin:0;font-size:1.4rem;font-weight:700;color:var(--txt);letter-spacing:.03em;text-align:center;border:none;padding:0;background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.sh-cat-hd h2{margin:0;font-size:1.4rem;font-weight:700;color:var(--txt);letter-spacing:.03em;text-align:center;border:none;padding:0;white-space:nowrap}
 .sh-cat-body{column-width:300px;column-gap:8px;margin-top:8px}
 .sh-sub{break-inside:avoid;margin-bottom:12px}
 .sh-sub>h3{color:var(--acc);margin:0 0 8px;padding:3px 11px;font-size:.72rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.22);border-radius:20px;display:inline-block}
@@ -170,7 +170,7 @@ function doSearch(){
 }
 
 function initMS(){
-  ms=new MiniSearch({fields:['name','cat','sub'],storeFields:['name','cat','sub','img','md'],searchOptions:{prefix:true,fuzzy:.2}});
+  ms=new MiniSearch({fields:['name','cat','sub'],storeFields:['name','cat','sub','img','md'],searchOptions:{prefix:true,fuzzy:.3,combineWith:'OR'}});
   ms.addAll(allItems);
   ready=true;
   const q0=gHA();

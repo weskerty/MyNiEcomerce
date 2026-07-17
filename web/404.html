@@ -14,4 +14,12 @@
  <img src="web/otros/Archivos/Imagenes/Permanente/404.avif" alt="DinoTriste">
  <a href="web/otros/Archivos/HTML/centralPage.html" class="view-all-button">Volver al Inicio</a>
 </div>
-<script>window.__RT=setTimeout(()=>window.location.href='/#web/es.html',10000)</script>
+<script>
+(function(){
+const h=decodeURIComponent(location.hash.substring(1));
+const m=h.match(/NB=([^-]+?)(?:\.\w+)?$/);
+const kw=m?m[1].trim():'';
+if(kw){location.replace(`/#web/search.html#${encodeURIComponent(kw)}`);return}
+window.__RT=setTimeout(()=>location.href='/#web/es.html',10000);
+})();
+</script>
