@@ -1,7 +1,7 @@
 <style>
 #sh-w{--acc:#38bdf8;--acc2:#818cf8;--bd:rgba(255,255,255,.14);--bd2:rgba(255,255,255,.08);--txt:rgba(255,255,255,.92);--txt-dim:rgba(255,255,255,.45);font-family:inherit}
 #sh-w *{box-sizing:border-box}
-#sh-bar{display:flex;align-items:center;gap:10px;margin-top:18px;background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:24px;padding:12px 18px;transition:border-color .2s,box-shadow .2s}
+#sh-bar{display:flex;align-items:center;gap:10px;margin-bottom:22px;background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:24px;padding:12px 18px;transition:border-color .2s,box-shadow .2s}
 #sh-bar:focus-within{border-color:rgba(56,189,248,.45);box-shadow:0 0 0 3px rgba(56,189,248,.1)}
 #sh-bar .sh-home{font-size:1.3rem;text-decoration:none;flex-shrink:0;line-height:1;opacity:.8;transition:opacity .2s,transform .2s}
 #sh-bar .sh-home:hover{opacity:1;transform:scale(1.15)}
@@ -40,28 +40,16 @@
 .sh-pg button:disabled{opacity:.3;cursor:default}
 @keyframes sh-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .sh-anim{animation:sh-in .25s ease both}
-#sh-404{display:flex;align-items:center;gap:16px;border:1px solid var(--bd2);border-radius:18px;background:rgba(255,255,255,.03);padding:14px 18px;margin-bottom:18px}
-#sh-404 img{width:72px;height:72px;object-fit:cover;border-radius:12px;flex-shrink:0}
-#sh-404 .sh-404-tx{min-width:0}
-#sh-404 .sh-404-tx p{margin:2px 0;color:rgba(255,255,255,.7);font-size:.92rem}
-#sh-404 .sh-404-tx strong{color:var(--txt);display:block;margin-bottom:2px}
 </style>
 
 <div id="sh-w">
-  <div id="sh-404" hidden>
-    <img src="web/otros/Archivos/Imagenes/Permanente/404.avif" alt="DinoTriste">
-    <div class="sh-404-tx">
-      <strong>Nde Tavy Kp, ya se acabo</strong>
-      <p>Pero tenemos esto:</p>
-    </div>
-  </div>
-  <div id="sh-r"></div>
   <div id="sh-bar">
     <a class="sh-home" href="web/es.html">🏠</a>
     <span id="sh-icon">🔍</span>
     <input id="sh-inp" type="search" placeholder="Buscar productos..." autocomplete="off">
     <button id="sh-clr" aria-label="Limpiar">✕</button>
   </div>
+  <div id="sh-r"></div>
 </div>
 
 <script>
@@ -83,11 +71,9 @@ function mL(p){return p.replace(/\.[^.]+$/,'.md')}
 
 function gHA(){
   const h=window.location.hash;
-  if(!h)return{q:'',f404:false};
+  if(!h)return'';
   const pts=h.substring(1).split('#');
-  if(pts.length<2)return{q:'',f404:false};
-  if(pts[1]==='404')return{q:pts[2]?decodeURIComponent(pts[2]):'',f404:true};
-  return{q:decodeURIComponent(pts[1]),f404:false};
+  return pts.length>1?decodeURIComponent(pts[1]):'';
 }
 
 function loadMS(cb){
@@ -177,8 +163,6 @@ function showSkeleton(){
 function doSearch(){
   const q=inp.value.trim();
   clr.classList.toggle('sh-vis',q.length>0);
-  const f404w=document.getElementById('sh-404');
-  if(f404w)f404w.hidden=true;
   if(!q){curList=allItems;curPg=0;renderPage(curList,0,false);return;}
   const ids=new Set(ms.search(q).map(x=>x.id));
   curList=allItems.filter(it=>ids.has(it.id));
@@ -186,27 +170,17 @@ function doSearch(){
 }
 
 function initMS(){
-  ms=new MiniSearch({fields:['name','cat','sub'],storeFields:['name','cat','sub','img','md'],searchOptions:{prefix:true,fuzzy:.3,boost:{name:2}}});
+  ms=new MiniSearch({fields:['name','cat','sub'],storeFields:['name','cat','sub','img','md'],searchOptions:{prefix:true,fuzzy:.2}});
   ms.addAll(allItems);
   ready=true;
-  const{q:q0,f404}=gHA();
-  const f404w=document.getElementById('sh-404');
-  if(f404){
-    f404w.hidden=false;
-    inp.value=q0;
-    clr.classList.toggle('sh-vis',q0.length>0);
-    const ids=new Set(ms.search(q0).map(x=>x.id));
-    curList=allItems.filter(it=>ids.has(it.id));
-    curPg=0;renderPage(curList,0,true);
-  }else if(q0&&!document.getElementById(q0)){
-    f404w.hidden=true;
+  const q0=gHA();
+  if(q0&&!document.getElementById(q0)){
     inp.value=q0;
     clr.classList.add('sh-vis');
     const ids=new Set(ms.search(q0).map(x=>x.id));
     curList=allItems.filter(it=>ids.has(it.id));
     curPg=0;renderPage(curList,0,true);
   }else{
-    f404w.hidden=true;
     curList=allItems;curPg=0;
     renderPage(curList,0,false);
   }
@@ -240,8 +214,6 @@ inp.addEventListener('input',()=>{
 
 clr.addEventListener('click',()=>{
   inp.value='';clr.classList.remove('sh-vis');inp.focus();
-  const f404w=document.getElementById('sh-404');
-  if(f404w)f404w.hidden=true;
   if(ready){curList=allItems;curPg=0;renderPage(curList,0,false);}
 });
 
