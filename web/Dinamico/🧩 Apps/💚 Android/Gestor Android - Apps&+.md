@@ -1,20 +1,11 @@
 <style>
-#adbStoreGrid{display:grid;grid-template-columns:repeat(auto-fill,120px);gap:8px;justify-content:center}
-.AS_C1{display:flex;flex-direction:column;width:120px;height:120px;flex-shrink:0;box-sizing:border-box;background:linear-gradient(135deg,rgba(255,255,255,.25) 0%,rgba(255,255,255,.05) 50%,rgba(255,255,255,.15) 100%);border:1px solid rgba(255,255,255,.2);border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,.2);cursor:pointer;overflow:hidden;text-decoration:none;color:#fff;transition:transform .18s ease}
-.AS_C1:hover{transform:translateY(-3px) scale(1.03);text-decoration:none;color:#fff}
-.AS_C1 img{width:100%;height:76px;object-fit:cover;background:rgba(0,0,0,.2)}
-.AS_C1 .AS_T1{flex:1;display:flex;align-items:center;justify-content:center;padding:0 6px;box-sizing:border-box;overflow:hidden}
-.AS_C1 .AS_T1 p{margin:0;font-size:.78em;color:#fff;line-height:1.2;text-align:center;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.AS_C1{position:relative}
-.AS_C1 .AS_ST{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.72);color:#fff;font-size:.7em;text-align:center;padding:6px;box-sizing:border-box;border-radius:16px}
-.AS_C1.AS_BUSY .AS_ST{display:flex}
 #adbStorePg{display:flex;justify-content:center;gap:12px;margin-top:12px}
 #adbStorePg button{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;padding:6px 18px;cursor:pointer;font-size:.85em;font-family:inherit;transition:background .2s}
 #adbStorePg button:hover{background:rgba(255,255,255,.18)}
 #adbStorePg button:disabled{opacity:.3;cursor:default}
 </style>
 <div class="adb-wrap">
-<h2>WebADB</h2>
+<h2>Gestor Android</h2>
 <p id="adbSt">Iniciando...</p>
 
 <div class="BS1">
@@ -37,7 +28,7 @@
 <div id="adbStore">
 <div id="adbSearchBar" style="display:flex;align-items:center;gap:10px;margin:14px 0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:10px 16px">
 <span style="opacity:.5">🔍</span>
-<input id="adbSearchInp" type="search" placeholder="Buscar apps en F-Droid..." autocomplete="off" style="flex:1;background:none;border:none;outline:none;color:#fff;font-size:1rem;font-family:inherit">
+<input id="adbSearchInp" type="search" placeholder="Buscar Nuevas Apps..." autocomplete="off" style="flex:1;background:none;border:none;outline:none;color:#fff;font-size:1rem;font-family:inherit">
 </div>
 <div id="adbStoreGrid"></div>
 <div id="adbStorePg" style="display:none">
@@ -52,7 +43,7 @@
 <dialog id="adbRepDlg">
 <h3>Reparar acceso ADB (pantalla rota + TWRP)</h3>
 <div id="adbRepStep1">
-<p>Esto sirve si tu pantalla esta rota y tu telefono <strong>YA Tenia TWRP u otro custom recovery</strong> instalado. No funciona con el recovery de fabrica de Android.</p>
+<p>Esto sirve si tu pantalla esta rota <strong>Ya tenias TWRP u otro custom recovery</strong> instalado. No funciona con el recovery de fabrica de Android.</p>
 <ol>
 <li>Apaga el telefono.</li>
 <li>Mantene presionado Volumen abajo + Power hasta entrar al recovery.</li>
@@ -66,13 +57,14 @@
 <p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⢠⣾⣿⣿⠿⠿⠿⠿⠿⢿⣿⠿⢿⣿⣷⡄</p>
 <p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⢸⣿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⣿⡇</p>
 <p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿ ⬅️ Volumen +</p>
-<p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇</p>
+<p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀TWRP⠀⠀⠀⠀⣿⡇</p>
 <p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀Recovery ⠀⣿⣿ </p>
 <p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇</p>
 <p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇</p>
 <p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡇</p>
 <p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⢸⣿⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣶⣿⡇</p>
 <p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⣿⣿⣦⣤⣤⣤⣤⣴⣿⣿⣿⡿⠃</p>
+
 
 <a class="back-button" id="adbBtnRepTest">Probar conexion</a>
 <p id="adbRepMsg"></p>
@@ -165,7 +157,7 @@ div.appendChild(li);
 if(PR1.includes(it.id)){
 const wn=document.createElement("p");
 wn.style.opacity=".7";
-wn.textContent="(paquete critico, bloqueado por seguridad)";
+wn.textContent="(Desinstalar esto Si o Si Bloqueara tu Telefono, No podras Desinstalarlo desde Aqui.)";
 div.appendChild(wn);
 }else{
 const acts=document.createElement("div");
@@ -213,9 +205,9 @@ D1=await r.json();
 const raw=await runSh("pm list packages");
 const pk=parsePkgs(raw);
 renderUad(grp(pk));
-setSt("Lista UAD actualizada: "+pk.length+" paquetes en el telefono.");
+setSt("Lista Universal-Debloater-Alliance actualizada: "+pk.length+" paquetes en el telefono.");
 }catch(e){
-setSt("Error al cargar lista UAD: "+e.message);
+setSt("Error al cargar lista Universal-Debloater-Alliance: "+e.message);
 console.error(e);
 }
 }
@@ -235,38 +227,39 @@ return m?m[1]:null;
 
 function mkStoreCard(app){
 const a=document.createElement("a");
-a.className="AS_C1";a.href="#";
+a.className="BMD1";a.href="#";
 const img=document.createElement("img");
 img.src=app.icon;img.alt=app.name;img.loading="lazy";img.decoding="async";
-const mc=document.createElement("div");mc.className="AS_T1";
-const p=document.createElement("p");p.textContent=app.name;
-mc.appendChild(p);
-const st=document.createElement("div");st.className="AS_ST";
-a.appendChild(img);a.appendChild(mc);a.appendChild(st);
-a.title=app.summary||"";
+const cn=document.createElement("div");cn.className="BMD1-CN";
+const h=document.createElement("h3");h.textContent=app.name;
+const p=document.createElement("p");p.textContent=app.summary||"";
+cn.appendChild(h);cn.appendChild(p);
+a.appendChild(img);a.appendChild(cn);
+let busy=false;
 a.addEventListener("click",async ev=>{
 ev.preventDefault();
-if(a.classList.contains("AS_BUSY"))return;
-if(!A1){st.textContent="Conecta el telefono primero";a.classList.add("AS_BUSY");setTimeout(()=>a.classList.remove("AS_BUSY"),2500);return}
-a.classList.add("AS_BUSY");
-st.textContent="Obteniendo version...";
+if(busy)return;
+if(!A1){p.textContent="Conecta el telefono primero";setTimeout(()=>p.textContent=app.summary||"",2500);return}
+busy=true;
+p.textContent="Obteniendo version...";
 try{
 const rp=await fetch(FN1+"?action=pkg&id="+encodeURIComponent(app.pkg));
 const dp=await rp.json();
 const vc=dp.suggestedVersionCode;
 if(!vc)throw new Error("sin version disponible");
-st.textContent="Descargando...";
+p.textContent="Descargando...";
 const rd=await fetch(FN1+"?action=apk&pkg="+encodeURIComponent(app.pkg)+"&vc="+encodeURIComponent(vc));
 if(!rd.ok)throw new Error("HTTP "+rd.status);
 const buf=await rd.arrayBuffer();
-st.textContent="Instalando...";
+p.textContent="Instalando...";
 await pushInstall(new Uint8Array(buf),app.pkg+".apk");
-st.textContent="Instalado";
+p.textContent="Instalado";
 }catch(e){
-st.textContent="Error: "+e.message;
+p.textContent="Error: "+e.message;
 console.error(e);
 }finally{
-setTimeout(()=>a.classList.remove("AS_BUSY"),2000);
+busy=false;
+setTimeout(()=>p.textContent=app.summary||"",2000);
 }
 });
 return a;
@@ -298,13 +291,19 @@ stCur=(d.apps||[]).map(app=>({name:app.name,summary:app.summary,icon:app.icon,pk
 stPg=0;renderStorePage();
 }catch(e){
 if(e.name==="AbortError")return;
-gridEl.innerHTML="<p>Error al buscar en F-Droid.</p>";
+gridEl.innerHTML="<p>Error al buscar apps 😔</p>";
 }
 }
 
 searchInp.addEventListener("input",()=>{
 clearTimeout(stDbt);
-stDbt=setTimeout(doStoreSearch,300);
+stDbt=setTimeout(doStoreSearch,5000);
+});
+
+searchInp.addEventListener("keydown",ev=>{
+if(ev.key!=="Enter")return;
+clearTimeout(stDbt);
+doStoreSearch();
 });
 
 async function pushInstall(bytes,name){
@@ -341,7 +340,7 @@ setSt("Selecciona el dispositivo en el menu que aparece...");
 const mgr=AdbDaemonWebUsbDeviceManager.BROWSER;
 if(!mgr){setSt("WebUSB no disponible en este navegador.");return}
 const dv=await mgr.requestDevice();
-if(!dv){setSt("No se selecciono ningun dispositivo.");return}
+if(!dv){setSt("No elegiste ningun dispositivo.");return}
 const cn=await dv.connect();
 setSt("Autenticando (revisa el telefono si pide confirmar)...");
 const tr=await AdbDaemonTransport.authenticate({serial:dv.serial,connection:cn,credentialStore:CS1});
@@ -395,12 +394,12 @@ const cn=await dv.connect();
 const tr=await AdbDaemonTransport.authenticate({serial:dv.serial,connection:cn,credentialStore:CS1});
 AR1=new Adb(tr);
 
-repMsg.textContent="Probando twrp...";
+repMsg.textContent="Probando comando twrp...";
 const out=await runShR("twrp 2>&1; echo EXIT:$?");
 const low=out.toLowerCase();
 
 if(low.includes("not appear to be running")||low.includes("waiting for twrp")){
-repMsg.textContent="TWRP ?";
+repMsg.textContent="TWRP ? 'Probar conexion' de nuevo.";
 btnRepTest.style.pointerEvents="";btnRepTest.style.opacity="";
 return;
 }
@@ -410,10 +409,10 @@ btnRepTest.style.pointerEvents="";btnRepTest.style.opacity="";
 return;
 }
 
-repMsg.textContent="TWRP respondio bien.";
+repMsg.textContent="TWRP respondio correctamente.";
 repStep1.style.display="none";
 repStep2.style.display="";
-repPlan.textContent="Se copiara tu clave ADB publica y se habilitara ADB inseguro en las particiones de sistema disponibles. Al finalizar el telefono se reiniciara a Android normal para asi poder usar scrcpy (controlar telefono a traves de pc u otro dispositivo).";
+repPlan.textContent="Se copiara tu clave ADB publica y se habilitara ADB inseguro en las particiones de sistema disponibles. Al finalizar el telefono se reiniciara a Android normal, de esta manera poder usar scrcpy para poder controlar el dispositivo.";
 }catch(e){
 repMsg.textContent="Error de conexion: "+e.message;
 btnRepTest.style.pointerEvents="";btnRepTest.style.opacity="";
