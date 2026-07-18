@@ -52,13 +52,14 @@
 <dialog id="adbRepDlg">
 <h3>Reparar acceso ADB (pantalla rota + TWRP)</h3>
 <div id="adbRepStep1">
-<p>Esto sirve si tu pantalla esta rota o no responde al tacto y tu telefono tiene <strong>TWRP u otro custom recovery</strong> instalado. No funciona con el recovery de fabrica de Android.</p>
+<p>Esto sirve si tu pantalla esta rota y tu telefono <strong>YA Tenia TWRP u otro custom recovery</strong> instalado. No funciona con el recovery de fabrica de Android.</p>
 <ol>
 <li>Apaga el telefono.</li>
 <li>Mantene presionado Volumen abajo + Power hasta entrar al recovery.</li>
 <li>Conecta el cable USB a la computadora.</li>
 <li>Presiona "Probar conexion" abajo.</li>
 </ol>
+
 
 <p style="font-family: monospace; white-space: pre; margin: 0;">             Boton Encendido</p>
 <p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⬇️</p>
@@ -95,7 +96,7 @@ const{default:AdbWebCredentialStore}=await import("https://esm.unpkg.com/@yume-c
 const U1="https://raw.githubusercontent.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation/main/resources/assets/uad_lists.json";
 const R1=["Recommended","Advanced","Expert","Unsafe"];
 const PR1=["com.android.systemui","com.android.settings","com.android.phone","com.android.shell","android"];
-const FN1="/api/fdroid.js";
+const FN1="/api/fdroid";
 
 let D1=null,A1=null,AR1=null,abi1=null;
 let stCur=[],stPg=0,stDbt=null,stAC=null;
@@ -336,7 +337,7 @@ fileInp.value="";
 
 async function onCnn(){
 try{
-setSt("Selecciona el dispositivo en el dialogo de Chrome...");
+setSt("Selecciona el dispositivo en el menu que aparece...");
 const mgr=AdbDaemonWebUsbDeviceManager.BROWSER;
 if(!mgr){setSt("WebUSB no disponible en este navegador.");return}
 const dv=await mgr.requestDevice();
@@ -394,7 +395,7 @@ const cn=await dv.connect();
 const tr=await AdbDaemonTransport.authenticate({serial:dv.serial,connection:cn,credentialStore:CS1});
 AR1=new Adb(tr);
 
-repMsg.textContent="Probando comando twrp...";
+repMsg.textContent="Probando twrp...";
 const out=await runShR("twrp 2>&1; echo EXIT:$?");
 const low=out.toLowerCase();
 
@@ -409,10 +410,10 @@ btnRepTest.style.pointerEvents="";btnRepTest.style.opacity="";
 return;
 }
 
-repMsg.textContent="TWRP respondio correctamente.";
+repMsg.textContent="TWRP respondio bien.";
 repStep1.style.display="none";
 repStep2.style.display="";
-repPlan.textContent="Se copiara tu clave ADB publica y se habilitara ADB inseguro en las particiones de sistema disponibles. Al finalizar el telefono se reiniciara a Android normal. ADB podra usarse para scrcpy";
+repPlan.textContent="Se copiara tu clave ADB publica y se habilitara ADB inseguro en las particiones de sistema disponibles. Al finalizar el telefono se reiniciara a Android normal para asi poder usar scrcpy (controlar telefono a traves de pc u otro dispositivo).";
 }catch(e){
 repMsg.textContent="Error de conexion: "+e.message;
 btnRepTest.style.pointerEvents="";btnRepTest.style.opacity="";
