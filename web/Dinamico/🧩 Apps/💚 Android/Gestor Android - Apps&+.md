@@ -8,6 +8,13 @@
 <h2>Gestor Android</h2>
 <p id="adbSt">Iniciando...</p>
 
+<details>
+  <summary style="">Como Activar ADB</summary>
+
+VideoFuturo
+
+</details>
+
 <div class="BS1">
 <a class="BS2" id="adbBtnCnn">
 <span class="BS4">🔌</span><p class="BS5">Conectar</p>
