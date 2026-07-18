@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fastboot GSI Installer</title>
+</head>
+<body>
+<div id="app">
+<h1>Fastboot GSI Installer</h1>
+<p id="st">Comprobando espacio disponible…</p>
+<div id="quotaBox"></div>
+
+<div id="connBox" style="display:none">
+<p>Inicia el teléfono en Fastboot presionando Power + botón de Volumen y luego presiona conectar y selecciona el dispositivo. (en un futuro reemplazaré esta instrucción por algo más específico)</p>
+<button id="btnCnn">Conectar</button>
+</div>
+
+<div id="devInfo" style="display:none"></div>
+
+<div id="unlockBox" style="display:none">
+<p id="unlockMsg"></p>
+<button id="btnUnlock">Desbloquear bootloader</button>
+</div>
+
+<div id="mainBox" style="display:none">
+<h2>Particiones</h2>
+<div id="partBtns"></div>
+<h2>ROM</h2>
+<div id="romBox">
+<button id="btnRom1">rom1</button>
+<span id="romSt"></span>
+</div>
+<h2></h2>
+<button id="btnFlash" disabled>Flashear</button>
+<div id="flashLog"></div>
+</div>
+
+<h2>Log</h2>
+<pre id="termLog" style="background:#111;color:#0f0;padding:8px;height:260px;overflow:auto;font-family:monospace;font-size:12px;white-space:pre-wrap"></pre>
+</div>
+
+<script type="module">
+import { FastbootDevice } from "https://esm.unpkg.com/android-fastboot@1.1.3?bundle&target=esnext";
+
+const R1 = "rom1.zip";
+const MINB1 = 1.5 * 1024 * 1024 * 1024;
+const VPARTS1 = ["vbmeta", "vbmeta_system", "vbmeta_vendor", "vbmeta_boot"];
+const OPARTS1 = ["boot", "vendor_boot", "recovery"];
+
+let D1 = null;
+let GVA1 = {};
+let SLOT1 = "a";
+let FILES1 = {};
+let ROM1 = null;
+
+const stEl = document.getElementById("st");
+const quotaBox = document.getElementById("quotaBox");
+const connBox = document.getElementById("connBox");
+const btnCnn = document.getElementById("btnCnn");
+const devInfo = document.getElementById("devInfo");
+const unlockBox = document.getElementById("unlockBox");
+const unlockMsg = document.getElementById("unlockMsg");
+const btnUnlock = document.getElementById("btnUnlock");
+const mainBox = document.getElementById("mainBox");
+const partBtns = document.getElementById("partBtns");
+const btnRom1 = document.getElementById("btnRom1");
+const romSt = document.getElementById("romSt");
+const btnFlash = document.getElementById("btnFlash");
+const flashLog = document.getElementById("flashLog");
+const termLog = document.getElementById("termLog");
+
+function tlog(...parts1) {
+  const line1 = parts1.map((p1) => {
+    if (p1 instanceof Error) return p1.name + ": " + p1.message;
+    if (typeof p1 === "object") { try { return JSON.stringify(p1); } catch { return String(p1); } }
+    return String(p1);
+  }).join(" ");
+  termLog.textContent += "[" + new Date().toISOString().slice(11, 23) + "] " + line1 + "\n";
+  termLog.scrollTop = termLog.scrollHeight;
+  console.log(line1);
+}
+
+function bytesToHexPreview(u8_1, max1) {
+  const n1 = Math.min(u8_1.length, max1);
+  let out1 = "";
+  for (let i1 = 0; i1 < n1; i1++) out1 += u8_1[i1].toString(16).padStart(2, "0") + " ";
+  return out1 + (u8_1.length > max1 ? "…(" + u8_1.length + "b total)" : "");
+}
+
+function instrumentHigh(dev1) {
+  if (dev1.__instrumentedHigh) return;
+  dev1.__instrumentedHigh = true;
+  const origRun1 = dev1.runCommand.bind(dev1);
+  dev1.runCommand = async (cmd1) => {
+    tlog(">> runCommand:", cmd1);
+    try {
+      const res1 = await origRun1(cmd1);
+      tlog("<< ok:", res1);
+      return res1;
+    } catch (e1) {
+      tlog("<< ERROR:", e1.name || "", e1.message || e1);
+      throw e1;
+    }
+  };
+  const origGet1 = dev1.getVariable.bind(dev1);
+  dev1.getVariable = async (name1) => {
+    tlog(">> getVariable:", name1);
+    try {
+      const res1 = await origGet1(name1);
+      tlog("<< value:", JSON.stringify(res1));
+      return res1;
+    } catch (e1) {
+      tlog("<< ERROR:", e1.name || "", e1.message || e1);
+      throw e1;
+    }
+  };
+}
+
+function findEpPacketSize(dev1, epNum1, dir1) {
+  try {
+    const cfg1 = dev1.configuration;
+    for (const iface1 of cfg1.interfaces) {
+      const alt1 = iface1.alternate;
+      for (const ep1 of alt1.endpoints) {
+        if (ep1.endpointNumber === epNum1 && ep1.direction === dir1) return ep1.packetSize;
+      }
+    }
+  } catch (e1) {
+    tlog("findEpPacketSize error:", e1.message);
+  }
+  return null;
+}
+
+function instrumentUsb(dev1) {
+  if (!dev1.device || !dev1.device.transferIn) {
+    tlog("(instrumentUsb: dev1.device aún no existe en este momento)");
+    return;
+  }
+  if (dev1.device.__instrumentedUsb) { tlog("(instrumentUsb: este device ya estaba instrumentado)"); return; }
+  dev1.device.__instrumentedUsb = true;
+  const realIn1 = findEpPacketSize(dev1.device, 1, "in");
+  tlog("packetSize real del endpoint IN 1:", realIn1, "(la librería normalmente pide 64 fijo)");
+  const origIn1 = dev1.device.transferIn.bind(dev1.device);
+  dev1.device.transferIn = async (ep1, len1) => {
+    const realLen1 = findEpPacketSize(dev1.device, ep1, "in") || len1;
+    if (realLen1 !== len1) tlog("  (corrigiendo transferIn ep" + ep1 + " de " + len1 + " a " + realLen1 + " bytes)");
+    const res1 = await origIn1(ep1, realLen1);
+    const u8_1 = new Uint8Array(res1.data.buffer, res1.data.byteOffset, res1.data.byteLength);
+    tlog("  usb IN ep" + ep1, "status=" + res1.status, "bytes=" + u8_1.length, "hex=" + bytesToHexPreview(u8_1, 24), "txt=" + JSON.stringify(new TextDecoder().decode(u8_1)));
+    return res1;
+  };
+  const origOut1 = dev1.device.transferOut.bind(dev1.device);
+  dev1.device.transferOut = async (ep1, data1) => {
+    const u8_1 = data1 instanceof Uint8Array ? data1 : new Uint8Array(data1);
+    tlog("  usb OUT ep" + ep1, "bytes=" + u8_1.length, "txt=" + JSON.stringify(new TextDecoder().decode(u8_1)));
+    return await origOut1(ep1, data1);
+  };
+  tlog("(instrumentUsb: instrumentado OK sobre device actual)");
+}
+
+function setSt(s1) {
+  stEl.textContent = s1;
+}
+
+function timeout1(ms1) {
+  return new Promise((r1) => setTimeout(r1, ms1));
+}
+
+async function chkQuota() {
+  try {
+    const es1 = await navigator.storage.estimate();
+    const freeGb1 = ((es1.quota || 0) - (es1.usage || 0)) / (1024 * 1024 * 1024);
+    if (!es1.quota || es1.quota - (es1.usage || 0) < MINB1) {
+      setSt("Espacio insuficiente (" + freeGb1.toFixed(1) + " GB libres). Se necesita al menos 1.5 GB.");
+      return false;
+    }
+    quotaBox.textContent = "Espacio disponible: " + freeGb1.toFixed(1) + " GB.";
+    return true;
+  } catch (e1) {
+    setSt("No se pudo comprobar la cuota de almacenamiento: " + e1.message);
+    return false;
+  }
+}
+
+function gv(k1) {
+  return GVA1[k1] || "";
+}
+
+function h2d(h1) {
+  if (!h1) return 0;
+  return parseInt(h1, 16) || 0;
+}
+
+function hasPart(name1) {
+  return h2d(gv("partition-size:" + name1)) > 0;
+}
+
+async function ensureFbd() {
+  if (gv("is-userspace") === "yes") { tlog("=== ya en fastbootD, is-userspace=yes ==="); return; }
+  tlog("=== iniciando transición a fastbootD ===");
+  setSt("En bootloader, cambiando a fastbootD…");
+  try {
+    await D1.reboot("fastboot", false);
+  } catch (e1) {
+    tlog("reboot('fastboot') lanzó (esperado si el USB se corta):", e1.message);
+  }
+  const race1 = await Promise.race([
+    D1.waitForConnect().then(() => "connected"),
+    timeout1(8000).then(() => "timeout"),
+  ]);
+  tlog("resultado de la espera de reconexión:", race1);
+  if (race1 === "timeout") {
+    setSt("El dispositivo no respondió al cambio a fastbootD; puede que no lo soporte. Continuando en modo bootloader normal.");
+  } else {
+    setSt("Reconectado, esperando a que fastbootD esté listo…");
+  }
+  await readAllRetry(8, 1500);
+  tlog("=== fin de transición, is-userspace ahora:", gv("is-userspace"), "===");
+}
+
+async function readAll() {
+  const res1 = await D1.runCommand("getvar:all");
+  const raw1 = res1.text;
+  GVA1 = {};
+  if (raw1) {
+    for (const ln1 of raw1.split("\n")) {
+      const i1 = ln1.indexOf(":");
+      if (i1 < 0) continue;
+      GVA1[ln1.slice(0, i1).trim()] = ln1.slice(i1 + 1).trim();
+    }
+  }
+  SLOT1 = gv("current-slot") || "a";
+}
+
+async function readAllRetry(tries1, delayMs1) {
+  let lastErr1 = null;
+  for (let i1 = 0; i1 < tries1; i1++) {
+    tlog("readAllRetry intento", i1 + 1, "de", tries1);
+    try {
+      const r1 = await Promise.race([
+        readAll().then(() => "done"),
+        timeout1(20000).then(() => "timeout"),
+      ]);
+      if (r1 === "timeout") {
+        tlog("readAllRetry intento", i1 + 1, "sin respuesta en 20s, reintentando");
+      } else if (Object.keys(GVA1).length > 0) {
+        tlog("readAllRetry: éxito con", Object.keys(GVA1).length, "variables");
+        return;
+      }
+    } catch (e1) {
+      lastErr1 = e1;
+      tlog("readAllRetry intento", i1 + 1, "falló:", e1.message);
+    }
+    await timeout1(delayMs1);
+  }
+  if (Object.keys(GVA1).length === 0) {
+    throw new Error("El dispositivo no respondió tras varios intentos" + (lastErr1 ? ": " + lastErr1.message : ""));
+  }
+}
+
+function renderInfo() {
+  devInfo.style.display = "";
+  devInfo.innerHTML =
+    "<p><strong>Product:</strong> " + gv("product") +
+    " <strong>Android:</strong> " + gv("version-os") +
+    " <strong>API:</strong> " + gv("first-api-level") +
+    " <strong>ABI:</strong> " + gv("cpu-abi") + "</p>" +
+    "<p><strong>VNDK:</strong> " + (gv("version-vndk") || "no reportado") +
+    " <strong>Treble:</strong> " + (gv("treble-enabled") === "true" ? "activado" : "no reportado") +
+    " <strong>Batería:</strong> " + gv("battery-soc") + "</p>" +
+    "<p><strong>Slot activo:</strong> " + SLOT1 +
+    " <strong>Desbloqueado:</strong> " + (gv("unlocked") || "no reportado") +
+    " <strong>Secure:</strong> " + (gv("secure") || "no reportado") +
+    " <strong>Variant:</strong> " + (gv("variant") || "no reportado") + "</p>" +
+    "<p><strong>Bootloader:</strong> " + (gv("version-bootloader") || "no reportado") + "</p>" +
+    "<p><strong>Fingerprint:</strong> " + (gv("system-fingerprint") || "no reportado") + "</p>";
+}
+
+async function doUnlockAttempt(cmd1) {
+  try {
+    await D1.runCommand(cmd1);
+  } catch (e1) {
+    console.warn(cmd1 + " -> " + e1.message);
+  }
+}
+
+btnUnlock.addEventListener("click", async () => {
+  btnUnlock.disabled = true;
+  unlockMsg.textContent = "Intentando desbloquear (revisa la pantalla del teléfono, usa volumen para navegar y power para confirmar)…";
+  await doUnlockAttempt("oem unlock");
+  await doUnlockAttempt("flashing unlock");
+
+  const race1 = await Promise.race([
+    D1.waitForDisconnect().then(() => "disconnected"),
+    timeout1(6000).then(() => "timeout"),
+  ]);
+  if (race1 === "disconnected") {
+    unlockMsg.textContent = "El dispositivo se reinició, esperando reconexión…";
+    try {
+      await D1.waitForConnect();
+    } catch (e1) {
+      console.warn("waitForConnect:", e1.message);
+    }
+    await timeout1(1000);
+  }
+
+  await readAll();
+  if (gv("unlocked") === "yes") {
+    unlockBox.style.display = "none";
+    afterUnlockChecked();
+  } else {
+    unlockMsg.innerHTML =
+      "Falló el desbloqueo. Esto solo funciona para ciertos dispositivos, muchas marcas tienen un proceso diferente de desbloqueo como los Xiaomi, debes leer el tutorial de tu dispositivo aquí: " +
+      '<a href="https://urlplacebo.com" target="_blank">urlplacebo.com</a>';
+    btnUnlock.disabled = false;
+  }
+});
+
+function renderPartButtons() {
+  partBtns.innerHTML = "";
+  for (const p1 of OPARTS1) {
+    if (!hasPart(p1 + "_" + SLOT1)) continue;
+    partBtns.appendChild(makeFileBtn(p1, p1 + ".img"));
+  }
+  for (const v1 of VPARTS1) {
+    if (!hasPart(v1 + "_" + SLOT1)) continue;
+    partBtns.appendChild(makeFileBtn(v1, v1 + ".img (opcional, se usa universal si no seleccionas)"));
+  }
+}
+
+function makeFileBtn(key1, label1) {
+  const div1 = document.createElement("div");
+  const btn1 = document.createElement("button");
+  btn1.textContent = "Seleccionar " + label1;
+  const ok1 = document.createElement("span");
+  const inp1 = document.createElement("input");
+  inp1.type = "file";
+  inp1.accept = ".img";
+  inp1.style.display = "none";
+  inp1.addEventListener("change", () => {
+    if (!inp1.files[0]) return;
+    FILES1[key1] = inp1.files[0];
+    ok1.textContent = " ✅ " + inp1.files[0].name;
+    updFlashBtn();
+  });
+  btn1.addEventListener("click", () => inp1.click());
+  div1.appendChild(btn1);
+  div1.appendChild(ok1);
+  div1.appendChild(inp1);
+  return div1;
+}
+
+btnRom1.addEventListener("click", async () => {
+  btnRom1.disabled = true;
+  romSt.textContent = " descargando…";
+  try {
+    const r1 = await fetch(R1);
+    if (!r1.ok) throw new Error("HTTP " + r1.status);
+    const buf1 = await r1.arrayBuffer();
+    romSt.textContent = " descomprimiendo…";
+    ROM1 = await unzipToMap(buf1);
+    romSt.textContent = " ✅ lista (" + Object.keys(ROM1).length + " archivos)";
+    updFlashBtn();
+  } catch (e1) {
+    romSt.textContent = " error: " + e1.message;
+    btnRom1.disabled = false;
+  }
+});
+
+async function unzipToMap(buf1) {
+  const dv1 = new DataView(buf1);
+  let eocd1 = -1;
+  for (let i1 = buf1.byteLength - 22; i1 >= 0; i1--) {
+    if (dv1.getUint32(i1, true) === 0x06054b50) { eocd1 = i1; break; }
+  }
+  if (eocd1 < 0) throw new Error("ZIP inválido (sin EOCD)");
+  const cdOff1 = dv1.getUint32(eocd1 + 16, true);
+  const cdCount1 = dv1.getUint16(eocd1 + 10, true);
+  const out1 = {};
+  let p1 = cdOff1;
+  for (let i1 = 0; i1 < cdCount1; i1++) {
+    if (dv1.getUint32(p1, true) !== 0x02014b50) break;
+    const method1 = dv1.getUint16(p1 + 10, true);
+    const compSize1 = dv1.getUint32(p1 + 20, true);
+    const nameLen1 = dv1.getUint16(p1 + 28, true);
+    const extraLen1 = dv1.getUint16(p1 + 30, true);
+    const commLen1 = dv1.getUint16(p1 + 32, true);
+    const lhOff1 = dv1.getUint32(p1 + 42, true);
+    const name1 = new TextDecoder().decode(new Uint8Array(buf1, p1 + 46, nameLen1));
+    const lhNameLen1 = dv1.getUint16(lhOff1 + 26, true);
+    const lhExtraLen1 = dv1.getUint16(lhOff1 + 28, true);
+    const dataStart1 = lhOff1 + 30 + lhNameLen1 + lhExtraLen1;
+    const raw1 = buf1.slice(dataStart1, dataStart1 + compSize1);
+    if (!name1.endsWith("/")) {
+      if (method1 === 0) {
+        out1[name1] = raw1;
+      } else if (method1 === 8) {
+        const ds1 = new DecompressionStream("deflate-raw");
+        const rs1 = new Response(raw1).body.pipeThrough(ds1);
+        out1[name1] = await new Response(rs1).arrayBuffer();
+      }
+    }
+    p1 += 46 + nameLen1 + extraLen1 + commLen1;
+  }
+  return out1;
+}
+
+function updFlashBtn() {
+  btnFlash.disabled = !ROM1;
+}
+
+async function afterUnlockChecked() {
+  await readAll();
+  renderInfo();
+  if (gv("unlocked") !== "yes") {
+    unlockBox.style.display = "";
+    unlockMsg.textContent = "Bootloader bloqueado. Marca 'OEM Bootloader Unlock' activado en Ajustes de Desarrollador, luego procede.";
+    return;
+  }
+  mainBox.style.display = "";
+  renderPartButtons();
+}
+
+btnCnn.addEventListener("click", async () => {
+  btnCnn.disabled = true;
+  setSt("Selecciona el dispositivo en el diálogo de Chrome…");
+  try {
+    D1 = new FastbootDevice();
+    instrumentHigh(D1);
+    await D1.connect();
+    instrumentUsb(D1);
+    setSt("Conectado. Leyendo información del dispositivo…");
+    await readAll();
+    await ensureFbd();
+    instrumentUsb(D1);
+    setSt("Listo.");
+    afterUnlockChecked();
+  } catch (e1) {
+    setSt("Error: " + e1.message);
+    btnCnn.disabled = false;
+  }
+});
+
+function romPathFor(key1) {
+  if (!ROM1) return null;
+  const cand1 = [key1 + ".img", "system.img"];
+  for (const c1 of cand1) {
+    for (const k2 in ROM1) {
+      if (k2.endsWith(c1)) return k2;
+    }
+  }
+  return null;
+}
+
+btnFlash.addEventListener("click", async () => {
+  btnFlash.disabled = true;
+  flashLog.innerHTML = "";
+  function log1(t1) {
+    const p1 = document.createElement("p");
+    p1.textContent = t1;
+    flashLog.appendChild(p1);
+  }
+  try {
+    for (const v1 of VPARTS1) {
+      const part1 = v1 + "_" + SLOT1;
+      if (!hasPart(part1)) continue;
+      let blob1 = FILES1[v1];
+      if (!blob1) {
+        const r1 = await fetch("vbmeta_universal.img");
+        blob1 = await r1.blob();
+      }
+      log1("Flasheando " + part1 + "…");
+      await D1.flashBlob(v1, blob1);
+      log1(part1 + " OK");
+    }
+    for (const o1 of OPARTS1) {
+      const part1 = o1 + "_" + SLOT1;
+      if (!hasPart(part1) || !FILES1[o1]) continue;
+      log1("Flasheando " + part1 + "…");
+      await D1.flashBlob(o1, FILES1[o1]);
+      log1(part1 + " OK");
+    }
+    const sysKey1 = romPathFor("system");
+    if (sysKey1) {
+      log1("Flasheando system_" + SLOT1 + "…");
+      await D1.flashBlob("system", new Blob([ROM1[sysKey1]]));
+      log1("system_" + SLOT1 + " OK");
+    }
+    log1("Listo. Reinicia el dispositivo desde el menú de fastboot cuando quieras.");
+  } catch (e1) {
+    log1("Error: " + e1.message);
+  }
+  btnFlash.disabled = false;
+});
+
+(async () => {
+  const ok1 = await chkQuota();
+  if (ok1) {
+    setSt("Listo para conectar.");
+    connBox.style.display = "";
+  }
+})();
+</script>
+</body>
+</html>

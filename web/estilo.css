@@ -442,7 +442,8 @@ transition:.6s
 }
 .BS2:hover{
 transform:perspective(600px) translateY(-2px) scale(1.05);
-box-shadow:0 8px 18px rgba(0,0,0,.25)
+box-shadow:0 8px 18px rgba(0,0,0,.25);
+text-decoration:none
 }
 .BS2:hover::after{
 transform:translateX(120%)
@@ -526,6 +527,41 @@ body.low-perf #disqus-container {
     ::view-transition-old(content-swap),
     ::view-transition-new(content-swap){animation:none}
 }
+
+/* modal dialog */
+dialog{
+background:rgba(18,18,22,.55);
+backdrop-filter:blur(28px);
+-webkit-backdrop-filter:blur(28px);
+border:1px solid rgba(255,255,255,.15);
+border-radius:20px;
+color:#fff;
+padding:22px;
+width:800px;
+max-width:calc(100vw - 40px);
+box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1);
+}
+dialog::backdrop{
+background:rgba(0,0,0,.65);
+backdrop-filter:blur(6px);
+-webkit-backdrop-filter:blur(6px);
+}
+@media (prefers-reduced-motion: reduce){
+dialog{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#1e1f25!important}
+dialog::backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+}
+body.low-perf dialog{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#1e1f25!important}
+
+/* input */
+input,select,textarea{
+font-family:var(--font);
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.15);
+border-radius:12px;
+color:#fff;
+padding:8px 12px;
+}
+input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(26,115,232,.6)}
 
 /* Ad */
 #ad-slot{min-height:0;transition:min-height .2s}
