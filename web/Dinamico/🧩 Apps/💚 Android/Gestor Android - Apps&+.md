@@ -110,10 +110,7 @@ VideoFuturo
 const CMDS1=[
 {n:"Info bateria",c:"dumpsys battery"},
 {n:"Espacio libre",c:"df -h /data"},
-{n:"Apps en foreground",c:"dumpsys activity activities | grep mResumedActivity"},
 {n:"Reiniciar",c:"reboot"},
-{n:"Screenshot",c:"screencap -p /sdcard/ss.png && echo listo /sdcard/ss.png"},
-{n:"Limpiar cache app;com.example",c:"pm clear com.example && echo cache limpio"},
 {n:"Anti-Kill Termux",c:"device_config set_sync_disabled_for_tests persistent;device_config put activity_manager max_phantom_processes 2147483647;device_config put runtime_native_boot use_freezer false;settings put global settings_enable_monitor_phantom_procs false;am set-inactive com.termux false;cmd deviceidle whitelist +com.termux;cmd power set-mode 0;dumpsys deviceidle disable;cmd appops set --uid com.termux RUN_IN_BACKGROUND allow;cmd appops set --uid com.termux RUN_ANY_IN_BACKGROUND allow;cmd appops set --uid com.termux SYSTEM_EXEMPT_FROM_ACTIVITY_BG_START_RESTRICTION allow;cmd appops set --uid com.termux SYSTEM_EXEMPT_FROM_HIBERNATION allow;cmd appops set --uid com.termux SYSTEM_EXEMPT_FROM_POWER_RESTRICTIONS allow;cmd appops set --uid com.termux SYSTEM_EXEMPT_FROM_SUSPENSION allow;cmd appops set --uid com.termux WAKE_LOCK allow;cmd appops set --uid com.termux REQUEST_IGNORE_BATTERY_OPTIMIZATIONS allow;cmd appops set --uid com.termux ACTIVATE_PLATFORM_VPN allow;cmd appops set --uid com.termux INTERACT_ACROSS_PROFILES allow;cmd appops set --uid com.termux SCHEDULE_EXACT_ALARM allow;cmd appops set --uid com.termux START_FOREGROUND allow;echo listo anti-kill"}
 ];
 
