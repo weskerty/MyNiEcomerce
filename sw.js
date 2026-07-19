@@ -1,4 +1,4 @@
-const V='v82';
+const V='v84';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -234,19 +234,6 @@ self.addEventListener('fetch',e=>{
     const djHref=url.href;
     e.respondWith((async()=>{
       const c=await caches.open(V);
-      const cc=await c.match(djHref);
-      if(cc){
-        e.waitUntil((async()=>{
-          try{
-            const etag=cc.headers.get('etag');
-            const r=await fetch(djHref,{cache:'no-store',...(etag&&{headers:{'If-None-Match':etag}})});
-            if(r.status===304||!r?.ok)return;
-            const txt=await r.text();
-            await c.put(djHref,new Response(txt,{status:200,headers:new Headers(r.headers)}));
-          }catch{}
-        })());
-        return cc;
-      }
       try{
         const r=await fetchWithMirrors(djHref,{cache:'no-store'});
         if(r?.ok){
@@ -254,8 +241,10 @@ self.addEventListener('fetch',e=>{
           await c.put(djHref,new Response(txt,{status:200,headers:new Headers(r.headers)}));
           return new Response(txt,{headers:{'Content-Type':'application/json'}});
         }
-        return r;
-      }catch{return new Response('{}',{status:503});}
+      }catch{}
+      const cc=await c.match(djHref);
+      if(cc)return cc;
+      return new Response('{}',{status:503});
     })());
     return;
   }
