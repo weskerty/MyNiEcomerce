@@ -1,7 +1,8 @@
-const V='v84';
+const V='v85';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
+const FRASES_URL='web/otros/Archivos/DataBase/Frases.txt';
 const PRE=[
 'index.html',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
@@ -34,7 +35,8 @@ const PRE=[
 'web/otros/Archivos/Imagenes/Permanente/ICONS/Cesta.png',
 N_ICON,
 N_ICO,
-N_BANNER
+N_BANNER,
+FRASES_URL
 ];
 
 const TEMP_ROUTES=[{match:'/api/',ttl:18000000}];
@@ -109,31 +111,50 @@ async function cleanDLA(){
   }catch{}
 }
 
+async function getFrase(){
+  try{
+    const url=new URL(FRASES_URL,self.location).href;
+    const c=await caches.open(V);
+    const cached=await c.match(url);
+    const txt=cached?await cached.text():await fetch(url).then(r=>r.text());
+    const lines=txt.split('\n').map(l=>l.trim()).filter(Boolean);
+    if(!lines.length)return null;
+    const now=new Date();
+    const doy=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);
+    return lines[(doy-1)%lines.length];
+  }catch{return null;}
+}
+
 async function runOPFS(){
+  let shown=0;
   try{
     const root=await self.navigator.storage.getDirectory();
     let dir;
-    try{dir=await root.getDirectoryHandle(OPFS_DIR);}catch{return;}
+    try{dir=await root.getDirectoryHandle(OPFS_DIR);}catch{return shown;}
+    const files=[];
     for await(const[name,handle]of dir.entries()){
-      if(handle.kind!=='file'||!name.endsWith('.js'))continue;
-      try{
-        const txt=await(await handle.getFile()).text();
-        const nFn=opts=>{
-          if(!opts)return;
-          return self.registration.showNotification(opts.title||'Che Agana',{
-            body:opts.body||'',
-            icon:opts.icon||N_ICON,
-            badge:N_ICO,
-            image:opts.image||N_BANNER,
-            tag:opts.tag||('opfs-'+name),
-            data:{url:opts.url||self.location.origin}
-          });
-        };
-        const r=new Function('notify',txt)(nFn);
-        if(r instanceof Promise)await Promise.race([r,new Promise((_,j)=>setTimeout(j,5000))]);
-      }catch{}
+      if(handle.kind==='file'&&name.endsWith('.js'))files.push([name,handle]);
     }
+    const runOne=async([name,handle])=>{
+      const txt=await(await handle.getFile()).text();
+      const nFn=opts=>{
+        if(!opts)return;
+        shown++;
+        return self.registration.showNotification(opts.title||'Che Agana',{
+          body:opts.body||'',
+          icon:opts.icon||N_ICON,
+          badge:N_ICO,
+          image:opts.image||N_BANNER,
+          tag:opts.tag||('opfs-'+name),
+          data:{url:opts.url||self.location.origin}
+        });
+      };
+      const r=new Function('notify',txt)(nFn);
+      if(r instanceof Promise)await Promise.race([r,new Promise((_,j)=>setTimeout(()=>j(new Error('timeout')),5000))]);
+    };
+    await Promise.allSettled(files.map(f=>runOne(f).catch(()=>{})));
   }catch{}
+  return shown;
 }
 
 async function saveShareData(formData){
@@ -296,8 +317,22 @@ self.addEventListener('fetch',e=>{
   );
 });
 
+async function notifyCycle(){
+  const shown=await runOPFS();
+  if(shown>0)return;
+  const frase=await getFrase()||'Hay Novedades!';
+  await self.registration.showNotification('Che Agana',{
+    body:frase,icon:N_ICON,badge:N_ICO,image:N_BANNER,
+    tag:'fallback',data:{url:self.location.origin}
+  });
+}
+
 self.addEventListener('push',e=>{
-  e.waitUntil(runOPFS());
+  e.waitUntil(notifyCycle());
+});
+
+self.addEventListener('periodicsync',e=>{
+  if(e.tag==='notify-check')e.waitUntil(notifyCycle());
 });
 
 self.addEventListener('notificationclick',e=>{

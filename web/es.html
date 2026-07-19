@@ -135,7 +135,7 @@ transform:scale(1.7);
 
 <script>
 (function(){
-const OPFS_S=`(async()=>{
+const OPFS_S=`return(async()=>{
 const R=await fetch('web/Dinamico/data.json',{cache:'no-store'});
 if(!R.ok)return notify(null);
 const txt=await R.text();
@@ -188,6 +188,17 @@ async function wOPFS(){
   }catch{}
 }
 
+async function regPeriodicSync(){
+  try{
+    const reg=await navigator.serviceWorker.ready;
+    if(!('periodicSync' in reg))return;
+    const status=await navigator.permissions.query({name:'periodic-background-sync'});
+    if(status.state!=='granted')return;
+    await reg.periodicSync.register('notify-check',{minInterval:259200000});
+  }catch{}
+}
+
 wOPFS();
+regPeriodicSync();
 })();
 </script>
