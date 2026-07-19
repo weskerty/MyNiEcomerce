@@ -135,10 +135,147 @@ transform:scale(1.7);
 
 
 
+<style>
+._nb{position:absolute;top:0;font-size:1.8rem;text-decoration:none;z-index:10}
+._nb.l{left:0}
+._nb.r{right:0}
+</style>
+<a class="_nb l" href="web/blogs.html">🔔</a>
+<a class="_nb r" href="web/search.html">🔍</a>
+
+
+<div style="text-align:center;">
+
+
+<img src="web/otros/Archivos/Imagenes/Permanente/ICONS/ICON-OLD.png" width="90px" />
+
+
+<div id="🍰 Alimentos-gallery" class="contenedor-imagenes-animado" data-href="web/Dinamico/🍰 Alimentos/alimentos.html"></div>
+
+</br>
+
+<div id="🍸 Accesorios-gallery" class="contenedor-imagenes-animado" data-href="web/Dinamico/🍸 Accesorios/accesorios.html"></div>
+
+</br>
+
+<div id="📱 Dispositivos-gallery" class="contenedor-imagenes-animado" data-href="web/Dinamico/📱 Dispositivos/es.html"></div>
+
+</br>
+
+<div id="🩳 Prendas-gallery" class="contenedor-imagenes-animado" data-href="web/Dinamico/🩳 Prendas/prendas.html"></div>
+
+</br>
+
+<div id="🪷 Plantas-gallery" class="contenedor-imagenes-animado" data-href="web/Dinamico/🪷 Plantas/Plantas.html"></div>
+
+</br>
+
+
+
+
+
+
+
+
+
+<h2>🫂 Recursos Utiles</h2>
+<p>Selecciona a donde quieres ir 🤗</p>
+
+
+<div class="BOTON-L1-LST">
+
+  <a href="web/otros/Archivos/HTML/DondeReciclar.html" class="BOTON-L1">
+    <img src="">
+    <div class="BOTON-L1-CN"><h3>🌱 Donde Desechar</h3><p>Juntos por un Paraguay Limpio y Sano</p></div>
+  </a>
+  
+  <a href="web/otros/Archivos/MarkDowns/SerParte.md" class="BOTON-L1">
+    <img src="">
+    <div class="BOTON-L1-CN"><h3>🤝 Ser Parte</h3><p>Añade tus Productos Aqui</p></div>
+  </a>
+  
+  <a href="web/otros/Archivos/MarkDowns/TiendaSimilar.md" class="BOTON-L1">
+    <img src="">
+    <div class="BOTON-L1-CN"><h3>💞 Tiendas Similares</h3><p>Mas Proyectos con Conciencia Ambiental.</p></div>
+  </a>
+
+
+  <a href="web/otros/Archivos/MarkDowns/Install.md" class="BOTON-L1">
+    <img src="">
+    <div class="BOTON-L1-CN"><h3>📱 Instala la App</h3><p>Ahorra Saldo y Recibe Ofertas</p></div>
+  </a>
+
+
+  <a href="web/otros/Archivos/HTML/centralPage.html" class="BOTON-L1">
+    <img src="">
+    <div class="BOTON-L1-CN"><h3>🎳 Mas Utilidades</h3><p>Contenido Extra no Relacionado.</p></div>
+  </a>
+</div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<p> <a href="web/otros/Archivos/MarkDowns/PoliticaPrivacidad.md">Acuerdo y Privacidad</a> </p>
+  
+
+
+
+
+</br>
+
+
+
+
+<div class="social-icons">
+  <a href="https://www.tiktok.com/@cheagana" aria-label="TikTok">
+    <img src="web/otros/Archivos/Imagenes/Permanente/SVG/tiktok-svgrepo-com.svg" alt="TikTok">
+  </a>
+  <a href="#" aria-label="Facebook">
+    <img src="web/otros/Archivos/Imagenes/Permanente/SVG/facebook-1-svgrepo-com.svg" alt="Facebook">
+  </a>
+  <a href="https://www.instagram.com/cheagana" aria-label="Instagram">
+    <img src="web/otros/Archivos/Imagenes/Permanente/SVG/instagram-2016-logo-svgrepo-com.svg" alt="Instagram">
+  </a>
+  <a href="web/otros/Archivos/HTML/About.html" aria-label="Git">
+    <img src="web/otros/Archivos/Imagenes/Permanente/SVG/git-svgrepo-com.svg" alt="Git">
+  </a>
+
+</div>
+
+<style>
+.social-icons{
+display:flex;
+justify-content:center;
+gap:12px;
+align-items:center;
+flex-wrap:wrap;
+margin-top:20px;
+}
+.social-icons img{
+width:24px;
+height:24px;
+opacity:.6;
+transition:opacity .2s ease,transform .2s ease;
+}
+.social-icons img:hover{
+opacity:1;
+transform:scale(1.7);
+}
+</style>
+
+
+
+
+
 <script>
 (function(){
 const OPFS_S=`(async()=>{
-const R=await fetch('web/Dinamico/data.json?fresh=1',{cache:'no-store'});
+const R=await fetch('web/Dinamico/data.json',{cache:'no-store'});
 if(!R.ok)return notify(null);
 const txt=await R.text();
 const root=await self.navigator.storage.getDirectory();
