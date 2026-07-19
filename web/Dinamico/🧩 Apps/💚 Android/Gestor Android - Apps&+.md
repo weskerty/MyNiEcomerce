@@ -578,7 +578,7 @@ return;
 repMsg.textContent="TWRP respondio correctamente.";
 repStep1.style.display="none";
 repStep2.style.display="";
-repPlan.textContent="Se copiara tu clave ADB publica y se habilitara ADB inseguro en las particiones de sistema disponibles. Al finalizar el telefono se reiniciara a Android normal, de esta manera poder usar scrcpy para poder controlar el dispositivo.";
+repPlan.textContent="Se copiara tu clave ADB publica y se habilitara ADB inseguro en las particiones de sistema disponibles. Al finalizar el telefono se reiniciara a Android normal, de esta manera poder usar scrcpy para poder controlar el dispositivo con el boton pantalla que encontraras en el menu.";
 }catch(e){
 repMsg.textContent="Error de conexion: "+e.message;
 btnRepTest.style.pointerEvents="";btnRepTest.style.opacity="";
