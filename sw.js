@@ -1,12 +1,7 @@
-const V='v81';
+const V='v82';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
-const FRASES_URL='web/otros/Archivos/DataBase/Frases.txt';
-const MD_LIMIT=10;
-const NI_LIMIT=5;
-const NI_MAX=204800;
-const NI_MIME={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',avif:'image/avif'};
 const PRE=[
 'index.html',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
@@ -39,56 +34,25 @@ const PRE=[
 'web/otros/Archivos/Imagenes/Permanente/ICONS/Cesta.png',
 N_ICON,
 N_ICO,
-N_BANNER,
-FRASES_URL
+N_BANNER
 ];
 
 const TEMP_ROUTES=[{match:'/api/',ttl:18000000}];
 const EXT_CACHE=[
   {origin:'tetunori.github.io',ttl:0}
 ];
-const MIRRORS=['https://weskerty.github.io/MyNiEcomerce'];
+const MIRRORS=['https://weskerty.github.io/MyNiEcomerce','https://mc.cheagana.com'];
 const MIRROR_TIMEOUT=5000;
 let serverIsDown=false;
 const EXT_C='ext-fonts';
 const DJ=/\/data\.json(\?|$)/;
-const DJ_NOTIFY=[new URL('web/Dinamico/data.json',self.location).href];
-const TS_CK='__chk_ts';
-const CHK_INT=86400000;
 const TEMP_C=V+'-tmp';
-const MD_C=V+'-md';
-const NI_C=V+'-ni';
 const SHARE_C='share-pending';
 const SHARE_KEY='__share_data';
 const APPS_URL='web/Dinamico/Apps/es.html';
 const OPFS_DIR='notify';
 const DLA_C='dla-fetch';
 const DLA_TTL=600000;
-
-const NTL={blog:'Nuevo Blog \uD83D\uDCDD',app:'Nueva App \uD83D\uDCF1',game:'Nuevo Juego \uD83C\uDFAE',product:'Nuevo Producto \uD83D\uDED2'};
-let _ts=0;
-
-function P2MD(p){return p.replace(/\.[^.]+$/,'.md');}
-
-function EP(dj){
-  return Object.values(dj.galleries).flatMap(cat=>Object.values(cat).flat());
-}
-
-function eN(p){
-  const fname=p.split('/').pop().replace(/\.[^.]+$/,'');
-  if(p.includes('/Blogs/'))return{type:'blog',name:fname};
-  if(p.includes('/Apps/'))return{type:'app',name:fname};
-  if(p.includes('/Juegos/'))return{type:'game',name:fname};
-  const m=fname.match(/NB=([^.]+)$/);
-  return{type:'product',name:m?m[1]:fname};
-}
-
-function eID(p){
-  const fname=p.split('/').pop().replace(/\.[^.]+$/,'');
-  if(p.includes('/Blogs/')||p.includes('/Apps/')||p.includes('/Juegos/'))return fname;
-  const m=fname.match(/ID=([^-]+)/);
-  return m?m[1]:fname;
-}
 
 async function tryMirrors(pathname,init){
   for(const base of MIRRORS){
@@ -119,55 +83,6 @@ async function fetchWithMirrors(input,init){
 }
 
 
-async function getFrase(){
-  try{
-    const url=new URL(FRASES_URL,self.location).href;
-    const c=await caches.open(V);
-    const cached=await c.match(url);
-    const txt=cached?await cached.text():await fetch(url).then(r=>r.text());
-    const lines=txt.split('\n').map(l=>l.trim()).filter(Boolean);
-    if(!lines.length)return null;
-    const now=new Date();
-    const doy=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);
-    return lines[(doy-1)%lines.length];
-  }catch{return null;}
-}
-
-async function getNI(p){
-  const url=new URL(p,self.location).href;
-  const c=await caches.open(NI_C);
-  const cached=await c.match(url);
-  if(cached)return url;
-  const ac=new AbortController();
-  const tid=setTimeout(()=>ac.abort(),5000);
-  try{
-    const r=await fetch(url,{signal:ac.signal});
-    if(!r.ok)return null;
-    const cl=parseInt(r.headers.get('Content-Length')||'0');
-    if(cl>NI_MAX)return null;
-    const buf=await r.arrayBuffer();
-    if(buf.byteLength>NI_MAX)return null;
-    const ext=p.split('.').pop().toLowerCase();
-    const keys=await c.keys();
-    if(keys.length>=NI_LIMIT)await c.delete(keys[0]);
-    await c.put(url,new Response(buf,{headers:{'Content-Type':NI_MIME[ext]||'image/avif'}}));
-    return url;
-  }catch{return null;}
-  finally{clearTimeout(tid);}
-}
-
-
-async function showItem(p){
-  const{type,name}=eN(p);
-  const url=self.location.origin+'/#'+P2MD(p).replace(/ /g,'%20');
-  const img=await getNI(p);
-  return self.registration.showNotification(NTL[type],{
-    body:name,icon:N_ICON,badge:N_ICO,
-    ...(img?{image:img}:{}),
-    tag:eID(p),data:{url}
-  });
-}
-
 async function tmpGet(req){
   const c=await caches.open(TEMP_C);
   const r=await c.match(req);
@@ -183,49 +98,6 @@ async function tmpPut(req,res,ttl){
   await c.put(req,new Response(buf,{status:res.status,statusText:res.statusText,headers:h}));
 }
 
-async function syncMD(nArr,oArr){
-  if(!MD_LIMIT)return;
-  try{
-    const toURL=p=>new URL(p,self.location).href;
-    const nSet=new Set(nArr.map(P2MD).map(toURL));
-    const oSet=new Set(oArr.map(P2MD).map(toURL));
-    const c=await caches.open(MD_C);
-    await Promise.all([...oSet].filter(u=>!nSet.has(u)).map(u=>c.delete(u)));
-    const toFetch=[...nSet].filter(u=>!oSet.has(u)).slice(0,MD_LIMIT);
-    await Promise.all(toFetch.map(async u=>{
-      try{const r=await fetch(u);if(r.ok)await c.put(u,r);}catch{}
-    }));
-  }catch{}
-}
-
-async function chkDJ(djUrl){
-  try{
-    const r=await fetchWithMirrors(djUrl,{cache:'no-store'});
-    if(!r?.ok)return false;
-    const txt=await r.text();
-    const c=await caches.open(V);
-    const prev=await c.match(djUrl);
-    const prevTxt=prev?await prev.text():null;
-    await c.put(djUrl,new Response(txt,{status:200,headers:new Headers(r.headers)}));
-    _ts=Date.now();
-    await c.put(TS_CK,new Response(String(_ts)));
-    const nArr=EP(JSON.parse(txt));
-    const oArr=prevTxt?EP(JSON.parse(prevTxt)):[];
-    await syncMD(nArr,oArr);
-    if(prevTxt!==null&&txt!==prevTxt){
-      const oIDs=new Set(oArr.map(eID));
-      const newPaths=nArr.filter(p=>!oIDs.has(eID(p)));
-      if(newPaths.length){
-        await Promise.all(newPaths.map(showItem));
-        return true;
-      }
-    }
-    return false;
-  }catch{return null;}
-}
-
-async function chkAll(){return chkDJ(DJ_NOTIFY[0]);}
-
 async function cleanDLA(){
   try{
     const c=await caches.open(DLA_C);
@@ -234,18 +106,6 @@ async function cleanDLA(){
       const r=await c.match(req);
       if(r&&Date.now()>parseInt(r.headers.get('X-Expires')||0))await c.delete(req);
     }));
-  }catch{}
-}
-
-async function maybeCHK(){
-  if(Date.now()-_ts<CHK_INT)return;
-  try{
-    const c=await caches.open(V);
-    const last=await c.match(TS_CK);
-    _ts=last?parseInt(await last.text()):0;
-    if(Date.now()-_ts<CHK_INT)return;
-    await chkAll();
-    await cleanDLA();
   }catch{}
 }
 
@@ -301,7 +161,7 @@ self.addEventListener('install',e=>{
 self.addEventListener('activate',e=>{
   e.waitUntil(
     caches.keys().then(ks=>Promise.all(
-      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==MD_C&&k!==NI_C&&k!==SHARE_C&&k!==EXT_C&&k!==DLA_C).map(k=>caches.delete(k))
+      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==SHARE_C&&k!==EXT_C&&k!==DLA_C).map(k=>caches.delete(k))
     )).then(()=>self.clients.claim())
   );
 });
@@ -372,7 +232,6 @@ self.addEventListener('fetch',e=>{
 
   if(DJ.test(url.pathname)){
     const djHref=url.href;
-    const isNotify=DJ_NOTIFY.includes(djHref);
     e.respondWith((async()=>{
       const c=await caches.open(V);
       const cc=await c.match(djHref);
@@ -383,19 +242,7 @@ self.addEventListener('fetch',e=>{
             const r=await fetch(djHref,{cache:'no-store',...(etag&&{headers:{'If-None-Match':etag}})});
             if(r.status===304||!r?.ok)return;
             const txt=await r.text();
-            const prev=await c.match(djHref);
-            const prevTxt=prev?await prev.text():null;
-            if(txt===prevTxt)return;
             await c.put(djHref,new Response(txt,{status:200,headers:new Headers(r.headers)}));
-            _ts=Date.now();
-            await c.put(TS_CK,new Response(String(_ts)));
-            if(isNotify&&prevTxt!==null){
-              const nA=EP(JSON.parse(txt)),oA=EP(JSON.parse(prevTxt));
-              await syncMD(nA,oA);
-              const oIDs=new Set(oA.map(eID));
-              const nP=nA.filter(p=>!oIDs.has(eID(p)));
-              if(nP.length)await Promise.all(nP.map(showItem));
-            }
           }catch{}
         })());
         return cc;
@@ -415,7 +262,7 @@ self.addEventListener('fetch',e=>{
 
   if(url.pathname.endsWith('.md')){
     e.respondWith((async()=>{
-      const c=await caches.open(MD_C);
+      const c=await caches.open(V);
       const cc=await c.match(e.request);
       if(cc){
         e.waitUntil((async()=>{
@@ -449,8 +296,6 @@ self.addEventListener('fetch',e=>{
     return;
   }
 
-  if(e.request.mode==='navigate')e.waitUntil(maybeCHK());
-
   e.respondWith(
     caches.match(e.request).then(h=>{
       if(h)return h;
@@ -463,19 +308,7 @@ self.addEventListener('fetch',e=>{
 });
 
 self.addEventListener('push',e=>{
-  e.waitUntil((async()=>{
-    const c=await caches.open(V);
-    await c.put(TS_CK,new Response(String(Date.now())));
-    const result=await chkAll();
-    if(result===null){
-      const frase=await getFrase()||'Hay Novedades!';
-      await self.registration.showNotification('Che Agana',{
-        body:frase,icon:N_ICON,badge:N_ICO,image:N_BANNER,
-        tag:'fallback',data:{url:self.location.origin}
-      });
-    }
-    await runOPFS();
-  })());
+  e.waitUntil(runOPFS());
 });
 
 self.addEventListener('notificationclick',e=>{
@@ -520,6 +353,5 @@ self.addEventListener('backgroundfetchfail',e=>{
 });
 
 self.addEventListener('message',e=>{
-  if(e.data==='CHECK_DJ')e.waitUntil(chkAll());
   if(e.data==='RUN_OPFS')e.waitUntil(runOPFS());
 });

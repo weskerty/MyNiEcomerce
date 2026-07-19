@@ -70,7 +70,7 @@ VideoFuturo
 <dialog id="adbRepDlg">
 <h3>Reparar acceso ADB (pantalla rota + TWRP)</h3>
 <div id="adbRepStep1">
-<p>Esto sirve si tu pantalla esta rota <strong>Ya tenias TWRP u otro custom recovery</strong> instalado. No funciona con el recovery de fabrica de Android.</p>
+<p>Esto sirve si tu pantalla esta rota y <strong>Ya tenias TWRP custom recovery</strong> instalado. No funciona con el recovery de fabrica de Android.</p>
 <ol>
 <li>Apaga el telefono.</li>
 <li>Mantene presionado Volumen abajo + Power hasta entrar al recovery.</li>
@@ -198,7 +198,7 @@ div.appendChild(li);
 if(PR1.includes(it.id)){
 const wn=document.createElement("p");
 wn.style.opacity=".7";
-wn.textContent="(Desinstalar esto Si o Si Bloqueara tu Telefono, No podras Desinstalarlo desde Aqui.)";
+wn.textContent="(Desinstalar esto Si o Si Bloqueara tu Telefono, Si quieres Continuar deberas hacerlo Manualmente en la Seccion Comandos.)";
 div.appendChild(wn);
 }else{
 const acts=document.createElement("div");
@@ -210,7 +210,7 @@ const bU=document.createElement("a");
 bU.className="BS2";
 bU.innerHTML='<span class="BS4">🗑️</span><p class="BS5">Desinstalar</p>';
 bU.addEventListener("click",async()=>{
-if(!confirm("Desinstalar "+it.id+" para el usuario actual? Es reversible."))return;
+if(!confirm("Desinstalar "+it.id+" para el usuario actual? Se puede Reinstalar con el Boton Restaurar."))return;
 bU.style.pointerEvents="none";bU.style.opacity=".5";
 res.textContent=await uninst(it.id);
 });
@@ -531,7 +531,10 @@ const pub=adbGeneratePublicKey(k.buffer);
 const b64=btoa(String.fromCharCode(...pub));
 return b64+" "+k.name;
 }
-throw new Error("No hay clave ADB generada todavia; conecta primero por USB normal una vez.");
+const nk=await CS1.generateKey();
+const pub=adbGeneratePublicKey(nk.buffer);
+const b64=btoa(String.fromCharCode(...pub));
+return b64+" "+nk.name;
 }
 
 function resetRepUi(){
@@ -599,15 +602,23 @@ await runShR("chmod 600 /data/misc/adb/adb_keys");
 await runShR("chown 2000:2000 /data/misc/adb/adb_keys");
 done.push("/data/misc/adb/adb_keys (clave copiada)");
 
+const rw=[];
 for(const p of RPARTS1){
 await runShR("mount /"+p+" 2>/dev/null; mount -o rw,remount /"+p+" 2>/dev/null; true");
+const chk=(await runShR("mount | grep -q ' /"+p+" ' && echo si || echo no")).trim();
+if(chk==="si")rw.push(p);
+}
+if(!rw.length){
+repPlan.textContent="Error: ninguna particion pudo montarse. Verifica dm-verity/AVB o revisa el estado del recovery.";
+btnRepRun.style.pointerEvents="";btnRepRun.style.opacity="";
+return;
 }
 
 let found=false;
-for(const p of RPARTS1){
+for(const p of rw){
 for(const c of RCAND1){
 const path="/"+p+c;
-const ex=(await runShR("[ -f "+path+" ] && echo si || echo no")).trim();
+const ex=(await runShR("ls "+path+" >/dev/null 2>&1 && echo si || echo no")).trim();
 if(ex!=="si")continue;
 found=true;
 done.push(path);
@@ -626,8 +637,8 @@ repStep3.style.display="";
 repDone.textContent="Reiniciando a Android...";
 try{await runShR("reboot")}catch(e2){console.error("reboot corto la conexion (normal):",e2)}
 repDone.innerHTML="Listo. Archivos modificados: "+done.join(", ")+
-"<br><br>Ahora necesitas descargar y usar el programa "+
-'<a href="https://github.com/Genymobile/scrcpy/releases" target="_blank">scrcpy</a> para controlar tu telefono.';
+"<br><br>Ahora Esperar a que el Telefono inicie para poder controlar el telefono con "+
+'<a href="https://github.com/Genymobile/scrcpy/releases" target="_blank">scrcpy</a> desde el Boton Pantalla Aqui. Recuerda Conectar el Telefono.';
 }catch(e){
 repPlan.textContent="Error durante la reparacion: "+e.message;
 btnRepRun.style.pointerEvents="";btnRepRun.style.opacity="";
