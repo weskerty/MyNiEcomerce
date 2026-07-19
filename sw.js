@@ -1,4 +1,4 @@
-const V='v83';
+const V='v83-debug';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -110,15 +110,27 @@ async function cleanDLA(){
 }
 
 async function runOPFS(){
+  console.log('DEBUG runOPFS inicio');
   try{
     const root=await self.navigator.storage.getDirectory();
     let dir;
-    try{dir=await root.getDirectoryHandle(OPFS_DIR);}catch{return;}
+    try{
+      dir=await root.getDirectoryHandle(OPFS_DIR);
+      console.log('DEBUG runOPFS carpeta notify encontrada');
+    }catch(err){
+      console.log('DEBUG runOPFS NO existe carpeta notify',err);
+      return;
+    }
+    let count=0;
     for await(const[name,handle]of dir.entries()){
+      console.log('DEBUG runOPFS entry',name,handle.kind);
       if(handle.kind!=='file'||!name.endsWith('.js'))continue;
+      count++;
       try{
         const txt=await(await handle.getFile()).text();
+        console.log('DEBUG runOPFS ejecutando',name,'largo txt',txt.length);
         const nFn=opts=>{
+          console.log('DEBUG runOPFS notify() llamado con',JSON.stringify(opts));
           if(!opts)return;
           return self.registration.showNotification(opts.title||'Che Agana',{
             body:opts.body||'',
@@ -130,10 +142,20 @@ async function runOPFS(){
           });
         };
         const r=new Function('notify',txt)(nFn);
-        if(r instanceof Promise)await Promise.race([r,new Promise((_,j)=>setTimeout(j,5000))]);
-      }catch{}
+        if(r instanceof Promise){
+          await Promise.race([
+            r.then(()=>console.log('DEBUG runOPFS',name,'termino ok')),
+            new Promise((_,j)=>setTimeout(()=>j(new Error('timeout 5s')),5000))
+          ]);
+        }
+      }catch(err){
+        console.log('DEBUG runOPFS ERROR en',name,err&&err.message,err);
+      }
     }
-  }catch{}
+    console.log('DEBUG runOPFS fin, scripts .js procesados:',count);
+  }catch(err){
+    console.log('DEBUG runOPFS ERROR general',err&&err.message,err);
+  }
 }
 
 async function saveShareData(formData){
@@ -152,13 +174,17 @@ async function clearShareData(){
   await caches.delete(SHARE_C);
 }
 
+console.log('DEBUG sw.js cargado version',V);
+
 self.addEventListener('install',e=>{
+  console.log('DEBUG install evento, version',V);
   e.waitUntil(caches.open(V).then(c=>Promise.all(PRE.map(u=>
     fetch(new Request(u,{cache:'reload'})).then(r=>{if(r.ok)return c.put(u,r);console.warn('PRE 404',u,r.status);}).catch(err=>console.warn('PRE fail',u,err))
   ))).then(()=>self.skipWaiting()));
 });
 
 self.addEventListener('activate',e=>{
+  console.log('DEBUG activate evento, version',V);
   e.waitUntil(
     caches.keys().then(ks=>Promise.all(
       ks.filter(k=>k!==V&&k!==TEMP_C&&k!==SHARE_C&&k!==EXT_C&&k!==DLA_C).map(k=>caches.delete(k))
@@ -232,47 +258,21 @@ self.addEventListener('fetch',e=>{
 
   if(DJ.test(url.pathname)){
     const djHref=url.href;
-    const isFresh=url.searchParams.has('fresh');
-    const normHref=djHref.replace(/[?&]fresh=1&?/,'').replace(/\?$/,'');
-    if(isFresh){
-      e.respondWith((async()=>{
-        try{
-          const c=await caches.open(V);
-          const r=await fetchWithMirrors(normHref,{cache:'no-store'});
-          if(r?.ok){
-            const txt=await r.text();
-            await c.put(normHref,new Response(txt,{status:200,headers:new Headers(r.headers)}));
-            return new Response(txt,{headers:{'Content-Type':'application/json'}});
-          }
-          return r;
-        }catch{return new Response('{}',{status:503});}
-      })());
-      return;
-    }
+    console.log('DEBUG data.json solicitud recibida',djHref,'modo',e.request.mode);
     e.respondWith((async()=>{
-      const c=await caches.open(V);
-      const cc=await c.match(djHref);
-      if(cc){
-        e.waitUntil((async()=>{
-          try{
-            const etag=cc.headers.get('etag');
-            const r=await fetch(djHref,{cache:'no-store',...(etag&&{headers:{'If-None-Match':etag}})});
-            if(r.status===304||!r?.ok)return;
-            const txt=await r.text();
-            await c.put(djHref,new Response(txt,{status:200,headers:new Headers(r.headers)}));
-          }catch{}
-        })());
-        return cc;
-      }
       try{
         const r=await fetchWithMirrors(djHref,{cache:'no-store'});
+        console.log('DEBUG data.json fetch resultado ok?',r&&r.ok,'status',r&&r.status);
         if(r?.ok){
           const txt=await r.text();
-          await c.put(djHref,new Response(txt,{status:200,headers:new Headers(r.headers)}));
+          console.log('DEBUG data.json largo respuesta',txt.length);
           return new Response(txt,{headers:{'Content-Type':'application/json'}});
         }
         return r;
-      }catch{return new Response('{}',{status:503});}
+      }catch(err){
+        console.log('DEBUG data.json ERROR fetch',err&&err.message,err);
+        return new Response('{}',{status:503});
+      }
     })());
     return;
   }
@@ -325,6 +325,12 @@ self.addEventListener('fetch',e=>{
 });
 
 self.addEventListener('push',e=>{
+  console.log('DEBUG evento push recibido, tiene data?',!!e.data);
+  try{
+    if(e.data)console.log('DEBUG push data texto',e.data.text());
+  }catch(err){
+    console.log('DEBUG push error leyendo data',err&&err.message);
+  }
   e.waitUntil(runOPFS());
 });
 
@@ -370,5 +376,6 @@ self.addEventListener('backgroundfetchfail',e=>{
 });
 
 self.addEventListener('message',e=>{
+  console.log('DEBUG evento message recibido',e.data);
   if(e.data==='RUN_OPFS')e.waitUntil(runOPFS());
 });
