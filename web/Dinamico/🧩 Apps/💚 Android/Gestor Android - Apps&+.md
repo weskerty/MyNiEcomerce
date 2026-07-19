@@ -8,7 +8,7 @@
 <h2>Gestor Android</h2>
 <p id="adbSt">Iniciando...</p>
 
-<details>
+<details id="adbHowTo">
   <summary style="">Como Activar ADB</summary>
 
 VideoFuturo
@@ -28,6 +28,12 @@ VideoFuturo
 <a class="BS2" id="adbBtnUn" style="opacity:.5;pointer-events:none">
 <span class="BS4">🧹</span><p class="BS5">Desinstalar</p>
 </a>
+<a class="BS2" id="adbBtnCmd" style="opacity:.5;pointer-events:none">
+<span class="BS4">📟</span><p class="BS5">Comandos</p>
+</a>
+<a class="BS2" id="adbBtnScr" style="opacity:.5;pointer-events:none">
+<span class="BS4">📱</span><p class="BS5">Pantalla</p>
+</a>
 </div>
 
 <input type="file" id="adbFileApk" accept=".apk" style="display:none">
@@ -45,6 +51,20 @@ VideoFuturo
 </div>
 
 <div id="adbLst" style="display:none"></div>
+
+<div id="adbCmdPnl" style="display:none">
+<div id="adbCmdGrid" style="display:flex;flex-wrap:wrap;gap:8px;margin:14px 0"></div>
+<pre id="adbCmdLog" style="background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:10px 12px;height:220px;overflow-y:auto;font-size:.8em;white-space:pre-wrap;margin:0 0 10px"></pre>
+<div style="display:flex;gap:8px">
+<input id="adbCmdInp" type="text" placeholder="comando adb shell..." autocomplete="off" style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:8px 12px;color:#fff;font-family:monospace;font-size:.85em;outline:none">
+<button id="adbCmdRun" style="background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;padding:6px 16px;cursor:pointer;font-family:inherit">Ejecutar</button>
+</div>
+</div>
+
+<div id="adbScrPnl" style="display:none;text-align:center">
+<p id="adbScrSt" style="opacity:.7;font-size:.85em">Presiona Pantalla para iniciar</p>
+<div id="adbScrHold" style="max-width:100%;display:inline-block;touch-action:none"></div>
+</div>
 </div>
 
 <dialog id="adbRepDlg">
@@ -87,15 +107,29 @@ VideoFuturo
 </dialog>
 
 <script>
+const CMDS1=[
+{n:"Info bateria",c:"dumpsys battery"},
+{n:"Espacio libre",c:"df -h /data"},
+{n:"Apps en foreground",c:"dumpsys activity activities | grep mResumedActivity"},
+{n:"Reiniciar",c:"reboot"},
+{n:"Screenshot",c:"screencap -p /sdcard/ss.png && echo listo /sdcard/ss.png"},
+{n:"Limpiar cache app;com.example",c:"pm clear com.example && echo cache limpio"},
+{n:"Anti-Kill Termux",c:"device_config set_sync_disabled_for_tests persistent;device_config put activity_manager max_phantom_processes 2147483647;device_config put runtime_native_boot use_freezer false;settings put global settings_enable_monitor_phantom_procs false;am set-inactive com.termux false;cmd deviceidle whitelist +com.termux;cmd power set-mode 0;dumpsys deviceidle disable;cmd appops set --uid com.termux RUN_IN_BACKGROUND allow;cmd appops set --uid com.termux RUN_ANY_IN_BACKGROUND allow;cmd appops set --uid com.termux SYSTEM_EXEMPT_FROM_ACTIVITY_BG_START_RESTRICTION allow;cmd appops set --uid com.termux SYSTEM_EXEMPT_FROM_HIBERNATION allow;cmd appops set --uid com.termux SYSTEM_EXEMPT_FROM_POWER_RESTRICTIONS allow;cmd appops set --uid com.termux SYSTEM_EXEMPT_FROM_SUSPENSION allow;cmd appops set --uid com.termux WAKE_LOCK allow;cmd appops set --uid com.termux REQUEST_IGNORE_BATTERY_OPTIMIZATIONS allow;cmd appops set --uid com.termux ACTIVATE_PLATFORM_VPN allow;cmd appops set --uid com.termux INTERACT_ACROSS_PROFILES allow;cmd appops set --uid com.termux SCHEDULE_EXACT_ALARM allow;cmd appops set --uid com.termux START_FOREGROUND allow;echo listo anti-kill"}
+];
+
 (async()=>{
 const{AdbDaemonTransport,Adb,adbGeneratePublicKey}=await import("https://esm.unpkg.com/@yume-chan/adb@2.6.0?bundle&target=esnext");
 const{AdbDaemonWebUsbDeviceManager}=await import("https://esm.unpkg.com/@yume-chan/adb-daemon-webusb@2.1.0?bundle&target=esnext");
 const{default:AdbWebCredentialStore}=await import("https://esm.unpkg.com/@yume-chan/adb-credential-web@2.0.1?bundle&target=esnext");
+const{DefaultServerPath,AndroidMotionEventAction,ScrcpyPointerId,clamp}=await import("https://esm.unpkg.com/@yume-chan/scrcpy@2.2.0?bundle&target=esnext");
+const{AdbScrcpyClient,AdbScrcpyOptions2_1}=await import("https://esm.unpkg.com/@yume-chan/adb-scrcpy@2.3.2?bundle&target=esnext");
+const{WebCodecsVideoDecoder,WebGLVideoFrameRenderer,BitmapVideoFrameRenderer}=await import("https://esm.unpkg.com/@yume-chan/scrcpy-decoder-webcodecs?bundle&target=esnext");
 
 const U1="https://raw.githubusercontent.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation/main/resources/assets/uad_lists.json";
 const R1=["Recommended","Advanced","Expert","Unsafe"];
 const PR1=["com.android.systemui","com.android.settings","com.android.phone","com.android.shell","android"];
 const FN1="/api/fdroid";
+const SRVJ1="web/scripts/Otros/Binarios/scrcpy-server-v3.3.4";
 
 let D1=null,A1=null,AR1=null,abi1=null;
 let stCur=[],stPg=0,stDbt=null,stAC=null;
@@ -109,6 +143,9 @@ const repPlan=el("adbRepPlan"),repDone=el("adbRepDone");
 const btnRepTest=el("adbBtnRepTest"),btnRepRun=el("adbBtnRepRun"),btnRepClose=el("adbBtnRepClose");
 const storeEl=el("adbStore"),gridEl=el("adbStoreGrid"),pgEl=el("adbStorePg"),pgPrev=el("adbStorePrev"),pgNext=el("adbStoreNext");
 const searchInp=el("adbSearchInp"),fileInp=el("adbFileApk");
+const btnCmd=el("adbBtnCmd"),cmdPnl=el("adbCmdPnl"),cmdGrid=el("adbCmdGrid"),cmdLog=el("adbCmdLog"),cmdInp=el("adbCmdInp"),cmdRun=el("adbCmdRun");
+const howTo=el("adbHowTo");
+const btnScr=el("adbBtnScr"),scrPnl=el("adbScrPnl"),scrSt=el("adbScrSt"),scrHold=el("adbScrHold");
 
 function setSt(s){stEl.textContent=s}
 function enable(btn){btn.style.opacity="";btn.style.pointerEvents=""}
@@ -219,12 +256,20 @@ console.error(e);
 }
 }
 
-function showStore(){storeEl.style.display="";lstEl.style.display="none"}
-function showUad(){storeEl.style.display="none";lstEl.style.display="";ldUad()}
-let unToggled=false;
+let curView="store";
+function setView(v){
+if(curView==="scr"&&v!=="scr")scrStop();
+curView=v;
+storeEl.style.display=v==="store"?"":"none";
+lstEl.style.display=v==="uad"?"":"none";
+cmdPnl.style.display=v==="cmd"?"":"none";
+scrPnl.style.display=v==="scr"?"":"none";
+if(v==="uad")ldUad();
+}
+function showStore(){setView("store")}
+function showUad(){setView("uad")}
 btnUn.addEventListener("click",()=>{
-unToggled=!unToggled;
-if(unToggled)showUad();else showStore();
+setView(curView==="uad"?"store":"uad");
 });
 
 function pkgIdFromUrl(u){
@@ -341,6 +386,117 @@ console.error(e);
 fileInp.value="";
 });
 
+function cmdLogLn(s){cmdLog.textContent+=s+"\n";cmdLog.scrollTop=cmdLog.scrollHeight}
+
+async function cmdExec(cmd){
+if(!A1){cmdLogLn("! No hay dispositivo conectado");return}
+cmdLogLn("$ "+cmd);
+try{
+const out=await runSh(cmd);
+cmdLogLn(out.trim()||"(sin salida)");
+}catch(e){
+cmdLogLn("Error: "+e.message);
+}
+}
+
+function renderCmdGrid(){
+cmdGrid.innerHTML="";
+for(const it of CMDS1){
+const b=document.createElement("button");
+b.textContent=it.n;
+b.style.cssText="background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;padding:6px 14px;cursor:pointer;font-size:.85em;font-family:inherit";
+b.addEventListener("click",()=>cmdExec(it.c));
+cmdGrid.appendChild(b);
+}
+}
+renderCmdGrid();
+
+cmdRun.addEventListener("click",()=>{
+const v=cmdInp.value.trim();
+if(!v)return;
+cmdExec(v);
+cmdInp.value="";
+});
+cmdInp.addEventListener("keydown",ev=>{
+if(ev.key==="Enter")cmdRun.click();
+});
+
+btnCmd.addEventListener("click",()=>{
+if(!A1)return;
+setView(curView==="cmd"?"store":"cmd");
+});
+
+let scrCli=null,scrDec=null,scrVw=0,scrVh=0;
+
+async function scrStart(){
+scrSt.textContent="Descargando servidor...";
+scrHold.innerHTML="";
+try{
+const rs=await fetch(SRVJ1);
+if(!rs.ok)throw new Error("HTTP "+rs.status+" al obtener jar");
+scrSt.textContent="Subiendo servidor al dispositivo...";
+await AdbScrcpyClient.pushServer(A1,rs.body);
+scrSt.textContent="Iniciando scrcpy...";
+scrCli=await AdbScrcpyClient.start(A1,DefaultServerPath,new AdbScrcpyOptions2_1({control:true,audio:false,video:true,videoBitRate:4000000,maxSize:720}));
+let rend;
+if(WebGLVideoFrameRenderer.isSupported)rend=new WebGLVideoFrameRenderer();
+else rend=new BitmapVideoFrameRenderer();
+scrHold.appendChild(rend.canvas);
+rend.canvas.style.maxWidth="100%";rend.canvas.style.touchAction="none";
+if(!scrCli.videoStream){scrSt.textContent="Servidor sin video";return}
+const{metadata,stream}=await scrCli.videoStream;
+scrDec=new WebCodecsVideoDecoder({codec:metadata.codec,renderer:rend});
+scrDec.sizeChanged(({width,height})=>{scrVw=width;scrVh=height});
+stream.pipeTo(scrDec.writable).catch(e=>console.error(e));
+scrHold.addEventListener("pointerdown",scrPtr);
+scrHold.addEventListener("pointermove",scrPtr);
+scrHold.addEventListener("pointerup",scrPtr);
+scrHold.addEventListener("pointercancel",scrPtr);
+scrSt.textContent="Conectado";
+}catch(e){
+scrSt.textContent="Error: "+e.message;
+console.error(e);
+}
+}
+
+async function scrPtr(ev){
+ev.preventDefault();
+if(!scrCli||!scrCli.controller||!scrVw)return;
+scrHold.setPointerCapture(ev.pointerId);
+let act;
+if(ev.type==="pointerdown")act=AndroidMotionEventAction.Down;
+else if(ev.type==="pointermove")act=ev.buttons===0?AndroidMotionEventAction.HoverMove:AndroidMotionEventAction.Move;
+else act=AndroidMotionEventAction.Up;
+const rc=scrHold.getBoundingClientRect();
+const px=clamp((ev.clientX-rc.x)/rc.width,0,1)*scrVw;
+const py=clamp((ev.clientY-rc.y)/rc.height,0,1)*scrVh;
+try{
+await scrCli.controller.injectTouch({
+action:act,pointerId:ScrcpyPointerId.Finger,
+pointerX:px,pointerY:py,videoWidth:scrVw,videoHeight:scrVh,
+pressure:ev.buttons===0?0:1,actionButton:0,buttons:0
+});
+}catch(e){console.error(e)}
+}
+
+async function scrStop(){
+scrHold.removeEventListener("pointerdown",scrPtr);
+scrHold.removeEventListener("pointermove",scrPtr);
+scrHold.removeEventListener("pointerup",scrPtr);
+scrHold.removeEventListener("pointercancel",scrPtr);
+if(scrCli){try{await scrCli.close()}catch(e){} scrCli=null}
+scrDec=null;scrVw=0;scrVh=0;
+scrHold.innerHTML="";
+scrSt.textContent="Presiona Pantalla para iniciar";
+}
+
+btnScr.addEventListener("click",()=>{
+if(!A1)return;
+if(curView==="scr"){setView("store");return}
+setView("scr");
+scrStart();
+});
+
 async function onCnn(){
 try{
 setSt("Selecciona el dispositivo en el menu que aparece...");
@@ -353,7 +509,8 @@ setSt("Autenticando (revisa el telefono si pide confirmar)...");
 const tr=await AdbDaemonTransport.authenticate({serial:dv.serial,connection:cn,credentialStore:CS1});
 A1=new Adb(tr);
 abi1=(await runSh("getprop ro.product.cpu.abi")).trim();
-enable(btnIns);enable(btnUn);
+enable(btnIns);enable(btnUn);enable(btnCmd);enable(btnScr);
+howTo.style.display="none";
 setSt("Listo. Conectado: "+(A1.banner?.model||dv.serial)+" ("+abi1+")");
 if(!searchInp.value.trim()){searchInp.value="music";doStoreSearch()}
 }catch(e){
@@ -481,6 +638,7 @@ btnCnn.addEventListener("click",onCnn);
 document.getElementById("content").addEventListener("contentUnload",function cu(){
 if(A1)A1.close?.().catch(()=>{});
 if(AR1)AR1.close?.().catch(()=>{});
+if(scrCli)scrCli.close?.().catch(()=>{});
 if(repDlg.open)repDlg.close();
 if(stAC)stAC.abort();
 document.getElementById("content").removeEventListener("contentUnload",cu);
