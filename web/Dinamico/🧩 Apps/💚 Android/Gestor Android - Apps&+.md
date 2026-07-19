@@ -437,7 +437,7 @@ if(!rs.ok)throw new Error("HTTP "+rs.status+" al obtener jar");
 scrSt.textContent="Subiendo servidor al dispositivo...";
 await AdbScrcpyClient.pushServer(A1,rs.body);
 scrSt.textContent="Iniciando scrcpy...";
-scrCli=await AdbScrcpyClient.start(A1,DefaultServerPath,new AdbScrcpyOptions2_1({control:true,audio:false,video:true,videoBitRate:4000000,maxSize:720}));
+scrCli=await AdbScrcpyClient.start(A1,DefaultServerPath,new AdbScrcpyOptions2_1({control:true,audio:false,video:true,videoBitRate:4000000,maxSize:720},{version:"3.3.4"}));
 let rend;
 if(WebGLVideoFrameRenderer.isSupported)rend=new WebGLVideoFrameRenderer();
 else rend=new BitmapVideoFrameRenderer();
@@ -454,7 +454,12 @@ scrHold.addEventListener("pointerup",scrPtr);
 scrHold.addEventListener("pointercancel",scrPtr);
 scrSt.textContent="Conectado";
 }catch(e){
+if(e?.output){
+scrSt.textContent="Error servidor: "+e.message;
+console.error("scrcpy server output:",e.output.join("\n"));
+}else{
 scrSt.textContent="Error: "+e.message;
+}
 console.error(e);
 }
 }
