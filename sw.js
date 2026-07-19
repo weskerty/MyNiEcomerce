@@ -1,4 +1,4 @@
-const V='v82';
+const V='v83';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -232,6 +232,23 @@ self.addEventListener('fetch',e=>{
 
   if(DJ.test(url.pathname)){
     const djHref=url.href;
+    const isFresh=url.searchParams.has('fresh');
+    const normHref=djHref.replace(/[?&]fresh=1&?/,'').replace(/\?$/,'');
+    if(isFresh){
+      e.respondWith((async()=>{
+        try{
+          const c=await caches.open(V);
+          const r=await fetchWithMirrors(normHref,{cache:'no-store'});
+          if(r?.ok){
+            const txt=await r.text();
+            await c.put(normHref,new Response(txt,{status:200,headers:new Headers(r.headers)}));
+            return new Response(txt,{headers:{'Content-Type':'application/json'}});
+          }
+          return r;
+        }catch{return new Response('{}',{status:503});}
+      })());
+      return;
+    }
     e.respondWith((async()=>{
       const c=await caches.open(V);
       const cc=await c.match(djHref);
