@@ -1,4 +1,4 @@
-const V='v85';
+const V='v86';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -319,6 +319,7 @@ self.addEventListener('fetch',e=>{
 
 async function notifyCycle(){
   const shown=await runOPFS();
+  await cleanDLA();
   if(shown>0)return;
   const frase=await getFrase()||'Hay Novedades!';
   await self.registration.showNotification('Che Agana',{
@@ -377,5 +378,5 @@ self.addEventListener('backgroundfetchfail',e=>{
 });
 
 self.addEventListener('message',e=>{
-  if(e.data==='RUN_OPFS')e.waitUntil(runOPFS());
+  if(e.data==='RUN_OPFS')e.waitUntil(notifyCycle());
 });

@@ -276,7 +276,7 @@ function setupIO(){
   _io.observe(sentinel);
 }
 
-const OPFS_S=`(async()=>{
+const OPFS_S=`return(async()=>{
 const R=await fetch('/api/rss?url=${encodeURIComponent(RSS_PATH)}',{cache:'no-store'});
 if(!R.ok)return notify(null);
 const x=await R.text();
