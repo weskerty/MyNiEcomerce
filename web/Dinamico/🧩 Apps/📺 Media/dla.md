@@ -9,25 +9,11 @@
 .da-ib{background:none;border:none;color:white;cursor:pointer;font-size:1.15rem;flex-shrink:0;padding:0 2px;opacity:.7;transition:opacity .2s,transform .2s;line-height:1}
 .da-ib:hover{opacity:1;transform:scale(1.1)}
 .da-grp+.da-grp{border-top:1px solid rgba(255,255,255,.1);margin-top:10px;padding-top:10px}
-.da-item{display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.06);transition:background .15s}
-.da-item:last-child{margin-bottom:0}
-.da-item:hover{background:rgba(255,255,255,.12)}
-.da-thumb{width:56px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;background:rgba(255,255,255,.05)}
-.da-info{flex:1;min-width:0;text-align:left}
-.da-title{font-size:.88em;color:rgba(255,255,255,.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
-.da-meta{font-size:.75em;color:rgba(255,255,255,.45)}
-.da-acts{display:flex;gap:6px;flex-shrink:0}
-.da-ab{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:white;cursor:pointer;font-size:1.1em;padding:5px 8px;transition:background .15s,border-color .15s;line-height:1}
+.da-acts{display:flex;gap:6px;flex-shrink:0;padding-right:10px}
+.da-ab{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);border-radius:8px;color:white;cursor:pointer;font-size:1.1em;padding:5px 8px;transition:background .15s,border-color .15s;line-height:1;position:relative;z-index:3}
 .da-ab:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3)}
-.dl-ov{display:none;position:fixed;inset:0;z-index:200;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:rgba(0,0,0,.5);align-items:center;justify-content:center;flex-direction:column;gap:10px}
-.dl-ov.open{display:flex}
-.dl-ov span:first-child{font-size:3rem;animation:dl-pulse 1.2s ease-in-out infinite}
-.dl-ov span:last-child{color:rgba(255,255,255,.8);font-size:.95em}
-@keyframes dl-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:.7}}
 #DL_ST{margin:10px auto;max-width:300px;font-size:.9rem;opacity:.85;min-height:1.2em}
-.da-searching{display:flex;flex-direction:column;align-items:center;padding:32px 0;gap:8px}
-.da-searching span:first-child{font-size:3rem}
-.da-searching span:last-child{color:rgba(255,255,255,.6);font-size:.9em}
+.da-wait{display:flex;justify-content:center;padding:20px 0}
 .da-msg{color:rgba(255,255,255,.5);font-size:.88em;padding:20px 0;margin:0}
 </style>
 
@@ -38,11 +24,6 @@
   </div>
   <div id="DL_ST"></div>
   <div id="DLA_RES"></div>
-</div>
-
-<div class="dl-ov" id="dl-ov">
-  <span id="dl-ovck">🕐</span>
-  <span>Espera, Generando con IA...</span>
 </div>
 
 <script>
@@ -57,20 +38,18 @@
 
   document.getElementById('DLA_APP').style.display='';
 
-  const CK=['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'];
-  let _oviv=null,_ovck=0;
-  const ovEl=document.getElementById('dl-ov');
-  const ovckEl=document.getElementById('dl-ovck');
+  const WA=window.__CFG?.waitAnim||'';
   const stEl=document.getElementById('DL_ST');
   const resEl=document.getElementById('DLA_RES');
   const inEl=document.getElementById('DLA_IN');
+  let _resHTML='';
 
   const _ac=new AbortController();
-  document.getElementById('content').addEventListener('contentUnload',()=>{_ac.abort();hideOv();},{once:true});
+  document.getElementById('content').addEventListener('contentUnload',()=>{_ac.abort();},{once:true});
 
   function ST(msg){if(stEl)stEl.textContent=msg;}
-  function showOv(){ovEl.classList.add('open');_ovck=0;_oviv=setInterval(()=>{ovckEl.textContent=CK[_ovck++%12];},150);}
-  function hideOv(){clearInterval(_oviv);_oviv=null;ovEl.classList.remove('open');}
+  function showWait(){_resHTML=resEl.innerHTML;resEl.innerHTML=`<div class="da-wait"><img src="${WA}" class="wait-anim"></div>`;}
+  function hideWait(){resEl.innerHTML=_resHTML;}
 
   function fmtDur(s){
     if(!s)return'';
@@ -103,7 +82,7 @@
 
   async function doDownload(url,type){
     ST('');
-    showOv();
+    showWait();
     try{
       const res=await fetch('/api/dla',{
         method:'POST',
@@ -112,9 +91,9 @@
         signal:_ac.signal
       });
       const j=await res.json().catch(()=>({}));
-      if(!res.ok){hideOv();ST(j.error||'Perdon, Error al Generar 😿');return;}
-      if(!j.url){hideOv();ST('Perdon, Error al Generar 😿');return;}
-      hideOv();ST('Listo ✅');
+      if(!res.ok){hideWait();ST(j.error||'Perdon, Error al Generar 😿');return;}
+      if(!j.url){hideWait();ST('Perdon, Error al Generar 😿');return;}
+      hideWait();ST('Listo ✅');
       try{
         const blob=_hasBGF
           ?await fetchBlobBG(j.url,'dla-'+Date.now())
@@ -124,7 +103,7 @@
         a.href=burl;a.download=j.filename||'media';a.click();
         setTimeout(()=>URL.revokeObjectURL(burl),15000);
       }catch{window.open(j.url,'_blank');}
-    }catch(e){hideOv();if(e.name!=='AbortError')ST('Perdon, Error al Generar 😿');}
+    }catch(e){hideWait();if(e.name!=='AbortError')ST('Perdon, Error al Generar 😿');}
   }
 
   function renderResults(groups){
@@ -137,9 +116,9 @@
         const dur=item.duration?fmtDur(item.duration):'';
         const meta=[item.uploader,dur].filter(Boolean).join(' · ');
         const card=document.createElement('div');
-        card.className='da-item';
-        card.innerHTML=`<img class="da-thumb" src="${item.thumbnail||''}" loading="lazy" onerror="this.style.visibility='hidden'">
-<div class="da-info"><div class="da-title">${item.title}</div>${meta?`<div class="da-meta">${meta}</div>`:''}</div>
+        card.className='BMD1';
+        card.innerHTML=`<img src="${item.thumbnail||''}" loading="lazy" onerror="this.style.visibility='hidden'">
+<div class="BMD1-CN"><h3>${item.title}</h3>${meta?`<p>${meta}</p>`:''}</div>
 <div class="da-acts"><button class="da-ab" title="Audio">🎵</button><button class="da-ab" title="Video">🎬</button></div>`;
         card.querySelectorAll('.da-ab')[0].onclick=()=>doDownload(item.url,'audio');
         card.querySelectorAll('.da-ab')[1].onclick=()=>doDownload(item.url,'video');
@@ -151,7 +130,7 @@
 
   async function doSearch(q){
     q=q.trim();if(!q)return;
-    resEl.innerHTML='<div class="da-searching"><span>🔍</span><span>Generando...</span></div>';
+    resEl.innerHTML=`<div class="da-wait"><img src="${WA}" class="wait-anim"></div>`;
     try{
       const r=await fetch(`/api/dla?q=${encodeURIComponent(q)}`,{signal:_ac.signal});
       const data=await r.json();

@@ -1,7 +1,6 @@
 <div style="text-align:center;position:relative;padding-top:0;margin-top:0">
 <style>
 ._ic{display:block;margin:0 auto 8px}
-.wt-wrap{padding:12px;max-width:520px;margin:0 auto}
 .sk-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:24px;padding:10px 16px;margin-bottom:14px;position:relative;overflow:hidden;transition:border-color .2s,box-shadow .2s}
 .sk-bar:focus-within{border-color:rgba(56,189,248,.4);box-shadow:0 0 0 3px rgba(56,189,248,.08),0 8px 32px rgba(0,0,0,.25)}
 .sk-bar input[type=text]{flex:1;background:none;border:none;outline:none;color:white;font-size:.9em;min-width:0;font-family:inherit;position:relative;z-index:1}
@@ -18,7 +17,6 @@
 .wt-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px}
 .wt-city{font-size:1.2em;font-weight:700;color:white}
 .wt-sub{font-size:.75em;color:rgba(255,255,255,.45);margin-top:1px}
-.wt-time{font-size:.72em;color:rgba(255,255,255,.38);text-align:right}
 .wt-main{display:flex;align-items:center;gap:14px;margin:10px 0 14px}
 .wt-icon{font-size:3.8rem;line-height:1;filter:drop-shadow(0 2px 10px rgba(0,0,0,.5))}
 .wt-temps{display:flex;flex-direction:column}
@@ -54,23 +52,9 @@
 .wt-fc-hi{font-size:.88em;font-weight:700;color:white}
 .wt-fc-lo{font-size:.73em;color:rgba(255,255,255,.42)}
 .wt-fc-pp{font-size:.65em;color:#7dd3fc}
-.wt-fav-it{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:10px 13px;cursor:pointer;transition:background .15s;margin-bottom:6px}
-.wt-fav-it:last-child{margin-bottom:0}
-.wt-fav-it:hover{background:rgba(255,255,255,.13)}
-.wt-fav-n{font-size:.88em;font-weight:600;color:white}
-.wt-fav-d{font-size:.72em;color:rgba(255,255,255,.45);margin-top:1px;text-transform:capitalize}
-.wt-fav-r{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.wt-fav-tmp{font-size:1.05em;font-weight:700;color:white}
-.wt-fav-ic{font-size:1.2rem}
-.wt-rm{background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:.95rem;padding:2px 5px;transition:color .15s;line-height:1}
-.wt-rm:hover{color:#f87171}
-.wt-addbtn{width:100%;margin-top:10px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.28);border-radius:11px;color:white;padding:8px 14px;cursor:pointer;font-size:.83em;transition:background .2s;text-align:center}
-.wt-addbtn:hover{background:rgba(56,189,248,.25)}
 .wt-msg{text-align:center;color:rgba(255,255,255,.42);font-size:.88em;padding:28px 0}
 .wt-ld{display:flex;flex-direction:column;align-items:center;padding:36px 0;gap:8px}
-.wt-ld span:first-child{font-size:3rem;animation:wt-p 1.2s ease-in-out infinite}
-.wt-ld span:last-child{color:rgba(255,255,255,.5);font-size:.88em}
-@keyframes wt-p{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:.65}}
+.wt-ld span{color:rgba(255,255,255,.5);font-size:.88em}
 .wt-sug{display:none;background:rgba(18,18,28,.97);border:1px solid rgba(255,255,255,.12);border-radius:14px;overflow:hidden;margin-top:-8px;margin-bottom:10px}
 .wt-sug-it{padding:10px 16px;cursor:pointer;color:white;font-size:.88em;border-bottom:1px solid rgba(255,255,255,.06);transition:background .15s}
 .wt-sug-it:last-child{border-bottom:none}
@@ -79,23 +63,20 @@
 
 <img class="_ic" src="web/otros/Archivos/Imagenes/Permanente/ICON.avif" width="90px">
 
-<div class="wt-wrap" id="wt-wrap">
-  <div class="sk-bar" id="wt-bar">
-    <a class="sk-home" href="web/es.html">🏠</a>
-    <input id="wt-q" type="text" placeholder="Buscar ciudad en Paraguay...">
-    <button class="sk-ib" id="wt-sbtn">🔍</button>
-    <button class="sk-ib" id="wt-gbtn" title="Mi ubicacion">📍</button>
-  </div>
-  <div class="wt-sug" id="wt-sug"></div>
-  <div id="wt-main"></div>
-  <div id="wt-favs"></div>
+<div class="sk-bar" id="wt-bar">
+  <a class="sk-home" href="web/es.html">🏠</a>
+  <input id="wt-q" type="text" placeholder="Buscar ciudad en Paraguay...">
+  <button class="sk-ib" id="wt-sbtn">🔍</button>
+  <button class="sk-ib" id="wt-gbtn" title="Mi ubicacion">📍</button>
 </div>
+<div class="wt-sug" id="wt-sug"></div>
+<div id="wt-main"></div>
+
 <div class="sk-toast" id="wt-toast"></div>
 
 <script>
 (function(){
-  const CD=8000,LS='wt_f_v1';
-  const CK=['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'];
+  const CD=8000;
   const WI={
     200:'⛈️',201:'⛈️',202:'⛈️',210:'🌩️',211:'🌩️',212:'🌩️',221:'🌩️',230:'⛈️',231:'⛈️',232:'⛈️',
     300:'🌦️',301:'🌦️',302:'🌧️',310:'🌦️',311:'🌧️',312:'🌧️',313:'🌦️',314:'🌧️',321:'🌦️',
@@ -104,10 +85,10 @@
     701:'🌫️',711:'🌫️',721:'🌫️',731:'🌪️',741:'🌫️',751:'🌫️',761:'🌫️',762:'🌋',771:'🌬️',781:'🌪️',
     800:'☀️',801:'🌤️',802:'⛅',803:'🌥️',804:'☁️'
   };
-  let _cdEnd=0,_cdRaf=null,_cki=0,_ckiv=null,_ac=null,_fac=null,_sac=null,_sugT,_tt;
+  const WA=window.__CFG?.waitAnim||'';
+  let _cdEnd=0,_cdRaf=null,_ac=null,_sac=null,_sugDebounce;
 
   const mainEl=document.getElementById('wt-main');
-  const favEl=document.getElementById('wt-favs');
   const qEl=document.getElementById('wt-q');
   const sugEl=document.getElementById('wt-sug');
   const tEl=document.getElementById('wt-toast');
@@ -115,7 +96,6 @@
   function toast(m){tEl.textContent=m;tEl.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>tEl.classList.remove('show'),2800);}
   function wi(id){return WI[id]||'🌡️';}
   function R(n){return Math.round(n);}
-  function stopCK(){clearInterval(_ckiv);_ckiv=null;}
 
   function fmtT(ts,tz){return new Date((ts+tz)*1000).toLocaleTimeString('es-PY',{hour:'2-digit',minute:'2-digit',timeZone:'UTC'});}
   function fmtDay(ts,tz,i){
@@ -123,11 +103,6 @@
     return new Date((ts+tz)*1000).toLocaleDateString('es-PY',{weekday:'short',timeZone:'UTC'});
   }
   function windDir(d){return['N','NE','E','SE','S','SO','O','NO'][Math.round(d/45)%8];}
-
-  function getFavs(){try{return JSON.parse(localStorage.getItem(LS)||'[]');}catch{return[];}}
-  function saveFavs(f){localStorage.setItem(LS,JSON.stringify(f));}
-  function addFav(e){const f=getFavs();if(f.some(x=>x.name===e.name))return;f.unshift(e);if(f.length>10)f.pop();saveFavs(f);renderFavs();}
-  function rmFav(n){saveFavs(getFavs().filter(f=>f.name!==n));renderFavs();}
 
   function startCD(){
     _cdEnd=Date.now()+CD;qEl.readOnly=true;qEl.blur();
@@ -143,9 +118,7 @@
   }
 
   function showLoad(){
-    mainEl.innerHTML='<div class="wt-ld"><span id="wt-ck">🕐</span><span>Cargando clima...</span></div>';
-    const e=document.getElementById('wt-ck');_cki=0;stopCK();
-    _ckiv=setInterval(()=>{if(e)e.textContent=CK[_cki++%12];},150);
+    mainEl.innerHTML=`<div class="wt-ld"><img class="wait-anim" src="${WA}"><span>Cargando clima...</span></div>`;
   }
 
   function mkDays(list,tz){
@@ -159,10 +132,8 @@
   }
 
   function render(dW,dF){
-    stopCK();
     const w=dW,tz=w.timezone,list=dF.list||[];
     const days=mkDays(list,tz),hrs=list.slice(0,12);
-    const isFav=getFavs().some(f=>f.name===w.name);
     const now=new Date().toLocaleTimeString('es-PY',{hour:'2-digit',minute:'2-digit'});
 
     let h=`<div class="wt-card">
@@ -190,7 +161,6 @@
   <div class="wt-sun"><span>☀️</span><span>Amanecer / Ocaso</span></div>
   <div class="wt-sun"><span>🌇</span><span>${fmtT(w.sys.sunset,tz)}</span></div>
 </div>
-${!isFav?`<button class="wt-addbtn" id="wt-ab">⭐ Agregar a favoritos</button>`:''}
 </div>`;
 
     if(hrs.length){
@@ -214,11 +184,6 @@ ${!isFav?`<button class="wt-addbtn" id="wt-ab">⭐ Agregar a favoritos</button>`
     }
 
     mainEl.innerHTML=h;
-    const ab=document.getElementById('wt-ab');
-    if(ab)ab.onclick=()=>{
-      addFav({name:w.name,lat:w.coord.lat,lon:w.coord.lon,temp:R(w.main.temp),icon:wi(w.weather[0].id),desc:w.weather[0].description});
-      ab.remove();toast('Agregado ⭐');
-    };
   }
 
   async function loadW(params){
@@ -230,7 +195,6 @@ ${!isFav?`<button class="wt-addbtn" id="wt-ab">⭐ Agregar a favoritos</button>`
       if(!r.ok)throw new Error(d.error||r.status);
       render(d.weather,d.forecast);
     }catch(e){
-      stopCK();
       if(e.name==='AbortError')return;
       mainEl.innerHTML=`<p class="wt-msg">${e.message==='Solo Paraguay'?'📍 Solo ciudades de Paraguay':'⚠️ '+e.message}</p>`;
     }
@@ -253,7 +217,6 @@ ${!isFav?`<button class="wt-addbtn" id="wt-ab">⭐ Agregar a favoritos</button>`
     );
   }
 
-  let _sugDebounce;
   qEl.addEventListener('input',()=>{
     clearTimeout(_sugDebounce);
     const v=qEl.value.trim();
@@ -282,49 +245,13 @@ ${!isFav?`<button class="wt-addbtn" id="wt-ab">⭐ Agregar a favoritos</button>`
   document.getElementById('wt-gbtn').onclick=geoLocate;
   qEl.addEventListener('keydown',e=>{if(e.key==='Enter')search();});
 
-  async function renderFavs(){
-    const favs=getFavs();
-    if(!favs.length){favEl.innerHTML='';return;}
-    favEl.innerHTML=`<div class="wt-card"><div class="wt-sec">⭐ Favoritos</div><div id="wt-fl"></div></div>`;
-    const fl=document.getElementById('wt-fl');
-    favs.forEach(f=>{
-      const d=document.createElement('div');d.className='wt-fav-it';
-      d.innerHTML=`<div><div class="wt-fav-n">${f.name}</div><div class="wt-fav-d">${f.desc||''}</div></div>
-<div class="wt-fav-r"><span class="wt-fav-ic">${f.icon||'🌡️'}</span><span class="wt-fav-tmp" id="ft-${f.name.replace(/\W/g,'_')}">${f.temp!=null?f.temp+'°':'...'}</span><button class="wt-rm">✕</button></div>`;
-      d.querySelector('.wt-rm').onclick=e=>{e.stopPropagation();rmFav(f.name);};
-      d.onclick=e=>{if(e.target.classList.contains('wt-rm'))return;loadW({lat:f.lat,lon:f.lon});document.getElementById('wt-wrap').scrollIntoView({behavior:'smooth',block:'start'});};
-      fl.appendChild(d);
-    });
-    refreshFavTemps(favs);
-  }
-
-  async function refreshFavTemps(favs){
-    if(_fac){_fac.abort();}_fac=new AbortController();
-    await Promise.all(favs.map(async f=>{
-      try{
-        const r=await fetch(`/api/weather?lat=${f.lat}&lon=${f.lon}`,{signal:_fac.signal});
-        if(!r.ok)return;
-        const d=await r.json();
-        const el=document.getElementById('ft-'+f.name.replace(/\W/g,'_'));
-        if(el&&d.weather){
-          const t=R(d.weather.main.temp);el.textContent=t+'°';
-          const fs=getFavs(),idx=fs.findIndex(x=>x.name===f.name);
-          if(idx>=0){fs[idx].temp=t;fs[idx].icon=wi(d.weather.weather[0].id);fs[idx].desc=d.weather.weather[0].description;saveFavs(fs);}
-        }
-      }catch{}
-    }));
-  }
-
   const _cu=document.getElementById('content');
   if(_cu)_cu.addEventListener('contentUnload',()=>{
     if(_ac){_ac.abort();_ac=null;}
-    if(_fac){_fac.abort();_fac=null;}
     if(_sac){_sac.abort();_sac=null;}
     if(_cdRaf){cancelAnimationFrame(_cdRaf);_cdRaf=null;}
-    stopCK();
   },{once:true});
 
-  renderFavs();
   geoLocate();
 })();
 </script>

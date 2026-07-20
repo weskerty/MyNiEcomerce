@@ -106,7 +106,7 @@
 </div>
 
 <div class="sc-modal sc-proc-bg" id="sc-prog-modal">
-  <span id="sc-ck" style="font-size:2.5rem">🕐</span>
+  <img id="sc-ck" class="wait-anim" src="">
   <canvas id="sc-lv" class="sc-lv" width="256" height="256"></canvas>
   <div class="sc-plbl" id="sc-prog-lbl">📤 Subiendo...</div>
   <div class="sc-pbar-w"><div class="sc-pbar" id="sc-pbar"></div></div>
@@ -138,6 +138,8 @@
 (function(){
   const PG_H=18,PG_V=6,MAX_SEL=10,CD_MS=10000,ADS=false;
   const MAX_F=30,MAX_SZ=20*1024*1024,DIM=256,TARGET=900*1024;
+  const WA=window.__CFG?.waitAnim||'';
+  document.getElementById('sc-ck').src=WA;
   const CK=['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'];
   let PG=window.innerHeight>window.innerWidth?PG_V:PG_H;
   let _ckiv=null,_cki=0;
@@ -235,8 +237,7 @@
   async function doFetch(q){
     if(mode==='create'){frames.forEach(freeFrame);frames=[];cropQ=[];}
     setMode('search');S.clear();updCf();
-    gEl.innerHTML='<div class="sk-searching"><span id="sk-ck">🕐</span><span>Buscando</span></div>';
-    ckStart(document.getElementById('sk-ck'));
+    gEl.innerHTML='<div class="sk-searching"><img class="wait-anim" src="'+WA+'"><span>Buscando</span></div>';
     pgEl.innerHTML='';
     const params=new URLSearchParams({cid:getCID()});if(q)params.set('q',q);
     try{
@@ -251,8 +252,7 @@
     if(mode==='create'){frames.forEach(freeFrame);frames=[];cropQ=[];}
     setMode('search');S.clear();updCf();
     cfEl.style.display='none';waBtn.style.display='none';
-    gEl.innerHTML='<div class="sk-searching"><span id="sk-ck">🕐</span><span>Descargando pack TG...</span></div>';
-    ckStart(document.getElementById('sk-ck'));
+    gEl.innerHTML='<div class="sk-searching"><img class="wait-anim" src="'+WA+'"><span>Descargando pack TG...</span></div>';
     pgEl.innerHTML='';
     try{
       const res=await fetch('/api/stickers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pack})});
@@ -523,7 +523,7 @@
 
   scCf.onclick=async()=>{
     scCf.disabled=true;progM.classList.add('open');document.body.style.overflow='hidden';
-    ckStart(document.getElementById('sc-ck'));setProg(0,'Procesando...');
+    setProg(0,'Procesando...');
     try{
       const form=new FormData();
       for(let i=0;i<frames.length;i++){
