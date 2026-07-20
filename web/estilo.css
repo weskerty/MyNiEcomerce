@@ -310,7 +310,7 @@ th {
  
 .back-button:hover { box-shadow: 0 6px 20px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.16); text-decoration: none }
 
-/* BTB BotonBasico reemplaza boton html por defecto */
+/* boton html predetermina2 */
 button:not([class]) {
     position: relative;
     overflow: hidden;
