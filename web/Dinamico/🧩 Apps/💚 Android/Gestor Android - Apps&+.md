@@ -3,10 +3,13 @@
 #adbStorePg button{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;padding:6px 18px;cursor:pointer;font-size:.85em;font-family:inherit;transition:background .2s}
 #adbStorePg button:hover{background:rgba(255,255,255,.18)}
 #adbStorePg button:disabled{opacity:.3;cursor:default}
+#adbStWrap{position:relative;display:inline-block}
+#adbStOv{position:absolute;inset:-6px -12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;gap:8px;border-radius:8px}
+#adbStOv img{width:20px;height:20px}
 </style>
 <div class="adb-wrap">
 <h2>Gestor Android</h2>
-<p id="adbSt">Iniciando...</p>
+<div id="adbStWrap"><p id="adbSt">Iniciando...</p><div id="adbStOv" style="display:none"><img id="adbStOvImg"></div></div>
 
 <details id="adbHowTo">
   <summary style="">Como Activar ADB</summary>
@@ -115,6 +118,10 @@ const CMDS1=[
 ];
 
 (async()=>{
+const stOv=document.getElementById("adbStOv"),stOvImg=document.getElementById("adbStOvImg");
+const wa=window.__CFG?.waitAnim;
+if(wa){stOvImg.src=wa;stOv.style.display=""}
+try{
 const{AdbDaemonTransport,Adb,adbGeneratePublicKey}=await import("https://esm.unpkg.com/@yume-chan/adb@2.6.0?bundle&target=esnext");
 const{AdbDaemonWebUsbDeviceManager}=await import("https://esm.unpkg.com/@yume-chan/adb-daemon-webusb@2.1.0?bundle&target=esnext");
 const{default:AdbWebCredentialStore}=await import("https://esm.unpkg.com/@yume-chan/adb-credential-web@2.0.1?bundle&target=esnext");
@@ -657,6 +664,12 @@ if(stAC)stAC.abort();
 document.getElementById("content").removeEventListener("contentUnload",cu);
 },{once:true});
 
+stOv.style.display="none";
 setSt("Presiona Conectar para vincular tu telefono.");
+}catch(e){
+stOv.style.display="none";
+setSt("Error al iniciar: "+e.message);
+console.error(e);
+}
 })();
 </script>
