@@ -1,4 +1,6 @@
-const RH={'content-type':'application/json'};
+const RH={'content-type':'application/json','cache-control':'public,max-age=86400,stale-while-revalidate=604800'};
+const RA={'content-type':'application/vnd.android.package-archive','cache-control':'public,max-age=86400,stale-while-revalidate=604800'};
+const RE={'content-type':'application/json','cache-control':'no-store'};
 const TO=8000;
 const FS='https://search.f-droid.org/api/search_apps?q=';
 const FP='https://f-droid.org/api/v1/packages/';
@@ -31,11 +33,11 @@ export async function onRequestGet({request}){
       const pkg=u.searchParams.get('pkg')||'';
       const vc=u.searchParams.get('vc')||'';
       const r=await fetchTO(FR+encodeURIComponent(pkg)+'_'+encodeURIComponent(vc)+'.apk');
-      return new Response(r.body,{status:r.status,headers:{'content-type':'application/vnd.android.package-archive'}});
+      return new Response(r.body,{status:r.status,headers:RA});
     }
 
-    return new Response(JSON.stringify({error:'action invalido'}),{status:400,headers:RH});
+    return new Response(JSON.stringify({error:'action invalido'}),{status:400,headers:RE});
   }catch(e){
-    return new Response(JSON.stringify({error:'timeout o error de red'}),{status:502,headers:RH});
+    return new Response(JSON.stringify({error:'timeout o error de red'}),{status:502,headers:RE});
   }
 }

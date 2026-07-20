@@ -309,6 +309,65 @@ th {
 }
  
 .back-button:hover { box-shadow: 0 6px 20px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.16); text-decoration: none }
+
+/* BTB BotonBasico reemplaza boton html por defecto */
+button:not([class]) {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    background: linear-gradient(135deg,rgba(255,255,255,.14) 0%,rgba(255,255,255,.04) 50%,rgba(255,255,255,.1) 100%);
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: .9em;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color .18s ease, background .2s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,.1), inset 0 -1px 0 rgba(0,0,0,.2);
+    will-change: transform;
+}
+
+button:not([class])::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.18), transparent 55%);
+    opacity: .6;
+    pointer-events: none;
+}
+
+button:not([class])::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.12), transparent 60%);
+    transform: translateX(-120%);
+    transition: .6s;
+    pointer-events: none;
+}
+
+button:not([class]):hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,.35);
+    box-shadow: 0 6px 20px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.14);
+}
+
+button:not([class]):hover::after {
+    transform: translateX(120%);
+}
+
+button:not([class]):disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+button:not([class]):disabled:hover {
+    transform: none;
+    border-color: rgba(255,255,255,0.2);
+}
+
  
 /* botones grandes */
 .BOTON-M1{

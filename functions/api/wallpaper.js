@@ -70,7 +70,7 @@ export async function onRequestGet(context){
   const tr=u.searchParams.get('track');
   if(tr&&env.UNSPLASH_KEY){
     context.waitUntil(fetch(`${decodeURIComponent(tr)}?client_id=${env.UNSPLASH_KEY}`).catch(()=>{}));
-    return new Response('ok');
+    return new Response('ok',{headers:{'cache-control':'no-store'}});
   }
 
   const q=u.searchParams.get('q')||'nature landscape';
@@ -87,6 +87,6 @@ export async function onRequestGet(context){
   const tp=Math.min(Math.max(a.tp,b.tp,c.tp,1),500);
 
   return new Response(JSON.stringify({results,total_pages:tp,total:results.length}),{
-    headers:{...RH,'cache-control':'public,max-age=86400'}
+    headers:{...RH,'cache-control':'public,max-age=86400,stale-while-revalidate=604800'}
   });
 }

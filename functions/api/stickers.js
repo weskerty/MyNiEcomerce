@@ -1,4 +1,5 @@
 const RH = { "Content-Type": "application/json" };
+const RH_C = { "Content-Type": "application/json", "cache-control": "public,max-age=86400,stale-while-revalidate=604800" };
 const QUALITY = 'sm';
 const LOCALE = 'PY';
 const CONTENT_FILTER = 'off';
@@ -60,7 +61,7 @@ export async function onRequestGet(context) {
     }
   }
 
-  return new Response(JSON.stringify({ data }), { status: 200, headers: RH });
+  return new Response(JSON.stringify({ data }), { status: 200, headers: RH_C });
 }
 
 export async function onRequestPost(context) {
