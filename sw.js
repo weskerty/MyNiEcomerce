@@ -1,4 +1,4 @@
-const V='v91';
+const V='v92';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -43,7 +43,7 @@ const TEMP_ROUTES=[{match:'/api/',ttl:18000000}];
 const EXT_CACHE=[
   {origin:'tetunori.github.io',ttl:0}
 ];
-const MIRRORS=['https://weskerty.github.io/MyNiEcomerce','https://mc.cheagana.com'];
+const MIRRORS=['https://weskerty.github.io/MyNiEcomerce','https://lawiskapy.codeberg.page/kore.js','https://mc.cheagana.com'];
 const MIRROR_TIMEOUT=5000;
 let serverIsDown=false;
 const EXT_C='ext-fonts';
