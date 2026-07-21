@@ -48,6 +48,7 @@
 <div class="ST_LIST" id="ST_LI"></div>
 <div class="ST_ACTIONS">
 <button id="ST_NF">📁 Nueva carpeta</button>
+<button id="ST_DW" disabled>⬇️ Descargar seleccionados</button>
 <button id="ST_DL" class="danger" disabled>🗑️ Borrar seleccionados</button>
 </div>
 </div>
@@ -67,6 +68,7 @@
   const crEl=document.getElementById('ST_CR');
   const liEl=document.getElementById('ST_LI');
   const nfBtn=document.getElementById('ST_NF');
+  const dwBtn=document.getElementById('ST_DW');
   const dlBtn=document.getElementById('ST_DL');
   let curPath=[];
   let sel=new Set();
@@ -108,7 +110,12 @@
     });
   }
 
-  function updDlBtn(){dlBtn.disabled=sel.size===0;dlBtn.textContent='🗑️ Borrar seleccionados'+(sel.size?' ('+sel.size+')':'');}
+  function updDlBtn(){
+    dlBtn.disabled=sel.size===0;
+    dlBtn.textContent='🗑️ Borrar seleccionados'+(sel.size?' ('+sel.size+')':'');
+    dwBtn.disabled=sel.size===0;
+    dwBtn.textContent='⬇️ Descargar seleccionados'+(sel.size?' ('+sel.size+')':'');
+  }
 
   async function loadFS(){
     renderCrumb();
@@ -168,6 +175,48 @@
       for(const name of sel)await dir.removeEntry(name,{recursive:true});
       loadFS();
     }catch(e){alert('Error al borrar: '+e.message);}
+  };
+
+  function downloadBlob(file,name){
+    const url=URL.createObjectURL(file);
+    const a=document.createElement('a');
+    a.href=url;a.download=name;
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),4000);
+  }
+
+  async function delay(ms){return new Promise(r=>setTimeout(r,ms));}
+
+  async function downloadDirRecursive(dirHandle){
+    for await(const[name,handle]of dirHandle.entries()){
+      if(handle.kind==='directory'){
+        await downloadDirRecursive(handle);
+      }else{
+        const file=await handle.getFile();
+        downloadBlob(file,name);
+        await delay(250);
+      }
+    }
+  }
+
+  dwBtn.onclick=async()=>{
+    if(!sel.size)return;
+    dwBtn.disabled=true;
+    try{
+      const dir=await getDirByPath(curPath);
+      for(const name of sel){
+        const handle=await dir.getDirectoryHandle(name).catch(()=>null);
+        if(handle){
+          await downloadDirRecursive(handle);
+        }else{
+          const fh=await dir.getFileHandle(name);
+          const file=await fh.getFile();
+          downloadBlob(file,name);
+          await delay(250);
+        }
+      }
+    }catch(e){alert('Error al descargar: '+e.message);}
+    updDlBtn();
   };
 
   async function loadCaches(){

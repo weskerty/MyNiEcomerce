@@ -14,44 +14,36 @@
 .sk-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.97);border:1px solid rgba(255,255,255,.15);color:white;padding:10px 22px;border-radius:12px;font-size:.88em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999;white-space:nowrap}
 .sk-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .wt-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:20px;padding:18px 16px;margin-bottom:10px;text-align:left}
-.wt-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px}
-.wt-city{font-size:1.2em;font-weight:700;color:white}
-.wt-sub{font-size:.75em;color:rgba(255,255,255,.45);margin-top:1px}
-.wt-main{display:flex;align-items:center;gap:14px;margin:10px 0 14px}
-.wt-icon{font-size:3.8rem;line-height:1;filter:drop-shadow(0 2px 10px rgba(0,0,0,.5))}
-.wt-temps{display:flex;flex-direction:column}
-.wt-temp{font-size:3rem;font-weight:800;color:white;line-height:1}
-.wt-unit{font-size:1.1rem;color:rgba(255,255,255,.45);font-weight:400}
-.wt-desc{font-size:.88em;color:rgba(255,255,255,.65);text-transform:capitalize;margin-top:3px}
-.wt-fl{font-size:.78em;color:rgba(255,255,255,.4);margin-top:1px}
+.wt-city{font-size:1.3em;font-weight:600;color:white;text-align:center}
+.wt-sub{font-size:.78em;color:rgba(255,255,255,.5);text-align:center;margin-top:1px}
+.wt-temp{font-size:5rem;font-weight:200;color:white;line-height:1;text-align:center;margin:4px 0}
+.wt-desc{font-size:1em;color:rgba(255,255,255,.75);text-transform:capitalize;text-align:center}
+.wt-minmax{font-size:.92em;color:rgba(255,255,255,.55);text-align:center;margin-top:4px}
+.wt-minmax b{color:rgba(255,255,255,.85);font-weight:600}
 .wt-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .wt-st{background:rgba(255,255,255,.06);border-radius:11px;padding:9px 11px;display:flex;align-items:center;gap:8px}
 .wt-st span:first-child{font-size:1.2rem;flex-shrink:0}
 .wt-sl{display:flex;flex-direction:column}
 .wt-sk{font-size:.67em;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.04em}
 .wt-sv{font-size:.87em;color:white;font-weight:600}
-.wt-sunrow{display:flex;justify-content:space-around;margin-top:10px;background:rgba(255,255,255,.05);border-radius:11px;padding:9px 0}
-.wt-sun{display:flex;flex-direction:column;align-items:center;gap:2px}
-.wt-sun span:first-child{font-size:1.3rem}
-.wt-sun span:last-child{font-size:.7em;color:rgba(255,255,255,.5)}
 .wt-sec{color:rgba(255,255,255,.42);font-size:.75em;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .wt-hr{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
 .wt-hr::-webkit-scrollbar{display:none}
 .wt-hr-it{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:8px 9px;min-width:58px;display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;transition:background .15s}
+.wt-hr-it.wt-sun-it{background:rgba(255,200,80,.08);border-color:rgba(255,200,80,.18)}
 .wt-hr-it:hover{background:rgba(255,255,255,.14)}
 .wt-hr-h{font-size:.68em;color:rgba(255,255,255,.48)}
 .wt-hr-ic{font-size:1.25rem;line-height:1}
 .wt-hr-t{font-size:.83em;font-weight:700;color:white}
 .wt-hr-r{font-size:.63em;color:#7dd3fc}
-.wt-fc{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
-.wt-fc::-webkit-scrollbar{display:none}
-.wt-fc-d{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:10px 9px;min-width:68px;display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;transition:background .15s}
-.wt-fc-d:hover{background:rgba(255,255,255,.14)}
-.wt-fc-dn{font-size:.7em;color:rgba(255,255,255,.5);text-transform:capitalize}
-.wt-fc-ic{font-size:1.5rem;line-height:1}
-.wt-fc-hi{font-size:.88em;font-weight:700;color:white}
-.wt-fc-lo{font-size:.73em;color:rgba(255,255,255,.42)}
-.wt-fc-pp{font-size:.65em;color:#7dd3fc}
+.wt-fd{display:flex;flex-direction:column}
+.wt-fd-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.wt-fd-row:last-child{border-bottom:none}
+.wt-fd-dn{width:42px;font-size:.88em;color:rgba(255,255,255,.85);flex-shrink:0}
+.wt-fd-ic{font-size:1.3rem;width:30px;text-align:center;flex-shrink:0}
+.wt-fd-pp{width:36px;font-size:.72em;color:#7dd3fc;flex-shrink:0;text-align:center}
+.wt-fd-lo{width:26px;font-size:.85em;color:rgba(255,255,255,.42);text-align:right;flex-shrink:0}
+.wt-fd-hi{width:26px;font-size:.85em;color:white;font-weight:600;text-align:right;flex-shrink:0;margin-left:auto}
 .wt-msg{text-align:center;color:rgba(255,255,255,.42);font-size:.88em;padding:28px 0}
 .wt-ld{display:flex;flex-direction:column;align-items:center;padding:36px 0;gap:8px}
 .wt-ld span{color:rgba(255,255,255,.5);font-size:.88em}
@@ -121,6 +113,16 @@
     mainEl.innerHTML=`<div class="wt-ld"><img class="wait-anim" src="${WA}"><span>Cargando clima...</span></div>`;
   }
 
+  function mkHourItems(list,w,tz){
+    const items=list.slice(0,8).map(x=>({t:x.dt,type:'w',ic:wi(x.weather[0].id),temp:R(x.main.temp),pop:x.pop?R(x.pop*100):0}));
+    const now=Math.floor(Date.now()/1000);
+    const sr=w.sys.sunrise,ss=w.sys.sunset;
+    if(sr>now)items.push({t:sr,type:'sun',ic:'🌅',label:'Amanecer'});
+    if(ss>now)items.push({t:ss,type:'sun',ic:'🌇',label:'Ocaso'});
+    items.sort((a,b)=>a.t-b.t);
+    return items;
+  }
+
   function mkDays(list,tz){
     const m={};
     list.forEach(x=>{
@@ -131,54 +133,84 @@
     return Object.values(m).slice(0,6);
   }
 
+  const BGP='web/otros/Archivos/Imagenes/Permanente/ClimApp/';
+  const bgEl=document.getElementById('bg');
+  let _bgPrev=null,_bgSet=!1;
+
+  function bgFile(id,icon){
+    if(id>=200&&id<600)return'lluvia';
+    if(id>=600&&id<800)return'nublado';
+    if(id===803||id===804)return'nublado';
+    if(id===800||id===801||id===802)return icon&&icon.endsWith('n')?'despejado_noche':'soleado';
+    return null;
+  }
+
+  function setBg(id,icon){
+    if(!bgEl)return;
+    const f=bgFile(id,icon);
+    if(!f)return;
+    if(!_bgSet){_bgPrev=bgEl.getAttribute('style');_bgSet=!0;}
+    bgEl.style.backgroundImage=`url('${BGP}${f}.avif')`;
+    bgEl.style.backgroundSize='cover';
+    bgEl.style.backgroundPosition='center';
+  }
+
+  function restoreBg(){
+    if(!_bgSet||!bgEl)return;
+    bgEl.setAttribute('style',_bgPrev||'');
+    _bgSet=!1;
+  }
+
   function render(dW,dF){
     const w=dW,tz=w.timezone,list=dF.list||[];
-    const days=mkDays(list,tz),hrs=list.slice(0,12);
+    const days=mkDays(list,tz),hrItems=mkHourItems(list,w,tz);
     const now=new Date().toLocaleTimeString('es-PY',{hour:'2-digit',minute:'2-digit'});
+    setBg(w.weather[0].id,w.weather[0].icon);
 
     let h=`<div class="wt-card">
-<div class="wt-hdr">
-  <div><div class="wt-city">📍 ${w.name}</div><div class="wt-sub">🇵🇾 Paraguay · Actualizado ${now}</div></div>
+<div class="wt-city">📍 ${w.name}</div>
+<div class="wt-sub">🇵🇾 Paraguay · Actualizado ${now}</div>
+<div class="wt-temp">${R(w.main.temp)}°</div>
+<div class="wt-desc">${w.weather[0].description}</div>
+<div class="wt-minmax">Maxima: <b>${R(w.main.temp_max)}°</b>  Minima: <b>${R(w.main.temp_min)}°</b></div>
 </div>
-<div class="wt-main">
-  <span class="wt-icon">${wi(w.weather[0].id)}</span>
-  <div class="wt-temps">
-    <div class="wt-temp">${R(w.main.temp)}<span class="wt-unit">°C</span></div>
-    <div class="wt-desc">${w.weather[0].description}</div>
-    <div class="wt-fl">Sensacion ${R(w.main.feels_like)}°C · Max ${R(w.main.temp_max)}° Min ${R(w.main.temp_min)}°</div>
-  </div>
-</div>
+
+<div class="wt-card">
 <div class="wt-grid">
   <div class="wt-st"><span>💧</span><div class="wt-sl"><span class="wt-sk">Humedad</span><span class="wt-sv">${w.main.humidity}%</span></div></div>
   <div class="wt-st"><span>💨</span><div class="wt-sl"><span class="wt-sk">Viento</span><span class="wt-sv">${R(w.wind.speed*3.6)} km/h ${windDir(w.wind.deg)}</span></div></div>
   <div class="wt-st"><span>👁️</span><div class="wt-sl"><span class="wt-sk">Visibilidad</span><span class="wt-sv">${w.visibility?R(w.visibility/1000)+' km':'--'}</span></div></div>
   <div class="wt-st"><span>📊</span><div class="wt-sl"><span class="wt-sk">Presion</span><span class="wt-sv">${w.main.pressure} hPa</span></div></div>
   <div class="wt-st"><span>☁️</span><div class="wt-sl"><span class="wt-sk">Nubosidad</span><span class="wt-sv">${w.clouds.all}%</span></div></div>
-  ${w.wind.gust?`<div class="wt-st"><span>🌬️</span><div class="wt-sl"><span class="wt-sk">Rafaga</span><span class="wt-sv">${R(w.wind.gust*3.6)} km/h</span></div></div>`:'<div class="wt-st"><span>🌡️</span><div class="wt-sl"><span class="wt-sk">Punto rocio</span><span class="wt-sv">--</span></div></div>'}
-</div>
-<div class="wt-sunrow">
-  <div class="wt-sun"><span>🌅</span><span>${fmtT(w.sys.sunrise,tz)}</span></div>
-  <div class="wt-sun"><span>☀️</span><span>Amanecer / Ocaso</span></div>
-  <div class="wt-sun"><span>🌇</span><span>${fmtT(w.sys.sunset,tz)}</span></div>
+  ${w.wind.gust?`<div class="wt-st"><span>🌬️</span><div class="wt-sl"><span class="wt-sk">Rafaga</span><span class="wt-sv">${R(w.wind.gust*3.6)} km/h</span></div></div>`:''}
 </div>
 </div>`;
 
-    if(hrs.length){
+    if(hrItems.length){
       h+=`<div class="wt-card"><div class="wt-sec">🕐 Proximas horas</div><div class="wt-hr">`;
-      hrs.forEach(x=>{
-        const pp=x.pop?R(x.pop*100):0;
-        h+=`<div class="wt-hr-it"><span class="wt-hr-h">${fmtT(x.dt,tz)}</span><span class="wt-hr-ic">${wi(x.weather[0].id)}</span><span class="wt-hr-t">${R(x.main.temp)}°</span>${pp>10?`<span class="wt-hr-r">💧${pp}%</span>`:''}</div>`;
+      hrItems.forEach(x=>{
+        if(x.type==='sun'){
+          h+=`<div class="wt-hr-it wt-sun-it"><span class="wt-hr-h">${fmtT(x.t,tz)}</span><span class="wt-hr-ic">${x.ic}</span><span class="wt-hr-t" style="font-size:.68em">${x.label}</span></div>`;
+        }else{
+          h+=`<div class="wt-hr-it"><span class="wt-hr-h">${fmtT(x.t,tz)}</span><span class="wt-hr-ic">${x.ic}</span><span class="wt-hr-t">${x.temp}°</span>${x.pop>10?`<span class="wt-hr-r">💧${x.pop}%</span>`:''}</div>`;
+        }
       });
       h+=`</div></div>`;
     }
 
     if(days.length){
-      h+=`<div class="wt-card"><div class="wt-sec">📅 Pronostico 5 dias</div><div class="wt-fc">`;
+      h+=`<div class="wt-card"><div class="wt-sec">📅 Pronostico 5 dias</div><div class="wt-fd">`;
       days.forEach((d,i)=>{
         const hi=Math.max(...d.t),lo=Math.min(...d.t);
         const ic=d.ic[Math.floor(d.ic.length/2)]||d.ic[0];
         const pp=d.pop.length?R(Math.max(...d.pop)*100):0;
-        h+=`<div class="wt-fc-d"><span class="wt-fc-dn">${fmtDay(d.dt,tz,i)}</span><span class="wt-fc-ic">${wi(ic)}</span><span class="wt-fc-hi">${R(hi)}°</span><span class="wt-fc-lo">${R(lo)}°</span>${pp>10?`<span class="wt-fc-pp">💧${pp}%</span>`:''}</div>`;
+        h+=`<div class="wt-fd-row">
+<span class="wt-fd-dn">${fmtDay(d.dt,tz,i)}</span>
+<span class="wt-fd-ic">${wi(ic)}</span>
+<span class="wt-fd-pp">${pp>10?'💧'+pp+'%':''}</span>
+<span class="wt-fd-lo">${R(lo)}°</span>
+<span class="wt-fd-hi">${R(hi)}°</span>
+</div>`;
       });
       h+=`</div></div>`;
     }
@@ -250,6 +282,7 @@
     if(_ac){_ac.abort();_ac=null;}
     if(_sac){_sac.abort();_sac=null;}
     if(_cdRaf){cancelAnimationFrame(_cdRaf);_cdRaf=null;}
+    restoreBg();
   },{once:true});
 
   geoLocate();
