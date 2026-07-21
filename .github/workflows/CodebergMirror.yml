@@ -19,3 +19,4 @@ jobs:
         run: |
           git remote add codeberg https://laWiskaPY:${{ secrets.CODEBERG_TOKEN }}@codeberg.org/laWiskaPY/kore.js.git
           git push codeberg --mirror
+          git push codeberg HEAD:pages --force
