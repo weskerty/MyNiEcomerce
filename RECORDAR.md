@@ -14,6 +14,9 @@ animacion paso pestañas captura en low device desactivar. low device sera el mi
 
 ### Opcional
 
+
+
+
 Search buscar ID= tambien
 
 Galerias podria mostrar precios antes de entrar, search tambien...
