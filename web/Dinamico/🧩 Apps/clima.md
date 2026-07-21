@@ -45,6 +45,8 @@
 .wt-fd-lo{width:26px;font-size:.85em;color:rgba(255,255,255,.42);text-align:right;flex-shrink:0}
 .wt-fd-hi{width:26px;font-size:.85em;color:white;font-weight:600;text-align:right;flex-shrink:0;margin-left:auto}
 .wt-msg{text-align:center;color:rgba(255,255,255,.42);font-size:.88em;padding:28px 0}
+.wt-rec{text-align:center;font-size:.9em;color:rgba(255,255,255,.75)}
+.wt-rec b{color:white}
 .wt-ld{display:flex;flex-direction:column;align-items:center;padding:36px 0;gap:8px}
 .wt-ld span{color:rgba(255,255,255,.5);font-size:.88em}
 .wt-sug{display:none;background:rgba(18,18,28,.97);border:1px solid rgba(255,255,255,.12);border-radius:14px;overflow:hidden;margin-top:-8px;margin-bottom:10px}
@@ -78,7 +80,7 @@
     800:'☀️',801:'🌤️',802:'⛅',803:'🌥️',804:'☁️'
   };
   const WA=window.__CFG?.waitAnim||'';
-  let _cdEnd=0,_cdRaf=null,_ac=null,_sac=null,_sugDebounce;
+  let _cdEnd=0,_cdRaf=null,_ac=null,_sac=null,_sugDebounce,_rac=null;
 
   const mainEl=document.getElementById('wt-main');
   const qEl=document.getElementById('wt-q');
@@ -215,7 +217,37 @@
       h+=`</div></div>`;
     }
 
-    mainEl.innerHTML=h;
+    mainEl.innerHTML=h+`<div class="wt-card" id="wt-recCard"><div class="wt-sec">📊 Record historico</div><div id="wt-recBody" class="wt-rec"></div></div>`;
+    loadRecord(w.coord.lat,w.coord.lon,R(w.main.temp_max),R(w.main.temp_min));
+  }
+
+  async function loadRecord(lat,lon,todayHi,todayLo){
+    const body=document.getElementById('wt-recBody');
+    if(!body)return;
+    body.innerHTML=`<img class="wait-anim" src="${WA}" style="width:32px">`;
+    if(_rac){_rac.abort();}_rac=new AbortController();
+    try{
+      const md=new Date().toISOString().slice(5,10);
+      const r=await fetch(`https://archive-api.open-meteo.com/v1/archive?latitude=${lat}&longitude=${lon}&start_date=1950-01-01&end_date=${new Date().toISOString().slice(0,10)}&daily=temperature_2m_max,temperature_2m_min&timezone=auto`,{signal:_rac.signal});
+      const d=await r.json();
+      const t=d.daily?.time||[],hi=d.daily?.temperature_2m_max||[],lo=d.daily?.temperature_2m_min||[];
+      let hiV=-999,hiY=null,loV=999,loY=null;
+      for(let i=0;i<t.length;i++){
+        if(t[i].slice(5,10)!==md)continue;
+        if(hi[i]>hiV){hiV=hi[i];hiY=t[i].slice(0,4);}
+        if(lo[i]<loV){loV=lo[i];loY=t[i].slice(0,4);}
+      }
+      if(hiY===null){body.innerHTML='Sin datos historicos';return;}
+      const curYear=new Date().getFullYear();
+      let out='';
+      if(todayHi>hiV){out+=`Este es el dia mas caluroso desde ${hiY}<br>`;hiV=todayHi;hiY=curYear;}
+      if(todayLo<loV){out+=`Este es el dia mas frio desde ${loY}<br>`;loV=todayLo;loY=curYear;}
+      out+=`Record 🥵 ${R(hiV)}° en ${hiY} / 🥶 ${R(loV)}° en ${loY}`;
+      body.innerHTML=`<b>${out}</b>`;
+    }catch(e){
+      if(e.name==='AbortError')return;
+      body.innerHTML='No se pudo calcular el record';
+    }
   }
 
   async function loadW(params){
@@ -281,6 +313,7 @@
   if(_cu)_cu.addEventListener('contentUnload',()=>{
     if(_ac){_ac.abort();_ac=null;}
     if(_sac){_sac.abort();_sac=null;}
+    if(_rac){_rac.abort();_rac=null;}
     if(_cdRaf){cancelAnimationFrame(_cdRaf);_cdRaf=null;}
     restoreBg();
   },{once:true});
