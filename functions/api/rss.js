@@ -7,7 +7,7 @@ export async function onRequestGet(context) {
   if (!url) return new Response('', { status: 400, headers: H_E });
 
   const res = await fetch(`${env.SERVER_URL}/rss?url=${encodeURIComponent(url)}`, {
-    headers: { 'x-bridge-key': env.BRIDGE_KEY }
+    headers: { 'x-bridge-key': env.BRIDGE_KEY, 'x-real-ip': request.headers.get('cf-connecting-ip') || '' }
   });
 
   return new Response(res.body, { status: res.status, headers: res.ok ? H : H_E });

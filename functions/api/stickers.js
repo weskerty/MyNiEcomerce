@@ -67,11 +67,12 @@ export async function onRequestGet(context) {
 export async function onRequestPost(context) {
   const { request, env } = context;
   const ct = request.headers.get('content-type') || '';
+  const ip = request.headers.get('cf-connecting-ip') || '';
 
   if (ct.includes('multipart/form-data')) {
     const res = await fetch(`${env.SERVER_URL}/stickers/upload`, {
       method: 'POST',
-      headers: { 'x-bridge-key': env.BRIDGE_KEY, 'content-type': ct },
+      headers: { 'x-bridge-key': env.BRIDGE_KEY, 'content-type': ct, 'x-real-ip': ip },
       body: request.body
     });
     return new Response(await res.text(), { status: res.status, headers: RH });
@@ -81,7 +82,7 @@ export async function onRequestPost(context) {
   const ep   = JSON.parse(body).urls ? 'process' : 'tgpack';
   const res  = await fetch(`${env.SERVER_URL}/stickers/${ep}`, {
     method: 'POST',
-    headers: { 'x-bridge-key': env.BRIDGE_KEY, 'Content-Type': 'application/json' },
+    headers: { 'x-bridge-key': env.BRIDGE_KEY, 'Content-Type': 'application/json', 'x-real-ip': ip },
     body
   });
   return new Response(await res.text(), { status: res.status, headers: RH });

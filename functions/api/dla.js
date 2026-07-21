@@ -7,7 +7,7 @@ export async function onRequestGet(context){
  if(!q.trim()) return new Response('[]',{status:200,headers:RH_JSON});
  try{
   const res=await fetch(`${env.SERVER_URL}/dla?q=${encodeURIComponent(q.trim())}`,{
-   headers:{'x-bridge-key':env.BRIDGE_KEY}
+   headers:{'x-bridge-key':env.BRIDGE_KEY,'x-real-ip':request.headers.get('cf-connecting-ip')||''}
   });
   if(!res.ok) return new Response('[]',{status:200,headers:RH_JSON});
   return new Response(res.body,{status:200,headers:RH_JSON});
@@ -28,7 +28,7 @@ export async function onRequestPost(context){
 
  const res=await fetch(`${env.SERVER_URL}/dla`,{
   method:'POST',
-  headers:{'x-bridge-key':env.BRIDGE_KEY,'content-type':'application/json'},
+  headers:{'x-bridge-key':env.BRIDGE_KEY,'content-type':'application/json','x-real-ip':request.headers.get('cf-connecting-ip')||''},
   body:JSON.stringify({url:m[0],type:type==='audio'?'audio':'video'})
  });
 
