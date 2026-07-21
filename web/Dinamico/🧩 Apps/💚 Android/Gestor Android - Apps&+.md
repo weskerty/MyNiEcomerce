@@ -3,13 +3,15 @@
 #adbStorePg button{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;padding:6px 18px;cursor:pointer;font-size:.85em;font-family:inherit;transition:background .2s}
 #adbStorePg button:hover{background:rgba(255,255,255,.18)}
 #adbStorePg button:disabled{opacity:.3;cursor:default}
-#adbStWrap{position:relative;display:inline-block}
-#adbStOv{position:absolute;inset:-6px -12px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;gap:8px;border-radius:8px}
-#adbStOv img{width:20px;height:20px}
+#adbStorePg button:disabled{opacity:.3;cursor:default}
+.adb-wrap{position:relative}
+#adbStOv{position:absolute;inset:0;z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:rgba(0,0,0,.25);border-radius:12px}
+#adbStOv img{width:56px;height:56px}
+#adbStOv span{color:#fff;font-size:.95em}
 </style>
 <div class="adb-wrap">
 <h2>Gestor Android</h2>
-<div id="adbStWrap"><p id="adbSt">Iniciando...</p><div id="adbStOv" style="display:none"><img id="adbStOvImg"></div></div>
+<p id="adbSt">Iniciando...</p>
 
 <details id="adbHowTo">
   <summary style="">Como Activar ADB</summary>
@@ -68,6 +70,7 @@ VideoFuturo
 <p id="adbScrSt" style="opacity:.7;font-size:.85em">Presiona Pantalla para iniciar</p>
 <div id="adbScrHold" style="max-width:100%;display:inline-block;touch-action:none"></div>
 </div>
+<div id="adbStOv"><img id="adbStOvImg"><span>Iniciando...</span></div>
 </div>
 
 <dialog id="adbRepDlg">
@@ -120,7 +123,7 @@ const CMDS1=[
 (async()=>{
 const stOv=document.getElementById("adbStOv"),stOvImg=document.getElementById("adbStOvImg");
 const wa=window.__CFG?.waitAnim;
-if(wa){stOvImg.src=wa;stOv.style.display=""}
+if(wa){stOvImg.src=wa;stOv.style.display="flex"}
 try{
 const{AdbDaemonTransport,Adb,adbGeneratePublicKey}=await import("https://esm.unpkg.com/@yume-chan/adb@2.6.0?bundle&target=esnext");
 const{AdbDaemonWebUsbDeviceManager}=await import("https://esm.unpkg.com/@yume-chan/adb-daemon-webusb@2.1.0?bundle&target=esnext");
