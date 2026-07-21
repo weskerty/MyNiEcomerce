@@ -1,5 +1,5 @@
 
-
+clima minima maxima fail
 
 
 CentralPage contorno botones cambiar. no borroso.
