@@ -31,19 +31,18 @@
 .wt-hr::-webkit-scrollbar{display:none}
 .wt-hr-it{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:8px 9px;min-width:58px;display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;transition:background .15s}
 .wt-hr-it.wt-sun-it{background:rgba(255,200,80,.08);border-color:rgba(255,200,80,.18)}
-.wt-hr-it:hover{background:rgba(255,255,255,.14)}
 .wt-hr-h{font-size:.68em;color:rgba(255,255,255,.48)}
 .wt-hr-ic{font-size:1.25rem;line-height:1}
 .wt-hr-t{font-size:.83em;font-weight:700;color:white}
 .wt-hr-r{font-size:.63em;color:#7dd3fc}
-.wt-fd{display:flex;flex-direction:column}
-.wt-fd-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-.wt-fd-row:last-child{border-bottom:none}
-.wt-fd-dn{width:42px;font-size:.88em;color:rgba(255,255,255,.85);flex-shrink:0}
-.wt-fd-ic{font-size:1.3rem;width:30px;text-align:center;flex-shrink:0}
-.wt-fd-pp{width:36px;font-size:.72em;color:#7dd3fc;flex-shrink:0;text-align:center}
-.wt-fd-lo{width:26px;font-size:.85em;color:rgba(255,255,255,.42);text-align:right;flex-shrink:0}
-.wt-fd-hi{width:26px;font-size:.85em;color:white;font-weight:600;text-align:right;flex-shrink:0;margin-left:auto}
+.wt-fc{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.wt-fc::-webkit-scrollbar{display:none}
+.wt-fc-d{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:10px 9px;min-width:68px;display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0}
+.wt-fc-dn{font-size:.7em;color:rgba(255,255,255,.5);text-transform:capitalize}
+.wt-fc-ic{font-size:1.5rem;line-height:1}
+.wt-fc-hi{font-size:.88em;font-weight:700;color:white}
+.wt-fc-lo{font-size:.73em;color:rgba(255,255,255,.42)}
+.wt-fc-pp{font-size:.65em;color:#7dd3fc}
 .wt-msg{text-align:center;color:rgba(255,255,255,.42);font-size:.88em;padding:28px 0}
 .wt-rec{text-align:center;font-size:.9em;color:rgba(255,255,255,.75)}
 .wt-rec b{color:white}
@@ -201,18 +200,12 @@
     }
 
     if(days.length){
-      h+=`<div class="wt-card"><div class="wt-sec">📅 Pronostico 5 dias</div><div class="wt-fd">`;
+      h+=`<div class="wt-card"><div class="wt-sec">📅 Pronostico 5 dias</div><div class="wt-fc">`;
       days.forEach((d,i)=>{
         const hi=Math.max(...d.t),lo=Math.min(...d.t);
         const ic=d.ic[Math.floor(d.ic.length/2)]||d.ic[0];
         const pp=d.pop.length?R(Math.max(...d.pop)*100):0;
-        h+=`<div class="wt-fd-row">
-<span class="wt-fd-dn">${fmtDay(d.dt,tz,i)}</span>
-<span class="wt-fd-ic">${wi(ic)}</span>
-<span class="wt-fd-pp">${pp>10?'💧'+pp+'%':''}</span>
-<span class="wt-fd-lo">${R(lo)}°</span>
-<span class="wt-fd-hi">${R(hi)}°</span>
-</div>`;
+        h+=`<div class="wt-fc-d"><span class="wt-fc-dn">${fmtDay(d.dt,tz,i)}</span><span class="wt-fc-ic">${wi(ic)}</span><span class="wt-fc-hi">${R(hi)}°</span><span class="wt-fc-lo">${R(lo)}°</span>${pp>10?`<span class="wt-fc-pp">💧${pp}%</span>`:''}</div>`;
       });
       h+=`</div></div>`;
     }
