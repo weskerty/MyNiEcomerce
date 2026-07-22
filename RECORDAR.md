@@ -1,5 +1,6 @@
-
-clima minima maxima fail
+CT CiTy Ciudad infeeido por ubicacion 
+Etiqueta de Ciudad
+galerias muestra primeros los prosuctos de ciudades iguuales luego cercanas.
 
 
 CentralPage contorno botones cambiar. no borroso.
