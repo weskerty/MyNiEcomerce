@@ -165,6 +165,7 @@
   function render(dW,dF){
     const w=dW,tz=w.timezone,list=dF.list||[];
     const days=mkDays(list,tz),hrItems=mkHourItems(list,w,tz);
+    const d0=days[0],hiT=d0?R(Math.max(...d0.t)):R(w.main.temp_max),loT=d0?R(Math.min(...d0.t)):R(w.main.temp_min);
     const now=new Date().toLocaleTimeString('es-PY',{hour:'2-digit',minute:'2-digit'});
     setBg(w.weather[0].id,w.weather[0].icon);
 
@@ -173,7 +174,7 @@
 <div class="wt-sub">🇵🇾 Paraguay · Actualizado ${now}</div>
 <div class="wt-temp">${R(w.main.temp)}°</div>
 <div class="wt-desc">${w.weather[0].description}</div>
-<div class="wt-minmax">Maxima: <b>${R(w.main.temp_max)}°</b>  Minima: <b>${R(w.main.temp_min)}°</b></div>
+<div class="wt-minmax">Maxima: <b>${hiT}°</b>  Minima: <b>${loT}°</b></div>
 </div>
 
 <div class="wt-card">
