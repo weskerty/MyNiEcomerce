@@ -1,5 +1,18 @@
 !function(){if(window.__GI)return;window.__GI=true;
 const DJ='web/Dinamico/data.json',JC={},IDX={},ITEM=150,GAP=8,STRIDE=ITEM+GAP,IMG_H=110,TEXT_H=ITEM-IMG_H,PAGE=10,_observed=new Set();
+let _GU=window.GeoUtils||null,_GUp=null;
+function loadGU(){
+  if(_GU)return Promise.resolve(_GU);
+  if(_GUp)return _GUp;
+  _GUp=new Promise(res=>{
+    const s=document.createElement('script');
+    s.src='web/scripts/Otros/Geo/GeoUtils.js';
+    s.onload=()=>{_GU=window.GeoUtils;res(_GU)};
+    s.onerror=()=>{console.log('[CT] fallo al cargar GeoUtils.js');res(null)};
+    document.head.appendChild(s);
+  });
+  return _GUp;
+}
 const _S=document.createElement('style');
 _S.textContent=`
 .contenedor-imagenes-animado{width:100%;position:relative;overflow:hidden}
@@ -66,27 +79,40 @@ function rI(j,k,f){
 }
 const _ric=window.requestIdleCallback||(cb=>setTimeout(cb,1));
 
-let _geo=null,_geoReq=false;
+let _geo=null,_geoReq=false,_geoCbs=[];
 function reqGeo(cb){
   if(_geo){cb(_geo);return}
+  _geoCbs.push(cb);
+  console.log('[CT] reqGeo encolado, total pendientes:',_geoCbs.length);
   if(_geoReq)return;
   _geoReq=true;
-  if(!navigator.geolocation)return;
+  if(!navigator.geolocation){console.log('[CT] geolocation no disponible');return}
   navigator.geolocation.getCurrentPosition(
-    p=>{_geo={lat:p.coords.latitude,lon:p.coords.longitude};cb(_geo)},
-    ()=>{},
+    p=>{
+      _geo={lat:p.coords.latitude,lon:p.coords.longitude};
+      console.log('[CT] GPS resuelto:',_geo,'disparando',_geoCbs.length,'callbacks');
+      _geoCbs.forEach(f=>f(_geo));
+      _geoCbs=[];
+    },
+    e=>{console.log('[CT] GPS denegado o error:',e.message)},
     {}
   );
 }
 function sortByCT(imgs,geo){
-  const GU=window.GeoUtils;if(!GU)return imgs;
+  if(!_GU){console.log('[CT] GeoUtils no cargado, sin reordenar');return imgs}
   const withD=imgs.map(p=>{
-    const ct=GU.parseCT(p);
-    const d=ct?GU.haversine(geo.lat,geo.lon,ct.lat,ct.lon):Infinity;
+    const ct=_GU.parseCT(p);
+    const d=ct?_GU.haversine(geo.lat,geo.lon,ct.lat,ct.lon):Infinity;
     return{p,d};
   });
+  console.log('[CT] sortByCT geo usuario:',geo,'items:',withD.map(x=>({p:x.p.split('/').pop(),d:x.d})));
   withD.sort((a,b)=>a.d-b.d);
   return withD.map(x=>x.p);
+}
+function applySort(imgs,onReady){
+  loadGU().then(()=>{
+    reqGeo(geo=>onReady(sortByCT(imgs,geo)));
+  });
 }
 
 function mkCarousel(c,imgs,isMD,altMap){
@@ -353,21 +379,22 @@ async function pCont(c,isSw){
     const imgs=fFixed?rI(j,key,fFixed):idx._all;
     c.innerHTML='';if(!imgs.length)return;
     if(isSw){mkCarousel(c,imgs);return}
-    const grid=mkGrid(c,_geo?sortByCT(imgs,_geo):imgs);
-    if(grid&&!_geo)reqGeo(geo=>grid.setImgs(sortByCT(imgs,geo)));
+    const grid=mkGrid(c,imgs);
+    if(grid)applySort(imgs,ordered=>grid.setImgs(ordered));
     return;
   }
   decorateFlat(c);
   c.innerHTML='';
-  const grid=mkGrid(c,_geo?sortByCT(idx._all,_geo):idx._all);
+  const grid=mkGrid(c,idx._all);
   if(!grid)return;
-  let curImgs=idx._all;
-  if(!_geo)reqGeo(geo=>grid.setImgs(sortByCT(curImgs,geo)));
+  let curImgs=idx._all,curTok=0;
+  applySort(curImgs,ordered=>grid.setImgs(ordered));
   const bar=mkSubBtns(c,idx.f,name=>{
     const imgs=name?idx.f[name]:idx._all;
-    curImgs=imgs;
+    curImgs=imgs;const tok=++curTok;
     if(c._h2)c._h2.textContent=name||c._baseTitle;
-    grid.setImgs(_geo?sortByCT(imgs,_geo):imgs);
+    grid.setImgs(imgs);
+    applySort(imgs,ordered=>{if(tok===curTok)grid.setImgs(ordered)});
   });
   c._subBar=bar;
 }
@@ -394,4 +421,5 @@ if(c.__stop){c.__stop();c.__stop=null}
 IO.unobserve(c);_observed.delete(c)
 }});
 iG()});
+loadGU();reqGeo(()=>{});
 iG()}();
