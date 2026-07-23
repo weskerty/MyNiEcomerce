@@ -8,7 +8,7 @@ function loadGU(){
     const s=document.createElement('script');
     s.src='web/scripts/Otros/Geo/GeoUtils.js';
     s.onload=()=>{_GU=window.GeoUtils;res(_GU)};
-    s.onerror=()=>{console.log('[CT] fallo al cargar GeoUtils.js');res(null)};
+    s.onerror=()=>res(null);
     document.head.appendChild(s);
   });
   return _GUp;
@@ -68,6 +68,7 @@ async function lGD(j){
     IDX[j]=bIdx(JC[j]||{});
     (window.__DJ=window.__DJ||{})[j]=JC[j];
     delete JC[j+'_p'];
+    if(_geo)sortIdxByCT(IDX[j]);
     return JC[j];
   }).catch(()=>{JC[j]=null;IDX[j]=null;delete JC[j+'_p'];return null});
   return JC[j+'_p'];
@@ -83,37 +84,37 @@ let _geo=null,_geoReq=false,_geoCbs=[];
 function reqGeo(cb){
   if(_geo){cb(_geo);return}
   _geoCbs.push(cb);
-  console.log('[CT] reqGeo encolado, total pendientes:',_geoCbs.length);
   if(_geoReq)return;
   _geoReq=true;
-  if(!navigator.geolocation){console.log('[CT] geolocation no disponible');return}
+  if(!navigator.geolocation)return;
   navigator.geolocation.getCurrentPosition(
     p=>{
       _geo={lat:p.coords.latitude,lon:p.coords.longitude};
-      console.log('[CT] GPS resuelto:',_geo,'disparando',_geoCbs.length,'callbacks');
       _geoCbs.forEach(f=>f(_geo));
       _geoCbs=[];
     },
-    e=>{console.log('[CT] GPS denegado o error:',e.message)},
+    ()=>{},
     {}
   );
 }
-function sortByCT(imgs,geo){
-  if(!_GU){console.log('[CT] GeoUtils no cargado, sin reordenar');return imgs}
-  const withD=imgs.map(p=>{
-    const ct=_GU.parseCT(p);
-    const d=ct?_GU.haversine(geo.lat,geo.lon,ct.lat,ct.lon):Infinity;
-    return{p,d};
-  });
-  console.log('[CT] sortByCT geo usuario:',geo,'items:',withD.map(x=>({p:x.p.split('/').pop(),d:x.d})));
-  withD.sort((a,b)=>a.d-b.d);
-  return withD.map(x=>x.p);
+function distOf(p){
+  const ct=_GU.parseCT(p);
+  return ct?_GU.haversine(_geo.lat,_geo.lon,ct.lat,ct.lon):Infinity;
 }
-function applySort(imgs,onReady){
-  loadGU().then(()=>{
-    reqGeo(geo=>onReady(sortByCT(imgs,geo)));
-  });
+function sortArr(arr){arr.sort((a,b)=>distOf(a)-distOf(b))}
+function sortIdxByCT(idx){
+  for(const k in idx){
+    sortArr(idx[k]._all);
+    for(const f in idx[k].f)sortArr(idx[k].f[f]);
+  }
 }
+const _reRender=[];
+function sortAllLoaded(){
+  for(const j in IDX)if(IDX[j])sortIdxByCT(IDX[j]);
+  _reRender.forEach(f=>f());
+  _reRender.length=0;
+}
+loadGU().then(()=>reqGeo(sortAllLoaded));
 
 function mkCarousel(c,imgs,isMD,altMap){
   const total=imgs.length;if(!total)return;
@@ -380,21 +381,28 @@ async function pCont(c,isSw){
     c.innerHTML='';if(!imgs.length)return;
     if(isSw){mkCarousel(c,imgs);return}
     const grid=mkGrid(c,imgs);
-    if(grid)applySort(imgs,ordered=>grid.setImgs(ordered));
+    if(grid&&!_geo){
+      const cb=()=>grid.setImgs(fFixed?rI(j,key,fFixed):idx._all);
+      _reRender.push(cb);
+      c.__stop=()=>{const i=_reRender.indexOf(cb);if(i>-1)_reRender.splice(i,1)};
+    }
     return;
   }
   decorateFlat(c);
   c.innerHTML='';
   const grid=mkGrid(c,idx._all);
   if(!grid)return;
-  let curImgs=idx._all,curTok=0;
-  applySort(curImgs,ordered=>grid.setImgs(ordered));
+  let curName=null;
+  if(!_geo){
+    const cb=()=>grid.setImgs(curName?idx.f[curName]:idx._all);
+    _reRender.push(cb);
+    c.__stop=()=>{const i=_reRender.indexOf(cb);if(i>-1)_reRender.splice(i,1)};
+  }
   const bar=mkSubBtns(c,idx.f,name=>{
+    curName=name;
     const imgs=name?idx.f[name]:idx._all;
-    curImgs=imgs;const tok=++curTok;
     if(c._h2)c._h2.textContent=name||c._baseTitle;
     grid.setImgs(imgs);
-    applySort(imgs,ordered=>{if(tok===curTok)grid.setImgs(ordered)});
   });
   c._subBar=bar;
 }
