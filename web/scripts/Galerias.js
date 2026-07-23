@@ -39,12 +39,7 @@ function bIdx(g){
   for(const k in g){
     const v=g[k];
     if(Array.isArray(v)){
-      const byF={};
-      for(let i=0;i<v.length;i++){
-        const p=v[i],m=p.match(/\/([^/]+)\/[^/]+$/);
-        if(m){(byF[m[1]]||(byF[m[1]]=[])).push(p)}
-      }
-      idx[k]={_all:v,f:byF};
+      idx[k]={_all:v,f:{}};
     }else if(v&&typeof v==='object'){
       const all=[];for(const f in v)all.push(...v[f]);
       idx[k]={_all:all,f:v};
@@ -70,6 +65,29 @@ function rI(j,k,f){
   return f?(sec.f[f]||[]):sec._all;
 }
 const _ric=window.requestIdleCallback||(cb=>setTimeout(cb,1));
+
+let _geo=null,_geoReq=false;
+function reqGeo(cb){
+  if(_geo){cb(_geo);return}
+  if(_geoReq)return;
+  _geoReq=true;
+  if(!navigator.geolocation)return;
+  navigator.geolocation.getCurrentPosition(
+    p=>{_geo={lat:p.coords.latitude,lon:p.coords.longitude};cb(_geo)},
+    ()=>{},
+    {}
+  );
+}
+function sortByCT(imgs,geo){
+  const GU=window.GeoUtils;if(!GU)return imgs;
+  const withD=imgs.map(p=>{
+    const ct=GU.parseCT(p);
+    const d=ct?GU.haversine(geo.lat,geo.lon,ct.lat,ct.lon):Infinity;
+    return{p,d};
+  });
+  withD.sort((a,b)=>a.d-b.d);
+  return withD.map(x=>x.p);
+}
 
 function mkCarousel(c,imgs,isMD,altMap){
   const total=imgs.length;if(!total)return;
@@ -231,7 +249,7 @@ function mkSubBtns(c,subcats,onPick){
   let active=null;
 const _seg=typeof Intl!=='undefined'&&Intl.Segmenter?new Intl.Segmenter('es',{granularity:'grapheme'}):null;
 const _emoRe=/\p{Extended_Pictographic}/u;
-const _EMO_FALLBACK='📦​';
+const _EMO_FALLBACK='📦';
 function splitEmoji(name){
   if(!_seg)return{emo:_EMO_FALLBACK,txt:name};
   const g=[..._seg.segment(name)][0]?.segment||'';
@@ -333,17 +351,23 @@ async function pCont(c,isSw){
   if(!wantBtns){
     decorate(c);
     const imgs=fFixed?rI(j,key,fFixed):idx._all;
-    c.innerHTML='';if(!imgs.length)return;if(isSw)mkCarousel(c,imgs);else mkGrid(c,imgs);
+    c.innerHTML='';if(!imgs.length)return;
+    if(isSw){mkCarousel(c,imgs);return}
+    const grid=mkGrid(c,_geo?sortByCT(imgs,_geo):imgs);
+    if(grid&&!_geo)reqGeo(geo=>grid.setImgs(sortByCT(imgs,geo)));
     return;
   }
   decorateFlat(c);
   c.innerHTML='';
-  const grid=mkGrid(c,idx._all);
+  const grid=mkGrid(c,_geo?sortByCT(idx._all,_geo):idx._all);
   if(!grid)return;
+  let curImgs=idx._all;
+  if(!_geo)reqGeo(geo=>grid.setImgs(sortByCT(curImgs,geo)));
   const bar=mkSubBtns(c,idx.f,name=>{
     const imgs=name?idx.f[name]:idx._all;
+    curImgs=imgs;
     if(c._h2)c._h2.textContent=name||c._baseTitle;
-    grid.setImgs(imgs);
+    grid.setImgs(_geo?sortByCT(imgs,_geo):imgs);
   });
   c._subBar=bar;
 }
