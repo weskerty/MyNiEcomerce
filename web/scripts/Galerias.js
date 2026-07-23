@@ -27,6 +27,9 @@ _S.textContent=`
 .gi-pg button:disabled{opacity:.3;cursor:default}
 @keyframes gi-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 .gi-anim{animation:gi-in .25s ease both}
+.gi-skeleton{display:flex;flex-direction:column;gap:8px;padding:8px 0}
+.gi-sk-item{height:${ITEM}px;border-radius:20px;background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 100%);background-size:200% 100%;animation:gi-shimmer 1.4s infinite}
+@keyframes gi-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .gallery-item{display:flex;flex-direction:column;width:${ITEM}px;height:${ITEM}px;flex-shrink:0;box-sizing:border-box;background:linear-gradient(135deg,rgba(255,255,255,.25) 0%,rgba(255,255,255,.05) 50%,rgba(255,255,255,.15) 100%);border:1px solid rgba(255,255,255,.2);border-bottom:1px solid rgba(255,255,255,.05);border-radius:20px;box-shadow:0 6px 24px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(255,255,255,.05);cursor:pointer;overflow:hidden;text-decoration:none;color:white;transition:transform .2s ease,box-shadow .2s ease}
 .gallery-item:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 10px 32px rgba(0,0,0,.28);text-decoration:none;color:white}
 .gallery-item img{width:100%;height:${IMG_H}px;object-fit:fill}
@@ -66,6 +69,7 @@ async function lGD(j){
   JC[j+'_p']=fetch(j).then(r=>r.json()).then(d=>{
     JC[j]=d.galleries;
     IDX[j]=bIdx(JC[j]||{});
+    window.__GIDX=IDX;
     (window.__DJ=window.__DJ||{})[j]=JC[j];
     delete JC[j+'_p'];
     if(_geo)sortIdxByCT(IDX[j]);
@@ -83,6 +87,7 @@ const _ric=window.requestIdleCallback||(cb=>setTimeout(cb,1));
 let _geo=null,_geoReq=false,_geoCbs=[];
 function reqGeo(cb){
   if(_geo){cb(_geo);return}
+  if(!localStorage.getItem('UBI'))return;
   _geoCbs.push(cb);
   if(_geoReq)return;
   _geoReq=true;
@@ -97,6 +102,7 @@ function reqGeo(cb){
     {}
   );
 }
+window.__reqGeo=reqGeo;
 function distOf(p){
   const ct=_GU.parseCT(p);
   return ct?_GU.haversine(_geo.lat,_geo.lon,ct.lat,ct.lon):Infinity;
@@ -363,12 +369,25 @@ function decorateFlat(c){
   return c;
 }
 
+function showGISkeleton(c){
+  const sk=document.createElement('div');sk.className='gi-skeleton';
+  for(let i=0;i<3;i++){const d=document.createElement('div');d.className='gi-sk-item';d.style.animationDelay=(i*.08)+'s';sk.appendChild(d);}
+  c.innerHTML='';c.appendChild(sk);
+}
+function paintThen(cb){requestAnimationFrame(()=>requestAnimationFrame(cb))}
+
 async function pCont(c,isSw){
   if(c.__stop){c.__stop();c.__stop=null}
   if(c.__fetchAC){c.__fetchAC.abort()}
   if(c._subBar){c._subBar.remove();c._subBar=null}
   const ac=new AbortController();c.__fetchAC=ac;
   const j=c.dataset.jsonPath||DJ,k=c.dataset.galleryKey,fFixed=c.dataset.pathFilter,key=k||c.id.replace(/-gallery|-grid/g,'');
+  const needsWait=JC[j]===undefined;
+  if(needsWait){
+    showGISkeleton(c);
+    await new Promise(res=>paintThen(res));
+    if(ac.signal.aborted)return;
+  }
   await lGD(j);
   if(ac.signal.aborted)return;c.__fetchAC=null;
   if(!IDX[j]){c.innerHTML='<p>Error</p>';return}

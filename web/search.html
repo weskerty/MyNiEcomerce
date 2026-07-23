@@ -96,6 +96,20 @@ function buildItems(galleries){
   });
 }
 
+function buildItemsFromIdx(idx){
+  let id=0;
+  for(const cat in idx){
+    const sec=idx[cat];
+    if(Object.keys(sec.f).length){
+      for(const sub in sec.f){
+        sec.f[sub].forEach(p=>{const f=fN(p);allItems.push({id:id++,name:nN(f),cat,sub,img:p,md:mL(p),hasNB:/NB=/.test(f)})});
+      }
+    }else{
+      sec._all.forEach(p=>{const f=fN(p);allItems.push({id:id++,name:nN(f),cat,sub:'',img:p,md:mL(p),hasNB:/NB=/.test(f)})});
+    }
+  }
+}
+
 function mkItem(it){
   const a=document.createElement('a');
   a.className='sh-it';a.href=it.md;
@@ -138,6 +152,11 @@ function buildPage(list,p){
   return frag;
 }
 
+function scrollToTop(){
+  const w=document.getElementById('sh-w');
+  if(w&&w.scrollIntoView)w.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
 function renderPage(list,p,animate){
   r.innerHTML='';
   if(!list.length){r.innerHTML='<div class="sh-mt"><span>🔍</span>Sin resultados</div>';return;}
@@ -147,8 +166,8 @@ function renderPage(list,p,animate){
     const nav=document.createElement('div');nav.className='sh-pg';
     const bP=document.createElement('button');bP.textContent='Anterior';bP.disabled=p===0;
     const bN=document.createElement('button');bN.textContent='Siguiente';bN.disabled=p===maxPg;
-    bP.onclick=()=>{curPg--;renderPage(curList,curPg,true)};
-    bN.onclick=()=>{curPg++;renderPage(curList,curPg,true)};
+    bP.onclick=()=>{curPg--;renderPage(curList,curPg,true);scrollToTop()};
+    bN.onclick=()=>{curPg++;renderPage(curList,curPg,true);scrollToTop()};
     nav.appendChild(bP);nav.appendChild(bN);r.appendChild(nav);
   }
   if(animate){r.classList.remove('sh-anim');void r.offsetWidth;r.classList.add('sh-anim')}
@@ -158,6 +177,10 @@ function showSkeleton(){
   const sk=document.createElement('div');sk.className='sh-skeleton';
   for(let i=0;i<6;i++){const d=document.createElement('div');d.className='sh-sk-item';d.style.animationDelay=(i*.08)+'s';sk.appendChild(d);}
   r.innerHTML='';r.appendChild(sk);
+}
+
+function paintThen(cb){
+  requestAnimationFrame(()=>requestAnimationFrame(cb));
 }
 
 function doSearch(){
@@ -186,25 +209,54 @@ function initMS(){
   }
 }
 
+function heavyWork(){
+  return new Promise((res,rej)=>{
+    try{
+      const gidx=window.__GIDX?.[DJ];
+      if(gidx){
+        buildItemsFromIdx(gidx);
+        res();
+        return;
+      }
+      let g=window.__DJ?.[DJ]||null;
+      const go=g2=>{buildItems(g2);res()};
+      if(g){go(g);return}
+      if(fetchAC)fetchAC.abort();
+      fetchAC=new AbortController();
+      fetch(DJ,{signal:fetchAC.signal}).then(r=>r.json()).then(d=>{
+        fetchAC=null;
+        (window.__DJ=window.__DJ||{})[DJ]=d.galleries;
+        go(d.galleries);
+      }).catch(e=>{if(e.name==='AbortError')return;rej(e)});
+    }catch(e){rej(e)}
+  });
+}
+
+let _initTok=0;
 async function init(){
+  const tok=++_initTok;
   showSkeleton();
-  if(fetchAC)fetchAC.abort();
-  fetchAC=new AbortController();
-  try{
-    let g=window.__DJ?.[DJ]||null;
-    if(!g){
-      const res=await fetch(DJ,{signal:fetchAC.signal});
-      const d=await res.json();
-      g=d.galleries;
-      (window.__DJ=window.__DJ||{})[DJ]=g;
+  paintThen(async()=>{
+    if(tok!==_initTok)return;
+    try{
+      await heavyWork();
+    }catch(e){
+      if(tok===_initTok)r.innerHTML='<div class="sh-mt"><span>⚠️</span>Error cargando datos</div>';
+      return;
     }
-    fetchAC=null;
-    buildItems(g);
-  }catch(e){
-    if(e.name==='AbortError')return;
-    r.innerHTML='<div class="sh-mt"><span>⚠️</span>Error cargando datos</div>';return;
-  }
-  loadMS(initMS);
+    if(tok!==_initTok)return;
+    loadMS(initMS);
+    if(!window.__GIDX?.[DJ]&&window.__reqGeo){
+      window.__reqGeo(()=>{
+        if(tok!==_initTok||!ready)return;
+        const gidx=window.__GIDX?.[DJ];
+        if(!gidx)return;
+        allItems=[];buildItemsFromIdx(gidx);
+        ms.removeAll();ms.addAll(allItems);
+        doSearch();
+      });
+    }
+  });
 }
 
 inp.addEventListener('input',()=>{

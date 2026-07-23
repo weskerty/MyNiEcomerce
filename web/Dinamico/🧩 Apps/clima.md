@@ -269,7 +269,7 @@
     if(!navigator.geolocation){toast('GPS no disponible');return;}
     b.disabled=true;b.textContent='⏳';
     navigator.geolocation.getCurrentPosition(
-      p=>{b.disabled=false;b.textContent='📍';loadW({lat:p.coords.latitude,lon:p.coords.longitude});},
+      p=>{b.disabled=false;b.textContent='📍';localStorage.setItem('UBI','1');loadW({lat:p.coords.latitude,lon:p.coords.longitude});},
       e=>{b.disabled=false;b.textContent='📍';toast('GPS: '+e.message);},
       {timeout:10000,maximumAge:60000}
     );
