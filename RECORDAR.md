@@ -1,6 +1,5 @@
-CT CiTy Ciudad infeeido por ubicacion 
-Etiqueta de Ciudad
-galerias muestra primeros los prosuctos de ciudades iguuales luego cercanas.
+data.json rutas en numero
+dinamico/categoria/subcategoria/ asi no repetir cada vez, solo una vez por numeracion arriba y luego el nombre del elemento. 1/NB=xxx
 
 
 CentralPage contorno botones cambiar. no borroso.
