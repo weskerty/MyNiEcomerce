@@ -91,7 +91,7 @@ const MS=[
 {n:"cocido",p:5000,e:"☕"},
 {n:"1na milaneza con pure frio",p:25000,e:"🍛"},
 {n:"recarga de gas",p:120000,e:"🔥"},
-{n:"campium",p:350000,e:"👟"},
+{n:"champium",p:350000,e:"👟"},
 {n:"Nuevo Xiaomi Redmi Poco Ultra Max Leica 4k Full HD Android 29 con 67GB de RAM interna",p:2500000,e:"📱"},
 {n:"alguna moto sin abs ni ninguna proteccion",p:10000000,e:"🏍"},
 {n:"un terreno -1x-1",p:80000000,e:"🏡"},
