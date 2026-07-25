@@ -206,4 +206,4 @@ e.target.textContent=paused?"Reanudar":"Pausar"
 </script>
 </div>
 
-<img src="web/otros/Archivos/Imagenes/Permanente/Juegos/imRich.avif" width="90px" />
+<img src="web/otros/Archivos/Imagenes/Permanente/Juegos/imRich.avif"  />
