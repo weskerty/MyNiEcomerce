@@ -1,5 +1,6 @@
 const RH = { "Content-Type": "application/json" };
-const RH_C = { "Content-Type": "application/json", "cache-control": "public,max-age=86400,stale-while-revalidate=604800" };
+const RH_C = { "Content-Type": "application/json", "cache-control": "public,max-age=86400" };
+const STK_TTL = 86400;
 const QUALITY = 'sm';
 const LOCALE = 'PY';
 const CONTENT_FILTER = 'off';
@@ -25,12 +26,18 @@ function norm(item) {
 
 export async function onRequestGet(context) {
   const { request, env } = context;
-  const sp  = new URL(request.url).searchParams;
+  const u = new URL(request.url);
+  const sp  = u.searchParams;
   const q   = sp.get('q') || '';
   const cid = sp.get('cid') || 'anon';
   const ua  = request.headers.get('user-agent') || '';
   const key = env.KLIPY_KEY;
   const mode = q ? 'search' : 'trending';
+
+  const cache = caches.default;
+  const cacheKey = new Request(`${u.origin}${u.pathname}?q=${encodeURIComponent(q)}`, request);
+  const cached = await cache.match(cacheKey);
+  if (cached) return cached;
 
   const base = new URLSearchParams({
     page: '1', per_page: '50',
@@ -61,7 +68,9 @@ export async function onRequestGet(context) {
     }
   }
 
-  return new Response(JSON.stringify({ data }), { status: 200, headers: RH_C });
+  const out = new Response(JSON.stringify({ data }), { status: 200, headers: RH_C });
+  context.waitUntil(cache.put(cacheKey, out.clone()));
+  return out;
 }
 
 export async function onRequestPost(context) {

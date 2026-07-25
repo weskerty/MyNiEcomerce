@@ -4,10 +4,17 @@ function SB_IP(request) {
   return request.headers.get('cf-connecting-ip') || '';
 }
 
+const SB_CACHE_TTL = 600;
+
 export async function onRequestGet(context) {
   const { request, env } = context;
   const u = new URL(request.url);
   const id = u.searchParams.get('id');
+
+  const cache = caches.default;
+  const cacheKey = new Request(u.toString(), request);
+  const cached = await cache.match(cacheKey);
+  if (cached) return cached;
 
   const target = id
     ? `${env.SERVER_URL}/secret/post?id=${encodeURIComponent(id)}&coff=${encodeURIComponent(u.searchParams.get('coff') || '0')}`
@@ -15,7 +22,9 @@ export async function onRequestGet(context) {
 
   try {
     const res = await fetch(target, { headers: { 'x-bridge-key': env.BRIDGE_KEY, 'x-real-ip': SB_IP(request) } });
-    return new Response(res.body, { status: res.status, headers: SB_H });
+    const out = new Response(res.body, { status: res.status, headers: { ...SB_H, 'cache-control': `public, max-age=${SB_CACHE_TTL}` } });
+    if (res.status === 200) context.waitUntil(cache.put(cacheKey, out.clone()));
+    return out;
   } catch {
     return new Response('[]', { status: 200, headers: SB_H });
   }

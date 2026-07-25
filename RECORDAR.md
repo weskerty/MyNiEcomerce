@@ -1,4 +1,5 @@
-compartir etiqueta para que galeria ponga y corregir en demodire
+secretos y api debe tener limite de solicitudes y cache cloudflare
+maximo 5 publicaciones y 10 comentarios por hora por la ip que manda cloudflare
 
 CentralPage contorno botones cambiar. no borroso.
 

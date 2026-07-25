@@ -10,6 +10,7 @@
 .SB_FRM{display:none;flex-direction:column;gap:8px;margin:14px auto 0;max-width:520px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:14px;backdrop-filter:blur(10px)}
 .SB_FRM textarea{resize:vertical;min-height:70px;max-height:220px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.2);color:#fff;padding:10px;font-size:.9rem;font-family:inherit}
 .SB_CNT{font-size:.7rem;color:rgba(255,255,255,.4);text-align:right}
+.SB_LIMIT{font-size:.75rem;color:#ff9f9f;text-align:right;margin-top:4px}
 .SB_FBR{display:flex;gap:8px;justify-content:flex-end}
 .SB_FBR button{padding:7px 16px;border-radius:14px;border:1px solid rgba(120,200,255,.4);background:rgba(120,200,255,.15);color:#cfe9ff;cursor:pointer}
 #SB_PCA{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.7)}
@@ -90,6 +91,7 @@ function SB_nm(id){return 'Anonimo#'+String(SB_seed(id)%10000).padStart(4,'0');}
 function SB_esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function SB_clean(t){return t.replace(/<[^>]*>/g,'').replace(/!\[[^\]]*\]\([^)]*\)/g,'').replace(/\[[^\]]*\]\([^)]*\)/g,'').trim();}
 function SB_time(ts){const diff=(Date.now()-ts)/1000;if(diff<60)return 'ahora';if(diff<3600)return Math.floor(diff/60)+'m';if(diff<86400)return Math.floor(diff/3600)+'h';return new Date(ts).toLocaleDateString();}
+function SB_fmtWait(s){const m=Math.ceil(s/60);return m<=1?'1 minuto':m<60?m+' minutos':Math.ceil(m/60)+'h';}
 
 function SB_mkCmt(c){
   const w=document.createElement('div');w.className='SB_CB';
@@ -174,6 +176,11 @@ async function SB_sendCmt(){
   if(!c)return;
   try{
     const r=await fetch(`${SB_API}?c=1`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({id:SB_cur.id,txt:c})});
+    if(r.status===429){
+      const d=await r.json().catch(()=>({}));
+      SB_showLimit(document.getElementById('SB_MFT'),d.retryAfter);
+      return;
+    }
     if(!r.ok)return;
     const row=await r.json();
     document.getElementById('SB_MBD').appendChild(SB_mkCmt(row));
@@ -202,7 +209,11 @@ async function SB_publish(){
   btn.disabled=true;
   try{
     const r=await fetch(SB_API,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({txt:c})});
-    if(r.status===429){alert('Limite diario alcanzado');btn.disabled=false;return;}
+    if(r.status===429){
+      const d=await r.json().catch(()=>({}));
+      SB_showLimit(document.getElementById('SB_FBR'),d.retryAfter);
+      btn.disabled=false;return;
+    }
     if(!r.ok){btn.disabled=false;return;}
     await r.json();
     SB_closeForm();
@@ -210,6 +221,14 @@ async function SB_publish(){
     SB_render(0);
   }catch(e){}
   btn.disabled=false;
+}
+
+function SB_showLimit(container,retryAfter){
+  let el=container.querySelector('.SB_LIMIT');
+  if(!el){el=document.createElement('div');el.className='SB_LIMIT';container.parentElement.insertBefore(el,container);}
+  el.textContent=retryAfter?`Limite alcanzado, espera ${SB_fmtWait(retryAfter)}`:'Limite alcanzado, intenta mas tarde';
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>el.remove(),8000);
 }
 
 function SB_onGridClick(e){

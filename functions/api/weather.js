@@ -1,11 +1,13 @@
 const OWM='https://api.openweathermap.org/data/2.5';
 const GEO='https://api.openweathermap.org/geo/1.0';
 const CORS={'Content-Type':'application/json','Access-Control-Allow-Origin':'*'};
+const WX_TTL=600;
 
 function err(msg,s=403){return new Response(JSON.stringify({error:msg}),{status:s,headers:CORS});}
 function isPY(d){return d?.sys?.country==='PY'||d?.city?.country==='PY';}
 
-export async function onRequest({request,env}){
+export async function onRequest(context){
+  const {request,env}=context;
   if(request.method==='OPTIONS')return new Response(null,{headers:{...CORS,'Access-Control-Allow-Methods':'GET','Access-Control-Allow-Headers':'*'}});
   const K=env.OWM_KEY;
   if(!K)return err('Config error',500);
@@ -16,6 +18,11 @@ export async function onRequest({request,env}){
   const lon=u.searchParams.get('lon');
   const base=`&appid=${K}&units=metric&lang=es`;
 
+  const cache=caches.default;
+  const cacheKey=new Request(`${u.origin}${u.pathname}?type=${type}&q=${encodeURIComponent(q)}&lat=${lat||''}&lon=${lon||''}`,request);
+  const cached=await cache.match(cacheKey);
+  if(cached)return cached;
+
   if(type==='geo'){
     if(!q)return err('q requerido',400);
     const r=await fetch(`${GEO}/direct?q=${encodeURIComponent(q)},PY&limit=5${base}`);
@@ -23,7 +30,9 @@ export async function onRequest({request,env}){
     if(!Array.isArray(d))return err('Geo error',502);
     const py=d.filter(x=>x.country==='PY');
     if(!py.length)return err('Solo Paraguay',403);
-    return new Response(JSON.stringify(py),{headers:CORS});
+    const out=new Response(JSON.stringify(py),{headers:{...CORS,'cache-control':`public,max-age=${WX_TTL}`}});
+    context.waitUntil(cache.put(cacheKey,out.clone()));
+    return out;
   }
 
   let wUrl,fUrl;
@@ -41,5 +50,7 @@ export async function onRequest({request,env}){
   if(!isPY(dW))return err('Solo Paraguay',403);
   if(dW.cod&&dW.cod!==200)return err(dW.message||'OWM error',400);
 
-  return new Response(JSON.stringify({weather:dW,forecast:dF}),{headers:CORS});
+  const out=new Response(JSON.stringify({weather:dW,forecast:dF}),{headers:{...CORS,'cache-control':`public,max-age=${WX_TTL}`}});
+  context.waitUntil(cache.put(cacheKey,out.clone()));
+  return out;
 }
