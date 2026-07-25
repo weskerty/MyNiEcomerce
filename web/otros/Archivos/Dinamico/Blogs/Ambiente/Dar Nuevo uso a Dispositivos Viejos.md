@@ -1,5 +1,5 @@
 
-Vivimos en un mundo donde se venden dispositivos con obsolescencia artificial. iPhones que dejan de actualizarse por motivos que no tienen nada que ver con el [https://es.wikipedia.org/wiki/Hardware](hardware), y que de un día para otro ya no te dejan instalar aplicaciones básicas.
+Vivimos en un mundo donde se venden dispositivos con obsolescencia artificial. iPhones que dejan de actualizarse por motivos que no tienen nada que ver con el [https://es.wikipedia.org/wiki/Hardware](hardware), y que de un día para otro ya no te dejan instalar aplicaciones básicas. En una situacion en donde cada vez los telefonos y demas dispositivos son mas y mas caros. 
 
 <div class="galeriaMD">
 <img width="750" height="685" alt="No Permite Instalar" src="https://github.com/user-attachments/assets/85bc813a-9312-44ed-9bfc-da0461a7aad8" />
@@ -12,11 +12,11 @@ Vivimos en un mundo donde se venden dispositivos con obsolescencia artificial. i
 
 Aplicaciones básicas ya no te dejan instalarlas, tal como se ve en las imágenes. Y eso que el iPhone X llegó a Paraguay en 2018. Podes decir que "ya tiene 6 años, ya fue" si, es cierto, pero el teléfono aun funciona. Y que te bloqueen usar una app basica como un lector de correos asi de la nada es sumamente estupido y codicios, hasta una PC del 2001 aun puede leer correos y seguir viendo videos de YouTube etc gracias a que la comunidad aun Mantiene Navegadores como Thorium o [Supermium](https://win32subsystem.live/supermium/).
 
-Gran parte del limite es artificial, no una limitación real. Hay algunas mitigaciones que podemos hacer para seguir usando estos Dispositivos que se mencionaran mas abajo. 
+Gran parte del limite es artificial, no una limitación real. Estas practicas dañan el ambiente, nuestra privacidad, nuestra libertad y Nuestros Bolsillos. Pero Hay algunas mitigaciones que podemos hacer para seguir usando estos Dispositivos y hablaremos un poco sobre eso aqui. 
 
 <details>
   <summary style="font-size: 1.0em; font-weight: bold;">🧸🎬 Resumen del Blog en Video </summary>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/7J9x16irofc?si=cp_GO720xz8qq6R-&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/vWJdhlPAqvw?si=9-wJZ_EGg23tyDuz" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 </details>
 
