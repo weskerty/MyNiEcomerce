@@ -1,4 +1,4 @@
-
+compartir etiqueta para que galeria ponga y corregir en demodire
 
 CentralPage contorno botones cambiar. no borroso.
 
