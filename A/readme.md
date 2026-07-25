@@ -1,0 +1,1 @@
+Redireccionamiento con enlace corto.

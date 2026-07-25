@@ -51,7 +51,7 @@
     <label><input type="checkbox" id="gp-emoji">Emojis</label>
     <label><input type="checkbox" id="gp-glyph">Otros alfabetos y jeroglificos</label>
   </div>
-  <div class="pw-note">⚠️ Emojis y otros alfabetos no son aceptados por todas las plataformas (ej. Google). Si tu login falla, desactiva esas opciones.</div>
+  <div class="pw-note">⚠️ Emojis y otros alfabetos no son aceptados por todas las plataformas (ej. Google).</div>
   <button id="gp-btn">Generar</button>
   <div class="pw-out" id="gp-out"></div>
 </div>
@@ -89,9 +89,9 @@
   }
 
   const ZX_CDN=[
-    'https://cdn.jsdelivr.net/npm/@zxcvbn-ts/language-common@3/dist/zxcvbn-ts.js',
-    'https://cdn.jsdelivr.net/npm/@zxcvbn-ts/language-es-es@3/dist/zxcvbn-ts.js',
-    'https://cdn.jsdelivr.net/npm/@zxcvbn-ts/core@3/dist/zxcvbn-ts.js'
+    'https://cdn.jsdelivr.net/npm/@zxcvbn-ts/language-common@4.1.3/dist/zxcvbn-ts.js',
+    'https://cdn.jsdelivr.net/npm/@zxcvbn-ts/language-es-es@4.1.2/dist/zxcvbn-ts.js',
+    'https://cdn.jsdelivr.net/npm/@zxcvbn-ts/core@4.1.2/dist/zxcvbn-ts.js'
   ];
   let zxInst=null,zxLoadP=null;
 
@@ -180,8 +180,8 @@ Tiempo estimado para descifrarla:<br>
   const GP_NUM='0123456789';
   const GP_SYM='!@#$%^&*()-_=+[]{}';
   const GP_RARE='~`<>|\\/:;"\',.?';
-  const GP_EMOJI_RANGES=[[0x1F300,0x1F5FF],[0x1F600,0x1F64F],[0x1F900,0x1F9FF]];
-  const GP_GLYPH_RANGES=[[0x13000,0x1342E],[0x0600,0x06FF],[0x0370,0x03FF]];
+  const GP_EMOJI_RANGES=[[0x1F300,0x1F5FF],[0x1F600,0x1F64F],[0x1F680,0x1F6FF],[0x1F900,0x1F9FF],[0x1FA70,0x1FAFF],[0x2700,0x27BF],[0x1F650,0x1F67F],[0x2600,0x26FF]];
+  const GP_GLYPH_RANGES=[[0x0600,0x06FF],[0x0590,0x05FF],[0x0370,0x03FF],[0x0400,0x04FF],[0x0900,0x097F],[0x0E00,0x0E7F],[0xAC00,0xD7A3],[0x4E00,0x9FFF],[0x3040,0x309F],[0x30A0,0x30FF],[0x13000,0x1342E],[0x12000,0x123FF],[0x16A0,0x16FF],[0x2200,0x22FF]];
 
   function GP_RI(max){
     const buf=new Uint32Array(1);
