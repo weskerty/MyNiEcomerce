@@ -48,6 +48,8 @@
 <div id="DS_buyPop" class="hide"></div>
 </div>
 
+<img id="DS_richImg" class="hide" src="web/otros/Archivos/Imagenes/Permanente/Juegos/imRich.avif" />
+
 <style>
 #DS_root{text-align:center}
 .DS_row{display:flex;align-items:center;justify-content:center;gap:8px;margin:10px 0}
@@ -81,7 +83,7 @@ const ELON_MES_USD=42860000000;
 const elonSeg=(ELON_MES_USD*GS_USD)/30/24/3600;
 const BILL_STEP=1000;
 const BILL_PER_BAG=8;
-let youSeg=0,youAcum=0,elonAcum=0,tId=null,paused=false;
+let youSeg=0,youAcum=0,elonAcum=0,tId=null,paused=false,imgTId=null;
 let youBillNext=BILL_STEP,elonBillNext=BILL_STEP;
 let youLineCt=0,elonLineCt=0,youBags=0,elonBags=0,workSec=0;
 const bought=new Set();
@@ -175,6 +177,9 @@ document.getElementById("DS_youBags").textContent="💰 x0";
 document.getElementById("DS_elonBags").textContent="💰 x0";
 document.getElementById("DS_youBills").textContent="";
 document.getElementById("DS_elonBills").textContent="";
+document.getElementById("DS_richImg").classList.add("hide");
+if(imgTId)clearTimeout(imgTId);
+imgTId=setTimeout(()=>{document.getElementById("DS_richImg").classList.remove("hide")},10000);
 if(tId)clearInterval(tId);
 tId=setInterval(()=>{
 if(!paused){
@@ -205,5 +210,3 @@ e.target.textContent=paused?"Reanudar":"Pausar"
 })();
 </script>
 </div>
-
-<img src="web/otros/Archivos/Imagenes/Permanente/Juegos/imRich.avif"  />
