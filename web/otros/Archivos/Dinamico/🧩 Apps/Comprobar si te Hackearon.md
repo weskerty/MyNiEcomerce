@@ -18,8 +18,12 @@
 .pw-card.r{border-color:rgba(239,68,68,.4);background:rgba(239,68,68,.08)}
 .pw-ch{font-weight:700;font-size:1em;margin-bottom:6px;display:flex;align-items:center;gap:8px;color:#fff}
 .pw-cd{font-size:.82em;color:rgba(255,255,255,.6);line-height:1.55}
-.pw-tk{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.97);border:1px solid rgba(255,255,255,.15);color:white;padding:10px 22px;border-radius:12px;font-size:.88em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999;white-space:nowrap}
-.pw-tk.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.pw-gen-row{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:10px;flex-wrap:wrap}
+.pw-gen-row label{color:rgba(255,255,255,.7);font-size:.85em}
+.pw-gen-row input[type=number]{width:64px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:10px;color:#fff;padding:6px 8px;font-family:inherit;text-align:center}
+.pw-ck{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:14px}
+.pw-ck label{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,.7);font-size:.82em;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:5px 12px;cursor:pointer}
+.pw-out{font-family:monospace;font-size:1.05em;word-break:break-all;color:#fff;background:rgba(0,0,0,.25);border-radius:10px;padding:10px 12px;margin-top:8px;min-height:1.4em;user-select:all}
 </style>
 
 <div style="font-size:2.8rem;margin:0 auto 4px;line-height:1.2">🔐</div>
@@ -32,6 +36,24 @@
   </div>
   <div class="pw-note">🔒 Solo los primeros 5 chars del hash SHA-1 se envian. La contraseña nunca sale del dispositivo.</div>
   <div id="pw-pr"></div>
+</div>
+
+<div style="font-size:2.8rem;margin:36px auto 4px;line-height:1.2">🎲</div>
+<div class="pw-st" id="gp-st">Crear Contraseña Segura</div>
+
+<div class="pw-wrap">
+  <div class="pw-gen-row">
+    <label for="gp-len">Longitud</label>
+    <input type="number" id="gp-len" value="20" min="4">
+  </div>
+  <div class="pw-ck">
+    <label><input type="checkbox" id="gp-rare">Simbolos raros</label>
+    <label><input type="checkbox" id="gp-emoji">Emojis</label>
+    <label><input type="checkbox" id="gp-glyph">Otros alfabetos y jeroglificos</label>
+  </div>
+  <div class="pw-note">⚠️ Emojis y otros alfabetos no son aceptados por todas las plataformas (ej. Google). Si tu login falla, desactiva esas opciones.</div>
+  <button id="gp-btn">Generar</button>
+  <div class="pw-out" id="gp-out"></div>
 </div>
 
 <div class="pw-tk" id="pw-tk"></div>
@@ -66,6 +88,59 @@
     return found?parseInt(found.split(':')[1].trim()):0;
   }
 
+  const ZX_CDN=[
+    'https://cdn.jsdelivr.net/npm/@zxcvbn-ts/language-common@3/dist/zxcvbn-ts.js',
+    'https://cdn.jsdelivr.net/npm/@zxcvbn-ts/language-es-es@3/dist/zxcvbn-ts.js',
+    'https://cdn.jsdelivr.net/npm/@zxcvbn-ts/core@3/dist/zxcvbn-ts.js'
+  ];
+  let zxInst=null,zxLoadP=null;
+
+  function ZX_LOAD(){
+    if(zxInst)return Promise.resolve(zxInst);
+    if(zxLoadP)return zxLoadP;
+    zxLoadP=new Promise((res,rej)=>{
+      let i=0;
+      const loadNext=()=>{
+        if(i>=ZX_CDN.length){
+          const ns=window.zxcvbnts;
+          const common=ns['language-common'],es=ns['language-es-es'],core=ns.core;
+          const opts={
+            translations:es.translations,
+            graphs:common.adjacencyGraphs,
+            dictionary:{...common.dictionary,...es.dictionary}
+          };
+          zxInst=new core.ZxcvbnFactory(opts);
+          res(zxInst);
+          return;
+        }
+        const s=document.createElement('script');
+        s.src=ZX_CDN[i];
+        s.onload=()=>{i++;loadNext();};
+        s.onerror=()=>rej(new Error('ZX load fail '+ZX_CDN[i]));
+        document.head.appendChild(s);
+      };
+      loadNext();
+    });
+    return zxLoadP;
+  }
+
+  const ZX_SC=['Muy debil','Debil','Regular','Fuerte','Muy fuerte'];
+
+  function ZX_CARD(r){
+    const ct=r.crackTimes;
+    return`<div class="pw-card r">
+<div class="pw-ch">🧩 Analisis de patron: ${ZX_SC[r.score]}</div>
+<div class="pw-cd">
+${r.feedback.warning?r.feedback.warning+'<br>':''}
+Tiempo estimado para descifrarla:<br>
+• Ataque online con limite (100/hora): ${ct.onlineThrottlingXPerHour.display}<br>
+• Ataque online sin limite (10/seg): ${ct.onlineNoThrottlingXPerSecond.display}<br>
+• Ataque offline, hash lento: ${ct.offlineSlowHashingXPerSecond.display}<br>
+• Ataque offline, hash rapido (super computadora): ${ct.offlineFastHashingXPerSecond.display}
+</div>
+</div>`;
+  }
+
   async function PW_CHK(){
     const pass=pi.value;
     if(!pass){r.innerHTML='';PW_ST('Pwned Checker');return;}
@@ -80,6 +155,12 @@
       } else {
         r.innerHTML=`<div class="pw-card r"><div class="pw-ch">⚠️ Encontrada ${PW_FN(n)} ${n===1?'vez':'veces'}</div><div class="pw-cd">Esta contraseña aparece en filtraciones de datos. Cambiala en todos los servicios donde la uses.</div></div>`;
         PW_ST('Contraseña comprometida','er');
+        try{
+          const zx=await ZX_LOAD();
+          r.insertAdjacentHTML('beforeend',ZX_CARD(zx.check(pass)));
+        }catch(e){
+          r.insertAdjacentHTML('beforeend','<div class="pw-note">No se pudo cargar el analisis de patron.</div>');
+        }
       }
     }catch{
       PW_T('Error al verificar');PW_ST('Pwned Checker');
@@ -93,6 +174,54 @@
   });
   pi.addEventListener('keydown',e=>{if(e.key==='Enter'){clearTimeout(_deb);PW_CHK();}});
   $('pw-pb').onclick=()=>{clearTimeout(_deb);PW_CHK();};
+
+  const GP_LOW='abcdefghijklmnopqrstuvwxyz';
+  const GP_UP='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const GP_NUM='0123456789';
+  const GP_SYM='!@#$%^&*()-_=+[]{}';
+  const GP_RARE='~`<>|\\/:;"\',.?';
+  const GP_EMOJI_RANGES=[[0x1F300,0x1F5FF],[0x1F600,0x1F64F],[0x1F900,0x1F9FF]];
+  const GP_GLYPH_RANGES=[[0x13000,0x1342E],[0x0600,0x06FF],[0x0370,0x03FF]];
+
+  function GP_RI(max){
+    const buf=new Uint32Array(1);
+    crypto.getRandomValues(buf);
+    return buf[0]%max;
+  }
+
+  function GP_RC(pool){
+    return pool[GP_RI(pool.length)];
+  }
+
+  function GP_RE(ranges){
+    const [a,b]=ranges[GP_RI(ranges.length)];
+    const cp=a+GP_RI(b-a+1);
+    return String.fromCodePoint(cp);
+  }
+
+  function GP_GEN(len,useRare,useEmoji,useGlyph){
+    let pool=GP_LOW+GP_UP+GP_NUM+GP_SYM;
+    if(useRare)pool+=GP_RARE;
+    const extraGens=[];
+    if(useEmoji)extraGens.push(()=>GP_RE(GP_EMOJI_RANGES));
+    if(useGlyph)extraGens.push(()=>GP_RE(GP_GLYPH_RANGES));
+    const out=[];
+    for(let i=0;i<len;i++){
+      if(extraGens.length&&GP_RI(4)===0){
+        out.push(extraGens[GP_RI(extraGens.length)]());
+      }else{
+        out.push(GP_RC(pool));
+      }
+    }
+    return out.join('');
+  }
+
+  $('gp-btn').onclick=()=>{
+    const len=Math.max(4,parseInt($('gp-len').value)||20);
+    const pass=GP_GEN(len,$('gp-rare').checked,$('gp-emoji').checked,$('gp-glyph').checked);
+    $('gp-out').textContent=pass;
+    if(navigator.clipboard)navigator.clipboard.writeText(pass).then(()=>PW_T('Copiada al portapapeles')).catch(()=>{});
+  };
 })();
 </script>
 
