@@ -1,5 +1,4 @@
-secretos y api debe tener limite de solicitudes y cache cloudflare
-maximo 5 publicaciones y 10 comentarios por hora por la ip que manda cloudflare
+galerias si solo tiene general no mostrar titulo ni boton selector de sub categorias
 
 CentralPage contorno botones cambiar. no borroso.
 
