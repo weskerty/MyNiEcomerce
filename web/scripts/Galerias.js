@@ -393,7 +393,7 @@ async function pCont(c,isSw){
   if(!IDX[j]){c.innerHTML='<p>Error</p>';return}
   const idx=IDX[j][key];
   if(!idx||!idx._all.length){if(isSw)decorate(c);return}
-  const wantBtns=!isSw&&!fFixed&&idx.f&&Object.keys(idx.f).length>0;
+  const wantBtns=!isSw&&!fFixed&&idx.f&&Object.keys(idx.f).length>1;
   if(!wantBtns){
     decorate(c);
     const imgs=fFixed?rI(j,key,fFixed):idx._all;
