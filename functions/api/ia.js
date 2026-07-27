@@ -1,12 +1,11 @@
 const CORS={'Content-Type':'application/json','Access-Control-Allow-Origin':'*'};
-const GROQ_URL='https://api.groq.com/openai/v1/chat/completions';
 const MODEL='llama-3.3-70b-versatile';
 const MAX_TOKENS=600;
 const TO=15000;
 const CAT_TTL=1800;
 const RL_WINDOW=3600;
 const RL_MAX=30;
-const RL_HOST='https://ia-ratelimit.internal/';
+const RL_KEY_BASE='https://ratelimit.local/ia/';
 
 function err(msg,s=400){return new Response(JSON.stringify({error:msg}),{status:s,headers:CORS});}
 
@@ -18,7 +17,7 @@ function fetchTO(url,opts){
 
 async function checkRateLimit(ip,context){
   const cache=caches.default;
-  const key=new Request(RL_HOST+ip);
+  const key=new Request(RL_KEY_BASE+ip);
   const now=Date.now();
   const hit=await cache.match(key);
   let count=1,windowStart=now;
@@ -54,8 +53,8 @@ export async function onRequestOptions(){
 
 export async function onRequestPost(context){
   const{request,env}=context;
-  const K=env.GROQ_KEY,BASE_PROMPT=env.IA_SYSTEM_PROMPT;
-  if(!K||!BASE_PROMPT)return err('Config error',500);
+  const K=env.IA_API_KEY,API_URL=env.IA_API_URL,BASE_PROMPT=env.IA_SYSTEM_PROMPT;
+  if(!K||!API_URL||!BASE_PROMPT)return err('Config error',500);
 
   const ip=request.headers.get('cf-connecting-ip')||'anon';
   const ok=await checkRateLimit(ip,context);
@@ -72,16 +71,17 @@ export async function onRequestPost(context){
   const catalogo=await getCatalogo(u.origin,context);
   const system=BASE_PROMPT+'\n\nCATALOGO:\n'+catalogo;
 
-  const messages=[{role:'system',content:system}];
-  if(prevU&&prevA){
-    messages.push({role:'user',content:prevU});
-    messages.push({role:'assistant',content:prevA});
-  }
-  messages.push({role:'user',content:msg});
+  const userContent=prevU&&prevA
+    ?`Mensaje anterior: ${prevU}\nRespuesta anterior: ${prevA}\n\nNuevo mensaje: ${msg}`
+    :msg;
+  const messages=[
+    {role:'system',content:system},
+    {role:'user',content:userContent}
+  ];
 
   let r;
   try{
-    r=await fetchTO(GROQ_URL,{
+    r=await fetchTO(API_URL,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${K}`},
       body:JSON.stringify({model:MODEL,messages,max_tokens:MAX_TOKENS,temperature:0.6})
