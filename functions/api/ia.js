@@ -64,7 +64,8 @@ export async function onRequestPost(context){
   let body;
   try{body=await request.json();}catch{return err('bad_body');}
   const msg=(body.msg||'').toString().slice(0,500);
-  const prev=(body.prev||'').toString().slice(0,500);
+  const prevU=(body.prevU||'').toString().slice(0,500);
+  const prevA=(body.prevA||'').toString().slice(0,500);
   if(!msg)return err('msg requerido');
 
   const u=new URL(request.url);
@@ -72,7 +73,10 @@ export async function onRequestPost(context){
   const system=BASE_PROMPT+'\n\nCATALOGO:\n'+catalogo;
 
   const messages=[{role:'system',content:system}];
-  if(prev)messages.push({role:'assistant',content:prev});
+  if(prevU&&prevA){
+    messages.push({role:'user',content:prevU});
+    messages.push({role:'assistant',content:prevA});
+  }
   messages.push({role:'user',content:msg});
 
   let r;

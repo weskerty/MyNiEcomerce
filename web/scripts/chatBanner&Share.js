@@ -388,7 +388,7 @@ const iaModal=document.createElement("div");
 iaModal.className="cb-modal";
 iaModal.innerHTML='<div class="cb-mc"><div class="cb-mh"><div class="cb-mhl"><span>💬 Asistente</span></div><span class="cb-mx">✕</span></div><div class="cb-mb ia-mb"></div><div class="ia-foot"><input type="text" class="ia-in" id="iaInput" placeholder="Escribe tu mensaje"><button class="ia-send" id="iaSend">➤</button></div></div>';
 document.body.appendChild(iaModal);
-let iaPrev="",iaBusy=!1;
+let iaPrevU="",iaPrevA="",iaBusy=!1;
 
 function toggleIaModal(show){
   iaModal.classList.toggle("cb-v",show);
@@ -399,8 +399,9 @@ function iaAddMsg(cls,text){
   const el=document.createElement("div");
   el.className="ia-msg "+cls;
   el.textContent=text;
-  iaModal.querySelector(".ia-mb").appendChild(el);
-  el.scrollIntoView({block:"end"});
+  const box=iaModal.querySelector(".ia-mb");
+  box.appendChild(el);
+  box.scrollTop=box.scrollHeight;
   return el;
 }
 
@@ -408,7 +409,7 @@ async function iaCallApi(msg){
   const r=await fetchTOIa(IA_URL,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({msg,prev:iaPrev})
+    body:JSON.stringify({msg,prevU:iaPrevU,prevA:iaPrevA})
   });
   const d=await r.json();
   if(!r.ok||d.error)throw new Error(d.error||"down");
@@ -452,7 +453,8 @@ async function iaSendMessage(userText){
     loadEl.remove();
     const{text,action}=iaParseReply(raw);
     if(text)iaAddMsg("ia-a",text);
-    iaPrev=raw;
+    iaPrevU=userText;
+    iaPrevA=raw;
     if(action?.type==="add"){
       const btn=document.createElement("button");
       btn.className="ia-addbtn";
