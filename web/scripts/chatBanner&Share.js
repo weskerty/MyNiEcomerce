@@ -401,7 +401,13 @@ function iaAddMsg(cls,text){
   el.textContent=text;
   const box=iaModal.querySelector(".ia-mb");
   box.appendChild(el);
-  box.scrollTop=box.scrollHeight;
+  const keep=[...box.querySelectorAll(".ia-u,.ia-a")];
+  while(keep.length>3){
+    const old=keep.shift();
+    old.remove();
+    box.querySelectorAll(".ia-addbtn").forEach(b=>b.remove());
+  }
+  requestAnimationFrame(()=>{box.scrollTop=box.scrollHeight;});
   return el;
 }
 
