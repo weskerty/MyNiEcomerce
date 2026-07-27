@@ -401,14 +401,19 @@ function iaAddMsg(cls,text){
   el.textContent=text;
   const box=iaModal.querySelector(".ia-mb");
   box.appendChild(el);
-  const keep=[...box.querySelectorAll(".ia-u,.ia-a")];
-  while(keep.length>3){
-    const old=keep.shift();
-    old.remove();
-    box.querySelectorAll(".ia-addbtn").forEach(b=>b.remove());
-  }
-  requestAnimationFrame(()=>{box.scrollTop=box.scrollHeight;});
   return el;
+}
+
+function iaScrollBottom(){
+  const box=iaModal.querySelector(".ia-mb");
+  requestAnimationFrame(()=>{box.scrollTop=box.scrollHeight;});
+}
+
+function iaTrim(){
+  const box=iaModal.querySelector(".ia-mb");
+  const msgs=[...box.querySelectorAll(".ia-u,.ia-a")];
+  const cut=msgs.length-3;
+  for(let i=0;i<cut;i++)msgs[i].remove();
 }
 
 async function iaCallApi(msg){
@@ -453,7 +458,9 @@ async function iaSendMessage(userText){
   if(iaBusy||!userText)return;
   iaBusy=!0;
   iaAddMsg("ia-u",userText);
+  iaScrollBottom();
   const loadEl=iaAddMsg("ia-load","...");
+  iaScrollBottom();
   try{
     const raw=await iaCallApi(userText);
     loadEl.remove();
@@ -461,6 +468,7 @@ async function iaSendMessage(userText){
     if(text)iaAddMsg("ia-a",text);
     iaPrevU=userText;
     iaPrevA=raw;
+    iaModal.querySelectorAll(".ia-addbtn").forEach(b=>b.remove());
     if(action?.type==="add"){
       const btn=document.createElement("button");
       btn.className="ia-addbtn";
@@ -469,6 +477,8 @@ async function iaSendMessage(userText){
       iaModal.querySelector(".ia-mb").appendChild(btn);
     }
     if(action?.ask)iaDoAsk();
+    iaTrim();
+    iaScrollBottom();
   }catch(e){
     loadEl.remove();
     throw e;
