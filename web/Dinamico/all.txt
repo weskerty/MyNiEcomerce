@@ -8,4 +8,3 @@ JarraDIamante|Jarra de Vidrio Efecto Diamante|30000|1|WA.TG|595972184435|🍸 Ac
 7798162143347|Termo con Guampa Acero Inox|350000|1|WA.TG|595972184435|🍸 Accesorios>💆 Personal
 ControlPorton4Botones|Control para Portón y Coche|100000|16|WA.TG|595972184435|🍸 Accesorios>💆 Personal
 Perla|Detergente 5L Biodegradable VE|45000|-|WA|WA595992912741|🍸 Accesorios>🧼 Limpieza
-PlantaIresineVerde|Iresine Verde|25000|-|WA.TG|595972184435|🪷 Plantas>🪴 Plantera
