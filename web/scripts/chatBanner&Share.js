@@ -1,5 +1,7 @@
 !function(){
 const WA_BASE="https://wa.me/595972184435?text=";
+const IA=true;
+const IA_URL="/api/ia";
 const IMG_BASE="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/";
 const OFICIALPROVIDER=["595972184435"];
 const HIDE_PATHS=["web/otros/Archivos/Dinamico/🧩 Apps/","web/otros/Archivos/Dinamico/🎮 Juegos/","web/otros/Archivos/HTML/centralPage.html","web/otros/Archivos/DemoDire/","web/otros/Archivos/HTML/AgregarProducto.html","web/otros/Archivos/Dinamico/DemoDire","web/Pruebas/"];
@@ -110,7 +112,18 @@ css.textContent=`
 @keyframes cb-wvk{0%{transform:scale(.3);opacity:1}100%{transform:scale(1.8);opacity:0}}
 .cb-fng{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);font-size:38px;opacity:0;pointer-events:none;z-index:10000;transition:opacity .3s;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.4))}
 .cb-fng.cb-v{opacity:1;animation:cb-fngb 1s ease-in-out infinite}
-@keyframes cb-fngb{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(10px)}}`;
+@keyframes cb-fngb{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(10px)}}
+.ia-mb{display:flex;flex-direction:column;gap:10px}
+.ia-msg{max-width:85%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.4;white-space:pre-wrap}
+.ia-u{align-self:flex-end;background:rgba(34,197,94,0.3);border:1px solid rgba(34,197,94,0.4)}
+.ia-a{align-self:flex-start;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15)}
+.ia-load{align-self:flex-start;opacity:.6;font-size:13px}
+.ia-foot{display:flex;gap:8px;padding:14px 20px;border-top:1px solid rgba(255,255,255,0.2)}
+.ia-in{flex:1;border-radius:20px}
+.ia-send{background:rgba(34,197,94,0.35);border:1px solid rgba(34,197,94,0.5);border-radius:50%;width:38px;height:38px;color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ia-send:hover{background:rgba(34,197,94,0.5)}
+.ia-addbtn{align-self:flex-start;background:rgba(34,197,94,0.3);border:1px solid rgba(34,197,94,0.45);border-radius:10px;padding:6px 12px;font-size:13px;color:#fff;cursor:pointer;margin-top:2px}
+.ia-addbtn:hover{background:rgba(34,197,94,0.45)}`;
 document.head.appendChild(css);
 
 const IMG404='<img src="web/otros/Archivos/Imagenes/Permanente/404.avif">';
@@ -201,6 +214,18 @@ function _mkAsk(){
   const el=document.createElement('div');el.className='cb-nb-ask';
   el.innerHTML='📩 Clic para Preguntar 🤗';
   el.addEventListener('click',()=>{
+    if(IA){
+      toggleIaModal(!0);
+      if(!iaModal.querySelector(".ia-mb").children.length){
+        iaSendMessage("Hola quiero hacer unas compras").catch(()=>{
+          toggleIaModal(!1);
+          const wa=getRouteWA();
+          const base=wa?"https://wa.me/"+wa+"?text=":WA_BASE;
+          openExt(base+encodeURIComponent("Hola, Quisiera saber mas sobre esto "+window.location.href));
+        });
+      }
+      return;
+    }
     const wa=getRouteWA();
     const base=wa?"https://wa.me/"+wa+"?text=":WA_BASE;
     openExt(base+encodeURIComponent("Hola, Quisiera saber mas sobre esto "+window.location.href));
@@ -358,6 +383,105 @@ function _onScrollThrottled(){if(!_sRaf)_sRaf=requestAnimationFrame(()=>{_sRaf=n
 modal.className="cb-modal";
 modal.innerHTML='<div class="cb-mc"><div class="cb-mh"><div class="cb-mhl"><span>🛒 Carrito</span><span class="cb-mhT"></span></div><span class="cb-mx">✕</span></div><div class="cb-mb"></div></div>';
 document.body.appendChild(modal);
+
+const iaModal=document.createElement("div");
+iaModal.className="cb-modal";
+iaModal.innerHTML='<div class="cb-mc"><div class="cb-mh"><div class="cb-mhl"><span>💬 Asistente</span></div><span class="cb-mx">✕</span></div><div class="cb-mb ia-mb"></div><div class="ia-foot"><input type="text" class="ia-in" id="iaInput" placeholder="Escribe tu mensaje"><button class="ia-send" id="iaSend">➤</button></div></div>';
+document.body.appendChild(iaModal);
+let iaPrev="",iaBusy=!1;
+
+function toggleIaModal(show){
+  iaModal.classList.toggle("cb-v",show);
+  document.body.style.overflow=show?"hidden":"";
+}
+
+function iaAddMsg(cls,text){
+  const el=document.createElement("div");
+  el.className="ia-msg "+cls;
+  el.textContent=text;
+  iaModal.querySelector(".ia-mb").appendChild(el);
+  el.scrollIntoView({block:"end"});
+  return el;
+}
+
+async function iaCallApi(msg){
+  const r=await fetchTOIa(IA_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({msg,prev:iaPrev})
+  });
+  const d=await r.json();
+  if(!r.ok||d.error)throw new Error(d.error||"down");
+  return d.reply;
+}
+
+function fetchTOIa(url,opts){
+  const ac=new AbortController();
+  const t=setTimeout(()=>ac.abort(),15000);
+  return fetch(url,{...opts,signal:ac.signal}).finally(()=>clearTimeout(t));
+}
+
+function iaParseReply(raw){
+  let text=raw,action=null;
+  const mAdd=text.match(/\[ADDP:([^,\]]+),([^,\]]+),([^,\]]+),([^,\]]+)\]/);
+  if(mAdd){
+    action={type:"add",id:mAdd[1],pc:parseInt(mAdd[2]),ch:mAdd[3],nm:mAdd[4]};
+    text=text.replace(mAdd[0],"").trim();
+  }
+  const mAsk=text.match(/\[ASK\]/);
+  if(mAsk){
+    action={...action,ask:!0};
+    text=text.replace(mAsk[0],"").trim();
+  }
+  return{text,action};
+}
+
+function iaDoAsk(){
+  const wa=getRouteWA();
+  const base=wa?"https://wa.me/"+wa+"?text=":WA_BASE;
+  openExt(base+encodeURIComponent("Hola, Quisiera saber mas sobre esto "+window.location.href));
+}
+
+async function iaSendMessage(userText){
+  if(iaBusy||!userText)return;
+  iaBusy=!0;
+  iaAddMsg("ia-u",userText);
+  const loadEl=iaAddMsg("ia-load","...");
+  try{
+    const raw=await iaCallApi(userText);
+    loadEl.remove();
+    const{text,action}=iaParseReply(raw);
+    if(text)iaAddMsg("ia-a",text);
+    iaPrev=raw;
+    if(action?.type==="add"){
+      const btn=document.createElement("button");
+      btn.className="ia-addbtn";
+      btn.textContent="🛍️ Añadir "+action.nm+" al Carrito";
+      btn.onclick=()=>{addItem(action.ch,action.nm,action.id,1,action.pc,action.nm);btn.remove();};
+      iaModal.querySelector(".ia-mb").appendChild(btn);
+    }
+    if(action?.ask)iaDoAsk();
+  }catch(e){
+    loadEl.remove();
+    throw e;
+  }finally{
+    iaBusy=!1;
+  }
+}
+
+iaModal.addEventListener("click",ev=>{
+  if(ev.target===iaModal||ev.target.classList.contains("cb-mx"))toggleIaModal(!1);
+});
+iaModal.querySelector("#iaSend").addEventListener("click",()=>{
+  const inp=iaModal.querySelector("#iaInput");
+  const v=inp.value.trim();
+  if(!v)return;
+  inp.value="";
+  iaSendMessage(v).catch(()=>{iaAddMsg("ia-a","No se pudo responder, intenta de nuevo");});
+});
+iaModal.querySelector("#iaInput").addEventListener("keydown",ev=>{
+  if(ev.key==="Enter")iaModal.querySelector("#iaSend").click();
+});
 
 modal.addEventListener("click",ev=>{
   if(ev.target===modal||ev.target.classList.contains("cb-mx")||ev.target.closest("a[href]"))toggleModal();
