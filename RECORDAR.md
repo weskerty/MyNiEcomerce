@@ -1,4 +1,6 @@
-galerias si solo tiene general no mostrar titulo ni boton selector de sub categorias
+galerias no clic derecho igual que core.ja heredar funcion 
+core.js que añada inyeccion extra arriba de cada contenido cargado con env para acrivar ahi 
+asi boton atras siemore
 
 CentralPage contorno botones cambiar. no borroso.
 
