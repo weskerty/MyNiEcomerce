@@ -1,6 +1,6 @@
 !function(){
 const WA_BASE="https://wa.me/595972184435?text=";
-const IA=true;
+const IA=false;
 const IA_URL="/api/ia";
 const IMG_BASE="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/";
 const OFICIALPROVIDER=["595972184435"];
