@@ -223,6 +223,8 @@ th {
     z-index: 1;
     overflow-wrap: break-word;
 }
+/* view-transition-name interfiere con backdrop-filter blur hijos, invalidaba blur en chrome para central page. solucione con view-transition-name:none exclusivo para centralpage, no en css principal. */
+
 
 .content * { max-width: 100%; box-sizing: border-box }
 
