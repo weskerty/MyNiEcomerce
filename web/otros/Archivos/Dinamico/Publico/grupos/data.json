@@ -1,0 +1,25 @@
+[
+  {
+    "name": "Casita Server",
+    "desc": "Bedrock Survival casi vanilla con algunos Addons",
+    "url": "mc.cheagana.com",
+    "port": 19132,
+    "type": "B",
+    "img": "web/otros/Archivos/Imagenes/Permanente/minecraft/cheaganaservervid.avif",
+    "groups": [
+      { "type": "WA", "url": "https://chat.whatsapp.com/XXXXXXXXXX" },
+      { "type": "DC", "url": "https://discord.gg/XXXXXXXXXX" }
+    ]
+  },
+  {
+    "name": "Casita Server",
+    "desc": "Bedrock Survival casi vanilla con algunos Addons",
+    "url": "mc.cheagana.com",
+    "port": 19132,
+    "type": "J",
+    "groups": [
+      { "type": "WA", "url": "https://chat.whatsapp.com/XXXXXXXXXX" },
+      { "type": "DC", "url": "https://discord.gg/XXXXXXXXXX" }
+    ]
+  }
+]

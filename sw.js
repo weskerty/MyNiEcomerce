@@ -1,8 +1,8 @@
-const V='v97';
+const V='v98';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
-const FRASES_URL='web/otros/Archivos/DataBase/Frases.txt';
+const FRASES_HTML='web/otros/Archivos/DataBase/Libros/cuentos.html';
 const PRE=[
 'index.html',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
@@ -36,7 +36,7 @@ const PRE=[
 N_ICON,
 N_ICO,
 N_BANNER,
-FRASES_URL
+FRASES_HTML
 ];
 
 const TEMP_ROUTES=[{match:'/api/',ttl:18000000}];
@@ -109,20 +109,6 @@ async function cleanDLA(){
       if(r&&Date.now()>parseInt(r.headers.get('X-Expires')||0))await c.delete(req);
     }));
   }catch{}
-}
-
-async function getFrase(){
-  try{
-    const url=new URL(FRASES_URL,self.location).href;
-    const c=await caches.open(V);
-    const cached=await c.match(url);
-    const txt=cached?await cached.text():await fetch(url).then(r=>r.text());
-    const lines=txt.split('\n').map(l=>l.trim()).filter(Boolean);
-    if(!lines.length)return null;
-    const now=new Date();
-    const doy=Math.floor((now-new Date(now.getFullYear(),0,0))/86400000);
-    return lines[(doy-1)%lines.length];
-  }catch{return null;}
 }
 
 async function runOPFS(){
@@ -321,10 +307,9 @@ async function notifyCycle(){
   const shown=await runOPFS();
   await cleanDLA();
   if(shown>0)return;
-  const frase=await getFrase()||'Hay Novedades!';
   await self.registration.showNotification('Che Agana',{
-    body:frase,icon:N_ICON,badge:N_ICO,image:N_BANNER,
-    tag:'fallback',data:{url:self.location.origin}
+    body:'Ven a ver la frase del dia',icon:N_ICON,badge:N_ICO,image:N_BANNER,
+    tag:'fallback',data:{url:new URL(FRASES_HTML,self.location).href}
   });
 }
 

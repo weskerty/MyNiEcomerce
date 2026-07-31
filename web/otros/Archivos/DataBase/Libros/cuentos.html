@@ -1,0 +1,35 @@
+<style data-content>
+#FD_wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;padding:24px;max-width:600px;margin:0 auto}
+#FD_wrap img{max-width:100%;border-radius:12px}
+#FD_credito{font-size:.8em;opacity:.7;text-decoration:none;color:inherit}
+#FD_credito:hover{text-decoration:underline}
+</style>
+
+<div id="FD_wrap">
+<h1 id="FD_titulo"></h1>
+<p id="FD_descripcion"></p>
+<img id="FD_imagen" src="" alt="">
+<a id="FD_credito" href="" target="_blank" rel="noopener"></a>
+</div>
+
+<script>
+var FD_base="web/otros/Archivos/DataBase/Libros/";
+fetch(FD_base+"cuentos.json")
+  .then(function(r){return r.json()})
+  .then(function(cuentos){
+    var c=cuentos[Math.floor(Math.random()*cuentos.length)];
+    document.getElementById("FD_titulo").textContent=c.titulo;
+    document.getElementById("FD_imagen").src=FD_base+c.imagen;
+    document.getElementById("FD_imagen").alt=c.titulo;
+    document.getElementById("FD_descripcion").textContent=c.descripcion;
+    var m=c.imagen.match(/^pexels-(.+)-(\d+)\.\w+$/);
+    var cr=document.getElementById("FD_credito");
+    if(m){
+      cr.textContent="Foto por: pexels-"+m[1];
+      cr.href="https://www.pexels.com/photo/"+m[2]+"/";
+    }
+  })
+  .catch(function(e){
+    document.getElementById("FD_wrap").textContent="Hoy no hay Frases :c "+e;
+  });
+</script>
