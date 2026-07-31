@@ -1,10 +1,10 @@
-galerias no clic derecho igual que core.ja heredar funcion 
-core.js que añada inyeccion extra arriba de cada contenido cargado con env para acrivar ahi 
-asi boton atras siemore
+galerias no clic derecho igual que core.ja heredar funcion, galerias imagen fallback si avif no funciona.
 
-CentralPage contorno botones cambiar. no borroso.
+core.js que añada inyeccion extra arriba de cada contenido cargado con env como un estilo o similar, inyecta html ahi, o como un plugin. asi tener barra de navegacion personalizable sin editar core.
 
-imagen wait en whatsapp stickers tambien.
+
+
+
 
 animacion paso pestañas captura en low device desactivar. low device sera el mismo que reducemotion
 
@@ -14,7 +14,7 @@ animacion paso pestañas captura en low device desactivar. low device sera el mi
 
 ### Opcional
 
-
+search abrir teclado.
 
 
 Search buscar ID= tambien
