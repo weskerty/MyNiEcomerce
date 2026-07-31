@@ -1,4 +1,4 @@
-const V='v98';
+const V='v99';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -309,7 +309,7 @@ async function notifyCycle(){
   if(shown>0)return;
   await self.registration.showNotification('Che Agana',{
     body:'Ven a ver la frase del dia',icon:N_ICON,badge:N_ICO,image:N_BANNER,
-    tag:'fallback',data:{url:new URL(FRASES_HTML,self.location).href}
+    tag:'fallback',data:{url:self.location.origin+'/#'+FRASES_HTML}
   });
 }
 
