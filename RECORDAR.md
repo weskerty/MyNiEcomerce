@@ -2,7 +2,7 @@ galerias no clic derecho igual que core.ja heredar funcion, galerias imagen fall
 
 core.js que añada inyeccion extra arriba de cada contenido cargado con env como un estilo o similar, inyecta html ahi, o como un plugin. asi tener barra de navegacion personalizable sin editar core.
 
-chat&banner solo mostrar clic para preguntar si hay Canal de comunicacion.
+
 
 frases script añadir nuevo, añadir numeracion, titulo, descripcion y auto busqueda.
 

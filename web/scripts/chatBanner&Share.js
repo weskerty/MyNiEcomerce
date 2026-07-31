@@ -256,7 +256,9 @@ function syncNB(){
     if(isActive&&!wasActive){el.classList.remove('cb-wv');el.offsetWidth;el.classList.add('cb-wv');setTimeout(()=>el.classList.remove('cb-wv'),500);}
   });
 
-  if(_scrollAsk&&st.c.length>0){
+  const hasCH=!!getRouteWA();
+
+  if(_scrollAsk&&hasCH&&st.c.length>0){
     fng.classList.add('cb-v');
     const midEl=_midWrap.firstChild;
     if(!midEl||!midEl.classList.contains('cb-nb-cart')){
@@ -270,7 +272,7 @@ function syncNB(){
 
   fng.classList.remove('cb-v');
 
-  if(_scrollAsk){
+  if(_scrollAsk&&hasCH){
     _setMid(_mkAsk());
     return;
   }
