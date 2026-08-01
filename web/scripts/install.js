@@ -82,5 +82,5 @@ function bindNT(){
 
 function bindAll(){bindPI();bindNT();}
 document.addEventListener('contentLoaded',bindAll);
-bindAll();
+requestAnimationFrame(()=>requestAnimationFrame(bindAll));
 }();
