@@ -23,7 +23,14 @@ function bindPI(){
   show();
   navigator.serviceWorker.ready.then(show);
   window.addEventListener('beforeinstallprompt',show);
-  b.onclick=()=>{if(!window._PWA)return;window._PWA.prompt();window._PWA=null;b.style.display='none';};
+  b.onclick=()=>{
+    const pi=document.querySelector('pwa-install');
+    if(pi&&customElements.get('pwa-install')){pi.showDialog(true);return;}
+    if(!window._PWA)return;
+    window._PWA.prompt();
+    window._PWA=null;
+    b.style.display='none';
+  };
 }
 
 function u8(s){

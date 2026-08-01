@@ -60,6 +60,8 @@ if(DW1_EN){
 
   <div class="content" id="content"></div>
 
+  <pwa-install use-local-storage manifest-url="manifest.json"></pwa-install>
+
   <div id="ad-slot"></div>
 
   <div id="disqus-container"></div>
@@ -68,6 +70,14 @@ if(DW1_EN){
           onerror="this.src='web/scripts/Otros/MarkDownIT/markdown-it.min.js'"></script>
   <script src="https://cdn.jsdelivr.net/npm/markdown-it-anchor@9/dist/markdownItAnchor.umd.min.js"
           onerror="this.src='web/scripts/Otros/MarkDownIT/markdownItAnchor.umd.min.js'"></script>
+
+  <script type="module">
+    try{
+      await import('https://cdn.jsdelivr.net/npm/@khmyznikov/pwa-install@latest/dist/pwa-install.bundle.js');
+    }catch{
+      await import('web/scripts/Otros/PwaInstall/pwa-install.bundle.js');
+    }
+  </script>
 
   <script src="web/scripts/Otros/core.js"></script>
 
