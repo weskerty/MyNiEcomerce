@@ -23,12 +23,19 @@
 
 <script>
 (function(){
-  if(window.__ENV?.pwa)
-    document.getElementById('INS_W').style.display='none';
-  else{
-    const pi=document.querySelector('pwa-install');
+  const w=document.getElementById('INS_W');
+  const pi=document.querySelector('pwa-install');
+
+  function show(){
+    w.style.display='';
     if(pi&&customElements.get('pwa-install'))pi.showDialog(true);
   }
+  function hide(){w.style.display='none';}
+
+  if(window._PWA)show();
+  else hide();
+  window.addEventListener('beforeinstallprompt',show);
+  window.addEventListener('appinstalled',hide);
 
   const W='https://yoganopy-push.marcoygor0.workers.dev';
   const VP='BHhzutw-yWrRIzIXr3NS1VlY9Z0ryqQ5FRm-W-p3lBN6wj9jePY7tBqatF_OUkMWJcobIpzucuqqgkV159lC_Mk';
