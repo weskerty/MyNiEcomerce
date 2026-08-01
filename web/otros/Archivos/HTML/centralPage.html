@@ -288,7 +288,7 @@ navigator.serviceWorker.ready.then(rs);
     </a> 
     
 
-<a href="web/otros/Archivos/MarkDowns/Install.md" class="pc-mi" id="INS">
+<a href="web/otros/Archivos/MarkDowns/Install.md" class="pc-mi" id="INS" style="display:none">
   <div class="pc-mc">
     <h3>📱 Instala la App</h3>
     <p>Ahorra Saldo y Recibe Ofertas</p>
@@ -302,17 +302,9 @@ navigator.serviceWorker.ready.then(rs);
 <script>
 (function(){
 const i=document.getElementById('INS');
-
-if(
-window.matchMedia('(display-mode: standalone)').matches||
-navigator.standalone
-){
-i.style.display='none';
-return;
-}
-
 function show(){i.style.display='';}
 if(window._PWA)show();
 window.addEventListener('beforeinstallprompt',show);
+window.addEventListener('appinstalled',()=>{i.style.display='none';});
 })();
 </script>
