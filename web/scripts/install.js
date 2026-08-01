@@ -39,10 +39,7 @@ function u8(s){
 }
 
 function swR(){
-  return Promise.race([
-    navigator.serviceWorker.ready,
-    new Promise((_,r)=>setTimeout(()=>r(new Error),3000))
-  ]);
+  return navigator.serviceWorker.ready;
 }
 
 function bindNT(){
@@ -52,16 +49,9 @@ function bindNT(){
   if(Notification.permission==='denied')return;
   b._bound=true;
 
-  const ac=new AbortController();
-  const cd=document.getElementById('content');
-  if(cd)cd.addEventListener('contentUnload',()=>ac.abort(),{once:true});
-  const sig=ac.signal;
-
   async function upd(sw){
-    if(sig.aborted)return;
     try{
       const s=await sw.pushManager.getSubscription();
-      if(sig.aborted)return;
       b.textContent=s?'🔕 Desactivar Notificaciones':'🔔 Activar Notificaciones';
       b.style.display='block';
     }catch{}
@@ -84,25 +74,9 @@ function bindNT(){
     b.disabled=false;
   }
 
-  async function resub(sw){
-    if(sig.aborted||Notification.permission!=='granted')return;
-    try{
-      const s=await sw.pushManager.getSubscription();
-      if(s)return;
-      const ns=await sw.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(VP)});
-      await fetch(W+'/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ns.toJSON())}).catch(()=>{});
-      await upd(sw);
-    }catch{}
-  }
-
   swR().then(sw=>{
-    if(sig.aborted)return;
     upd(sw);
     b.onclick=()=>tog(sw);
-    navigator.serviceWorker.addEventListener('controllerchange',()=>{
-      if(sig.aborted)return;
-      navigator.serviceWorker.ready.then(resub);
-    },{signal:sig});
   }).catch(()=>{});
 }
 
