@@ -1,11 +1,18 @@
 Auto Instalable Termux para Reutilizar Android Viejito
 https://github.com/got3nks/amutorrent
 
-pkg install nodejs-lts clang lld libc++
+pkg install x11-repo tur-repo 
+pkg update
+pkg upgrade
+pkg install wget nodejs-lts clang lld libc++ prowlarr transmission 
 CXXFLAGS="-std=c++2a" npm install better-sqlite3@latest
 
 cd server && CXXFLAGS="-std=c++2a" npm install  && cd ..         
 npm install && npm run build && node server/server.js
+
+
+### work
+cd server && npm install-scripts approve --all && CXXFLAGS="-std=c++2a" npm install && cd .. && npm install-scripts approve --all && npm install && npm run build && node server/server.js
 
 
 
@@ -15,7 +22,9 @@ cd server && npm install-scripts approve --all && rm -rf node_modules/better-sql
 
 
 
+### jackett
 
+wget -O - -o /dev/stderr https://github.com/Jackett/Jackett/releases/latest/download/Jackett.Binaries.LinuxARM32.tar.gz | tar -xz
 
 
 
