@@ -305,23 +305,14 @@ const i=document.getElementById('INS');
 
 if(
 window.matchMedia('(display-mode: standalone)').matches||
-navigator.standalone||
-!('BeforeInstallPromptEvent' in window)
+navigator.standalone
 ){
 i.style.display='none';
 return;
 }
 
-let ok=false;
-
-window.addEventListener('beforeinstallprompt',e=>{
-e.preventDefault();
-ok=true;
-i.style.display='';
-},{once:true});
-
-setTimeout(()=>{
-if(!ok)i.style.display='none';
-},3000);
+function show(){i.style.display='';}
+if(window._PWA)show();
+window.addEventListener('beforeinstallprompt',show);
 })();
 </script>
