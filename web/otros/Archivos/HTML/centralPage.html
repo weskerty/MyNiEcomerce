@@ -105,8 +105,6 @@ font-size:.78rem;
 letter-spacing:.05em;
 cursor:pointer;
 transition:background .2s,transform .15s;
-
-/* blur */
 backdrop-filter:blur(12px);
 -webkit-backdrop-filter:blur(12px)
 }
@@ -128,126 +126,9 @@ cursor:default
     <h1>Bienvenido</h1>
     <p class="pc-sub">Selecciona a donde quieres ir 🤗</p>
   </div>
-  
+
   <button id="NT" class="app-btn" style="display:none"></button>
 
-<script>
-(function(){
-const W='https://yoganopy-push.marcoygor0.workers.dev';
-const VP='BHhzutw-yWrRIzIXr3NS1VlY9Z0ryqQ5FRm-W-p3lBN6wj9jePY7tBqatF_OUkMWJcobIpzucuqqgkV159lC_Mk';
-
-if(!('serviceWorker' in navigator)||!('PushManager' in window))return;
-if(Notification.permission==='denied')return;
-
-const btn=document.getElementById('NT');
-
-function u8(s){
-const p=atob(s.replace(/-/g,'+').replace(/_/g,'/'));
-return Uint8Array.from(p,c=>c.charCodeAt(0));
-}
-
-function swR(){
-return Promise.race([
-navigator.serviceWorker.ready,
-new Promise((_,r)=>setTimeout(()=>r(new Error),3000))
-]);
-}
-
-async function upd(sw){
-try{
-const s=await sw.pushManager.getSubscription();
-btn.textContent=s?'🔕 Desactivar Notificaciones':'🔔 Activar Notificaciones';
-btn.style.display='block';
-}catch{}
-}
-
-async function tog(sw){
-btn.disabled=true;
-
-try{
-const s=await sw.pushManager.getSubscription();
-
-if(s){
-
-await fetch(W+'/unsubscribe',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({endpoint:s.endpoint})
-}).catch(()=>{});
-
-await s.unsubscribe();
-
-}else{
-
-if(await Notification.requestPermission()!=='granted'){
-btn.disabled=false;
-return;
-}
-
-const ns=await sw.pushManager.subscribe({
-userVisibleOnly:true,
-applicationServerKey:u8(VP)
-});
-
-await fetch(W+'/subscribe',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify(ns.toJSON())
-}).catch(()=>{});
-
-}
-
-await upd(sw);
-
-}catch{}
-
-btn.disabled=false;
-}
-
-async function rs(sw){
-
-if(Notification.permission!=='granted')return;
-
-try{
-
-const s=await sw.pushManager.getSubscription();
-
-if(s)return;
-
-const ns=await sw.pushManager.subscribe({
-userVisibleOnly:true,
-applicationServerKey:u8(VP)
-});
-
-await fetch(W+'/subscribe',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify(ns.toJSON())
-}).catch(()=>{});
-
-await upd(sw);
-
-}catch{}
-}
-
-swR().then(sw=>{
-
-upd(sw);
-
-btn.addEventListener('click',()=>tog(sw));
-
-navigator.serviceWorker.addEventListener('controllerchange',()=>{
-
-navigator.serviceWorker.ready.then(rs);
-
-});
-
-}).catch(()=>{});
-
-})();
-</script>
-
-  
   <div class="pc-ml">
     <a href="web/es.html" class="pc-mi">
       <div class="pc-mc">
@@ -255,8 +136,8 @@ navigator.serviceWorker.ready.then(rs);
         <p>Compras de todo tipo; boletos, alimentos, utensilios, etc.</p>
       </div>
     </a>
-    
-    
+
+
     <a href="web/otros/Archivos/HTML/Grupos.html" class="pc-mi" >
       <div class="pc-mc">
         <h3>🫂 Actividades </h3>
@@ -270,23 +151,22 @@ navigator.serviceWorker.ready.then(rs);
   </div>
 </a>
 
-    
+
     <a href="web/otros/Archivos/HTML/DondeReciclar.html" class="pc-mi" >
       <div class="pc-mc">
         <h3>♻️ Donde Reciclar </h3>
         <p>Por un Paraguay Sano y Limpio</p>
       </div>
-    </a> 
-    
-    
-     
+    </a>
+
+
+
     <a href="web/Dinamico/🩳 Prendas/lavanderia.md" class="pc-mi" >
       <div class="pc-mc">
         <h3>🫧 Lavanderias </h3>
         <p>Donde Lavan con Productos Sostenibles</p>
       </div>
-    </a> 
-    
+    </a>
 
 <a href="web/otros/Archivos/MarkDowns/Install.md" class="pc-mi" id="INS">
   <div class="pc-mc">
@@ -294,44 +174,22 @@ navigator.serviceWorker.ready.then(rs);
     <p>Ahorra Saldo y Recibe Ofertas</p>
   </div>
 </a>
-      
-    </a>
+
   </div>
 </div>
-
-
-
-
-
-<style>
-.app-btn{margin:10px auto 0;padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:.78rem;letter-spacing:.05em;cursor:pointer;transition:background .2s,transform .15s}
-.app-btn:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
-.app-btn:disabled{opacity:.5;cursor:default;transform:none}
-</style>
 
 <script>
 (function(){
 const i=document.getElementById('INS');
-
 if(
 window.matchMedia('(display-mode: standalone)').matches||
-navigator.standalone||
-!('BeforeInstallPromptEvent' in window)
+navigator.standalone
 ){
 i.style.display='none';
 return;
 }
-
-let ok=false;
-
-window.addEventListener('beforeinstallprompt',e=>{
-e.preventDefault();
-ok=true;
-i.style.display='';
-},{once:true});
-
-setTimeout(()=>{
-if(!ok)i.style.display='none';
-},3000);
+function show(){i.style.display='';}
+if(window._PWA)show();
+window.addEventListener('beforeinstallprompt',show);
 })();
 </script>
