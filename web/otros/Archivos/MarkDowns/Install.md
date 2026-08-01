@@ -17,9 +17,16 @@
   </div>
 </div>
 
+<div id="NT_W">
 <h2>Notificaciones</h2>
 <p>Tambien puedes activar notificaciones para recibir ofertas y nuevos productos</p>
 <button id="NT" class="app-btn" style="display:none"></button>
+</div>
+
+<div id="NC_W" style="display:none">
+  <p style="font-size:3rem;margin:0">😿</p>
+  <p>Tu Navegador no es compatible con las Aplicaciones Web</p>
+</div>
 
 <script>
 (function(){
@@ -39,8 +46,15 @@
 
   const W='https://yoganopy-push.marcoygor0.workers.dev';
   const VP='BHhzutw-yWrRIzIXr3NS1VlY9Z0ryqQ5FRm-W-p3lBN6wj9jePY7tBqatF_OUkMWJcobIpzucuqqgkV159lC_Mk';
-  if(!('serviceWorker' in navigator)||!('PushManager' in window))return;
-  if(Notification.permission==='denied')return;
+  const ntw=document.getElementById('NT_W');
+  const pushOK=('serviceWorker' in navigator)&&('PushManager' in window)&&Notification.permission!=='denied';
+
+  if(!pushOK){
+    ntw.style.display='none';
+    if(!window._PWA)document.getElementById('NC_W').style.display='';
+    return;
+  }
+
   const btn=document.getElementById('NT');
   function u8(s){const p=atob(s.replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(p,c=>c.charCodeAt(0));}
   async function upd(sw){
