@@ -1,0 +1,22 @@
+[
+{"id":1,"pregunta":"Pescador es a mar","opciones":["Sembrador es a campo","Detective es a suburbio","Tortuga es a aguila"],"correct":0},
+{"id":2,"pregunta":"Perro es a ladrar","opciones":["Gato es a maullar","Pajaro es a nadar","Pez es a volar"],"correct":0},
+{"id":3,"pregunta":"Medico es a hospital","opciones":["Profesor es a escuela","Piloto es a cocina","Panadero es a biblioteca"],"correct":0},
+{"id":4,"pregunta":"Libro es a leer","opciones":["Comida es a cocinar","Musica es a escuchar","Auto es a dormir"],"correct":1},
+{"id":5,"pregunta":"Llave es a puerta","opciones":["Contrasena es a cuenta","Zapato es a mano","Lapiz es a fuego"],"correct":0},
+{"id":6,"pregunta":"Semilla es a arbol","opciones":["Huevo es a ave","Piedra es a rio","Nube es a montana"],"correct":0},
+{"id":7,"pregunta":"Rey es a reino","opciones":["Alcalde es a pelota","Presidente es a pais","Director es a oceano"],"correct":1},
+{"id":8,"pregunta":"Fuego es a calor","opciones":["Hielo es a frio","Sol es a oscuridad","Agua es a dureza"],"correct":0},
+{"id":9,"pregunta":"Abeja es a colmena","opciones":["Leon es a nido","Hormiga es a hormiguero","Pez es a cueva"],"correct":1},
+{"id":10,"pregunta":"Escritor es a novela","opciones":["Cocinero es a edificio","Compositor es a cancion","Arquitecto es a poema"],"correct":1},
+{"id":11,"pregunta":"Reloj es a tiempo","opciones":["Balanza es a color","Termometro es a temperatura","Regla es a sonido"],"correct":1},
+{"id":12,"pregunta":"Oruga es a mariposa","opciones":["Cachorro es a piedra","Renacuajo es a rana","Semilla es a nube"],"correct":1},
+{"id":13,"pregunta":"Martillo es a clavo","opciones":["Cuchillo es a nube","Destornillador es a tornillo","Tijera es a viento"],"correct":1},
+{"id":14,"pregunta":"Ojo es a ver","opciones":["Nariz es a caminar","Oido es a escuchar","Mano es a pensar"],"correct":1},
+{"id":15,"pregunta":"Nube es a lluvia","opciones":["Rio es a arena","Volcan es a lava","Desierto es a inundacion"],"correct":1},
+{"id":16,"pregunta":"Maestro es a alumno","opciones":["Chofer es a pasajero","Piloto es a copiloto","Medico es a enfermo"],"correct":0},
+{"id":17,"pregunta":"Isla es a agua","opciones":["Nube es a tierra","Oasis es a desierto","Piedra es a aire"],"correct":1},
+{"id":18,"pregunta":"Panaderia es a pan","opciones":["Farmacia es a autos","Zapateria es a comida","Carpinteria es a muebles"],"correct":2},
+{"id":19,"pregunta":"Invierno es a frio","opciones":["Otono es a nieve","Verano es a calor","Primavera es a hielo"],"correct":1},
+{"id":20,"pregunta":"Corazon es a bombear sangre","opciones":["Higado es a caminar","Rinon es a pensar","Pulmon es a respirar"],"correct":2}
+]

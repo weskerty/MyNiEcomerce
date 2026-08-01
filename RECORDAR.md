@@ -6,7 +6,7 @@ core.js que añada inyeccion extra arriba de cada contenido cargado con env como
 
 frases script añadir nuevo, añadir numeracion, titulo, descripcion y auto busqueda.
 
-
+Mostrar instalador https://khmyznikov.com/pwa-install/ asi no se tiene que descubrir. Blog, central page, es, install.js plugin permanente es el que mostraria, pondria un marcador para no aparecer como rendimiento
 
 animacion paso pestañas captura en low device desactivar. low device sera el mismo que reducemotion
 
@@ -15,6 +15,8 @@ animacion paso pestañas captura en low device desactivar. low device sera el mi
 404 hacer busqueda en search. No completado necesita cambios en core.js
 
 ### Opcional
+
+https://socket.io/
 
 search abrir teclado.
 

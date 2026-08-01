@@ -1,0 +1,22 @@
+[
+{"id":1,"pregunta":"Juan dice que debemos reducir impuestos, pero Juan una vez no pago una multa, asi que no hay que creerle.","correct":false},
+{"id":2,"pregunta":"O apoyas totalmente esta ley, o te da igual la seguridad de la gente.","correct":false},
+{"id":3,"pregunta":"Si dejamos que los estudiantes usen calculadora en un examen, despues van a querer usarla en todo, y terminaran sin saber sumar.","correct":false},
+{"id":4,"pregunta":"Mi vecino dice que el reciclaje ayuda al ambiente, entonces el quiere que vivamos todos en cuevas sin tecnologia.","correct":false},
+{"id":5,"pregunta":"Un famoso actor dijo que este suplemento cura enfermedades, asi que debe ser cierto.","correct":false},
+{"id":6,"pregunta":"Conoci a dos taxistas groseros esta semana, por lo tanto todos los taxistas son groseros.","correct":false},
+{"id":7,"pregunta":"Esto es natural, entonces tiene que ser bueno para la salud.","correct":false},
+{"id":8,"pregunta":"Desde que abrieron el nuevo semaforo, hay mas accidentes, por lo tanto el semaforo causa los accidentes.","correct":false},
+{"id":9,"pregunta":"Siempre se ha hecho asi en esta empresa, por lo tanto es la mejor forma de hacerlo.","correct":false},
+{"id":10,"pregunta":"La mayoria de la gente piensa que este producto es el mejor, entonces debe serlo.","correct":false},
+{"id":11,"pregunta":"Se que tengo razon porque lo que digo es correcto.","correct":false},
+{"id":12,"pregunta":"Mi propuesta reducira costos en la empresa el proximo trimestre, segun los numeros que revisamos con el equipo de finanzas.","correct":true},
+{"id":13,"pregunta":"El es amigo de una persona deshonesta, asi que el tambien debe ser deshonesto.","correct":false},
+{"id":14,"pregunta":"No podes estar en contra de esta politica, piensa en los ninos que sufririan si no la aprobamos.","correct":false},
+{"id":15,"pregunta":"Ese plan de ahorro y aquel otro son practicamente lo mismo, ambos implican guardar dinero.","correct":false},
+{"id":16,"pregunta":"Todos los perros son mamiferos, y mi mascota es un perro, entonces mi mascota es un mamifero.","correct":true},
+{"id":17,"pregunta":"Si llueve, el piso se moja. Esta lloviendo, entonces el piso esta mojado.","correct":true},
+{"id":18,"pregunta":"El estudio fue revisado por varios expertos independientes y los resultados se repitieron en tres experimentos distintos.","correct":true},
+{"id":19,"pregunta":"Estuve probando el codigo en distintos navegadores y el error solo aparece en uno especifico, asi que el problema esta en ese navegador.","correct":true},
+{"id":20,"pregunta":"Si no estas conmigo en esto, entonces estas en mi contra.","correct":false}
+]
