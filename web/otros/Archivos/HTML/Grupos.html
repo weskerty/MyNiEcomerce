@@ -101,7 +101,7 @@ hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:14px 0}
 #rv-ov{max-height:calc(100vh - 40px);overflow-y:auto;position:relative}
 
 #rv-x{
-  position:absolute;top:10px;right:10px;z-index:2;
+  position:fixed;z-index:2;
   width:34px;height:34px;border:none;border-radius:10px;
   background:rgba(255,255,255,.09);color:#fff;font-size:.95em;cursor:pointer;
   transition:background .18s,transform .15s;
@@ -162,6 +162,7 @@ const cEl=document.getElementById('rv-c');
 const fEl=document.getElementById('rv-f');
 const btn=document.getElementById('rv-btn');
 const ovEl=document.getElementById('rv-ov');
+const xBtn=document.getElementById('rv-x');
 const sentinel=document.getElementById('rv-sentinel');
 let items=[],_populated=false,_chunkIdx=0;
 const PREVIEW=4,CHUNK=8;
@@ -275,6 +276,12 @@ async function load(){
   }catch{cEl.innerHTML='';}
 }
 
+function posX(){
+  const r=ovEl.getBoundingClientRect();
+  xBtn.style.top=(r.top+10)+'px';
+  xBtn.style.left=(r.right-44)+'px';
+}
+
 window.rvOpen=function(){
   if(!_populated){
     _populated=true;
@@ -284,11 +291,14 @@ window.rvOpen=function(){
     setupIO();
   }
   ovEl.showModal();
+  posX();
+  window.addEventListener('resize',posX);
 };
-window.rvClose=function(){ovEl.close();};
+window.rvClose=function(){ovEl.close();window.removeEventListener('resize',posX);};
 
 document.addEventListener('contentUnload',function(){
   if(ovEl.open)ovEl.close();
+  window.removeEventListener('resize',posX);
   if(_io){_io.disconnect();_io=null;}
   LD.remove();
   delete window.rvOpen;
