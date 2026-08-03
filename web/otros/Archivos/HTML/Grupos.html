@@ -285,11 +285,14 @@ window.rvOpen=function(){
     setupIO();
   }
   ovEl.showModal();
+  document.body.style.overflow='hidden';
 };
-window.rvClose=function(){ovEl.close();};
+window.rvClose=function(){ovEl.close();document.body.style.overflow='';};
+ovEl.addEventListener('close',()=>{document.body.style.overflow='';});
 
 document.addEventListener('contentUnload',function(){
   if(ovEl.open)ovEl.close();
+  document.body.style.overflow='';
   if(_io){_io.disconnect();_io=null;}
   LD.remove();
   delete window.rvOpen;
