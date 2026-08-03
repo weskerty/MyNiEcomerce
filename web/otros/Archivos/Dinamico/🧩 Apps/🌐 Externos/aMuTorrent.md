@@ -20,11 +20,10 @@ cd server && npm install-scripts approve --all && rm -rf node_modules/better-sql
 
 
 
+iniciar transmision
+transmission-daemon --config-dir aMuTorrent/conf/transmission
 
-
-### jackett
-
-wget -O - -o /dev/stderr https://github.com/Jackett/Jackett/releases/latest/download/Jackett.Binaries.LinuxARM32.tar.gz | tar -xz
+prowlarr --nobrowser --data=aMuTorrent/conf/prowlarr
 
 
 
