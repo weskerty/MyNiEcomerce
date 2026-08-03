@@ -1,3 +1,5 @@
+core.js aveces no sube bien, en ios mierda krj
+
 galerias no clic derecho igual que core.ja heredar funcion, galerias imagen fallback si avif no funciona.
 
 core.js que añada inyeccion extra arriba de cada contenido cargado con env como un estilo o similar, inyecta html ahi, o como un plugin. asi tener barra de navegacion personalizable sin editar core.
