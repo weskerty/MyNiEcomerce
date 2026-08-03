@@ -6,10 +6,7 @@
 <button id="rv-btn" style="display:none" onclick="rvOpen()">Ver todas →</button>
 
 <dialog id="rv-ov">
-  <div id="rv-hd">
-    <span>📰 Novedades</span>
-    <button onclick="rvClose()">✕</button>
-  </div>
+  <button id="rv-x" onclick="rvClose()">✕</button>
   <div id="rv-f"></div>
   <div id="rv-sentinel"></div>
 </dialog>
@@ -101,22 +98,16 @@ hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:14px 0}
 }
 #rv-btn:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
 
-#rv-ov{max-width:780px;max-height:80vh;overflow-y:auto}
+#rv-ov{max-height:80vh;overflow-y:auto;position:relative}
 
-#rv-hd{
-  position:sticky;top:-22px;z-index:2;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 14px;margin:-22px -22px 12px;
-  background:rgba(18,22,32,.97);
-  border-bottom:1px solid rgba(255,255,255,.09);
-}
-#rv-hd span{font-size:1em;font-weight:700;color:#fff}
-#rv-hd button{
+#rv-x{
+  position:sticky;top:0;float:right;z-index:2;
   width:34px;height:34px;border:none;border-radius:10px;
-  background:rgba(255,255,255,.07);color:#fff;font-size:.95em;cursor:pointer;
+  background:rgba(255,255,255,.09);color:#fff;font-size:.95em;cursor:pointer;
   transition:background .18s,transform .15s;
+  margin:0 0 8px 8px;
 }
-#rv-hd button:hover{background:rgba(255,255,255,.14);transform:scale(1.06)}
+#rv-x:hover{background:rgba(255,255,255,.18);transform:scale(1.06)}
 
 #rv-f{display:flex;flex-direction:column;gap:10px}
 
@@ -196,24 +187,19 @@ function fI(html){
   return new DOMParser().parseFromString(html,'text/html').querySelector('img')?.src||null;
 }
 
-function mkC(item){
+function mkItem(item,full){
   const title=gT(item,'title'),link=gT(item,'link'),
         desc=gH(item,'description'),date=gT(item,'pubDate'),
-        d=date?new Date(date).toLocaleString('es-PY',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'',
-        img=fI(desc),a=document.createElement('a');
-  a.className='rv-ci';
-  a.href=link;a.target='_blank';a.rel='noopener noreferrer';
-  a.innerHTML=(img?`<img class="rv-ci-thumb" src="${img}" loading="lazy">`:`<div class="rv-ci-thumb rv-no">📌</div>`)
-    +`<div class="rv-ci-info"><div class="rv-ci-title">${title}</div><div class="rv-ci-meta">${d}</div></div>`;
-  return a;
-}
-
-function mkF(item){
-  const title=gT(item,'title'),link=gT(item,'link'),
-        desc=gH(item,'description'),date=gT(item,'pubDate'),
-        author=gT(item,'author'),
-        d=date?new Date(date).toLocaleString('es-PY'):'',
-        div=document.createElement('div');
+        d=date?new Date(date).toLocaleString('es-PY',full?undefined:{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+  if(!full){
+    const img=fI(desc),a=document.createElement('a');
+    a.className='rv-ci';
+    a.href=link;a.target='_blank';a.rel='noopener noreferrer';
+    a.innerHTML=(img?`<img class="rv-ci-thumb" src="${img}" loading="lazy">`:`<div class="rv-ci-thumb rv-no">📌</div>`)
+      +`<div class="rv-ci-info"><div class="rv-ci-title">${title}</div><div class="rv-ci-meta">${d}</div></div>`;
+    return a;
+  }
+  const author=gT(item,'author'),div=document.createElement('div');
   div.className='rv-it';
   div.innerHTML=`<div class="rv-it-meta">${[author,d].filter(Boolean).join(' · ')}</div>
     <div class="rv-it-title"><a href="${link}" target="_blank" rel="noopener noreferrer">${title}</a></div>
@@ -225,7 +211,7 @@ function appendChunk(){
   if(_chunkIdx>=items.length)return;
   const end=Math.min(_chunkIdx+CHUNK,items.length);
   const frag=document.createDocumentFragment();
-  for(let i=_chunkIdx;i<end;i++)frag.appendChild(mkF(items[i]));
+  for(let i=_chunkIdx;i<end;i++)frag.appendChild(mkItem(items[i],true));
   fEl.appendChild(frag);
   _chunkIdx=end;
 }
@@ -284,7 +270,7 @@ async function load(){
     items=[...doc.querySelectorAll('item')];
     if(!items.length)return;
     const frag=document.createDocumentFragment();
-    items.slice(0,PREVIEW).forEach(i=>frag.appendChild(mkC(i)));
+    items.slice(0,PREVIEW).forEach(i=>frag.appendChild(mkItem(i,false)));
     cEl.appendChild(frag);
     btn.style.display='';
   }catch{cEl.innerHTML='';}
