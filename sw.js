@@ -43,8 +43,8 @@ const TEMP_ROUTES=[{match:'/api/',ttl:18000000}];
 const EXT_CACHE=[
   {origin:'tetunori.github.io',ttl:0}
 ];
-const MIRRORS=['https://weskerty.github.io/MyNiEcomerce','https://lawiskapy.codeberg.page/kore.js','https://mc.cheagana.com'];
-const MIRROR_TIMEOUT=5000;
+const MIRRORS=['https://weskerty.github.io/MyNiEcomerce','https://cheagana.netlify.app','https://lawiskapy.codeberg.page/kore.js','https://mc.cheagana.com'];
+const MIRROR_TIMEOUT=2000;
 let serverIsDown=false;
 const EXT_C='ext-fonts';
 const DJ=/\/data\.json(\?|$)/;
