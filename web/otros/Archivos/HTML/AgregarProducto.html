@@ -187,15 +187,21 @@ font-family:inherit;transition:background .15s;
           <div class="fg"><label>Subcategoria</label><select id="ap-sub"></select></div>
         </div>
         <div class="ap-row">
-          <div class="fg"><label>Tipo Contacto</label>
-            <select id="ap-nm">
-              <option value="WATG">WhatsApp y Telegram</option>
+          <div class="fg"><label>Canal de Contacto</label>
+            <select id="ap-ch">
+              <option value="WA.TG">WhatsApp y Telegram</option>
               <option value="WA">Solo WhatsApp</option>
               <option value="TG">Solo Telegram</option>
+              <option value="SM">Solo SMS</option>
+              <option value="WA.SM">WhatsApp y SMS</option>
+              <option value="WA.TG.SM">WhatsApp, Telegram y SMS</option>
             </select>
           </div>
-          <div class="fg"><label>Numero</label><input id="ap-nu" type="tel" placeholder="595972184435" inputmode="numeric" minlength="12" maxlength="20" autocomplete="off"></div>
+          <div class="fg"><label>Ubicacion</label>
+            <button type="button" class="ap-btn sec" id="ap-gps-btn" style="padding:10px" onclick="AP_pedirGPS()">Usar mi ubicacion</button>
+          </div>
         </div>
+        <div class="fg-hint" id="ap-gps-hint"></div>
         <div class="ap-card" style="padding:12px;margin-bottom:0;background:var(--g1);border-radius:var(--ri)">
           <div class="ap-img-row">
             <div class="ap-img-thumb" id="ap-img-thumb" onclick="document.getElementById('ap-img').click()">
@@ -212,7 +218,10 @@ font-family:inherit;transition:background .15s;
           <input type="file" id="ap-img" accept="image/avif,image/webp,image/*" style="display:none">
         </div>
         <div style="height:12px"></div>
-        <div class="fg"><label>Precio (Gs)</label><input id="ap-pc" type="text" placeholder="50.000" inputmode="numeric" maxlength="14" autocomplete="off"></div>
+        <div class="ap-row">
+          <div class="fg"><label>Precio (Gs)</label><input id="ap-pc" type="text" placeholder="50.000" inputmode="numeric" maxlength="14" autocomplete="off"></div>
+          <div class="fg"><label>Compra minima (opcional)</label><input id="ap-cm" type="text" placeholder="1" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+        </div>
         <div class="fg"><label>Fecha Limite (opcional)</label><input id="ap-tm" type="text" placeholder="DD.MM.YYYY.HH.MM" maxlength="16" inputmode="numeric" autocomplete="off"></div>
       </div>
       <div class="ap-card" id="ap-mde">
@@ -338,42 +347,61 @@ function AP_extractEntries(node,cat,sub,out){
     node.forEach(fn=>{
       if(typeof fn!=='string')return;
       const mID=fn.match(/ID=([^-]+)/),mNM=fn.match(/NM=([^-]+)/),mPC=fn.match(/PC=(\d+)/),
-        mTM=fn.match(/TM=(\d{2}\.\d{2}\.\d{4}\.\d{2}\.\d{2})/),mTL=fn.match(/TL=(\d+)/),
+        mCD=fn.match(/CD=(\d+)/),mCM=fn.match(/CM=(\d+)/),mCH=fn.match(/CH=([^-]+)/),
+        mCT=fn.match(/CT=([SN][\d.]+[WE][\d.]+)/),mTM=fn.match(/TM=(\d{2}\.\d{2}\.\d{4}\.\d{2}\.\d{2})/),
         mNB=fn.match(/NB=(.+)\.\w+$/);
       if(!mID)return;
-      out.push({fn,ID:mID[1],NM:mNM?mNM[1]:'',PC:mPC?parseInt(mPC[1]):0,TM:mTM?mTM[1]:null,telefono:mTL?mTL[1]:null,NB:mNB?mNB[1]:fn,categoria:cat,sub:sub||''});
+      out.push({fn,ID:mID[1],telefono:mNM?mNM[1]:null,PC:mPC?parseInt(mPC[1]):0,
+        CD:mCD?parseInt(mCD[1]):null,CM:mCM?parseInt(mCM[1]):1,CH:mCH?mCH[1]:'WA',CT:mCT?mCT[1]:null,
+        TM:mTM?mTM[1]:null,NB:mNB?mNB[1]:fn,categoria:cat,sub:sub||''});
     });
     return;
   }
   if(node&&typeof node==='object')Object.entries(node).forEach(([k,v])=>AP_extractEntries(v,cat,sub||k,out));
 }
 
-async function AP_fetchDataJson(cat,sub){
-  const p=sub?`${AP_DINAMICO_BASE}/${cat}/${sub}/data.json`:`${AP_DINAMICO_BASE}/${cat}/data.json`;
+let _AP_dataJsonCache=null;
+async function AP_fetchDataJsonGeneral(force){
+  if(_AP_dataJsonCache&&!force)return _AP_dataJsonCache;
   try{
-    const r=await fetch(p);
+    const r=await fetch(`${AP_DINAMICO_BASE}/data.json`);
     if(!r.ok)return null;
-    return await r.json();
+    const d=await r.json();
+    _AP_dataJsonCache=d.galleries||d;
+    return _AP_dataJsonCache;
   }catch{return null;}
 }
 
-async function AP_scanAllProductos(){
+async function AP_scanAllProductos(force){
+  const dj=await AP_fetchDataJsonGeneral(force);
+  if(!dj)return[];
   const all=[];
-  for(const cat of Object.keys(_AP_cats)){
-    const dj=await AP_fetchDataJson(cat);
-    if(dj)AP_extractEntries(dj,cat,'',all);
-    for(const sub of _AP_cats[cat]||[]){
-      const djs=await AP_fetchDataJson(cat,sub);
-      if(djs)AP_extractEntries(djs,cat,sub,all);
-    }
-  }
+  Object.entries(dj).forEach(([cat,v])=>AP_extractEntries(v,cat,'',all));
   return all;
 }
 
 async function AP_refreshIdsEnUso(){
-  const all=await AP_scanAllProductos();
+  const all=await AP_scanAllProductos(true);
   _AP_idsEnUso=new Set(all.map(e=>e.ID));
 }
+
+let _AP_gpsCT=null;
+window.AP_pedirGPS=function(){
+  if(!navigator.geolocation)return AP_toast('Tu navegador no soporta ubicacion','err');
+  const btn=document.getElementById('ap-gps-btn');
+  const hint=document.getElementById('ap-gps-hint');
+  btn.disabled=true;btn.textContent='Obteniendo...';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude,lon=pos.coords.longitude;
+    const ns=lat<0?'S':'N',we=lon<0?'W':'E';
+    _AP_gpsCT=`${ns}${Math.abs(lat).toFixed(4)}${we}${Math.abs(lon).toFixed(4)}`;
+    btn.disabled=false;btn.textContent='Actualizar ubicacion';
+    hint.className='fg-hint ok';hint.textContent='Ubicacion obtenida';
+  },err=>{
+    btn.disabled=false;btn.textContent='Usar mi ubicacion';
+    hint.className='fg-hint err';hint.textContent='No se pudo obtener ubicacion';
+  });
+};
 
 document.getElementById('ap-id').oninput=function(){
   this.value=this.value.replace(/[^a-zA-Z0-9_-]/g,'').slice(0,50);
@@ -467,8 +495,8 @@ document.getElementById('ap-tm').oninput=function(){
   for(let s=0;s<seg.length&&ii<v.length;s++){r+=v.slice(ii,ii+seg[s]);ii+=seg[s];if(ii<v.length)r+='.';}
   this.value=r;
 };
-document.getElementById('ap-nu').oninput=function(){
-  this.value=this.value.replace(/\D/g,'').slice(0,20);
+document.getElementById('ap-cm').oninput=function(){
+  this.value=this.value.replace(/\D/g,'').slice(0,4);
 };
 document.getElementById('ap-nb').oninput=function(){
   this.value=this.value.replace(/[/\\<>"'`\x00-\x1f]/g,'').slice(0,100);
@@ -542,11 +570,11 @@ window.AP_logout=async function(){
 window.AP_enviar=async function(){
   const cat=document.getElementById('ap-cat').value;
   const sub=document.getElementById('ap-sub').value;
-  const nm=document.getElementById('ap-nm').value;
-  const nu=document.getElementById('ap-nu').value.trim();
+  const ch=document.getElementById('ap-ch').value;
   const id=document.getElementById('ap-id').value.trim();
   const nb=document.getElementById('ap-nb').value.trim();
   const pcRaw=document.getElementById('ap-pc').value.replace(/\D/g,'');
+  const cm=document.getElementById('ap-cm').value.replace(/\D/g,'');
   const tm=document.getElementById('ap-tm').value.trim();
   const imgEl=document.getElementById('ap-img');
   const imgBlob=imgEl._blob;
@@ -554,7 +582,6 @@ window.AP_enviar=async function(){
   if(!id)return AP_flagField('ap-id');
   if(!nb)return AP_flagField('ap-nb');
   if(!pcRaw)return AP_flagField('ap-pc');
-  if(nu.length<12)return AP_flagField('ap-nu');
   if(!imgBlob)return AP_flagField('ap-img-thumb');
   const esEdicionPropia=_AP_editando&&_AP_editando.ID===id;
   if(_AP_idsEnUso.has(id)&&!esEdicionPropia){
@@ -562,7 +589,8 @@ window.AP_enviar=async function(){
     return AP_flagField('ap-id');
   }
   const md=_AP_mde?_AP_mde.value():'';
-  const body={categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),TM:tm||null,md};
+  const body={categoria:cat,subcategoria:sub,ID:id,NB:nb,PC:parseInt(pcRaw),
+    CM:cm||null,TM:tm||null,CH:ch,CT:_AP_gpsCT||null,md};
   body.imgData=await AP_blobToB64(imgBlob);body.imgExt=imgExt;
   const btn=document.getElementById('ap-submit');
   btn.disabled=true;btn.textContent='Enviando...';
@@ -575,9 +603,11 @@ window.AP_enviar=async function(){
 };
 
 function AP_resetForm(){
-  ['ap-id','ap-nb','ap-pc','ap-tm','ap-nu'].forEach(i=>document.getElementById(i).value='');
+  ['ap-id','ap-nb','ap-pc','ap-cm','ap-tm'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('ap-id-hint').textContent='';
+  document.getElementById('ap-gps-hint').textContent='';
   document.getElementById('ap-imgnm').textContent='';
+  _AP_gpsCT=null;
   const prev=document.getElementById('ap-imgprev');
   prev.style.display='none';prev.src='';
   document.getElementById('ap-img-icon').style.display='';
@@ -608,19 +638,20 @@ window.AP_loadMisProductos=async function(){
 
 window.AP_editarPublicado=async function(e){
   AP_mainTab('nuevo');
-  const nmParts=(e.NM||'').match(/^(WATG|WA|TG)(.*)$/);
-  document.getElementById('ap-nm').value=nmParts?nmParts[1]:'WATG';
-  document.getElementById('ap-nu').value=nmParts?nmParts[2]:'';
+  document.getElementById('ap-ch').value=e.CH||'WA.TG';
   document.getElementById('ap-id').value=e.ID||'';
   document.getElementById('ap-nb').value=e.NB||'';
   document.getElementById('ap-pc').value=AP_FP(e.PC||0);
+  document.getElementById('ap-cm').value=e.CM&&e.CM!==1?e.CM:'';
   document.getElementById('ap-tm').value=e.TM||'';
   document.getElementById('ap-cat').value=e.categoria||'';
   AP_updSub();
   setTimeout(()=>{document.getElementById('ap-sub').value=e.sub||'';},50);
-  const mdPath=`${AP_DINAMICO_BASE}/${e.categoria}${e.sub?'/'+e.sub:''}/${e.fn.replace(/\.\w+$/,'.md')}`;
+  _AP_gpsCT=e.CT||null;
+  if(e.CT)document.getElementById('ap-gps-hint').textContent='Se mantiene la ubicacion anterior, podes actualizarla';
+  const mdPath=e.fn.replace(/\.\w+$/,'.md');
   try{
-    const r=await fetch(mdPath);
+    const r=await fetch(mdPath.startsWith('web/')?`/${mdPath}`:mdPath);
     if(r.ok&&_AP_mde)_AP_mde.value(await r.text());
   }catch{}
   _AP_editando={ID:e.ID};
