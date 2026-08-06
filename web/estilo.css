@@ -240,7 +240,7 @@ th {
     padding: 20px;
     max-width: 800px;
     margin: 50px auto -40px;
-    box-shadow: 0 0 10px rgba(0,0,0,9);
+    box-shadow: 0 0 10px rgba(0,0,0,9), inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(255,255,255,.05);
     position: relative;
     z-index: 1;
     overflow-wrap: break-word;
@@ -503,6 +503,7 @@ border-radius:var(--r-sm);
 text-decoration:none;
 color:#fff;
 background:linear-gradient(135deg,rgba(255,255,255,.25),rgba(255,255,255,.05),rgba(255,255,255,.15));
+box-shadow:0 4px 16px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(0,0,0,.2);
 margin:4px;
 transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
 transform:perspective(600px) translateZ(0)
@@ -536,7 +537,7 @@ transform:translateX(120%)
 .BS5{margin:0;font-size:.7rem;white-space:nowrap}
 
 /* boton mediano con descripcion */
-.BMD1{display:flex;align-items:center;border-radius:14px;text-decoration:none;color:#fff;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);margin-bottom:8px;overflow:hidden;transition:transform .18s ease,background .18s ease,border-color .18s ease;position:relative}
+.BMD1{display:flex;align-items:center;border-radius:14px;text-decoration:none;color:#fff;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);box-shadow:0 4px 16px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,.1),inset 0 -1px 0 rgba(0,0,0,.2);margin-bottom:8px;overflow:hidden;transition:transform .18s ease,background .18s ease,border-color .18s ease;position:relative}
 .BMD1::before{content:'';position:absolute;inset:0;z-index:2;background:var(--glass-sweep);transform:translateX(-120%);transition:.6s;pointer-events:none}
 .BMD1:hover::before{transform:translateX(120%)}
 .BMD1::after{content:'›';position:absolute;right:14px;font-size:1.2rem;color:rgba(255,255,255,.45);opacity:0;transform:translateX(-4px);transition:opacity .18s,transform .18s}
