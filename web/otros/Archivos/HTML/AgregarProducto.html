@@ -123,17 +123,14 @@ color:var(--txt);font-size:12px;cursor:pointer;
 font-family:inherit;transition:background .15s;
 }
 .ap-sol-acts button:hover{background:var(--g2)}
-.ap-sol-acts button.del{border-color:rgba(248,113,113,.3);color:#fca5a5}
 .ap-badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.04em}
 .ap-badge.pend{background:rgba(79,142,247,.15);color:#93c5fd;border:1px solid rgba(79,142,247,.25)}
 .ap-badge.apr{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)}
 .ap-badge.rej{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.2)}
-.ap-badge.delp{background:rgba(251,146,60,.12);color:#fb923c;border:1px solid rgba(251,146,60,.2)}
 .ap-sol-neg{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:7px 10px;font-size:12px;color:#fca5a5;margin-top:6px}
 @keyframes ap-shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 .ap-shake{animation:ap-shake .4s ease 3;border-color:var(--err)!important}
 .ap-auth-note{font-size:12px;color:var(--txt2);text-align:center;margin-top:10px}
-.ap-auth-note a{color:var(--acc);cursor:pointer}
 
 #ap-mde .EasyMDEContainer{background:transparent!important;border-radius:var(--ri);overflow:hidden}
 #ap-mde .CodeMirror{background:var(--g1)!important;color:var(--txt)!important;min-height:180px;border-radius:0 0 var(--ri) var(--ri)!important;border:1px solid var(--gb)!important;border-top:none!important}
@@ -145,7 +142,7 @@ font-family:inherit;transition:background .15s;
 
 <div id="ap-wrap">
 <div class="ap-top">
-  <div class="ap-logo">🛍️</div>
+  <div class="ap-logo">Tienda</div>
   <div><h1>Agregar Producto</h1><span>Envia tu solicitud para publicar en la tienda</span></div>
 </div>
 <div class="ap-sect">
@@ -156,14 +153,14 @@ font-family:inherit;transition:background .15s;
     </div>
     <form id="ap-login-box" class="ap-card">
       <h2>Acceso</h2>
-      <div class="fg"><label>Usuario</label><input id="ap-lu" type="text" placeholder="tu_usuario" autocomplete="username"></div>
+      <div class="fg"><label>Numero de telefono</label><input id="ap-lu" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
       <div class="fg"><label>Contrasena</label><input id="ap-lp" type="password" placeholder="••••••" autocomplete="current-password"></div>
       <button type="submit" class="ap-btn pri" onclick="event.preventDefault();AP_login()">Entrar</button>
       <p class="ap-auth-note">Sin cuenta? <a onclick="AP_showTab('reg')">Registrate aqui</a></p>
     </form>
     <form id="ap-reg-box" class="ap-card" style="display:none">
       <h2>Nuevo Usuario</h2>
-      <div class="fg"><label>Usuario</label><input id="ap-ru" type="text" placeholder="mi_usuario (3-32 chars)" autocomplete="username"></div>
+      <div class="fg"><label>Numero de telefono</label><input id="ap-ru" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
       <div class="fg">
         <label>Contrasena</label>
         <input id="ap-rp" type="password" placeholder="minimo 10 chars, 1 simbolo" autocomplete="new-password" oninput="AP_checkPwStrength()">
@@ -173,12 +170,14 @@ font-family:inherit;transition:background .15s;
       <button type="submit" class="ap-btn pri" onclick="event.preventDefault();AP_registro()">Crear Cuenta</button>
       <p class="ap-auth-note">Ya tenes cuenta? <a onclick="AP_showTab('login')">Inicia sesion</a></p>
     </form>
+    <p class="ap-auth-note">Tu numero de telefono es tu identidad en la tienda, no se puede cambiar despues</p>
   </div>
   <div id="ap-main" style="display:none">
     <div class="ap-tabs">
-      <button class="ap-tab act" id="ap-tnuevo" onclick="AP_mainTab('nuevo')">➕ Nueva Solicitud</button>
-      <button class="ap-tab" id="ap-tmis" onclick="AP_mainTab('mis')">📋 Mis Solicitudes</button>
-      <button class="ap-tab" id="ap-tcuenta" onclick="AP_mainTab('cuenta')">⚙️ Cuenta</button>
+      <button class="ap-tab act" id="ap-tnuevo" onclick="AP_mainTab('nuevo')">Nueva Solicitud</button>
+      <button class="ap-tab" id="ap-tmis" onclick="AP_mainTab('mis')">Mis Productos</button>
+      <button class="ap-tab" id="ap-tpend" onclick="AP_mainTab('pend')">Mis Solicitudes</button>
+      <button class="ap-tab" id="ap-tcuenta" onclick="AP_mainTab('cuenta')">Cuenta</button>
     </div>
     <div id="ap-tab-nuevo">
       <div class="ap-card">
@@ -200,7 +199,7 @@ font-family:inherit;transition:background .15s;
         <div class="ap-card" style="padding:12px;margin-bottom:0;background:var(--g1);border-radius:var(--ri)">
           <div class="ap-img-row">
             <div class="ap-img-thumb" id="ap-img-thumb" onclick="document.getElementById('ap-img').click()">
-              <span id="ap-img-icon">📷</span>
+              <span id="ap-img-icon">+</span>
               <img id="ap-imgprev" alt="">
             </div>
             <div class="ap-img-fields">
@@ -209,13 +208,11 @@ font-family:inherit;transition:background .15s;
             </div>
           </div>
           <div class="ap-img-size" id="ap-imgnm"></div>
+          <div class="fg-hint" id="ap-id-hint"></div>
           <input type="file" id="ap-img" accept="image/avif,image/webp,image/*" style="display:none">
         </div>
         <div style="height:12px"></div>
-        <div class="ap-row">
-          <div class="fg"><label>Precio (Gs)</label><input id="ap-pc" type="text" placeholder="50.000" inputmode="numeric" maxlength="14" autocomplete="off"></div>
-          <div class="fg"><label>Cantidad (opcional)</label><input id="ap-cd" type="text" placeholder="10" inputmode="numeric" maxlength="4" autocomplete="off"></div>
-        </div>
+        <div class="fg"><label>Precio (Gs)</label><input id="ap-pc" type="text" placeholder="50.000" inputmode="numeric" maxlength="14" autocomplete="off"></div>
         <div class="fg"><label>Fecha Limite (opcional)</label><input id="ap-tm" type="text" placeholder="DD.MM.YYYY.HH.MM" maxlength="16" inputmode="numeric" autocomplete="off"></div>
       </div>
       <div class="ap-card" id="ap-mde">
@@ -223,9 +220,12 @@ font-family:inherit;transition:background .15s;
         <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Solo enlaces externos para imagenes/videos. Ejemplo: <code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:5px;font-size:11px">![](https://...)</code></p>
         <textarea id="ap-mdtxt"></textarea>
       </div>
-      <button class="ap-btn pri" id="ap-submit" onclick="AP_enviar()">📤 Enviar Solicitud</button>
+      <button class="ap-btn pri" id="ap-submit" onclick="AP_enviar()">Enviar Solicitud</button>
     </div>
     <div id="ap-tab-mis" style="display:none">
+      <div id="ap-mis-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
+    </div>
+    <div id="ap-tab-pend" style="display:none">
       <div id="ap-sol-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
     </div>
     <div id="ap-tab-cuenta" style="display:none">
@@ -238,8 +238,8 @@ font-family:inherit;transition:background .15s;
           <div class="fg-hint" id="ap-cpn-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
         </div>
         <div class="fg"><label>Confirmar Nueva</label><input id="ap-cpn2" type="password" placeholder="••••••" autocomplete="new-password"></div>
-        <button type="submit" class="ap-btn pri" onclick="event.preventDefault();AP_cambiarPass()">💾 Guardar Nueva Contrasena</button>
-        <button type="button" class="ap-btn sec" style="margin-top:8px" onclick="AP_logout()">🚪 Cerrar Sesion</button>
+        <button type="submit" class="ap-btn pri" onclick="event.preventDefault();AP_cambiarPass()">Guardar Nueva Contrasena</button>
+        <button type="button" class="ap-btn sec" style="margin-top:8px" onclick="AP_logout()">Cerrar Sesion</button>
       </form>
     </div>
   </div>
@@ -252,6 +252,10 @@ const AP_URL=(()=>{
   const base=document.querySelector('meta[name=api-base]')?.content||'';
   return base||'/api/productos';
 })();
+const AP_DINAMICO_BASE=(()=>{
+  const base=document.querySelector('meta[name=dinamico-base]')?.content||'';
+  return base||'/web/Dinamico';
+})();
 const AP_MAX_SIZE=200*1024;
 const AP_PW_SYMBOLS=/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~`]/;
 
@@ -259,7 +263,7 @@ function AP_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*
 function AP_sck(k,v){const sec=location.protocol==="https:"?";Secure":"";document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=7776000;SameSite=Strict${sec}`;}
 function AP_dck(k){document.cookie=`${k}=;path=/;max-age=0`;}
 
-let _AP_usr=AP_ck("ap_u"),_AP_tk=AP_ck("ap_tk"),_AP_cats={},_AP_mde=null,_AP_entries=[];
+let _AP_tel=AP_ck("ap_tel"),_AP_tk=AP_ck("ap_tk"),_AP_cats={},_AP_mde=null,_AP_idsEnUso=new Set(),_AP_editando=null;
 let _AP_msg=null;
 
 function AP_toast(t,tp='ok',d=3000){
@@ -279,9 +283,16 @@ async function AP_fetch(action,opts={}){
   if(!isGet&&opts.body){const _b=JSON.parse(opts.body);_b.action=action;if(_AP_tk&&!_b.token)_b.token=_AP_tk;opts.body=JSON.stringify(_b);}
   const res=await fetch(url,{headers:{"Content-Type":"application/json"},...opts});
   const data=await res.json().catch(()=>({}));
-  if(res.status===401){AP_dck('ap_u');AP_dck('ap_tk');_AP_usr=null;_AP_tk=null;}
+  if(res.status===401){AP_dck('ap_tel');AP_dck('ap_tk');_AP_tel=null;_AP_tk=null;}
   return{ok:res.ok,status:res.status,data};
 }
+
+window.AP_showTab=function(t){
+  document.getElementById('ap-login-box').style.display=t==='login'?'block':'none';
+  document.getElementById('ap-reg-box').style.display=t==='reg'?'block':'none';
+  document.getElementById('ap-tlogin').classList.toggle('act',t==='login');
+  document.getElementById('ap-treg').classList.toggle('act',t==='reg');
+};
 
 window.AP_checkPwStrength=function(inputId='ap-rp',hintId='ap-rp-hint'){
   const v=document.getElementById(inputId).value;
@@ -292,42 +303,17 @@ window.AP_checkPwStrength=function(inputId='ap-rp',hintId='ap-rp-hint'){
   else{hint.className='fg-hint err';hint.textContent=`Falta: ${!okLen?'largo (10+)':''}${!okLen&&!okSym?', ':''}${!okSym?'un simbolo':''}`;}
 };
 
-window.AP_showTab=function(t){
-  document.getElementById('ap-login-box').style.display=t==='login'?'block':'none';
-  document.getElementById('ap-reg-box').style.display=t==='reg'?'block':'none';
-  document.getElementById('ap-tlogin').classList.toggle('act',t==='login');
-  document.getElementById('ap-treg').classList.toggle('act',t==='reg');
-};
-
 window.AP_mainTab=function(t){
   document.getElementById('ap-tab-nuevo').style.display=t==='nuevo'?'block':'none';
   document.getElementById('ap-tab-mis').style.display=t==='mis'?'block':'none';
+  document.getElementById('ap-tab-pend').style.display=t==='pend'?'block':'none';
   document.getElementById('ap-tab-cuenta').style.display=t==='cuenta'?'block':'none';
   document.getElementById('ap-tnuevo').classList.toggle('act',t==='nuevo');
   document.getElementById('ap-tmis').classList.toggle('act',t==='mis');
+  document.getElementById('ap-tpend').classList.toggle('act',t==='pend');
   document.getElementById('ap-tcuenta').classList.toggle('act',t==='cuenta');
-  if(t==='mis')AP_loadSolicitudes();
-};
-
-window.AP_cambiarPass=async function(){
-  const pa=document.getElementById('ap-cpa').value;
-  const pn=document.getElementById('ap-cpn').value;
-  const pn2=document.getElementById('ap-cpn2').value;
-  if(!pa||!pn)return AP_toast('Completa los campos','warn');
-  if(pn!==pn2)return AP_toast('Las contrasenas nuevas no coinciden','warn');
-  if(pn.length<10||!AP_PW_SYMBOLS.test(pn))return AP_toast('La nueva contrasena necesita 10+ chars y 1 simbolo','warn');
-  const{ok,data}=await AP_fetch('cambiarPass',{method:'POST',body:JSON.stringify({password:pa,passwordNuevo:pn})});
-  if(!ok)return AP_toast(data.error||'Error','err');
-  _AP_tk=data.token;AP_sck('ap_tk',_AP_tk);
-  ['ap-cpa','ap-cpn','ap-cpn2'].forEach(i=>document.getElementById(i).value='');
-  AP_toast('Contrasena actualizada');
-};
-
-window.AP_logout=async function(){
-  await AP_fetch('logout',{method:'POST',body:JSON.stringify({})});
-  AP_dck('ap_u');AP_dck('ap_tk');
-  _AP_usr=null;_AP_tk=null;
-  location.reload();
+  if(t==='mis')AP_loadMisProductos();
+  if(t==='pend')AP_loadSolicitudes();
 };
 
 async function AP_loadCats(){
@@ -347,50 +333,65 @@ window.AP_updSub=function(){
   (_AP_cats[c]||[]).forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent=s;sel.appendChild(o);});
 };
 
-function AP_initMDE(){
-  if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;}
-  _AP_mde=new EasyMDE({
-    element:document.getElementById('ap-mdtxt'),
-    spellChecker:false,autofocus:false,status:false,
-    initialValue:'',
-    toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','|','preview','guide']
-  });
+function AP_extractEntries(node,cat,sub,out){
+  if(Array.isArray(node)){
+    node.forEach(fn=>{
+      if(typeof fn!=='string')return;
+      const mID=fn.match(/ID=([^-]+)/),mNM=fn.match(/NM=([^-]+)/),mPC=fn.match(/PC=(\d+)/),
+        mTM=fn.match(/TM=(\d{2}\.\d{2}\.\d{4}\.\d{2}\.\d{2})/),mTL=fn.match(/TL=(\d+)/),
+        mNB=fn.match(/NB=(.+)\.\w+$/);
+      if(!mID)return;
+      out.push({fn,ID:mID[1],NM:mNM?mNM[1]:'',PC:mPC?parseInt(mPC[1]):0,TM:mTM?mTM[1]:null,telefono:mTL?mTL[1]:null,NB:mNB?mNB[1]:fn,categoria:cat,sub:sub||''});
+    });
+    return;
+  }
+  if(node&&typeof node==='object')Object.entries(node).forEach(([k,v])=>AP_extractEntries(v,cat,sub||k,out));
 }
 
-function AP_showMain(){
-  document.getElementById('ap-auth').style.display='none';
-  document.getElementById('ap-main').style.display='block';
-  AP_loadCats();
-  AP_loadSolicitudes();
-  setTimeout(AP_initMDE,100);
+async function AP_fetchDataJson(cat,sub){
+  const p=sub?`${AP_DINAMICO_BASE}/${cat}/${sub}/data.json`:`${AP_DINAMICO_BASE}/${cat}/data.json`;
+  try{
+    const r=await fetch(p);
+    if(!r.ok)return null;
+    return await r.json();
+  }catch{return null;}
 }
 
-window.AP_login=async function(){
-  const u=document.getElementById('ap-lu').value.trim();
-  const p=document.getElementById('ap-lp').value;
-  if(!u||!p)return AP_toast('Completa los campos','warn');
-  const{ok,data}=await AP_fetch('login',{method:'POST',body:JSON.stringify({usuario:u,password:p})});
-  if(!ok)return AP_toast(data.error||'Error','err');
-  _AP_usr=u;_AP_tk=data.token;
-  AP_sck('ap_u',u);AP_sck('ap_tk',_AP_tk);
-  AP_toast('Bienvenido '+u);
-  AP_showMain();
+async function AP_scanAllProductos(){
+  const all=[];
+  for(const cat of Object.keys(_AP_cats)){
+    const dj=await AP_fetchDataJson(cat);
+    if(dj)AP_extractEntries(dj,cat,'',all);
+    for(const sub of _AP_cats[cat]||[]){
+      const djs=await AP_fetchDataJson(cat,sub);
+      if(djs)AP_extractEntries(djs,cat,sub,all);
+    }
+  }
+  return all;
+}
+
+async function AP_refreshIdsEnUso(){
+  const all=await AP_scanAllProductos();
+  _AP_idsEnUso=new Set(all.map(e=>e.ID));
+}
+
+document.getElementById('ap-id').oninput=function(){
+  this.value=this.value.replace(/[^a-zA-Z0-9_-]/g,'').slice(0,50);
+  const hint=document.getElementById('ap-id-hint');
+  if(!this.value){hint.className='fg-hint';hint.textContent='';return;}
+  if(_AP_editando&&this.value===_AP_editando.ID){hint.className='fg-hint ok';hint.textContent='Editando este producto';return;}
+  if(_AP_idsEnUso.has(this.value)){hint.className='fg-hint err';hint.textContent='Ese ID ya esta en uso, elegi otro';}
+  else{hint.className='fg-hint ok';hint.textContent='ID disponible';}
 };
 
-window.AP_registro=async function(){
-  const u=document.getElementById('ap-ru').value.trim();
-  const p=document.getElementById('ap-rp').value;
-  const p2=document.getElementById('ap-rp2').value;
-  if(!u||!p)return AP_toast('Completa los campos','warn');
-  if(p!==p2)return AP_toast('Las contrasenas no coinciden','warn');
-  if(p.length<10||!AP_PW_SYMBOLS.test(p))return AP_toast('La contrasena necesita 10+ chars y 1 simbolo','warn');
-  const{ok,data}=await AP_fetch('registro',{method:'POST',body:JSON.stringify({usuario:u,password:p})});
-  if(!ok)return AP_toast(data.error||'Error','err');
-  AP_toast('Cuenta creada! Iniciando sesion...');
-  document.getElementById('ap-lu').value=u;
-  document.getElementById('ap-lp').value=p;
-  await AP_login();
-};
+function AP_flagField(elId){
+  const el=document.getElementById(elId);
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.remove('ap-shake');
+  void el.offsetWidth;
+  el.classList.add('ap-shake');
+  setTimeout(()=>el.classList.remove('ap-shake'),1300);
+}
 
 async function AP_processImg(file){
   const isAnimatable=file.type==='image/avif'||file.type==='image/webp';
@@ -431,6 +432,7 @@ document.getElementById('ap-img').onchange=async function(e){
   document.getElementById('ap-imgnm').textContent=`${(result.size/1024).toFixed(0)} KB`;
   document.getElementById('ap-img')._blob=result.blob;
   document.getElementById('ap-img')._ext=result.ext;
+  AP_toast('Imagen cargada','ok');
 };
 
 document.addEventListener('paste',async function(e){
@@ -468,24 +470,74 @@ document.getElementById('ap-tm').oninput=function(){
 document.getElementById('ap-nu').oninput=function(){
   this.value=this.value.replace(/\D/g,'').slice(0,20);
 };
-document.getElementById('ap-cd').oninput=function(){
-  this.value=this.value.replace(/\D/g,'').slice(0,4);
-};
-document.getElementById('ap-id').oninput=function(){
-  this.value=this.value.replace(/[^a-zA-Z0-9_-]/g,'').slice(0,50);
-};
 document.getElementById('ap-nb').oninput=function(){
   this.value=this.value.replace(/[/\\<>"'`\x00-\x1f]/g,'').slice(0,100);
 };
 
-function AP_flagField(elId){
-  const el=document.getElementById(elId);
-  el.scrollIntoView({behavior:'smooth',block:'center'});
-  el.classList.remove('ap-shake');
-  void el.offsetWidth;
-  el.classList.add('ap-shake');
-  setTimeout(()=>el.classList.remove('ap-shake'),1300);
+function AP_initMDE(){
+  if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;}
+  _AP_mde=new EasyMDE({
+    element:document.getElementById('ap-mdtxt'),
+    spellChecker:false,autofocus:false,status:false,
+    initialValue:'',
+    toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','|','preview','guide']
+  });
 }
+
+function AP_showMain(){
+  document.getElementById('ap-auth').style.display='none';
+  document.getElementById('ap-main').style.display='block';
+  AP_loadCats().then(AP_refreshIdsEnUso);
+  setTimeout(AP_initMDE,100);
+}
+
+window.AP_login=async function(){
+  const tel=document.getElementById('ap-lu').value.replace(/\D/g,'');
+  const p=document.getElementById('ap-lp').value;
+  if(!tel||!p)return AP_toast('Completa los campos','warn');
+  const{ok,data}=await AP_fetch('login',{method:'POST',body:JSON.stringify({telefono:tel,password:p})});
+  if(!ok)return AP_toast(data.error||'Error','err');
+  _AP_tel=tel;_AP_tk=data.token;
+  AP_sck('ap_tel',tel);AP_sck('ap_tk',_AP_tk);
+  AP_toast('Bienvenido');
+  AP_showMain();
+};
+
+window.AP_registro=async function(){
+  const tel=document.getElementById('ap-ru').value.replace(/\D/g,'');
+  const p=document.getElementById('ap-rp').value;
+  const p2=document.getElementById('ap-rp2').value;
+  if(!tel||!p)return AP_toast('Completa los campos','warn');
+  if(p!==p2)return AP_toast('Las contrasenas no coinciden','warn');
+  if(p.length<10||!AP_PW_SYMBOLS.test(p))return AP_toast('La contrasena necesita 10+ chars y 1 simbolo','warn');
+  const{ok,data}=await AP_fetch('registro',{method:'POST',body:JSON.stringify({telefono:tel,password:p})});
+  if(!ok)return AP_toast(data.error||'Error','err');
+  AP_toast('Cuenta creada! Iniciando sesion...');
+  document.getElementById('ap-lu').value=tel;
+  document.getElementById('ap-lp').value=p;
+  await AP_login();
+};
+
+window.AP_cambiarPass=async function(){
+  const pa=document.getElementById('ap-cpa').value;
+  const pn=document.getElementById('ap-cpn').value;
+  const pn2=document.getElementById('ap-cpn2').value;
+  if(!pa||!pn)return AP_toast('Completa los campos','warn');
+  if(pn!==pn2)return AP_toast('Las contrasenas nuevas no coinciden','warn');
+  if(pn.length<10||!AP_PW_SYMBOLS.test(pn))return AP_toast('La nueva contrasena necesita 10+ chars y 1 simbolo','warn');
+  const{ok,data}=await AP_fetch('cambiarPass',{method:'POST',body:JSON.stringify({password:pa,passwordNuevo:pn})});
+  if(!ok)return AP_toast(data.error||'Error','err');
+  _AP_tk=data.token;AP_sck('ap_tk',_AP_tk);
+  ['ap-cpa','ap-cpn','ap-cpn2'].forEach(i=>document.getElementById(i).value='');
+  AP_toast('Contrasena actualizada');
+};
+
+window.AP_logout=async function(){
+  await AP_fetch('logout',{method:'POST',body:JSON.stringify({})});
+  AP_dck('ap_tel');AP_dck('ap_tk');
+  _AP_tel=null;_AP_tk=null;
+  location.reload();
+};
 
 window.AP_enviar=async function(){
   const cat=document.getElementById('ap-cat').value;
@@ -495,96 +547,66 @@ window.AP_enviar=async function(){
   const id=document.getElementById('ap-id').value.trim();
   const nb=document.getElementById('ap-nb').value.trim();
   const pcRaw=document.getElementById('ap-pc').value.replace(/\D/g,'');
-  const cd=document.getElementById('ap-cd').value;
   const tm=document.getElementById('ap-tm').value.trim();
   const imgEl=document.getElementById('ap-img');
   const imgBlob=imgEl._blob;
   const imgExt=imgEl._ext||'.webp';
-  const isEdit=document.getElementById('ap-submit').textContent.includes('Guardar');
   if(!id)return AP_flagField('ap-id');
   if(!nb)return AP_flagField('ap-nb');
   if(!pcRaw)return AP_flagField('ap-pc');
   if(nu.length<12)return AP_flagField('ap-nu');
-  if(!imgBlob&&!isEdit)return AP_flagField('ap-img-thumb');
+  if(!imgBlob)return AP_flagField('ap-img-thumb');
+  const esEdicionPropia=_AP_editando&&_AP_editando.ID===id;
+  if(_AP_idsEnUso.has(id)&&!esEdicionPropia){
+    AP_toast('Ese ID ya esta en uso, elegi otro','err');
+    return AP_flagField('ap-id');
+  }
   const md=_AP_mde?_AP_mde.value():'';
-  const body={categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),CD:cd!==''?parseInt(cd):null,TM:tm||null,md};
-  if(imgBlob){body.imgData=await AP_blobToB64(imgBlob);body.imgExt=imgExt;}
+  const body={categoria:cat,subcategoria:sub,NM:nm+(nu||''),ID:id,NB:nb,PC:parseInt(pcRaw),TM:tm||null,md};
+  body.imgData=await AP_blobToB64(imgBlob);body.imgExt=imgExt;
   const btn=document.getElementById('ap-submit');
   btn.disabled=true;btn.textContent='Enviando...';
   const{ok,data}=await AP_fetch('enviar',{method:'POST',body:JSON.stringify(body)});
-  btn.disabled=false;btn.textContent='📤 Enviar Solicitud';
+  btn.disabled=false;btn.textContent='Enviar Solicitud';
   if(!ok)return AP_toast(data.error||'Error al enviar','err');
   AP_toast('Solicitud enviada!');
   AP_resetForm();
-  AP_mainTab('mis');
+  AP_mainTab('pend');
 };
 
 function AP_resetForm(){
-  ['ap-id','ap-nb','ap-pc','ap-cd','ap-tm','ap-nu'].forEach(i=>document.getElementById(i).value='');
+  ['ap-id','ap-nb','ap-pc','ap-tm','ap-nu'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('ap-id-hint').textContent='';
   document.getElementById('ap-imgnm').textContent='';
   const prev=document.getElementById('ap-imgprev');
   prev.style.display='none';prev.src='';
   document.getElementById('ap-img-icon').style.display='';
   document.getElementById('ap-img')._blob=null;
   document.getElementById('ap-img')._ext=null;
+  _AP_editando=null;
   if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;setTimeout(AP_initMDE,50);}
-  document.getElementById('ap-submit').textContent='📤 Enviar Solicitud';
+  document.getElementById('ap-submit').textContent='Enviar Solicitud';
 }
 
-window.AP_loadSolicitudes=async function(noFetch){
-  const lst=document.getElementById('ap-sol-list');
-  if(!noFetch){
-    lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
-    const{ok,data}=await AP_fetch('historial',{method:'POST',body:JSON.stringify({})});
-    if(!ok){lst.innerHTML=`<div style="color:var(--err);padding:20px">${data.error||'Error'}</div>`;return;}
-    _AP_entries=data.entries||[];
-  }
-  if(!_AP_entries.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Sin historial aun</div>';return;}
+window.AP_loadMisProductos=async function(){
+  const lst=document.getElementById('ap-mis-list');
+  lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
+  const all=await AP_scanAllProductos();
+  const mios=all.filter(e=>e.telefono===_AP_tel);
+  if(!mios.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Sin productos publicados aun</div>';return;}
   lst.innerHTML='';
-  const badges={
-    pendiente:'<span class="ap-badge pend">Pendiente</span>',
-    aprobado:'<span class="ap-badge apr">Aprobado</span>',
-    rechazado:'<span class="ap-badge rej">Rechazado</span>',
-    borrado_pendiente:'<span class="ap-badge delp">Borrado Pendiente</span>',
-    auto_pendiente:'<span class="ap-badge apr">Actualizando...</span>'
-  };
-  _AP_entries.forEach(e=>{
-    const isDelP=e.estado==='borrado_pendiente';
+  mios.forEach(e=>{
     const div=document.createElement('div');div.className='ap-sol-item';
     div.innerHTML=`<div class="ap-sol-info">
-      <div class="nm">${e.ID} ${badges[e.estado]||''}</div>
-      <div class="dt">${e.categoria}${e.sub?'/'+e.sub:''}</div>
-      ${e.estado==='rechazado'&&e.motivo?`<div class="ap-sol-neg">❌ ${e.motivo}</div>`:''}
-      ${isDelP?`<div class="ap-sol-neg" style="background:rgba(251,146,60,.08);border-color:rgba(251,146,60,.2);color:#fdba74">🗑️ Solicitud de borrado en revision. Podes editar para cancelarla.</div>`:''}
-      <div class="ap-sol-acts">
-        <button onclick="AP_editarSol('${e.ID}')">✏️ Editar</button>
-        ${isDelP?'':`<button class="del" onclick="AP_borrarSol('${e.ID}')">🗑️ Borrar</button>`}
-      </div>
+      <div class="nm">${e.NB||e.ID} <span class="ap-badge apr">Publicado</span></div>
+      <div class="dt">ID: ${e.ID} · ${e.categoria}${e.sub?'/'+e.sub:''} · ${AP_FP(e.PC)} Gs</div>
+      <div class="ap-sol-acts"><button onclick='AP_editarPublicado(${JSON.stringify(e).replace(/'/g,"&apos;")})'>Editar</button></div>
     </div>`;
     lst.appendChild(div);
   });
 };
 
-window.AP_borrarSol=async function(ID){
-  if(!confirm('Borrar esta entrada?'))return;
-  const{ok,data}=await AP_fetch('borrar',{method:'POST',body:JSON.stringify({ID})});
-  if(!ok)return AP_toast(data.error||'Error','err');
-  if(data.pendiente){
-    const e=_AP_entries.find(en=>en.ID===ID);
-    if(e)e.estado='borrado_pendiente';
-    AP_toast('Solicitud de borrado enviada','warn');
-    AP_loadSolicitudes(true);
-    return;
-  }
-  _AP_entries=_AP_entries.filter(en=>en.ID!==ID);
-  AP_toast('Entrada borrada');
-  AP_loadSolicitudes(true);
-};
-
-window.AP_editarSol=async function(ID){
-  const{ok,data}=await AP_fetch('md',{method:'POST',body:JSON.stringify({ID})});
-  if(!ok)return AP_toast(data.error||'Error','err');
-  const e=data.meta;
+window.AP_editarPublicado=async function(e){
   AP_mainTab('nuevo');
   const nmParts=(e.NM||'').match(/^(WATG|WA|TG)(.*)$/);
   document.getElementById('ap-nm').value=nmParts?nmParts[1]:'WATG';
@@ -592,19 +614,46 @@ window.AP_editarSol=async function(ID){
   document.getElementById('ap-id').value=e.ID||'';
   document.getElementById('ap-nb').value=e.NB||'';
   document.getElementById('ap-pc').value=AP_FP(e.PC||0);
-  document.getElementById('ap-cd').value=e.CD!=null?e.CD:'';
   document.getElementById('ap-tm').value=e.TM||'';
-  document.getElementById('ap-cat').value=data.categoria||'';
+  document.getElementById('ap-cat').value=e.categoria||'';
   AP_updSub();
-  setTimeout(()=>{document.getElementById('ap-sub').value=data.subcategoria||'';},50);
-  if(_AP_mde)_AP_mde.value(data.md||'');
-  document.getElementById('ap-submit').textContent='✏️ Guardar Edicion';
-  AP_toast('Agrega la imagen si queres cambiarla, sino se mantiene','warn',5000);
+  setTimeout(()=>{document.getElementById('ap-sub').value=e.sub||'';},50);
+  const mdPath=`${AP_DINAMICO_BASE}/${e.categoria}${e.sub?'/'+e.sub:''}/${e.fn.replace(/\.\w+$/,'.md')}`;
+  try{
+    const r=await fetch(mdPath);
+    if(r.ok&&_AP_mde)_AP_mde.value(await r.text());
+  }catch{}
+  _AP_editando={ID:e.ID};
+  document.getElementById('ap-submit').textContent='Guardar Edicion';
+  AP_toast('Volve a subir la imagen para reenviar','warn',5000);
 };
 
-if(_AP_usr&&_AP_tk){
+window.AP_loadSolicitudes=async function(){
+  const lst=document.getElementById('ap-sol-list');
+  lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
+  const{ok,data}=await AP_fetch('historial',{method:'POST',body:JSON.stringify({})});
+  if(!ok){lst.innerHTML=`<div style="color:var(--err);padding:20px">${data.error||'Error'}</div>`;return;}
+  const entries=data.entries||[];
+  if(!entries.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Sin solicitudes pendientes</div>';return;}
+  lst.innerHTML='';
+  const badges={
+    pendiente:'<span class="ap-badge pend">Pendiente</span>',
+    rechazado:'<span class="ap-badge rej">Rechazado</span>'
+  };
+  entries.forEach(e=>{
+    const div=document.createElement('div');div.className='ap-sol-item';
+    div.innerHTML=`<div class="ap-sol-info">
+      <div class="nm">${e.NB||e.ID} ${badges[e.estado]||''}</div>
+      <div class="dt">${e.categoria}${e.sub?'/'+e.sub:''}</div>
+      ${e.estado==='rechazado'&&e.motivo?`<div class="ap-sol-neg">${e.motivo}</div>`:''}
+    </div>`;
+    lst.appendChild(div);
+  });
+};
+
+if(_AP_tel&&_AP_tk){
   AP_fetch('historial',{method:'POST',body:JSON.stringify({})})
-    .then(({ok})=>{if(ok)AP_showMain();else{AP_dck('ap_u');AP_dck('ap_tk');_AP_usr=null;_AP_tk=null;}});
+    .then(({ok})=>{if(ok)AP_showMain();else{AP_dck('ap_tel');AP_dck('ap_tk');_AP_tel=null;_AP_tk=null;}});
 }
 })();
 </script>
