@@ -67,7 +67,7 @@ css.textContent=`
 #cs.cb-404 img{width:100%;height:100%;object-fit:cover;display:block;border-radius:14px}
 #cs .cb-p{font-size:20px;font-weight:bold;margin-bottom:15px}
 #cs .cb-t{color:#22c55e}
-#cs .cb-dsp{font-size:14px;color:#fbbf24;margin-bottom:15px}
+#cs .cb-dsp{font-size:14px;color:var(--warn);margin-bottom:15px}
 #cs .cb-o{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:15px}
 #cs .cb-o span{font-size:16px}
 #cs .cb-k{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.25);color:#fff;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;border:none}
@@ -81,7 +81,7 @@ css.textContent=`
 #cs .cb-a:hover{background:rgba(34,197,94,0.5)}
 #cs .cb-s{font-size:24px;font-weight:bold;color:#22c55e;margin-bottom:10px}
 #cs .cb-s2{font-size:16px;color:#fff}
-#cs .cb-er{font-size:22px;font-weight:bold;color:#fbbf24}
+#cs .cb-er{font-size:22px;font-weight:bold;color:var(--warn)}
 #compartir-bloque{margin:30px 0;padding:10px 0;position:relative;display:flex;align-items:center;justify-content:center}
 #compartir-bloque a{position:relative;z-index:2;text-decoration:none}
 .share-btn{display:inline-flex;align-items:center;gap:10px;padding:13px 28px;border-radius:50px;font-family:var(--font);font-size:1em;font-weight:700;color:#fff;background:linear-gradient(135deg,#10b981 0%,#059669 40%,#065f46 100%);box-shadow:0 4px 18px rgba(16,185,129,0.45),0 0 0 0 rgba(16,185,129,0.4);border:1px solid rgba(255,255,255,0.15);transition:transform 0.2s ease,box-shadow 0.2s ease;animation:SH_pulse 2.4s infinite ease-in-out;cursor:pointer;will-change:transform}
@@ -346,7 +346,7 @@ function renderCart(){
   const groups={};
   st.c.forEach(x=>{const k=x.t+"-"+x.n;groups[k]||(groups[k]={t:x.t,n:x.n,items:[]});groups[k].items.push(x)});
   const gks=Object.keys(groups),multi=gks.length>1;
-  let html=multi?'<div style="text-align:center;margin-bottom:8px"><a href="web/otros/Archivos/MarkDowns/SerParte.md" style="color:#facc15;font-weight:600;font-size:.85rem">⚠️ Varios Proveedores ❔</a></div>':"";
+  let html=multi?'<div style="text-align:center;margin-bottom:8px"><a href="web/otros/Archivos/MarkDowns/SerParte.md" style="color:var(--warn);font-weight:600;font-size:.85rem">⚠️ Varios Proveedores ❔</a></div>':"";
   gks.forEach(k=>{
     const g=groups[k];
     html+=`<div class="cb-cp" data-gk="${k}"><p class="cb-cn">📦 ${g.n}</p>`;
@@ -578,7 +578,7 @@ function initProduct(){
     if(tmExp&&tmStr===null)return void set404(cs);
     cs.className='';
     cs.innerHTML=
-      (!isOff?`<div class="cb-dsp"><a href="web/otros/Archivos/MarkDowns/SerParte.md" style="color:#fbbf24;font-weight:600;font-size:13px;text-decoration:none">Proveedor Externo ↗️</a></div>`:"")+
+      (!isOff?`<div class="cb-dsp"><a href="web/otros/Archivos/MarkDowns/SerParte.md" style="color:var(--warn);font-weight:600;font-size:13px;text-decoration:none">Proveedor Externo ↗️</a></div>`:"")+
       (tmStr?`<div class="cb-dsp cb-dsp-tm">⏳ Se Acaba En: ${tmStr}</div>`:"")+
       (null!==avail?`<div class="cb-dsp">Disponible: ${avail} unidades</div>`:"")+
       `<div class="cb-p">Precio: <span class="cb-t" id="cpt">${fmt(pc*qty)}</span>Gs</div>`+
