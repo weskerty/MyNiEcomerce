@@ -1,4 +1,7 @@
 !function(){if(window.__GI)return;window.__GI=true;
+document.addEventListener('contextmenu',ev=>{
+  if(ev.target.closest('.gallery-item,.gi-track,.gi-grid-inner,.gi-section,.gi-hd-flat,.BS1'))ev.preventDefault();
+});
 const DJ='web/Dinamico/data.json',JC={},IDX={},ITEM=150,GAP=8,STRIDE=ITEM+GAP,IMG_H=110,TEXT_H=ITEM-IMG_H,PAGE=10,_observed=new Set();
 let _GU=window.GeoUtils||null,_GUp=null;
 function loadGU(){
