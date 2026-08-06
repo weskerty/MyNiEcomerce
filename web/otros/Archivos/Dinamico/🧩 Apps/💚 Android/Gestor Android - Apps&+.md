@@ -125,12 +125,21 @@ const stOv=document.getElementById("adbStOv"),stOvImg=document.getElementById("a
 const wa=window.__CFG?.waitAnim;
 if(wa){stOvImg.src=wa;stOv.style.display="flex"}
 try{
-const{AdbDaemonTransport,Adb,adbGeneratePublicKey}=await import("https://esm.unpkg.com/@yume-chan/adb@2.6.0?bundle&target=esnext");
-const{AdbDaemonWebUsbDeviceManager}=await import("https://esm.unpkg.com/@yume-chan/adb-daemon-webusb@2.1.0?bundle&target=esnext");
-const{default:AdbWebCredentialStore}=await import("https://esm.unpkg.com/@yume-chan/adb-credential-web@2.0.1?bundle&target=esnext");
-const{DefaultServerPath,AndroidMotionEventAction,ScrcpyPointerId,clamp}=await import("https://esm.unpkg.com/@yume-chan/scrcpy@2.2.0?bundle&target=esnext");
-const{AdbScrcpyClient,AdbScrcpyOptions2_1}=await import("https://esm.unpkg.com/@yume-chan/adb-scrcpy@2.3.2?bundle&target=esnext");
-const{WebCodecsVideoDecoder,WebGLVideoFrameRenderer,BitmapVideoFrameRenderer}=await import("https://esm.unpkg.com/@yume-chan/scrcpy-decoder-webcodecs?bundle&target=esnext");
+const[
+{AdbDaemonTransport,Adb,adbGeneratePublicKey},
+{AdbDaemonWebUsbDeviceManager},
+{default:AdbWebCredentialStore},
+{DefaultServerPath,AndroidMotionEventAction,ScrcpyPointerId,clamp},
+{AdbScrcpyClient,AdbScrcpyOptions2_1},
+{WebCodecsVideoDecoder,WebGLVideoFrameRenderer,BitmapVideoFrameRenderer}
+]=await Promise.all([
+import("https://esm.unpkg.com/@yume-chan/adb@2.6.0?bundle&target=esnext"),
+import("https://esm.unpkg.com/@yume-chan/adb-daemon-webusb@2.1.0?bundle&target=esnext"),
+import("https://esm.unpkg.com/@yume-chan/adb-credential-web@2.0.1?bundle&target=esnext"),
+import("https://esm.unpkg.com/@yume-chan/scrcpy@2.2.0?bundle&target=esnext"),
+import("https://esm.unpkg.com/@yume-chan/adb-scrcpy@2.3.2?bundle&target=esnext"),
+import("https://esm.unpkg.com/@yume-chan/scrcpy-decoder-webcodecs?bundle&target=esnext")
+]);
 
 const U1="https://raw.githubusercontent.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation/main/resources/assets/uad_lists.json";
 const R1=["Recommended","Advanced","Expert","Unsafe"];

@@ -12,7 +12,6 @@ const PRE=[
 'web/scripts/config.json',
 'web/es.html',
 'web/estilo.css',
-'web/otros/Archivos/Fuentes/Comfortaa/font.woff2',
 'web/search.html',
 'web/blogs.html',
 'web/favicon.ico',
@@ -21,10 +20,17 @@ const PRE=[
 'web/otros/Archivos/HTML/apps.html',
 'web/otros/Archivos/HTML/Grupos.html',
 'web/otros/Archivos/Imagenes/wallpaper.avif',
-'web/otros/Archivos/Imagenes/Permanente/404.avif',
-'web/otros/Archivos/Imagenes/Permanente/wait.avif',
 'web/scripts/Galerias.js',
 'web/scripts/chatBanner&Share.js',
+FRASES_HTML
+];
+
+
+const PERM_C='site-permanent';
+const PRE_PERM=[
+'web/otros/Archivos/Fuentes/Comfortaa/font.woff2',
+'web/otros/Archivos/Imagenes/Permanente/404.avif',
+'web/otros/Archivos/Imagenes/Permanente/wait.avif',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/first_quarter_moon_face_animated.avif',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/sun_with_face_animated.avif',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg',
@@ -35,13 +41,13 @@ const PRE=[
 'web/otros/Archivos/Imagenes/Permanente/ICONS/Cesta.png',
 N_ICON,
 N_ICO,
-N_BANNER,
-FRASES_HTML
+N_BANNER
 ];
 
 const TEMP_ROUTES=[{match:'/api/',ttl:18000000}];
 const EXT_CACHE=[
-  {origin:'tetunori.github.io',ttl:0}
+  {origin:'tetunori.github.io',ttl:0},
+  {origin:'esm.unpkg.com',ttl:0}
 ];
 const MIRRORS=['https://weskerty.github.io/MyNiEcomerce','https://lawiskapy.codeberg.page/kore.js','https://cheagana.netlify.app','https://mc.cheagana.com'];
 const MIRROR_TIMEOUT=2000;
@@ -55,6 +61,7 @@ const APPS_URL='web/otros/Archivos/HTML/apps.html';
 const OPFS_DIR='notify';
 const DLA_C='dla-fetch';
 const DLA_TTL=600000;
+const SHARE_TTL=3600000;
 
 async function tryMirrors(pathname,init){
   for(const base of MIRRORS){
@@ -147,28 +154,48 @@ async function saveShareData(formData){
   const meta={title:formData.get('title')||'',text:formData.get('text')||'',url:formData.get('url')||'',files:[]};
   const raw=formData.getAll('files').filter(f=>f&&f.size>0);
   const sc=await caches.open(SHARE_C);
+  const exp=String(Date.now()+SHARE_TTL);
   await Promise.all(raw.map(async(f,i)=>{
     const key='/__share_file_'+i;
-    await sc.put(key,new Response(f,{headers:{'Content-Type':f.type||'application/octet-stream','X-Share-Name':f.name||('file'+i),'X-Share-Type':f.type||''}}));
+    await sc.put(key,new Response(f,{headers:{'Content-Type':f.type||'application/octet-stream','X-Share-Name':f.name||('file'+i),'X-Share-Type':f.type||'','X-Expires':exp}}));
     meta.files.push({key,name:f.name||('file'+i),type:f.type||'',size:f.size});
   }));
-  await sc.put(SHARE_KEY,new Response(JSON.stringify(meta),{headers:{'Content-Type':'application/json'}}));
+  await sc.put(SHARE_KEY,new Response(JSON.stringify(meta),{headers:{'Content-Type':'application/json','X-Expires':exp}}));
 }
 
 async function clearShareData(){
   await caches.delete(SHARE_C);
 }
 
+async function cleanShare(){
+  try{
+    const c=await caches.open(SHARE_C);
+    const meta=await c.match(SHARE_KEY);
+    if(!meta)return;
+    const exp=parseInt(meta.headers.get('X-Expires')||0);
+    if(Date.now()>exp)await clearShareData();
+  }catch{}
+}
+
 self.addEventListener('install',e=>{
-  e.waitUntil(caches.open(V).then(c=>Promise.all(PRE.map(u=>
-    fetch(new Request(u,{cache:'reload'})).then(r=>{if(r.ok)return c.put(u,r);console.warn('PRE 404',u,r.status);}).catch(err=>console.warn('PRE fail',u,err))
-  ))).then(()=>self.skipWaiting()));
+  e.waitUntil(Promise.all([
+    caches.open(V).then(c=>Promise.all(PRE.map(u=>
+      fetch(new Request(u,{cache:'reload'})).then(r=>{if(r.ok)return c.put(u,r);console.warn('PRE 404',u,r.status);}).catch(err=>console.warn('PRE fail',u,err))
+    ))),
+    caches.open(PERM_C).then(c=>Promise.all(PRE_PERM.map(async u=>{
+      if(await c.match(u))return;
+      try{
+        const r=await fetch(u);
+        if(r.ok)await c.put(u,r);else console.warn('PERM 404',u,r.status);
+      }catch(err){console.warn('PERM fail',u,err)}
+    })))
+  ]).then(()=>self.skipWaiting()));
 });
 
 self.addEventListener('activate',e=>{
   e.waitUntil(
     caches.keys().then(ks=>Promise.all(
-      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==SHARE_C&&k!==EXT_C&&k!==DLA_C).map(k=>caches.delete(k))
+      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==SHARE_C&&k!==EXT_C&&k!==DLA_C&&k!==PERM_C).map(k=>caches.delete(k))
     )).then(()=>self.clients.claim())
   );
 });
@@ -190,6 +217,8 @@ self.addEventListener('fetch',e=>{
       const sc=await caches.open(SHARE_C);
       const meta=await sc.match(SHARE_KEY);
       if(!meta)return new Response('null',{headers:{'Content-Type':'application/json'}});
+      const exp=parseInt(meta.headers.get('X-Expires')||0);
+      if(exp&&Date.now()>exp){await clearShareData();return new Response('null',{headers:{'Content-Type':'application/json'}});}
       const m=JSON.parse(await meta.text());
       if(!m.files||!m.files.length)return new Response(JSON.stringify({...m,blobs:[]}),{headers:{'Content-Type':'application/json'}});
       const blobs=await Promise.all(m.files.map(async f=>{
@@ -306,6 +335,7 @@ self.addEventListener('fetch',e=>{
 async function notifyCycle(){
   const shown=await runOPFS();
   await cleanDLA();
+  await cleanShare();
   if(shown>0)return;
   await self.registration.showNotification('Che Agana',{
     body:'Ven a ver la frase del dia',icon:N_ICON,badge:N_ICO,image:N_BANNER,
