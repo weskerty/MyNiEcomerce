@@ -275,6 +275,8 @@ function AP_dck(k){document.cookie=`${k}=;path=/;max-age=0`;}
 let _AP_tel=AP_ck("ap_tel"),_AP_tk=AP_ck("ap_tk"),_AP_cats={},_AP_mde=null,_AP_idsEnUso=new Set(),_AP_editando=null;
 let _AP_msg=null;
 
+function AP_esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+
 function AP_toast(t,tp='ok',d=3000){
   if(_AP_msg)_AP_msg.remove();
   _AP_msg=document.createElement('div');
@@ -325,13 +327,21 @@ window.AP_mainTab=function(t){
   if(t==='pend')AP_loadSolicitudes();
 };
 
+function AP_buildCatsFromData(dj){
+  const cats={};
+  Object.entries(dj||{}).forEach(([cat,v])=>{
+    if(Array.isArray(v)){cats[cat]=[];return;}
+    if(v&&typeof v==='object')cats[cat]=Object.keys(v).filter(k=>k!=='General');
+  });
+  return cats;
+}
+
 async function AP_loadCats(){
-  const{ok,data}=await AP_fetch('cats');
-  if(!ok)return;
-  _AP_cats=data;
+  const dj=await AP_fetchDataJsonGeneral();
+  _AP_cats=AP_buildCatsFromData(dj);
   const sel=document.getElementById('ap-cat');
   sel.innerHTML='';
-  Object.keys(data).sort().forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
+  Object.keys(_AP_cats).sort().forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o);});
   AP_updSub();
 }
 
@@ -628,8 +638,8 @@ window.AP_loadMisProductos=async function(){
   mios.forEach(e=>{
     const div=document.createElement('div');div.className='ap-sol-item';
     div.innerHTML=`<div class="ap-sol-info">
-      <div class="nm">${e.NB||e.ID} <span class="ap-badge apr">Publicado</span></div>
-      <div class="dt">ID: ${e.ID} · ${e.categoria}${e.sub?'/'+e.sub:''} · ${AP_FP(e.PC)} Gs</div>
+      <div class="nm">${AP_esc(e.NB||e.ID)} <span class="ap-badge apr">Publicado</span></div>
+      <div class="dt">ID: ${AP_esc(e.ID)} · ${AP_esc(e.categoria)}${e.sub?'/'+AP_esc(e.sub):''} · ${AP_FP(e.PC)} Gs</div>
       <div class="ap-sol-acts"><button onclick='AP_editarPublicado(${JSON.stringify(e).replace(/'/g,"&apos;")})'>Editar</button></div>
     </div>`;
     lst.appendChild(div);
@@ -674,9 +684,9 @@ window.AP_loadSolicitudes=async function(){
   entries.forEach(e=>{
     const div=document.createElement('div');div.className='ap-sol-item';
     div.innerHTML=`<div class="ap-sol-info">
-      <div class="nm">${e.NB||e.ID} ${badges[e.estado]||''}</div>
-      <div class="dt">${e.categoria}${e.sub?'/'+e.sub:''}</div>
-      ${e.estado==='rechazado'&&e.motivo?`<div class="ap-sol-neg">${e.motivo}</div>`:''}
+      <div class="nm">${AP_esc(e.NB||e.ID)} ${badges[e.estado]||''}</div>
+      <div class="dt">${AP_esc(e.categoria)}${e.sub?'/'+AP_esc(e.sub):''}</div>
+      ${e.estado==='rechazado'&&e.motivo?`<div class="ap-sol-neg">${AP_esc(e.motivo)}</div>`:''}
     </div>`;
     lst.appendChild(div);
   });
