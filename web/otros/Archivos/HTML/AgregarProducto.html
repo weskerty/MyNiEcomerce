@@ -640,10 +640,20 @@ window.AP_loadMisProductos=async function(){
     div.innerHTML=`<div class="ap-sol-info">
       <div class="nm">${AP_esc(e.NB||e.ID)} <span class="ap-badge apr">Publicado</span></div>
       <div class="dt">ID: ${AP_esc(e.ID)} · ${AP_esc(e.categoria)}${e.sub?'/'+AP_esc(e.sub):''} · ${AP_FP(e.PC)} Gs</div>
-      <div class="ap-sol-acts"><button onclick='AP_editarPublicado(${JSON.stringify(e).replace(/'/g,"&apos;")})'>Editar</button></div>
+      <div class="ap-sol-acts">
+        <button onclick='AP_editarPublicado(${JSON.stringify(e).replace(/'/g,"&apos;")})'>Editar</button>
+        <button onclick="AP_solicitarBorrado('${AP_esc(e.ID)}')">Solicitar Borrado</button>
+      </div>
     </div>`;
     lst.appendChild(div);
   });
+};
+
+window.AP_solicitarBorrado=async function(ID){
+  if(!confirm(`Solicitar el borrado de "${ID}"? Un admin debe confirmarlo.`))return;
+  const{ok,data}=await AP_fetch('solicitarBorrado',{method:'POST',body:JSON.stringify({ID})});
+  if(!ok)return AP_toast(data.error||'Error','err');
+  AP_toast('Borrado solicitado');
 };
 
 window.AP_editarPublicado=async function(e){
@@ -669,6 +679,27 @@ window.AP_editarPublicado=async function(e){
   AP_toast('Volve a subir la imagen para reenviar','warn',5000);
 };
 
+window.AP_editarRechazado=async function(ID){
+  const{ok,data}=await AP_fetch('pendienteDetalle',{method:'POST',body:JSON.stringify({ID})});
+  if(!ok)return AP_toast(data.error||'Error','err');
+  AP_mainTab('nuevo');
+  document.getElementById('ap-ch').value=data.CH||'WA.TG';
+  document.getElementById('ap-id').value=data.ID||'';
+  document.getElementById('ap-nb').value=data.NB||'';
+  document.getElementById('ap-pc').value=AP_FP(parseInt(data.PC)||0);
+  document.getElementById('ap-cm').value=data.CM&&data.CM!=='1'?data.CM:'';
+  document.getElementById('ap-tm').value=data.TM||'';
+  document.getElementById('ap-cat').value=data.categoria||'';
+  AP_updSub();
+  setTimeout(()=>{document.getElementById('ap-sub').value=data.sub||'';},50);
+  _AP_gpsCT=data.CT||null;
+  if(data.CT)document.getElementById('ap-gps-hint').textContent='Se mantiene la ubicacion anterior, podes actualizarla';
+  if(_AP_mde)_AP_mde.value(data.md||'');
+  _AP_editando={ID:data.ID};
+  document.getElementById('ap-submit').textContent='Guardar Edicion';
+  AP_toast('Volve a subir la imagen para reenviar','warn',5000);
+};
+
 window.AP_loadSolicitudes=async function(){
   const lst=document.getElementById('ap-sol-list');
   lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
@@ -687,6 +718,7 @@ window.AP_loadSolicitudes=async function(){
       <div class="nm">${AP_esc(e.NB||e.ID)} ${badges[e.estado]||''}</div>
       <div class="dt">${AP_esc(e.categoria)}${e.sub?'/'+AP_esc(e.sub):''}</div>
       ${e.estado==='rechazado'&&e.motivo?`<div class="ap-sol-neg">${AP_esc(e.motivo)}</div>`:''}
+      ${e.estado==='rechazado'?`<div class="ap-sol-acts"><button onclick="AP_editarRechazado('${AP_esc(e.ID)}')">Editar y Reenviar</button></div>`:''}
     </div>`;
     lst.appendChild(div);
   });
