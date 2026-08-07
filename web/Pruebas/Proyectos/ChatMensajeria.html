@@ -198,7 +198,14 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
     <div class="cw-lbl">Nombre</div>
     <input class="MI" id="cw-irc-nm" placeholder="Ej: Canal general" maxlength="40">
   </div>
-  <div class="cw-row">
+  <div>
+    <div class="cw-lbl">Tipo de conexion</div>
+    <select class="MI" id="cw-irc-transport">
+      <option value="ws">WebSocket directo (servidor con soporte nativo)</option>
+      <option value="sockjs">SockJS (gateway tipo KiwiIRC)</option>
+    </select>
+  </div>
+  <div id="cw-irc-ws-fields" class="cw-row">
     <div style="flex:2">
       <div class="cw-lbl">Servidor</div>
       <input class="MI" id="cw-irc-host" placeholder="irc.ejemplo.org">
@@ -206,6 +213,22 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
     <div style="flex:1">
       <div class="cw-lbl">Puerto WS</div>
       <input class="MI" id="cw-irc-port" type="number" placeholder="443">
+    </div>
+  </div>
+  <div id="cw-irc-sockjs-fields" style="display:none">
+    <div>
+      <div class="cw-lbl">URL del gateway</div>
+      <input class="MI" id="cw-irc-gw-url" placeholder="https://web.libera.chat/webirc/kiwiirc">
+    </div>
+    <div class="cw-row">
+      <div style="flex:2">
+        <div class="cw-lbl">Host IRC interno (normalmente "default")</div>
+        <input class="MI" id="cw-irc-gw-host" placeholder="default">
+      </div>
+      <div style="flex:1">
+        <div class="cw-lbl">Puerto</div>
+        <input class="MI" id="cw-irc-gw-port" type="number" placeholder="6667">
+      </div>
     </div>
   </div>
   <div>
@@ -373,7 +396,7 @@ function renderIrcList(){
     const ic=mk('div','cw-room-ic');ic.textContent='🌐';
     const tx=mk('div','cw-room-tx');
     const nm=mk('div','cw-room-nm');nm.textContent=cfg.label||cfg.channel;
-    const sb=mk('div','cw-room-sb');sb.textContent=cfg.host+' · '+cfg.channel;
+    const sb=mk('div','cw-room-sb');sb.textContent=(cfg.transport==='sockjs'?cfg.gatewayUrl:cfg.host)+' · '+cfg.channel;
     tx.append(nm,sb);
     const rm=mk('button','cw-irc-rm');rm.textContent='✕';rm.title='Quitar';
     rm.onclick=e=>{e.stopPropagation();ircConns=ircConns.filter(c=>c.id!==cfg.id);saveIrcList();renderIrcList();};
@@ -390,21 +413,41 @@ function clickIrc(cfg){
   }
   enterIrc(cfg);
 }
+function ircToggleFields(){
+  const sockjs=$('cw-irc-transport').value==='sockjs';
+  $('cw-irc-ws-fields').style.display=sockjs?'none':'flex';
+  $('cw-irc-sockjs-fields').style.display=sockjs?'':'none';
+}
+$('cw-irc-transport').onchange=ircToggleFields;
+
 $('cw-irc-add').onclick=()=>{
   $('cw-irc-nm').value='';$('cw-irc-host').value='';$('cw-irc-port').value='443';
+  $('cw-irc-gw-url').value='';$('cw-irc-gw-host').value='default';$('cw-irc-gw-port').value='6667';
   $('cw-irc-chan').value='';$('cw-irc-key').value='';
+  $('cw-irc-transport').value='ws';ircToggleFields();
   showModal('cw-m-irc');setTimeout(()=>$('cw-irc-nm').focus(),80);
 };
 $('cw-irc-cx').onclick=()=>hideModal('cw-m-irc');
 $('cw-irc-ok').onclick=()=>{
-  const host=$('cw-irc-host').value.trim(),chan=$('cw-irc-chan').value.trim();
-  if(!host||!chan)return;
+  const chan=$('cw-irc-chan').value.trim();
+  const transport=$('cw-irc-transport').value==='sockjs'?'sockjs':'ws';
+  if(!chan)return;
   const cfg={
     id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),
     label:$('cw-irc-nm').value.trim()||chan,
-    host,port:parseInt($('cw-irc-port').value)||443,
-    channel:chan,key:$('cw-irc-key').value||''
+    transport,channel:chan,key:$('cw-irc-key').value||''
   };
+  if(transport==='sockjs'){
+    const gw=$('cw-irc-gw-url').value.trim();
+    if(!gw)return;
+    cfg.gatewayUrl=gw;
+    cfg.gatewayHost=$('cw-irc-gw-host').value.trim()||'default';
+    cfg.gatewayPort=parseInt($('cw-irc-gw-port').value)||6667;
+  }else{
+    const host=$('cw-irc-host').value.trim();
+    if(!host)return;
+    cfg.host=host;cfg.port=parseInt($('cw-irc-port').value)||443;
+  }
   ircConns.push(cfg);saveIrcList();renderIrcList();
   hideModal('cw-m-irc');
 };
@@ -550,7 +593,12 @@ async function startAudio(){
 }
 
 // ---------- IRC: conexion directa navegador -> red IRC por WebSocket, sin pasar por tu servidor ----------
-function ircSend(raw){if(ircSocket&&ircSocket.readyState===1)ircSocket.send(raw+'\r\n');}
+let ircTransport='ws';
+function ircSend(raw){
+  if(!ircSocket||ircSocket.readyState!==1)return;
+  if(ircTransport==='sockjs')ircSocket.send(':1 '+raw);
+  else ircSocket.send(raw+'\r\n');
+}
 
 function ircParseLine(line){
   let prefix='',rest=line;
@@ -635,6 +683,7 @@ async function enterIrc(cfg){
   $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
   hist=[];domCount=0;ircUsers=new Map();
   ircMode=true;
+  ircTransport=cfg.transport==='sockjs'?'sockjs':'ws';
   ircNick=(nick||('Guest'+Math.floor(Math.random()*9999))).replace(/[^a-zA-Z0-9_-]/g,'')||'Guest'+Math.floor(Math.random()*9999);
   ircChannel=cfg.channel.startsWith('#')?cfg.channel:'#'+cfg.channel;
   ircChanKey=cfg.key||'';
@@ -644,24 +693,43 @@ async function enterIrc(cfg){
   $('cw-bm').style.display='none';$('cw-bv').style.display='none';
   $('cw-lobby').classList.add('hid');$('cw-chat').classList.add('on');
 
-  try{
-    ircSocket=new WebSocket(`wss://${cfg.host}:${cfg.port}/`);
-  }catch(e){addSys('No se pudo conectar: '+e.message);return goBack();}
-
-  let buf='';
-  ircSocket.onopen=()=>{
-    ircSend('NICK '+ircNick);
-    ircSend('USER '+ircNick+' 0 * :'+ircNick);
-  };
-  ircSocket.onmessage=ev=>{
-    buf+=String(ev.data);
-    let idx;
-    while((idx=buf.indexOf('\n'))>=0){
-      let line=buf.slice(0,idx);buf=buf.slice(idx+1);
-      if(line.endsWith('\r'))line=line.slice(0,-1);
-      if(line)ircHandleLine(line);
-    }
-  };
+  if(ircTransport==='sockjs'){
+    // SockJS: la libreria maneja framing/heartbeats/reconexion, nosotros solo el prefijo
+    // ":1 " del multiplexor de webircgateway (verificado en vivo contra web.libera.chat)
+    try{
+      const{default:SockJS}=await import('https://esm.sh/sockjs-client@1.6.1');
+      ircSocket=new SockJS(cfg.gatewayUrl);
+    }catch(e){addSys('No se pudo conectar: '+e.message);return goBack();}
+    ircSocket.onopen=()=>{
+      ircSocket.send(':0 CONTROL START');
+      ircSend('HOST '+(cfg.gatewayHost||'default')+':'+(cfg.gatewayPort||6667));
+      ircSend('ENCODING utf8');
+      ircSend('NICK '+ircNick);
+      ircSend('USER '+ircNick+' 0 * :'+ircNick);
+    };
+    ircSocket.onmessage=ev=>{
+      const m=String(ev.data).match(/^:1 ?(.*)$/);
+      if(m&&m[1])ircHandleLine(m[1]);
+    };
+  }else{
+    try{
+      ircSocket=new WebSocket(`wss://${cfg.host}:${cfg.port}/`);
+    }catch(e){addSys('No se pudo conectar: '+e.message);return goBack();}
+    let buf='';
+    ircSocket.onopen=()=>{
+      ircSend('NICK '+ircNick);
+      ircSend('USER '+ircNick+' 0 * :'+ircNick);
+    };
+    ircSocket.onmessage=ev=>{
+      buf+=String(ev.data);
+      let idx;
+      while((idx=buf.indexOf('\n'))>=0){
+        let line=buf.slice(0,idx);buf=buf.slice(idx+1);
+        if(line.endsWith('\r'))line=line.slice(0,-1);
+        if(line)ircHandleLine(line);
+      }
+    };
+  }
   ircSocket.onclose=()=>{if(ircMode)addSys('Desconectado del chat IRC');};
   ircSocket.onerror=()=>{addSys('Error de conexion al chat IRC');};
 
