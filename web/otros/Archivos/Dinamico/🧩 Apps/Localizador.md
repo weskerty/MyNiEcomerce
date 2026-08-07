@@ -135,7 +135,33 @@ function parseEntry(relPath,id){
   return{id,lat:ll.lat,lng:ll.lng,cat,mat,nombre:parts[0]||'Sin nombre',horario:parts[2]||'',tel:mNM?mNM[1]:null,ch:mCH?mCH[1]:'',img:relPath};
 }
 
-let map=null,markers=[],selId=null,_filter='',_matFilter='';
+let map=null,markers=[],selId=null,_filter='',_matFilter='',_myPos=null,myMarker=null;
+
+function mkMyIcon(){
+  return L.divIcon({
+    html:`<div style="font-size:24px;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))">📍</div>`,
+    className:'',iconSize:[28,28],iconAnchor:[14,26]
+  });
+}
+
+function addMyMarker(){
+  if(!map||!_myPos||myMarker)return;
+  myMarker=L.marker([_myPos.lat,_myPos.lng],{icon:mkMyIcon(),zIndexOffset:1000}).addTo(map);
+  myMarker.bindTooltip('Tu ubicacion');
+}
+
+function geoLocate(){
+  if(!navigator.geolocation)return;
+  navigator.geolocation.getCurrentPosition(
+    p=>{
+      _myPos={lat:p.coords.latitude,lng:p.coords.longitude};
+      localStorage.setItem('UBI','1');
+      addMyMarker();
+    },
+    ()=>{},
+    {timeout:10000,maximumAge:60000}
+  );
+}
 
 function mkIcon(p,sel){
   const em=p.cat==='reciclaje'&&p.mat?(MAT_EMOJI[p.mat]||'♻️'):(CAT_EMOJI[p.cat]||'📍');
@@ -220,8 +246,11 @@ function initMap(){
     mk.addTo(map);
     markers.push({id:p.id,p,marker:mk});
   });
+  addMyMarker();
 
-  const bounds=L.latLngBounds(PUNTOS.map(p=>[p.lat,p.lng]));
+  const pts=PUNTOS.map(p=>[p.lat,p.lng]);
+  if(_myPos)pts.push([_myPos.lat,_myPos.lng]);
+  const bounds=L.latLngBounds(pts);
   map.fitBounds(bounds,{padding:[32,32],maxZoom:13});
 }
 
@@ -258,6 +287,7 @@ document.querySelectorAll('#rc-mats .rc-cat').forEach(btn=>{
 
 document.addEventListener('contentUnload',function(){
   if(map){map.remove();map=null;markers=[];}
+  myMarker=null;_myPos=null;
 },{once:true});
 
 function gHA(){
@@ -266,6 +296,8 @@ function gHA(){
   const pts=h.substring(1).split('#');
   return pts.length>1?decodeURIComponent(pts[1]):'';
 }
+
+geoLocate();
 
 fetch(JSON_URL)
   .then(r=>r.json())
