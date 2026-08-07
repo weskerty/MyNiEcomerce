@@ -1850,6 +1850,7 @@ function applyRemoteHit(peerId,d){
 }
 function lerpAngle(a,b,f){ return a+normAngle(b-a)*f; }
 function applyRemoteState(peerId,d){
+  window.__vtNetStats.recv++;
   const r=roster.find(x=>x.peerId===peerId);
   if (!r) return;
   const t=r.tank;
@@ -1876,7 +1877,7 @@ function tickRemoteTanks(){
 function netTick(){
   if (!localEntry) return;
   const t=localEntry.tank;
-  if (tsAction) { try{ tsAction.send({x:t.x,y:t.y,angle:t.angle,turret:t.turretAngle,seq:t.shotSeq,hasShield:t.hasShield,shieldOn:t.shieldOn}); }catch(e){} }
+  if (tsAction) { try{ tsAction.send({x:t.x,y:t.y,angle:t.angle,turret:t.turretAngle,seq:t.shotSeq,hasShield:t.hasShield,shieldOn:t.shieldOn}); window.__vtNetStats.sent++; }catch(e){ window.__vtNetStats.err=String(e); } }
 }
 function broadcastObsAdd(o){ if(spawnAction){ try{ spawnAction.send({t:'oa',o:serializeObstacle(o)}); }catch(e){} } }
 function broadcastObstaclesFull(){ if(spawnAction){ try{ spawnAction.send({t:'obs',list:obstacles.map(serializeObstacle)}); }catch(e){} } }
@@ -1885,7 +1886,7 @@ async function initNet(){
   try{
     const mod=await loadTrystero();
     selfId=mod.selfId;
-    room=mod.joinRoom({appId:NET_APP},NET_ROOM);
+    room=mod.joinRoom({appId:NET_APP,relayConfig:{redundancy:12}},NET_ROOM);
     tsAction=room.makeAction('ts');
     hitAction=room.makeAction('hit');
     spawnAction=room.makeAction('spawn');
@@ -2002,6 +2003,14 @@ function teardown(){
   if (disqusEl) disqusEl.style.display=disqusPrev||'';
 }
 if (contentEl) contentEl.addEventListener('contentUnload',teardown,{once:true});
+
+window.__vtNetStats={sent:0,recv:0,err:null};
+window.__vtDebug=()=>({
+  net:window.__vtNetStats,
+  selfId,isHost,
+  peers:room?Object.keys(room.getPeers()):null,
+  roster:roster.map(r=>({peerId:r.peerId,isLocal:r.isLocal,isAi:r===aiEntry,x:r.tank.x,y:r.tank.y,netTX:r.tank._netTX,netTY:r.tank._netTY,lastSeq:r.tank._lastSeq}))
+});
 
 boot();
 }();

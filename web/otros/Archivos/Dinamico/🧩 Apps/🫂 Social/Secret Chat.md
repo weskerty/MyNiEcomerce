@@ -388,7 +388,7 @@ async function enterRoom(cfg){
   catch(e){addSys('Error al cargar Trystero');return goBack();}
   pid=selfId;
 
-  try{room=joinRoom({appId:TRYSTERO_APP,password:cfg.roomPw||undefined},cfg.roomId);}
+  try{room=joinRoom({appId:TRYSTERO_APP,password:cfg.roomPw||undefined,relayConfig:{redundancy:12}},cfg.roomId);}
   catch(e){addSys('Error al unirse a la sala');return goBack();}
 
   msgAct=room.makeAction('msg');
