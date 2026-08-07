@@ -32,6 +32,7 @@
   color:rgba(255,255,255,.35);font-size:.9em;
 }
 #rc-detail{display:none;padding:16px}
+.rc-dthumb{width:56px;height:56px;border-radius:12px;object-fit:cover;background:rgba(255,255,255,.05);float:right;margin-left:10px}
 
 .rc-dname{font-size:1.08em;font-weight:700;color:#fff;margin:0 0 4px}
 .rc-daddr{font-size:.82em;color:rgba(255,255,255,.5);margin:0 0 10px;line-height:1.45}
@@ -93,7 +94,7 @@ function parseEntry(relPath,id){
   const ll=ctToLatLng(mCT[1]);
   if(!ll)return null;
   const parts=mNB[1].split(';');
-  return{id,lat:ll.lat,lng:ll.lng,nombre:parts[0]||'Sin nombre',horario:parts[1]||'',tel:mNM?mNM[1]:null,ch:mCH?mCH[1]:''};
+  return{id,lat:ll.lat,lng:ll.lng,nombre:parts[0]||'Sin nombre',horario:parts[1]||'',tel:mNM?mNM[1]:null,ch:mCH?mCH[1]:'',img:relPath};
 }
 
 let map=null,markers=[],selId=null;
@@ -123,7 +124,8 @@ function showDetail(p){
     acts.push(`<a class="rc-abtn rc-abtn-wa" href="https://wa.me/${num}" target="_blank" rel="noopener noreferrer"><span class="rc-wa-icon"></span>WhatsApp</a>`);
   }
 
-  dtEl.innerHTML=`<div class="rc-dname">${esc(p.nombre)}</div>
+  dtEl.innerHTML=`${p.img?`<img class="rc-dthumb" src="${encodeURI(p.img)}" alt="" onerror="this.style.display='none'">`:''}
+    <div class="rc-dname">${esc(p.nombre)}</div>
     <div class="rc-dmeta">${rows.join('')}</div>
     <div class="rc-actions">${acts.join('')}</div>`;
 }

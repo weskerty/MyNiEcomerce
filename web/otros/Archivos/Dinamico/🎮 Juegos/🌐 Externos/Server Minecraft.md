@@ -134,7 +134,7 @@ function mkCard(s){
     const uri=`minecraft:?addExternalServer=${sanitizeURI(s.name)}|${s.url}:${s.port}`;
     acts+=`<a class="mc-bbtn" href="${uri}"><img src="${ICON_B}" alt="">Añadir en Bedrock</a>`;
   }  div.innerHTML=`<div class="mc-head">
-    ${s.img?`<img class="mc-thumb" src="${esc(s.img)}" alt="" onerror="this.style.display='none'">`:''}
+    ${s.img?`<img class="mc-thumb" src="${encodeURI(s.img)}" alt="" onerror="this.style.display='none'">`:''}
     <div class="mc-hinfo">
       <div class="mc-name">${esc(s.name)}</div>
       ${s.desc?`<div class="mc-desc">${esc(s.desc)}</div>`:''}
