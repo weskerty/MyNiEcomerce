@@ -16,6 +16,13 @@ body.low-perf #chatw .cw-modal-b{backdrop-filter:none!important;-webkit-backdrop
 .cw-room-nm{font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cw-room-sb{font-size:.72rem;color:rgba(255,255,255,.5);margin-top:1px}
 #cw-empty{text-align:center;padding:26px;color:rgba(255,255,255,.5);font-size:.85rem}
+#cw-irc-h{display:flex;align-items:center;gap:8px;padding:0 16px 6px}
+#cw-irc-h span{flex:1;font-size:.7rem;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase}
+#cw-irc-add{width:26px;height:26px;font-size:.85rem}
+#cw-irc-list{display:flex;flex-direction:column;gap:6px;padding:0 10px 8px}
+.cw-irc-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--cw-r-sm);cursor:pointer;transition:background .15s;border:1px solid rgba(255,255,255,.08)}
+.cw-irc-item:hover{background:rgba(255,255,255,.06)}
+.cw-irc-rm{border:none;background:none;color:rgba(255,255,255,.4);font-size:.85rem;cursor:pointer;padding:4px}
 #cw-share-banner{display:none;margin:0 16px 8px;padding:9px 14px;border-radius:var(--cw-r-sm);background:rgba(var(--accent-rgb),.18);border:1px solid rgba(var(--accent-rgb),.35);font-size:.82rem;text-align:center}
 #cw-share-prompt{display:none;align-items:center;gap:8px;padding:8px 12px;background:rgba(var(--accent-rgb),.15);border-bottom:1px solid rgba(255,255,255,.1)}
 #cw-share-prompt-tx{flex:1;font-size:.8rem}
@@ -101,6 +108,11 @@ body.low-perf .cw-flash .cw-msg-b{animation:none}
       <button class="B Bi" id="cw-new" title="Nueva sala" style="background:rgba(255,255,255,.08);border:none;color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer">✏️</button>
     </div>
     <div id="cw-share-banner">📤 Seleccionar chat para enviar</div>
+    <div id="cw-irc-h">
+      <span>Chats IRC</span>
+      <button class="B Bi" id="cw-irc-add" title="Agregar chat IRC" style="background:rgba(255,255,255,.08);border:none;color:#fff;border-radius:50%;cursor:pointer">+</button>
+    </div>
+    <div id="cw-irc-list"></div>
     <div id="cw-search">
       <input id="cw-si" placeholder="Buscar salas..." type="search">
     </div>
@@ -188,6 +200,38 @@ body.low-perf .cw-flash .cw-msg-b{animation:none}
   </div>
 </div>
 
+<div class="cw-modal" id="cw-m-irc">
+  <div class="cw-modal-b">
+    <h3>Agregar chat IRC</h3>
+    <div>
+      <div class="cw-lbl">Nombre</div>
+      <input class="MI" id="cw-irc-nm" placeholder="Ej: Canal general" maxlength="40">
+    </div>
+    <div class="cw-row">
+      <div style="flex:2">
+        <div class="cw-lbl">Servidor</div>
+        <input class="MI" id="cw-irc-host" placeholder="irc.ejemplo.org">
+      </div>
+      <div style="flex:1">
+        <div class="cw-lbl">Puerto WS</div>
+        <input class="MI" id="cw-irc-port" type="number" placeholder="443">
+      </div>
+    </div>
+    <div>
+      <div class="cw-lbl">Canal</div>
+      <input class="MI" id="cw-irc-chan" placeholder="#canal">
+    </div>
+    <div>
+      <div class="cw-lbl">Contrasena del canal (opcional)</div>
+      <input class="MI" id="cw-irc-key" type="password" placeholder="...">
+    </div>
+    <div class="cw-row">
+      <button class="B Bp Bac view-all-button" id="cw-irc-ok">Guardar</button>
+      <button class="B Bp Bs back-button" id="cw-irc-cx">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 !function(){
 const API='/api/chat',POLL=6000,PING=10000,HIST=200,DOM=80,IM_STK=524288,AUTO_DL_MAX=1048576;
@@ -218,18 +262,25 @@ let conns={},pNk={},pAu={},pVStr={},pMu={};
 let aStream=null,vStream=null,muted=false,vidOn=false,pingIv=null,pollIv=null;
 let hist=[],domCount=0,fMeta={},torrentClient=null;
 let epOpen=false,pendingJoin=null,createLock=false;
+function inAnyChat(){return!!curRoom||ircMode;}
+
+// ---------- IRC: chats fijados por vos, guardados localmente, sin pasar por chat.js ----------
+let ircConns=[],ircSocket=null,ircMode=false,ircNick='',ircChannel='',ircChanKey='',ircUsers=new Map();
+function loadIrcList(){try{return JSON.parse(localStorage.getItem('cw_irc_list')||'[]');}catch{return[];}}
+function saveIrcList(){try{localStorage.setItem('cw_irc_list',JSON.stringify(ircConns));}catch{}}
+ircConns=loadIrcList();
 
 // wakelock: pantalla encendida mientras estas dentro de una sala (mismo patron que TorrentOFF.md)
 const HASWL='wakeLock' in navigator;
 let wakeLock=null;
 async function wakeAcquire(){
-  if(!HASWL||wakeLock||!curRoom)return;
+  if(!HASWL||wakeLock||!inAnyChat())return;
   try{wakeLock=await navigator.wakeLock.request('screen');wakeLock.addEventListener('release',()=>{wakeLock=null;});}catch(e){}
 }
 async function wakeRelease(){
   if(wakeLock){await wakeLock.release().catch(()=>{});wakeLock=null;}
 }
-function onVisChange(){if(document.visibilityState==='visible'&&curRoom&&!wakeLock)wakeAcquire();}
+function onVisChange(){if(document.visibilityState==='visible'&&inAnyChat()&&!wakeLock)wakeAcquire();}
 document.addEventListener('visibilitychange',onVisChange);
 
 function showModal(id){$(id).classList.add('on');}
@@ -319,6 +370,51 @@ function doJoinPw(){
   enterRoom(r.id,r.name,pw);
 }
 $('cw-pf-cx').onclick=()=>hideModal('cw-m-perfil');
+
+// ---------- lista de chats IRC guardados (pinneados arriba del lobby) ----------
+function renderIrcList(){
+  const wrap=$('cw-irc-list');
+  wrap.innerHTML='';
+  ircConns.forEach(cfg=>{
+    const d=mk('div','cw-irc-item');
+    const ic=mk('div','cw-room-ic');ic.textContent='🌐';
+    const tx=mk('div','cw-room-tx');
+    const nm=mk('div','cw-room-nm');nm.textContent=cfg.label||cfg.channel;
+    const sb=mk('div','cw-room-sb');sb.textContent=cfg.host+' · '+cfg.channel;
+    tx.append(nm,sb);
+    const rm=mk('button','cw-irc-rm');rm.textContent='✕';rm.title='Quitar';
+    rm.onclick=e=>{e.stopPropagation();ircConns=ircConns.filter(c=>c.id!==cfg.id);saveIrcList();renderIrcList();};
+    d.append(ic,tx,rm);
+    d.onclick=()=>clickIrc(cfg);
+    wrap.appendChild(d);
+  });
+}
+function clickIrc(cfg){
+  if(!nick){
+    $('cw-pf-nk').value='';showModal('cw-m-perfil');
+    $('cw-pf-ok').onclick=()=>{const n=$('cw-pf-nk').value.trim();if(!n)return;saveNick(n);hideModal('cw-m-perfil');enterIrc(cfg);};
+    return;
+  }
+  enterIrc(cfg);
+}
+$('cw-irc-add').onclick=()=>{
+  $('cw-irc-nm').value='';$('cw-irc-host').value='';$('cw-irc-port').value='443';
+  $('cw-irc-chan').value='';$('cw-irc-key').value='';
+  showModal('cw-m-irc');setTimeout(()=>$('cw-irc-nm').focus(),80);
+};
+$('cw-irc-cx').onclick=()=>hideModal('cw-m-irc');
+$('cw-irc-ok').onclick=()=>{
+  const host=$('cw-irc-host').value.trim(),chan=$('cw-irc-chan').value.trim();
+  if(!host||!chan)return;
+  const cfg={
+    id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+    label:$('cw-irc-nm').value.trim()||chan,
+    host,port:parseInt($('cw-irc-port').value)||443,
+    channel:chan,key:$('cw-irc-key').value||''
+  };
+  ircConns.push(cfg);saveIrcList();renderIrcList();
+  hideModal('cw-m-irc');
+};
 
 // ---------- peerjs signaling ----------
 function initPeer(){
@@ -421,6 +517,7 @@ async function enterRoom(id,name,pw){
 
   $('cw-ch-nm').textContent=name.length>26?name.slice(0,26)+'…':name;
   $('cw-ch-sb').textContent='Conectando...';
+  $('cw-bm').style.display='';$('cw-bv').style.display='';
   $('cw-lobby').classList.add('hid');$('cw-chat').classList.add('on');
 
   try{await initPeer();}catch(e){addSys('Error al conectar (PeerJS)');return goBack();}
@@ -459,21 +556,147 @@ async function startAudio(){
   }catch(e){}
 }
 
+// ---------- IRC: conexion directa navegador -> red IRC por WebSocket, sin pasar por tu servidor ----------
+function ircSend(raw){if(ircSocket&&ircSocket.readyState===1)ircSocket.send(raw+'\r\n');}
+
+function ircParseLine(line){
+  let prefix='',rest=line;
+  if(line.startsWith(':')){
+    const sp=line.indexOf(' ');
+    prefix=line.slice(1,sp);rest=line.slice(sp+1);
+  }
+  let trailing=null,paramsPart=rest;
+  const tIdx=rest.indexOf(' :');
+  if(tIdx>=0){paramsPart=rest.slice(0,tIdx);trailing=rest.slice(tIdx+2);}
+  else if(rest.startsWith(':')){paramsPart='';trailing=rest.slice(1);}
+  const params=paramsPart.split(' ').filter(Boolean);
+  const command=params.shift()||'';
+  if(trailing!=null)params.push(trailing);
+  return{prefix,command,params};
+}
+
+const MAGNET_RE=/magnet:\?xt=urn:btih:[a-zA-Z0-9]+[^\s]*/;
+
+function ircAddIncoming(from,text){
+  const col=gUC(from);
+  const m=text.match(MAGNET_RE);
+  if(m){
+    const mg=$('cw-msgs');trimDom(mg);
+    const dd={magnet:m[0],name:text.replace(m[0],'').trim()||'archivo compartido',size:0,mime:'application/octet-stream'};
+    const{d,inner}=mkBubble(from,col,avatarUrl(from),false);
+    const wrap=mk('div');inner.appendChild(wrap);
+    renderTorrentCard(dd,wrap);
+    mg.appendChild(d);mg.scrollTop=mg.scrollHeight;
+  }else{
+    addMsg(from,text,false,col,avatarUrl(from));
+    checkMention(text);
+  }
+}
+
+function ircHandleLine(line){
+  const{prefix,command,params}=ircParseLine(line);
+  if(command==='PING'){ircSend('PONG :'+(params[0]||''));return;}
+  if(command==='001'){
+    ircSend('JOIN '+ircChannel+(ircChanKey?(' '+ircChanKey):''));
+    $('cw-ch-sb').textContent='Conectado';
+    return;
+  }
+  if(command==='PRIVMSG'){
+    const from=prefix.split('!')[0]||prefix;
+    const target=params[0],text=params[1]||'';
+    if(!target||target.toLowerCase()!==ircChannel.toLowerCase())return;
+    ircAddIncoming(from,text);
+    return;
+  }
+  if(command==='JOIN'){
+    const who=prefix.split('!')[0];
+    if(!who)return;
+    ircUsers.set(who,true);
+    if(who!==ircNick)addSys(who+' se unio al canal');
+    renderPeers();
+    return;
+  }
+  if(command==='PART'||command==='QUIT'){
+    const who=prefix.split('!')[0];
+    if(!who||!ircUsers.has(who))return;
+    ircUsers.delete(who);
+    addSys(who+' salio del canal');
+    renderPeers();
+    return;
+  }
+  if(command==='NICK'){
+    const who=prefix.split('!')[0],nw=params[0];
+    if(who&&ircUsers.has(who)){ircUsers.delete(who);ircUsers.set(nw,true);renderPeers();}
+    return;
+  }
+  if(command==='353'){
+    (params[params.length-1]||'').split(' ').filter(Boolean).forEach(n=>ircUsers.set(n.replace(/^[@+~%&]/,''),true));
+    return;
+  }
+  if(command==='366'){renderPeers();return;}
+  if(command==='433'){addSys('Nick en uso, reconectando con otro...');ircNick+='_';ircSend('NICK '+ircNick);return;}
+}
+
+async function enterIrc(cfg){
+  stopPoll();
+  $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
+  hist=[];domCount=0;ircUsers=new Map();
+  ircMode=true;
+  ircNick=(nick||('Guest'+Math.floor(Math.random()*9999))).replace(/[^a-zA-Z0-9_-]/g,'')||'Guest'+Math.floor(Math.random()*9999);
+  ircChannel=cfg.channel.startsWith('#')?cfg.channel:'#'+cfg.channel;
+  ircChanKey=cfg.key||'';
+
+  $('cw-ch-nm').textContent=(cfg.label||cfg.channel).length>26?(cfg.label||cfg.channel).slice(0,26)+'…':(cfg.label||cfg.channel);
+  $('cw-ch-sb').textContent='Conectando...';
+  $('cw-bm').style.display='none';$('cw-bv').style.display='none';
+  $('cw-lobby').classList.add('hid');$('cw-chat').classList.add('on');
+
+  try{
+    ircSocket=new WebSocket(`wss://${cfg.host}:${cfg.port}/`);
+  }catch(e){addSys('No se pudo conectar: '+e.message);return goBack();}
+
+  let buf='';
+  ircSocket.onopen=()=>{
+    ircSend('NICK '+ircNick);
+    ircSend('USER '+ircNick+' 0 * :'+ircNick);
+  };
+  ircSocket.onmessage=ev=>{
+    buf+=String(ev.data);
+    let idx;
+    while((idx=buf.indexOf('\n'))>=0){
+      let line=buf.slice(0,idx);buf=buf.slice(idx+1);
+      if(line.endsWith('\r'))line=line.slice(0,-1);
+      if(line)ircHandleLine(line);
+    }
+  };
+  ircSocket.onclose=()=>{if(ircMode)addSys('Desconectado del chat IRC');};
+  ircSocket.onerror=()=>{addSys('Error de conexion al chat IRC');};
+
+  wakeAcquire();
+  maybeShowSharePrompt();
+}
+
 function goBack(){
   clearInterval(pingIv);pingIv=null;
   wakeRelease();
-  if(curRoom&&pid)api('DELETE',`/rooms/${curRoom}/leave`,{pid,token:curToken}).catch(()=>{});
-  Object.values(conns).forEach(c=>{try{c.close();}catch(e){}});
+  if(ircMode){
+    if(ircSocket){try{ircSocket.close();}catch(e){}ircSocket=null;}
+    ircMode=false;ircUsers=new Map();ircChannel='';ircChanKey='';
+  }else{
+    if(curRoom&&pid)api('DELETE',`/rooms/${curRoom}/leave`,{pid,token:curToken}).catch(()=>{});
+    Object.values(conns).forEach(c=>{try{c.close();}catch(e){}});
+    if(peer){try{peer.destroy();}catch(e){}peer=null;pid=null;}
+    conns={};pNk={};
+    curRoom=null;curToken=null;
+  }
   if(aStream){aStream.getTracks().forEach(t=>t.stop());aStream=null;}
   if(vStream){vStream.getTracks().forEach(t=>t.stop());vStream=null;}
   Object.values(pAu).forEach(a=>{a.pause();a.srcObject=null;a.remove();});
-  if(peer){try{peer.destroy();}catch(e){}peer=null;pid=null;}
-  conns={};pAu={};pVStr={};pMu={};pNk={};
-  curRoom=null;curToken=null;muted=false;vidOn=false;
+  pAu={};pVStr={};pMu={};muted=false;vidOn=false;
   $('cw-bm').textContent='🎤';$('cw-bv').style.opacity='1';
   closeEmoji();hidePP();
   $('cw-chat').classList.remove('on');$('cw-lobby').classList.remove('hid');
-  startPoll();loadRooms();
+  startPoll();loadRooms();renderIrcList();
 }
 $('cw-bk').onclick=goBack;
 
@@ -543,8 +766,12 @@ function renderPeers(){
     if(!isMe)b.onclick=()=>mentionUser(label);
     wrap.appendChild(b);
   };
-  addBubble(nick,pid||'me',true);
-  Object.keys(conns).forEach(p=>addBubble(pNk[p]||p,p,false));
+  if(ircMode){
+    [...ircUsers.keys()].forEach(u=>addBubble(u,u,u===ircNick));
+  }else{
+    addBubble(nick,pid||'me',true);
+    Object.keys(conns).forEach(p=>addBubble(pNk[p]||p,p,false));
+  }
 }
 
 // ---------- mensajes ----------
@@ -632,6 +859,12 @@ function checkMention(text){
 
 function sendMsg(){
   const v=$('cw-mi').value.trim();if(!v)return;
+  if(ircMode){
+    ircSend('PRIVMSG '+ircChannel+' :'+v);
+    addMsg(ircNick,v,true,gUC(ircNick),avatarUrl(ircNick));
+    $('cw-mi').value='';$('cw-mi').style.height='';
+    return; // IRC no soporta citas estructuradas, solo texto plano linea por linea
+  }
   const col=gUC(pid||'me');
   const q=quoting?{...quoting}:undefined;
   const mid=newMsgId();
@@ -663,6 +896,11 @@ async function sendFileP2P(f){
   try{
     const client=await getTorrentClient();
     client.seed(f,{name:f.name},torrent=>{
+      if(ircMode){
+        ircSend('PRIVMSG '+ircChannel+' :'+f.name+' '+torrent.magnetURI);
+        addOwnFileMsg(f,{name:f.name,size:f.size,mime:f.type||'application/octet-stream'},torrent);
+        return;
+      }
       const id=torrent.infoHash,mid=newMsgId();
       let w=0,h=0;
       const dd={t:'file',id,mid,magnet:torrent.magnetURI,name:f.name,size:f.size,mime:f.type||'application/octet-stream',w,h};
@@ -728,7 +966,8 @@ function downloadTorrent(dd,wrap){
 
 function renderTorrentCard(dd,wrap){
   const card=mk('div','cw-dl');
-  card.innerHTML=`🧲 ${esc(dd.name)} <span style="opacity:.6">(${fSz(dd.size)})</span>`;
+  const sizeTxt=dd.size?` <span style="opacity:.6">(${fSz(dd.size)})</span>`:'';
+  card.innerHTML=`🧲 ${esc(dd.name)}${sizeTxt}`;
   const hint=mk('div','cw-torrent-pr');hint.textContent='Clic para descargar';
   card.onclick=()=>downloadTorrent(dd,wrap);
   wrap.append(card,hint);
@@ -776,7 +1015,7 @@ function shareLabel(){
 }
 
 function maybeShowSharePrompt(){
-  if(!pendingShare||!curRoom)return;
+  if(!pendingShare||!inAnyChat())return;
   $('cw-share-prompt-tx').textContent=`Enviar "${shareLabel()}" compartido a esta sala?`;
   $('cw-share-prompt').style.display='flex';
 }
@@ -797,13 +1036,13 @@ $('cw-share-discard').onclick=clearPendingShare;
 const contentEl=document.getElementById('content');
 function teardown(){
   stopPoll();
-  if(curRoom)goBack();
+  if(inAnyChat())goBack();
   document.removeEventListener('visibilitychange',onVisChange);
   if(torrentClient){try{torrentClient.destroy();}catch(e){}torrentClient=null;}
 }
 if(contentEl)contentEl.addEventListener('contentUnload',teardown,{once:true});
 window.addEventListener('beforeunload',teardown);
 
-loadRooms();startPoll();checkPendingShare();
+loadRooms();startPoll();checkPendingShare();renderIrcList();
 }();
 </script>
