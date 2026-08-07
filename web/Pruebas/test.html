@@ -79,6 +79,8 @@ body.low-perf .cw-flash .cw-msg-b{animation:none}
 .cw-quote{border-left:3px solid var(--accent);padding:3px 8px;margin-bottom:4px;border-radius:6px;background:rgba(255,255,255,.06)}
 .cw-quote-nm{font-size:.62rem;color:var(--accent-2,#38bdf8);font-weight:600}
 .cw-quote-tx{font-size:.72rem;color:rgba(255,255,255,.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cw-msg-b.cw-sticker-msg{background:transparent;padding:0}
+.cw-sticker-msg .cw-stk{background:transparent}
 
 dialog.cw-dlg{max-width:min(360px,calc(100vw - 40px))}
 dialog.cw-dlg[open]{display:flex;flex-direction:column;gap:10px}
@@ -504,6 +506,7 @@ function ircAddIncoming(from,text){
     const wrap=mk('div');inner.appendChild(wrap);
     const sm=name.match(STICKER_RE);
     if(sm){
+      inner.classList.add('cw-sticker-msg');
       const fname=sm[1]+'.'+sm[2];
       loadStickerBlob(fname).then(blob=>{
         const img=mk('img','cw-stk');img.src=URL.createObjectURL(blob);wrap.appendChild(img);
@@ -753,6 +756,16 @@ function setQuote(nickName,txt,mid){
 function clearQuote(){quoting=null;$('cw-qb').classList.remove('on');}
 $('cw-qb-x').onclick=clearQuote;
 
+function renderQuoteBlock(inner,quote){
+  if(!quote)return;
+  const q=mk('div','cw-quote');
+  const qn=mk('div','cw-quote-nm');qn.textContent=quote.nick;
+  const qt=mk('div','cw-quote-tx');qt.textContent=quote.txt;
+  q.append(qn,qt);
+  if(quote.mid){q.style.cursor='pointer';q.onclick=e=>{e.stopPropagation();scrollToMsg(quote.mid);};}
+  inner.appendChild(q);
+}
+
 function scrollToMsg(mid){
   if(!mid)return;
   const el=$('cw-msgs').querySelector(`[data-mid="${CSS.escape(mid)}"]`);
@@ -768,14 +781,7 @@ function addMsg(nm,txt,me,col,av,quote,mid){
   const atBottom=mg.scrollHeight-mg.scrollTop-mg.clientHeight<80;
   trimDom(mg);
   const{d,inner}=mkBubble(nm,col,av,me,mid,txt);
-  if(quote){
-    const q=mk('div','cw-quote');
-    const qn=mk('div','cw-quote-nm');qn.textContent=quote.nick;
-    const qt=mk('div','cw-quote-tx');qt.textContent=quote.txt;
-    q.append(qn,qt);
-    if(quote.mid){q.style.cursor='pointer';q.onclick=e=>{e.stopPropagation();scrollToMsg(quote.mid);};}
-    inner.appendChild(q);
-  }
+  renderQuoteBlock(inner,quote);
   const txtEl=mk('div');txtEl.textContent=txt;inner.appendChild(txtEl);
   mg.appendChild(d);
   if(atBottom||me)mg.scrollTop=mg.scrollHeight;
@@ -920,33 +926,38 @@ async function downloadStickerTorrent(dd,wrap,fname){
 
 async function sendSticker(fname){
   if(!room&&!ircMode)return;
+  const q=quoting?{...quoting}:undefined;
   try{
     const blob=await loadStickerBlob(fname);
     const mime=stickerMimeFor(fname);
-    if(stickerMagnetCache[fname]){sendStickerMsg(fname,stickerMagnetCache[fname],blob.size);return;}
+    if(stickerMagnetCache[fname]){sendStickerMsg(fname,stickerMagnetCache[fname],blob.size,q);return;}
     const file=new File([blob],'sticker_'+fname,{type:mime});
     const client=await getTorrentClient();
     client.seed(file,{name:'sticker_'+fname},torrent=>{
       stickerMagnetCache[fname]=torrent.magnetURI;
-      sendStickerMsg(fname,torrent.magnetURI,blob.size);
+      sendStickerMsg(fname,torrent.magnetURI,blob.size,q);
     });
   }catch(e){addSys('Error al enviar sticker: '+e.message);}
 }
-function sendStickerMsg(fname,magnet,size){
+function sendStickerMsg(fname,magnet,size,quote){
   const mid=newMsgId();
-  const dd={id:fname,mid,magnet,name:'sticker_'+fname,size,mime:stickerMimeFor(fname),w:0,h:0};
+  const dd={id:fname,mid,magnet,name:'sticker_'+fname,size,mime:stickerMimeFor(fname),w:0,h:0,quote};
   if(ircMode){
     ircSend('PRIVMSG '+ircChannel+' :'+dd.name+' '+magnet);
     addOwnStickerMsg(fname,dd);
+    clearQuote();
     return;
   }
   if(!room)return;
   fileAct.send(dd);
   addOwnStickerMsg(fname,dd);
+  clearQuote();
 }
 async function addOwnStickerMsg(fname,dd){
   const mg=$('cw-msgs');trimDom(mg);
   const{d,inner}=mkBubble(nick,gUC(pid||'me'),avatarUrl(pid||'me'),true,dd.mid,'🏷️ sticker');
+  inner.classList.add('cw-sticker-msg');
+  renderQuoteBlock(inner,dd.quote);
   try{
     const blob=await loadStickerBlob(fname);
     const img=mk('img','cw-stk');img.src=URL.createObjectURL(blob);inner.appendChild(img);
@@ -963,19 +974,21 @@ async function getTorrentClient(){
 }
 
 async function sendFileP2P(f){
+  const q=quoting?{...quoting}:undefined;
   try{
     const client=await getTorrentClient();
     client.seed(f,{name:f.name},torrent=>{
       if(ircMode){
         ircSend('PRIVMSG '+ircChannel+' :'+f.name+' '+torrent.magnetURI);
-        addOwnFileMsg(f,{name:f.name,size:f.size,mime:f.type||'application/octet-stream'},torrent);
+        addOwnFileMsg(f,{name:f.name,size:f.size,mime:f.type||'application/octet-stream',quote:q},torrent);
+        clearQuote();
         return;
       }
       if(!room)return;
       const id=torrent.infoHash,mid=newMsgId();
       let w=0,h=0;
-      const dd={id,mid,magnet:torrent.magnetURI,name:f.name,size:f.size,mime:f.type||'application/octet-stream',w,h};
-      const afterDims=()=>{fileAct.send(dd);addOwnFileMsg(f,dd,torrent);};
+      const dd={id,mid,magnet:torrent.magnetURI,name:f.name,size:f.size,mime:f.type||'application/octet-stream',w,h,quote:q};
+      const afterDims=()=>{fileAct.send(dd);addOwnFileMsg(f,dd,torrent);clearQuote();};
       if(/^image\//.test(f.type)){
         const u=URL.createObjectURL(f),i=new Image();
         i.onload=()=>{dd.w=i.naturalWidth;dd.h=i.naturalHeight;URL.revokeObjectURL(u);afterDims();};
@@ -996,6 +1009,7 @@ const isStk=fm=>/^image\/(avif|webp|gif|png|jpeg)$/.test(fm.mime)&&fm.size<=IM_S
 function addOwnFileMsg(file,dd,torrent){
   const mg=$('cw-msgs');trimDom(mg);
   const{d,inner}=mkBubble(nick,gUC(pid||'me'),avatarUrl(pid||'me'),true,dd.mid,'📎 '+dd.name);
+  renderQuoteBlock(inner,dd.quote);
   const wrap=mk('div');inner.appendChild(wrap);
   const url=URL.createObjectURL(file);
   if(isStk(dd)){const img=mk('img','cw-stk');img.src=url;wrap.appendChild(img);}
@@ -1048,9 +1062,11 @@ async function addFileMsg(from,dd){
   const mg=$('cw-msgs');trimDom(mg);
   const nm=pNk[from]||from,col=gUC(from);
   const{d,inner}=mkBubble(nm,col,avatarUrl(from),false,dd.mid,'📎 '+dd.name);
+  const sm=dd.name&&dd.name.match(STICKER_RE);
+  if(sm)inner.classList.add('cw-sticker-msg');
+  renderQuoteBlock(inner,dd.quote);
   const wrap=mk('div');inner.appendChild(wrap);
   mg.appendChild(d);mg.scrollTop=mg.scrollHeight;
-  const sm=dd.name&&dd.name.match(STICKER_RE);
   if(sm){
     const fname=sm[1]+'.'+sm[2];
     try{
