@@ -1889,9 +1889,9 @@ async function initNet(){
     tsAction=room.makeAction('ts');
     hitAction=room.makeAction('hit');
     spawnAction=room.makeAction('spawn');
-    tsAction.onMessage((d,peerId)=>applyRemoteState(peerId,d));
-    hitAction.onMessage((d,peerId)=>applyRemoteHit(peerId,d));
-    spawnAction.onMessage((d,peerId)=>{
+    tsAction.onMessage=(d,peerId)=>applyRemoteState(peerId,d);
+    hitAction.onMessage=(d,peerId)=>applyRemoteHit(peerId,d);
+    spawnAction.onMessage=(d,peerId)=>{
       if (isHost) return;
       if (d.t==='obs') applyObstacleList(d.list);
       else if (d.t==='oa') applyObsAdd(d.o);
@@ -1903,14 +1903,14 @@ async function initNet(){
           p.visible=s.visible; p.x=s.x; p.y=s.y; p.timer=s.timer; if(key==='power') p.kind=s.kind;
         }
       }
-    });
+    };
     room.onPeerJoin=peerId=>{
       addRemoteTank(peerId);
       isHost=computeHost();
       if (isHost) {
         try{
-          spawnAction.send({t:'obs',list:obstacles.map(serializeObstacle)},peerId);
-          spawnAction.send({t:'pkall',missile:pkSnap(PU.missile),shield:pkSnap(PU.shield),power:pkSnap(PU.power)},peerId);
+          spawnAction.send({t:'obs',list:obstacles.map(serializeObstacle)},{target:peerId});
+          spawnAction.send({t:'pkall',missile:pkSnap(PU.missile),shield:pkSnap(PU.shield),power:pkSnap(PU.power)},{target:peerId});
         }catch(e){}
       }
       updateNetHUD();
