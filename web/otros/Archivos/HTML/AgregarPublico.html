@@ -125,8 +125,7 @@ background:var(--g1);display:flex;align-items:center;justify-content:center;font
         <h2>Tipo de Lugar</h2>
         <div class="fg"><select id="pb-cat" onchange="PB_catChange()">
           <option value="minecraft">Servidor Minecraft</option>
-          <option value="lavanderia">Lavanderia</option>
-          <option value="reciclaje">Punto de Reciclaje</option>
+          <option value="localizador">Localizador (baño, agua, lavanderia, reciclaje...)</option>
         </select></div>
         <div class="pb-img-row">
           <div class="pb-img-thumb" id="pb-img-thumb" onclick="document.getElementById('pb-img').click()">
@@ -153,36 +152,28 @@ background:var(--g1);display:flex;align-items:center;justify-content:center;font
           <option value="B+J">Ambas</option>
         </select></div>
       </div>
-      <div class="pb-card" id="pb-f-lavanderia" style="display:none">
-        <h2>Datos de la Lavanderia</h2>
-        <div class="fg"><label>Nombre</label><input id="pb-lv-nm" placeholder="Lavanderia Central" maxlength="60"></div>
-        <div class="fg"><label>Horario</label><input id="pb-lv-hr" placeholder="Lun - Vie: 8:00 - 18:00" maxlength="60"></div>
-        <div class="fg"><label>Ubicacion</label><button type="button" class="pb-btn sec" id="pb-gps-btn-lv" style="padding:10px" onclick="PB_pedirGPS('pb-gps-hint-lv')">Usar mi ubicacion</button></div>
-        <div class="fg-hint" id="pb-gps-hint-lv"></div>
-        <div class="fg"><label>Canal de contacto</label>
-          <select id="pb-lv-ch">
-            <option value="">Ninguno</option>
-            <option value="WA">WhatsApp</option>
-            <option value="TG">Telegram</option>
-            <option value="WA.TG">WhatsApp y Telegram</option>
-          </select>
-        </div>
-      </div>
-      <div class="pb-card" id="pb-f-reciclaje" style="display:none">
-        <h2>Datos del Punto de Reciclaje</h2>
-        <div class="fg"><label>Nombre</label><input id="pb-rc-nm" placeholder="Punto Verde Centro" maxlength="60"></div>
-        <div class="fg"><label>Material que reciben</label><select id="pb-rc-mat">
+      <div class="pb-card" id="pb-f-localizador" style="display:none">
+        <h2>Datos del Lugar</h2>
+        <div class="fg"><label>Tipo de lugar</label><select id="pb-lz-tipo" onchange="PB_lzTipoChange()">
+          <option value="banos">Baño</option>
+          <option value="agua">Agua</option>
+          <option value="carga-electrica">Carga Electrica</option>
+          <option value="lavanderia">Lavanderia</option>
+          <option value="reciclaje">Punto de Reciclaje</option>
+        </select></div>
+        <div class="fg" id="pb-lz-mat-wrap" style="display:none"><label>Material que reciben</label><select id="pb-lz-mat">
           <option value="electronico">Electronico</option>
           <option value="plastico">Plastico</option>
           <option value="papel">Papel</option>
           <option value="vidrio">Vidrio</option>
           <option value="metal">Metal</option>
         </select></div>
-        <div class="fg"><label>Horario</label><input id="pb-rc-hr" placeholder="Lun - Vie: 8:00 - 18:00" maxlength="60"></div>
-        <div class="fg"><label>Ubicacion</label><button type="button" class="pb-btn sec" id="pb-gps-btn-rc" style="padding:10px" onclick="PB_pedirGPS('pb-gps-hint-rc')">Usar mi ubicacion</button></div>
-        <div class="fg-hint" id="pb-gps-hint-rc"></div>
+        <div class="fg"><label>Nombre</label><input id="pb-lz-nm" placeholder="Nombre del lugar" maxlength="60"></div>
+        <div class="fg"><label>Horario</label><input id="pb-lz-hr" placeholder="Lun - Vie: 8:00 - 18:00" maxlength="60"></div>
+        <div class="fg"><label>Ubicacion</label><button type="button" class="pb-btn sec" id="pb-gps-btn-lz" style="padding:10px" onclick="PB_pedirGPS('pb-gps-hint-lz')">Usar mi ubicacion</button></div>
+        <div class="fg-hint" id="pb-gps-hint-lz"></div>
         <div class="fg"><label>Canal de contacto</label>
-          <select id="pb-rc-ch">
+          <select id="pb-lz-ch">
             <option value="">Ninguno</option>
             <option value="WA">WhatsApp</option>
             <option value="TG">Telegram</option>
@@ -228,8 +219,15 @@ const PB_PUBLICO_BASE=(()=>{
 })();
 const PB_MAX_SIZE=200*1024;
 const PB_PW_SYMBOLS=/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~`]/;
-const PB_CATS=['minecraft','lavanderia','reciclaje'];
-const PB_CAT_LABEL={minecraft:'Servidor Minecraft',lavanderia:'Lavanderia',reciclaje:'Punto de Reciclaje'};
+const PB_CATS=['minecraft','localizador'];
+const PB_CAT_LABEL={minecraft:'Servidor Minecraft',localizador:'Lugar'};
+const PB_TIPO_LABEL={banos:'Baño',agua:'Agua','carga-electrica':'Carga Electrica',lavanderia:'Lavanderia',reciclaje:'Punto de Reciclaje'};
+function PB_lzLabel(cat,NB){
+  if(cat!=='localizador')return PB_CAT_LABEL[cat]||cat;
+  const tipo=(NB||'').split(';')[1]||'';
+  const base=tipo.split('-')[0];
+  return PB_TIPO_LABEL[base]||base||'Lugar';
+}
 
 function PB_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
 function PB_sck(k,v){const sec=location.protocol==="https:"?";Secure":"";document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=7776000;SameSite=Strict${sec}`;}
@@ -290,6 +288,12 @@ window.PB_mainTab=function(t){
 window.PB_catChange=function(){
   const c=document.getElementById('pb-cat').value;
   PB_CATS.forEach(cat=>{document.getElementById('pb-f-'+cat).style.display=cat===c?'':'none';});
+  if(c==='localizador')PB_lzTipoChange();
+};
+
+window.PB_lzTipoChange=function(){
+  const t=document.getElementById('pb-lz-tipo').value;
+  document.getElementById('pb-lz-mat-wrap').style.display=t==='reciclaje'?'':'none';
 };
 
 let _PB_gpsTarget=null;
@@ -420,20 +424,14 @@ function PB_buildNB(cat){
     if(!nm||!host||!port)return null;
     return{NB:`${nm};${desc};${host};${port};${tipo}`,CH:'',CT:''};
   }
-  if(cat==='lavanderia'){
-    const nm=document.getElementById('pb-lv-nm').value.trim();
-    const hr=document.getElementById('pb-lv-hr').value.trim();
-    const ch=document.getElementById('pb-lv-ch').value;
+  if(cat==='localizador'){
+    const nm=document.getElementById('pb-lz-nm').value.trim();
+    const tipo=document.getElementById('pb-lz-tipo').value;
+    const hr=document.getElementById('pb-lz-hr').value.trim();
+    const ch=document.getElementById('pb-lz-ch').value;
     if(!nm)return null;
-    return{NB:`${nm};${hr}`,CH:ch,CT:_PB_gpsCT||''};
-  }
-  if(cat==='reciclaje'){
-    const nm=document.getElementById('pb-rc-nm').value.trim();
-    const mat=document.getElementById('pb-rc-mat').value;
-    const hr=document.getElementById('pb-rc-hr').value.trim();
-    const ch=document.getElementById('pb-rc-ch').value;
-    if(!nm)return null;
-    return{NB:`${nm};${mat};${hr}`,CH:ch,CT:_PB_gpsCT||''};
+    const tipoTag=tipo==='reciclaje'?`reciclaje-${document.getElementById('pb-lz-mat').value}`:tipo;
+    return{NB:`${nm};${tipoTag};${hr}`,CH:ch,CT:_PB_gpsCT||''};
   }
   return null;
 }
@@ -468,9 +466,8 @@ function PB_flagField(elId){
 }
 
 function PB_resetForm(){
-  ['pb-mc-nm','pb-mc-desc','pb-mc-host','pb-mc-port','pb-lv-nm','pb-lv-hr','pb-rc-nm','pb-rc-hr'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('pb-gps-hint-lv').textContent='';
-  document.getElementById('pb-gps-hint-rc').textContent='';
+  ['pb-mc-nm','pb-mc-desc','pb-mc-host','pb-mc-port','pb-lz-nm','pb-lz-hr'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('pb-gps-hint-lz').textContent='';
   document.getElementById('pb-imgnm').textContent='Toca para subir';
   _PB_gpsCT=null;
   const prev=document.getElementById('pb-imgprev');
@@ -524,7 +521,7 @@ window.PB_loadMisLugares=async function(){
     const nombre=(e.NB||'').split(';')[0]||e.ID;
     div.innerHTML=`<div class="pb-sol-info">
       <div class="nm">${PB_esc(nombre)} <span class="pb-badge apr">Publicado</span></div>
-      <div class="dt">${PB_esc(PB_CAT_LABEL[e.categoria]||e.categoria)}</div>
+      <div class="dt">${PB_esc(PB_lzLabel(e.categoria,e.NB))}</div>
       <div class="pb-sol-acts">
         <button onclick="PB_solicitarBorrado('${PB_esc(e.ID)}')">Solicitar Borrado</button>
       </div>
@@ -554,7 +551,7 @@ window.PB_loadSolicitudes=async function(){
     const nombre=(e.NB||'').split(';')[0]||e.ID;
     div.innerHTML=`<div class="pb-sol-info">
       <div class="nm">${PB_esc(nombre)} ${badges[e.estado]||''}</div>
-      <div class="dt">${PB_esc(PB_CAT_LABEL[e.categoria]||e.categoria)}</div>
+      <div class="dt">${PB_esc(PB_lzLabel(e.categoria,e.NB))}</div>
       ${e.estado==='rechazado'&&e.motivo?`<div class="pb-sol-neg">${PB_esc(e.motivo)}</div>`:''}
     </div>`;
     lst.appendChild(div);
