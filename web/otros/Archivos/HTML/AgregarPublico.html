@@ -1,0 +1,569 @@
+<style>
+:root{
+--g1:rgba(255,255,255,0.06);
+--g2:rgba(255,255,255,0.10);
+--gb:rgba(255,255,255,0.13);
+--gbb:rgba(255,255,255,0.18);
+--txt:rgba(255,255,255,0.92);
+--txt2:rgba(255,255,255,0.45);
+--r:var(--r-md);
+--ri:var(--r-sm);
+}
+#pb-wrap{color:var(--txt);font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;padding:0 0 90px;-webkit-font-smoothing:antialiased}
+#pb-wrap *{box-sizing:border-box}
+.pb-top{padding:22px 18px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--gb)}
+.pb-top h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.3px}
+.pb-top span{font-size:12px;color:var(--txt2);margin-top:2px;display:block}
+.pb-logo{width:42px;height:42px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;box-shadow:0 4px 14px rgba(var(--acc-rgb),.28)}
+.pb-sect{max-width:600px;margin:0 auto;padding:18px 14px 0}
+.pb-card{background:var(--g1);border:1px solid var(--gb);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.pb-card h2{margin:0 0 14px;font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:5px;letter-spacing:.03em}
+.fg input,.fg select,.fg textarea{
+width:100%;background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);color:var(--txt);
+padding:10px 13px;font-size:15px;outline:none;transition:border .15s,background .15s;
+-webkit-appearance:none;font-family:inherit;resize:vertical;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:rgba(var(--acc-rgb),.6);background:var(--g2)}
+.fg select option{background:#1a1a2e;color:#fff}
+.fg-hint{font-size:11px;color:var(--txt2);margin-top:4px}
+.fg-hint.ok{color:var(--ok)}
+.fg-hint.err{color:var(--err)}
+.pb-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pb-btn{
+display:inline-flex;align-items:center;justify-content:center;gap:7px;
+padding:12px 20px;border:none;border-radius:var(--ri);font-size:15px;font-weight:600;cursor:pointer;
+transition:opacity .15s,transform .1s,box-shadow .15s;width:100%;font-family:inherit;letter-spacing:-.1px;
+}
+.pb-btn:active{transform:scale(.97)}
+.pb-btn.pri{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 4px 18px rgba(var(--acc-rgb),.3)}
+.pb-btn.pri:hover{box-shadow:0 6px 22px rgba(var(--acc-rgb),.45)}
+.pb-btn.sec{background:transparent;color:var(--txt);border:1px solid var(--gbb)}
+.pb-btn.sec:hover{background:var(--g2)}
+.pb-btn:disabled{opacity:.4;cursor:not-allowed}
+.pb-msg{
+position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(20,20,35,0.85);
+border:1px solid var(--gb);border-radius:50px;padding:10px 22px;font-size:13px;font-weight:500;color:var(--txt);
+z-index:9999;pointer-events:none;white-space:nowrap;max-width:88vw;text-overflow:ellipsis;overflow:hidden;
+backdrop-filter:saturate(1.4);box-shadow:0 8px 32px rgba(0,0,0,.35);
+}
+.pb-msg.ok{border-color:rgba(52,211,153,.4);color:var(--ok)}
+.pb-msg.err{border-color:rgba(248,113,113,.4);color:var(--err)}
+.pb-msg.warn{border-color:rgba(251,191,36,.4);color:var(--warn)}
+.pb-tabs{display:flex;gap:2px;background:var(--g1);border:1px solid var(--gb);border-radius:50px;padding:3px;margin-bottom:18px}
+.pb-tab{flex:1;padding:8px;border:none;background:transparent;color:var(--txt2);border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.pb-tab.act{background:var(--g2);color:var(--txt);border:1px solid var(--gb)}
+.pb-img-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+.pb-img-thumb{
+width:72px;height:72px;flex-shrink:0;border-radius:var(--ri);border:1.5px dashed var(--gb);overflow:hidden;cursor:pointer;
+background:var(--g1);display:flex;align-items:center;justify-content:center;font-size:24px;transition:border-color .15s,background .15s;position:relative;
+}
+.pb-img-thumb:hover{border-color:var(--acc);background:var(--g2)}
+.pb-img-thumb img{width:100%;height:100%;object-fit:cover;display:none;border-radius:calc(var(--ri) - 2px)}
+.pb-img-fields{flex:1;display:flex;flex-direction:column;gap:8px}
+.pb-img-fields .fg{margin:0}
+.pb-img-size{font-size:11px;color:var(--txt2);padding:0 2px}
+.pb-sol-item{background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);padding:13px;margin-bottom:10px;display:flex;gap:11px;align-items:flex-start}
+.pb-sol-info{flex:1;min-width:0}
+.pb-sol-info .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pb-sol-info .dt{font-size:11px;color:var(--txt2);margin-top:3px}
+.pb-sol-acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.pb-sol-acts button{padding:5px 12px;border-radius:50px;border:1px solid var(--gb);background:var(--g1);color:var(--txt);font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s}
+.pb-sol-acts button:hover{background:var(--g2)}
+.pb-badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.04em}
+.pb-badge.pend{background:rgba(var(--acc-rgb),.15);color:#93c5fd;border:1px solid rgba(var(--acc-rgb),.25)}
+.pb-badge.apr{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)}
+.pb-badge.rej{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+.pb-sol-neg{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:7px 10px;font-size:12px;color:#fca5a5;margin-top:6px}
+@keyframes pb-shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.pb-shake{animation:pb-shake .4s ease 3;border-color:var(--err)!important}
+.pb-auth-note{font-size:12px;color:var(--txt2);text-align:center;margin-top:10px}
+</style>
+
+<div id="pb-wrap">
+<div class="pb-top">
+  <div class="pb-logo">Lugar</div>
+  <div><h1>Agregar Lugar</h1><span>Envia tu solicitud para publicar en el mapa/lista</span></div>
+</div>
+<div class="pb-sect">
+  <div id="pb-auth">
+    <div class="pb-tabs">
+      <button class="pb-tab act" id="pb-tlogin" onclick="PB_showTab('login')">Iniciar Sesion</button>
+      <button class="pb-tab" id="pb-treg" onclick="PB_showTab('reg')">Registrarse</button>
+    </div>
+    <form id="pb-login-box" class="pb-card">
+      <h2>Acceso</h2>
+      <div class="fg"><label>Numero de telefono</label><input id="pb-lu" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
+      <div class="fg"><label>Contrasena</label><input id="pb-lp" type="password" placeholder="••••••" autocomplete="current-password"></div>
+      <button type="submit" class="pb-btn pri" onclick="event.preventDefault();PB_login()">Entrar</button>
+      <p class="pb-auth-note">Sin cuenta? <a onclick="PB_showTab('reg')">Registrate aqui</a></p>
+    </form>
+    <form id="pb-reg-box" class="pb-card" style="display:none">
+      <h2>Nuevo Usuario</h2>
+      <div class="fg"><label>Numero de telefono</label><input id="pb-ru" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
+      <div class="fg">
+        <label>Contrasena</label>
+        <input id="pb-rp" type="password" placeholder="minimo 10 chars, 1 simbolo" autocomplete="new-password" oninput="PB_checkPwStrength()">
+        <div class="fg-hint" id="pb-rp-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
+      </div>
+      <div class="fg"><label>Confirmar</label><input id="pb-rp2" type="password" placeholder="••••••" autocomplete="new-password"></div>
+      <button type="submit" class="pb-btn pri" onclick="event.preventDefault();PB_registro()">Crear Cuenta</button>
+      <p class="pb-auth-note">Ya tenes cuenta? <a onclick="PB_showTab('login')">Inicia sesion</a></p>
+    </form>
+    <p class="pb-auth-note">Es la misma cuenta que usas para agregar productos</p>
+  </div>
+  <div id="pb-main" style="display:none">
+    <div class="pb-tabs">
+      <button class="pb-tab act" id="pb-tnuevo" onclick="PB_mainTab('nuevo')">Nueva Solicitud</button>
+      <button class="pb-tab" id="pb-tmis" onclick="PB_mainTab('mis')">Mis Lugares</button>
+      <button class="pb-tab" id="pb-tpend" onclick="PB_mainTab('pend')">Mis Solicitudes</button>
+      <button class="pb-tab" id="pb-tcuenta" onclick="PB_mainTab('cuenta')">Cuenta</button>
+    </div>
+    <div id="pb-tab-nuevo">
+      <div class="pb-card">
+        <h2>Tipo de Lugar</h2>
+        <div class="fg"><select id="pb-cat" onchange="PB_catChange()">
+          <option value="minecraft">Servidor Minecraft</option>
+          <option value="lavanderia">Lavanderia</option>
+          <option value="reciclaje">Punto de Reciclaje</option>
+        </select></div>
+        <div class="pb-img-row">
+          <div class="pb-img-thumb" id="pb-img-thumb" onclick="document.getElementById('pb-img').click()">
+            <span id="pb-img-icon">+</span>
+            <img id="pb-imgprev" alt="">
+          </div>
+          <div class="pb-img-fields">
+            <div class="fg" style="margin:0"><label>Imagen / logo</label><div class="pb-img-size" id="pb-imgnm">Toca para subir</div></div>
+          </div>
+          <input type="file" id="pb-img" accept="image/avif,image/webp,image/*" style="display:none">
+        </div>
+      </div>
+      <div class="pb-card" id="pb-f-minecraft">
+        <h2>Datos del Servidor</h2>
+        <div class="fg"><label>Nombre</label><input id="pb-mc-nm" placeholder="Casita Server" maxlength="40"></div>
+        <div class="fg"><label>Descripcion corta</label><textarea id="pb-mc-desc" rows="2" maxlength="90" placeholder="Bedrock Survival casi vanilla..."></textarea></div>
+        <div class="pb-row">
+          <div class="fg"><label>Direccion del servidor</label><input id="pb-mc-host" placeholder="mc.ejemplo.com"></div>
+          <div class="fg"><label>Puerto</label><input id="pb-mc-port" type="number" placeholder="19132"></div>
+        </div>
+        <div class="fg"><label>Version</label><select id="pb-mc-tipo">
+          <option value="B">Bedrock</option>
+          <option value="J">Java</option>
+          <option value="B+J">Ambas</option>
+        </select></div>
+      </div>
+      <div class="pb-card" id="pb-f-lavanderia" style="display:none">
+        <h2>Datos de la Lavanderia</h2>
+        <div class="fg"><label>Nombre</label><input id="pb-lv-nm" placeholder="Lavanderia Central" maxlength="60"></div>
+        <div class="fg"><label>Horario</label><input id="pb-lv-hr" placeholder="Lun - Vie: 8:00 - 18:00" maxlength="60"></div>
+        <div class="fg"><label>Ubicacion</label><button type="button" class="pb-btn sec" id="pb-gps-btn-lv" style="padding:10px" onclick="PB_pedirGPS('pb-gps-hint-lv')">Usar mi ubicacion</button></div>
+        <div class="fg-hint" id="pb-gps-hint-lv"></div>
+        <div class="fg"><label>Canal de contacto</label>
+          <select id="pb-lv-ch">
+            <option value="">Ninguno</option>
+            <option value="WA">WhatsApp</option>
+            <option value="TG">Telegram</option>
+            <option value="WA.TG">WhatsApp y Telegram</option>
+          </select>
+        </div>
+      </div>
+      <div class="pb-card" id="pb-f-reciclaje" style="display:none">
+        <h2>Datos del Punto de Reciclaje</h2>
+        <div class="fg"><label>Nombre</label><input id="pb-rc-nm" placeholder="Punto Verde Centro" maxlength="60"></div>
+        <div class="fg"><label>Material que reciben</label><select id="pb-rc-mat">
+          <option value="electronico">Electronico</option>
+          <option value="plastico">Plastico</option>
+          <option value="papel">Papel</option>
+          <option value="vidrio">Vidrio</option>
+          <option value="metal">Metal</option>
+        </select></div>
+        <div class="fg"><label>Horario</label><input id="pb-rc-hr" placeholder="Lun - Vie: 8:00 - 18:00" maxlength="60"></div>
+        <div class="fg"><label>Ubicacion</label><button type="button" class="pb-btn sec" id="pb-gps-btn-rc" style="padding:10px" onclick="PB_pedirGPS('pb-gps-hint-rc')">Usar mi ubicacion</button></div>
+        <div class="fg-hint" id="pb-gps-hint-rc"></div>
+        <div class="fg"><label>Canal de contacto</label>
+          <select id="pb-rc-ch">
+            <option value="">Ninguno</option>
+            <option value="WA">WhatsApp</option>
+            <option value="TG">Telegram</option>
+            <option value="WA.TG">WhatsApp y Telegram</option>
+          </select>
+        </div>
+      </div>
+      <button class="pb-btn pri" id="pb-submit" onclick="PB_enviar()">Enviar Solicitud</button>
+    </div>
+    <div id="pb-tab-mis" style="display:none">
+      <div id="pb-mis-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
+    </div>
+    <div id="pb-tab-pend" style="display:none">
+      <div id="pb-sol-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
+    </div>
+    <div id="pb-tab-cuenta" style="display:none">
+      <form class="pb-card">
+        <h2>Cambiar Contrasena</h2>
+        <div class="fg"><label>Contrasena Actual</label><input id="pb-cpa" type="password" placeholder="••••••" autocomplete="current-password"></div>
+        <div class="fg">
+          <label>Nueva Contrasena</label>
+          <input id="pb-cpn" type="password" placeholder="minimo 10 chars, 1 simbolo" autocomplete="new-password" oninput="PB_checkPwStrength('pb-cpn','pb-cpn-hint')">
+          <div class="fg-hint" id="pb-cpn-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
+        </div>
+        <div class="fg"><label>Confirmar Nueva</label><input id="pb-cpn2" type="password" placeholder="••••••" autocomplete="new-password"></div>
+        <button type="submit" class="pb-btn pri" onclick="event.preventDefault();PB_cambiarPass()">Guardar Nueva Contrasena</button>
+        <button type="button" class="pb-btn sec" style="margin-top:8px" onclick="PB_logout()">Cerrar Sesion</button>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+const PB_URL=(()=>{
+  const base=document.querySelector('meta[name=api-base]')?.content||'';
+  return base||'/api/productos';
+})();
+const PB_PUBLICO_BASE=(()=>{
+  const base=document.querySelector('meta[name=publico-base]')?.content||'';
+  return base||'/web/otros/Archivos/Dinamico/Publico';
+})();
+const PB_MAX_SIZE=200*1024;
+const PB_PW_SYMBOLS=/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~`]/;
+const PB_CATS=['minecraft','lavanderia','reciclaje'];
+const PB_CAT_LABEL={minecraft:'Servidor Minecraft',lavanderia:'Lavanderia',reciclaje:'Punto de Reciclaje'};
+
+function PB_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
+function PB_sck(k,v){const sec=location.protocol==="https:"?";Secure":"";document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=7776000;SameSite=Strict${sec}`;}
+function PB_dck(k){document.cookie=`${k}=;path=/;max-age=0`;}
+
+let _PB_tel=PB_ck("ap_tel"),_PB_tk=PB_ck("ap_tk");
+let _PB_msg=null,_PB_gpsCT=null;
+
+function PB_esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function PB_toast(t,tp='ok',d=3000){
+  if(_PB_msg)_PB_msg.remove();
+  _PB_msg=document.createElement('div');
+  _PB_msg.className='pb-msg '+tp;
+  _PB_msg.textContent=t;
+  document.body.appendChild(_PB_msg);
+  setTimeout(()=>{if(_PB_msg){_PB_msg.remove();_PB_msg=null;}},d);
+}
+
+async function PB_fetch(action,opts={}){
+  const isGet=!opts.method||opts.method==="GET";
+  const url=isGet?`${PB_URL}?action=${action}`:PB_URL;
+  if(!isGet&&opts.body){const _b=JSON.parse(opts.body);_b.action=action;if(_PB_tk&&!_b.token)_b.token=_PB_tk;opts.body=JSON.stringify(_b);}
+  const res=await fetch(url,{headers:{"Content-Type":"application/json"},...opts});
+  const data=await res.json().catch(()=>({}));
+  if(res.status===401){PB_dck('ap_tel');PB_dck('ap_tk');_PB_tel=null;_PB_tk=null;}
+  return{ok:res.ok,status:res.status,data};
+}
+
+window.PB_showTab=function(t){
+  document.getElementById('pb-login-box').style.display=t==='login'?'block':'none';
+  document.getElementById('pb-reg-box').style.display=t==='reg'?'block':'none';
+  document.getElementById('pb-tlogin').classList.toggle('act',t==='login');
+  document.getElementById('pb-treg').classList.toggle('act',t==='reg');
+};
+
+window.PB_checkPwStrength=function(inputId='pb-rp',hintId='pb-rp-hint'){
+  const v=document.getElementById(inputId).value;
+  const hint=document.getElementById(hintId);
+  const okLen=v.length>=10,okSym=PB_PW_SYMBOLS.test(v);
+  if(!v){hint.className='fg-hint';hint.textContent='Minimo 10 caracteres, incluyendo al menos 1 simbolo';return;}
+  if(okLen&&okSym){hint.className='fg-hint ok';hint.textContent='Contrasena segura';}
+  else{hint.className='fg-hint err';hint.textContent=`Falta: ${!okLen?'largo (10+)':''}${!okLen&&!okSym?', ':''}${!okSym?'un simbolo':''}`;}
+};
+
+window.PB_mainTab=function(t){
+  document.getElementById('pb-tab-nuevo').style.display=t==='nuevo'?'block':'none';
+  document.getElementById('pb-tab-mis').style.display=t==='mis'?'block':'none';
+  document.getElementById('pb-tab-pend').style.display=t==='pend'?'block':'none';
+  document.getElementById('pb-tab-cuenta').style.display=t==='cuenta'?'block':'none';
+  document.getElementById('pb-tnuevo').classList.toggle('act',t==='nuevo');
+  document.getElementById('pb-tmis').classList.toggle('act',t==='mis');
+  document.getElementById('pb-tpend').classList.toggle('act',t==='pend');
+  document.getElementById('pb-tcuenta').classList.toggle('act',t==='cuenta');
+  if(t==='mis')PB_loadMisLugares();
+  if(t==='pend')PB_loadSolicitudes();
+};
+
+window.PB_catChange=function(){
+  const c=document.getElementById('pb-cat').value;
+  PB_CATS.forEach(cat=>{document.getElementById('pb-f-'+cat).style.display=cat===c?'':'none';});
+};
+
+let _PB_gpsTarget=null;
+window.PB_pedirGPS=function(hintId){
+  if(!navigator.geolocation)return PB_toast('Tu navegador no soporta ubicacion','err');
+  _PB_gpsTarget=hintId;
+  const hint=document.getElementById(hintId);
+  hint.className='fg-hint';hint.textContent='Obteniendo...';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude,lon=pos.coords.longitude;
+    const ns=lat<0?'S':'N',we=lon<0?'W':'E';
+    _PB_gpsCT=`${ns}${Math.abs(lat).toFixed(4)}${we}${Math.abs(lon).toFixed(4)}`;
+    hint.className='fg-hint ok';hint.textContent='Ubicacion obtenida';
+  },err=>{
+    hint.className='fg-hint err';hint.textContent='No se pudo obtener ubicacion';
+  });
+};
+
+async function PB_processImg(file){
+  const isAnimatable=file.type==='image/avif'||file.type==='image/webp';
+  if(isAnimatable&&file.size<=PB_MAX_SIZE){
+    const ext=file.type==='image/avif'?'.avif':'.webp';
+    return{blob:file,ext,size:file.size};
+  }
+  if(isAnimatable&&file.size>PB_MAX_SIZE){
+    const ok=confirm(`Supera ${PB_MAX_SIZE/1024}KB, se comprimira y perdera la animacion. Continuar?`);
+    if(!ok)return{error:'Cancelado'};
+  }
+  const url=URL.createObjectURL(file);
+  const img=new Image();
+  await new Promise(r=>{img.onload=r;img.src=url;});
+  URL.revokeObjectURL(url);
+  const cv=document.createElement('canvas');
+  cv.width=256;cv.height=256;
+  cv.getContext('2d').drawImage(img,0,0,256,256);
+  let q=0.85,blob=null,tries=0;
+  do{blob=await new Promise(r=>cv.toBlob(r,'image/webp',q));q=Math.max(0.05,q-0.1);tries++;}
+  while(blob&&blob.size>PB_MAX_SIZE&&tries<12);
+  return{blob,ext:'.webp',size:blob.size};
+}
+
+function PB_setThumb(blob){
+  const thumb=document.getElementById('pb-imgprev');
+  const icon=document.getElementById('pb-img-icon');
+  thumb.src=URL.createObjectURL(blob);
+  thumb.style.display='block';
+  icon.style.display='none';
+}
+
+document.getElementById('pb-img').onchange=async function(e){
+  const f=e.target.files[0];if(!f)return;
+  const result=await PB_processImg(f);
+  if(result.error)return PB_toast(result.error,'err');
+  PB_setThumb(result.blob);
+  document.getElementById('pb-imgnm').textContent=`${(result.size/1024).toFixed(0)} KB`;
+  document.getElementById('pb-img')._blob=result.blob;
+  document.getElementById('pb-img')._ext=result.ext;
+  PB_toast('Imagen cargada','ok');
+};
+
+async function PB_blobToB64(blob){
+  return new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(',')[1]);fr.readAsDataURL(blob);});
+}
+
+function PB_showMain(){
+  document.getElementById('pb-auth').style.display='none';
+  document.getElementById('pb-main').style.display='block';
+  PB_catChange();
+}
+
+window.PB_login=async function(){
+  const tel=document.getElementById('pb-lu').value.replace(/\D/g,'');
+  const p=document.getElementById('pb-lp').value;
+  if(!tel||!p)return PB_toast('Completa los campos','warn');
+  const{ok,data}=await PB_fetch('login',{method:'POST',body:JSON.stringify({telefono:tel,password:p})});
+  if(!ok)return PB_toast(data.error||'Error','err');
+  _PB_tel=tel;_PB_tk=data.token;
+  PB_sck('ap_tel',tel);PB_sck('ap_tk',_PB_tk);
+  PB_toast('Bienvenido');
+  PB_showMain();
+};
+
+window.PB_registro=async function(){
+  const tel=document.getElementById('pb-ru').value.replace(/\D/g,'');
+  const p=document.getElementById('pb-rp').value;
+  const p2=document.getElementById('pb-rp2').value;
+  if(!tel||!p)return PB_toast('Completa los campos','warn');
+  if(p!==p2)return PB_toast('Las contrasenas no coinciden','warn');
+  if(p.length<10||!PB_PW_SYMBOLS.test(p))return PB_toast('La contrasena necesita 10+ chars y 1 simbolo','warn');
+  const{ok,data}=await PB_fetch('registro',{method:'POST',body:JSON.stringify({telefono:tel,password:p})});
+  if(!ok)return PB_toast(data.error||'Error','err');
+  PB_toast('Cuenta creada! Iniciando sesion...');
+  document.getElementById('pb-lu').value=tel;
+  document.getElementById('pb-lp').value=p;
+  await PB_login();
+};
+
+window.PB_cambiarPass=async function(){
+  const pa=document.getElementById('pb-cpa').value;
+  const pn=document.getElementById('pb-cpn').value;
+  const pn2=document.getElementById('pb-cpn2').value;
+  if(!pa||!pn)return PB_toast('Completa los campos','warn');
+  if(pn!==pn2)return PB_toast('Las contrasenas nuevas no coinciden','warn');
+  if(pn.length<10||!PB_PW_SYMBOLS.test(pn))return PB_toast('La nueva contrasena necesita 10+ chars y 1 simbolo','warn');
+  const{ok,data}=await PB_fetch('cambiarPass',{method:'POST',body:JSON.stringify({password:pa,passwordNuevo:pn})});
+  if(!ok)return PB_toast(data.error||'Error','err');
+  _PB_tk=data.token;PB_sck('ap_tk',_PB_tk);
+  ['pb-cpa','pb-cpn','pb-cpn2'].forEach(i=>document.getElementById(i).value='');
+  PB_toast('Contrasena actualizada');
+};
+
+window.PB_logout=async function(){
+  await PB_fetch('logout',{method:'POST',body:JSON.stringify({})});
+  PB_dck('ap_tel');PB_dck('ap_tk');
+  _PB_tel=null;_PB_tk=null;
+  location.reload();
+};
+
+function PB_genID(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+
+function PB_buildNB(cat){
+  if(cat==='minecraft'){
+    const nm=document.getElementById('pb-mc-nm').value.trim();
+    const desc=document.getElementById('pb-mc-desc').value.trim();
+    const host=document.getElementById('pb-mc-host').value.trim();
+    const port=document.getElementById('pb-mc-port').value.trim();
+    const tipo=document.getElementById('pb-mc-tipo').value;
+    if(!nm||!host||!port)return null;
+    return{NB:`${nm};${desc};${host};${port};${tipo}`,CH:'',CT:''};
+  }
+  if(cat==='lavanderia'){
+    const nm=document.getElementById('pb-lv-nm').value.trim();
+    const hr=document.getElementById('pb-lv-hr').value.trim();
+    const ch=document.getElementById('pb-lv-ch').value;
+    if(!nm)return null;
+    return{NB:`${nm};${hr}`,CH:ch,CT:_PB_gpsCT||''};
+  }
+  if(cat==='reciclaje'){
+    const nm=document.getElementById('pb-rc-nm').value.trim();
+    const mat=document.getElementById('pb-rc-mat').value;
+    const hr=document.getElementById('pb-rc-hr').value.trim();
+    const ch=document.getElementById('pb-rc-ch').value;
+    if(!nm)return null;
+    return{NB:`${nm};${mat};${hr}`,CH:ch,CT:_PB_gpsCT||''};
+  }
+  return null;
+}
+
+window.PB_enviar=async function(){
+  const cat=document.getElementById('pb-cat').value;
+  const packed=PB_buildNB(cat);
+  if(!packed)return PB_toast('Completa los campos requeridos','warn');
+  const imgEl=document.getElementById('pb-img');
+  const imgBlob=imgEl._blob;
+  const imgExt=imgEl._ext||'.webp';
+  if(!imgBlob)return PB_flagField('pb-img-thumb');
+  const body={categoria:cat,ID:PB_genID(),NB:packed.NB,PC:'0',CH:packed.CH,CT:packed.CT};
+  body.imgData=await PB_blobToB64(imgBlob);body.imgExt=imgExt;
+  const btn=document.getElementById('pb-submit');
+  btn.disabled=true;btn.textContent='Enviando...';
+  const{ok,data}=await PB_fetch('enviar',{method:'POST',body:JSON.stringify(body)});
+  btn.disabled=false;btn.textContent='Enviar Solicitud';
+  if(!ok)return PB_toast(data.error||'Error al enviar','err');
+  PB_toast('Solicitud enviada!');
+  PB_resetForm();
+  PB_mainTab('pend');
+};
+
+function PB_flagField(elId){
+  const el=document.getElementById(elId);
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.remove('pb-shake');
+  void el.offsetWidth;
+  el.classList.add('pb-shake');
+  setTimeout(()=>el.classList.remove('pb-shake'),1300);
+}
+
+function PB_resetForm(){
+  ['pb-mc-nm','pb-mc-desc','pb-mc-host','pb-mc-port','pb-lv-nm','pb-lv-hr','pb-rc-nm','pb-rc-hr'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('pb-gps-hint-lv').textContent='';
+  document.getElementById('pb-gps-hint-rc').textContent='';
+  document.getElementById('pb-imgnm').textContent='Toca para subir';
+  _PB_gpsCT=null;
+  const prev=document.getElementById('pb-imgprev');
+  prev.style.display='none';prev.src='';
+  document.getElementById('pb-img-icon').style.display='';
+  document.getElementById('pb-img')._blob=null;
+  document.getElementById('pb-img')._ext=null;
+}
+
+function PB_extractEntries(node,cat,out){
+  if(Array.isArray(node)){
+    node.forEach(fn=>{
+      if(typeof fn!=='string')return;
+      const mID=fn.match(/ID=([^-]+)/),mNM=fn.match(/NM=([^-]+)/),mCH=fn.match(/CH=([^-]+)/),
+        mCT=fn.match(/CT=([SN][\d.]+[WE][\d.]+)/),mNB=fn.match(/NB=(.+)\.\w+$/);
+      if(!mID||!mNM||!mNB)return;
+      out.push({fn,ID:mID[1],telefono:mNM[1],CH:mCH?mCH[1]:'',CT:mCT?mCT[1]:null,NB:mNB[1],categoria:cat});
+    });
+    return;
+  }
+  if(node&&typeof node==='object')Object.values(node).forEach(v=>PB_extractEntries(v,cat,out));
+}
+
+async function PB_fetchPublicoJson(cat,force){
+  try{
+    const r=await fetch(`${PB_PUBLICO_BASE}/${cat}/data.json`+(force?`?t=${Date.now()}`:''));
+    if(!r.ok)return null;
+    const d=await r.json();
+    return d.galleries||d;
+  }catch{return null;}
+}
+
+async function PB_scanAllLugares(force){
+  const all=[];
+  await Promise.all(PB_CATS.map(async cat=>{
+    const dj=await PB_fetchPublicoJson(cat,force);
+    if(dj)PB_extractEntries(dj,cat,all);
+  }));
+  return all;
+}
+
+window.PB_loadMisLugares=async function(){
+  const lst=document.getElementById('pb-mis-list');
+  lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
+  const all=await PB_scanAllLugares(true);
+  const mios=all.filter(e=>e.telefono===_PB_tel);
+  if(!mios.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Sin lugares publicados aun</div>';return;}
+  lst.innerHTML='';
+  mios.forEach(e=>{
+    const div=document.createElement('div');div.className='pb-sol-item';
+    const nombre=(e.NB||'').split(';')[0]||e.ID;
+    div.innerHTML=`<div class="pb-sol-info">
+      <div class="nm">${PB_esc(nombre)} <span class="pb-badge apr">Publicado</span></div>
+      <div class="dt">${PB_esc(PB_CAT_LABEL[e.categoria]||e.categoria)}</div>
+      <div class="pb-sol-acts">
+        <button onclick="PB_solicitarBorrado('${PB_esc(e.ID)}')">Solicitar Borrado</button>
+      </div>
+    </div>`;
+    lst.appendChild(div);
+  });
+};
+
+window.PB_solicitarBorrado=async function(ID){
+  if(!confirm(`Solicitar el borrado de este lugar? Un admin debe confirmarlo.`))return;
+  const{ok,data}=await PB_fetch('solicitarBorrado',{method:'POST',body:JSON.stringify({ID})});
+  if(!ok)return PB_toast(data.error||'Error','err');
+  PB_toast('Borrado solicitado');
+};
+
+window.PB_loadSolicitudes=async function(){
+  const lst=document.getElementById('pb-sol-list');
+  lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
+  const{ok,data}=await PB_fetch('historial',{method:'POST',body:JSON.stringify({})});
+  if(!ok){lst.innerHTML=`<div style="color:var(--err);padding:20px">${data.error||'Error'}</div>`;return;}
+  const entries=(data.entries||[]).filter(e=>PB_CATS.includes(e.categoria));
+  if(!entries.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Sin solicitudes pendientes</div>';return;}
+  lst.innerHTML='';
+  const badges={pendiente:'<span class="pb-badge pend">Pendiente</span>',rechazado:'<span class="pb-badge rej">Rechazado</span>'};
+  entries.forEach(e=>{
+    const div=document.createElement('div');div.className='pb-sol-item';
+    const nombre=(e.NB||'').split(';')[0]||e.ID;
+    div.innerHTML=`<div class="pb-sol-info">
+      <div class="nm">${PB_esc(nombre)} ${badges[e.estado]||''}</div>
+      <div class="dt">${PB_esc(PB_CAT_LABEL[e.categoria]||e.categoria)}</div>
+      ${e.estado==='rechazado'&&e.motivo?`<div class="pb-sol-neg">${PB_esc(e.motivo)}</div>`:''}
+    </div>`;
+    lst.appendChild(div);
+  });
+};
+
+if(_PB_tel&&_PB_tk){
+  PB_fetch('historial',{method:'POST',body:JSON.stringify({})})
+    .then(({ok})=>{if(ok)PB_showMain();else{PB_dck('ap_tel');PB_dck('ap_tk');_PB_tel=null;_PB_tk=null;}});
+}
+})();
+</script>

@@ -41,12 +41,6 @@
   border-radius:6px;color:rgba(255,255,255,.75);font-size:.95em;
 }
 
-.mc-groups{
-  display:flex;gap:6px;flex-wrap:wrap;
-  padding:10px 18px 14px;
-  border-top:1px solid rgba(255,255,255,.06);
-}
-
 .lk{
   display:inline-flex;align-items:center;gap:6px;
   padding:5px 11px;border-radius:20px;
@@ -112,10 +106,19 @@
 <script>
 (function(){
 const WRAP=document.getElementById('mc-wrap');
-const JSON_URL='web/otros/Archivos/DataBase/minecraft/data.json';
+const JSON_URL='web/otros/Archivos/Dinamico/Publico/minecraft/data.json';
 const ICON_B='web/otros/Archivos/Imagenes/Permanente/minecraft/iconbedrock.avif';
-const GRP_LABEL={WA:'WhatsApp',TG:'Telegram',DC:'Discord'};
-const GRP_CLS={WA:'lk-wa',TG:'lk-tg',DC:'lk-dc'};
+
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function parseEntry(relPath){
+  const fn=relPath.split('/').pop();
+  const mNB=fn.match(/NB=(.+)\.\w+$/);
+  if(!mNB)return null;
+  const parts=mNB[1].split(';');
+  const name=parts[0],desc=parts[1]||'',url=parts[2],port=parseInt(parts[3])||0,type=parts[4]||'B';
+  if(!name||!url)return null;
+  return{name,desc,url,port,type,img:relPath};
+}
 
 function sanitizeURI(s){
   return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'%20');
@@ -130,40 +133,27 @@ function mkCard(s){
   if(isB){
     const uri=`minecraft:?addExternalServer=${sanitizeURI(s.name)}|${s.url}:${s.port}`;
     acts+=`<a class="mc-bbtn" href="${uri}"><img src="${ICON_B}" alt="">Añadir en Bedrock</a>`;
-  }
-
-
-
-  let groups='';
-  if(s.groups&&s.groups.length){
-    const lks=s.groups.map(g=>{
-      const cls=GRP_CLS[g.type]||'';
-      const lbl=GRP_LABEL[g.type]||g.type;
-      return`<a class="lk ${cls}" href="${g.url}" target="_blank" rel="noopener noreferrer">${lbl}</a>`;
-    }).join('');
-    groups=`<div class="mc-groups">${lks}</div>`;
-  }
-
-  div.innerHTML=`<div class="mc-head">
-    ${s.img?`<img class="mc-thumb" src="${s.img}" alt="" onerror="this.style.display='none'">`:''}
+  }  div.innerHTML=`<div class="mc-head">
+    ${s.img?`<img class="mc-thumb" src="${esc(s.img)}" alt="" onerror="this.style.display='none'">`:''}
     <div class="mc-hinfo">
-      <div class="mc-name">${s.name}</div>
-      ${s.desc?`<div class="mc-desc">${s.desc}</div>`:''}
-      <div class="mc-addr">${s.url}:${s.port}</div>
+      <div class="mc-name">${esc(s.name)}</div>
+      ${s.desc?`<div class="mc-desc">${esc(s.desc)}</div>`:''}
+      <div class="mc-addr">${esc(s.url)}:${esc(s.port)}</div>
       ${acts?`<div class="mc-acts">${acts}</div>`:''}
     </div>
-  </div>
-  ${groups}`;
+  </div>`;
   return div;
 }
 
 fetch(JSON_URL)
   .then(r=>r.json())
   .then(data=>{
+    const files=(data.galleries||{}).minecraft||[];
+    const list=files.map(parseEntry).filter(Boolean);
     WRAP.innerHTML='';
-    if(!data.length){WRAP.innerHTML='<p style="color:rgba(255,255,255,.4);font-size:.9em">Sin servidores disponibles.</p>';return;}
+    if(!list.length){WRAP.innerHTML='<p style="color:rgba(255,255,255,.4);font-size:.9em">Sin servidores disponibles.</p>';return;}
     const frag=document.createDocumentFragment();
-    data.forEach(s=>frag.appendChild(mkCard(s)));
+    list.forEach(s=>frag.appendChild(mkCard(s)));
     WRAP.appendChild(frag);
   })
   .catch(()=>{WRAP.innerHTML='<p style="color:rgba(255,100,100,.6);font-size:.9em">Error al cargar servidores.</p>';});

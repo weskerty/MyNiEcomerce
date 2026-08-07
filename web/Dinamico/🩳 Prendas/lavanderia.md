@@ -77,43 +77,24 @@
 
 <script>
 (function(){
-const PUNTOS=[
-  {
-    id:1,lat:-25.259691,lng:-57.499129,
-    nombre:'Paraguay Insumos',
-    dir:'Barrio Loma Merlo, Calle America 5868 c/ Juan Bautista Rivarola, Luque',
-    horario:'Lun - Vie: 8:00 - 18:00',
-    tel:null,wa:'595983596037'
-  },
-  {
-    id:2,lat:-25.336771,lng:-57.524364,
-    nombre:'Sede IICA - Campus UNA',
-    dir:'Gral. Patricio Escobar casi Ruta Mcal. Estigarribia, San Lorenzo',
-    horario:'Lun - Vie: 9:00 - Cierre campus',
-    tel:'59521584060',wa:null
-  },
-  {
-    id:3,lat:-25.334896,lng:-57.520645,
-    nombre:'UNA Rectorado - Dir. Informatica',
-    dir:'San Lorenzo, Campus UNA',
-    horario:'Lun - Vie: 8:00 - Cierre campus',
-    tel:null,wa:null
-  },
-  {
-    id:4,lat:-27.307036,lng:-55.888031,
-    nombre:'Universidad Nacional de Itapua',
-    dir:'Abg. Lorenzo Zacarias Lopez 255 y Ruta PY01 Km 2,5, Barrio Ka agua Rory, Encarnacion',
-    horario:null,
-    tel:'595986668545',wa:null
-  },
-  {
-    id:5,lat:-25.288448,lng:-57.64311,
-    nombre:'Universidad Iberoamericana (UNIBE)',
-    dir:'15 de Agosto esq. Ygatimi, Asuncion',
-    horario:'Lun - Vie: 8:00 - 19:30 | Sab: 8:00 - 13:00',
-    tel:null,wa:'595986100680'
-  }
-];
+const JSON_URL='web/otros/Archivos/Dinamico/Publico/lavanderia/data.json';
+let PUNTOS=[];
+
+function esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function ctToLatLng(ct){
+  const m=ct&&ct.match(/^([SN])([\d.]+)([WE])([\d.]+)$/);
+  if(!m)return null;
+  return{lat:(m[1]==='S'?-1:1)*parseFloat(m[2]),lng:(m[3]==='W'?-1:1)*parseFloat(m[4])};
+}
+function parseEntry(relPath,id){
+  const fn=relPath.split('/').pop();
+  const mNM=fn.match(/NM=([^-]+)/),mCH=fn.match(/CH=([^-]+)/),mCT=fn.match(/CT=([SN][\d.]+[WE][\d.]+)/),mNB=fn.match(/NB=(.+)\.\w+$/);
+  if(!mNB||!mCT)return null;
+  const ll=ctToLatLng(mCT[1]);
+  if(!ll)return null;
+  const parts=mNB[1].split(';');
+  return{id,lat:ll.lat,lng:ll.lng,nombre:parts[0]||'Sin nombre',horario:parts[1]||'',tel:mNM?mNM[1]:null,ch:mCH?mCH[1]:''};
+}
 
 let map=null,markers=[],selId=null;
 
@@ -130,20 +111,19 @@ function showDetail(p){
   dtEl.style.display='block';
 
   const rows=[];
-  if(p.horario)rows.push(`<div class="rc-drow"><span>🕐</span><span>${p.horario}</span></div>`);
-  if(p.tel)rows.push(`<div class="rc-drow"><span>📞</span><span>${p.tel}</span></div>`);
+  if(p.horario)rows.push(`<div class="rc-drow"><span>🕐</span><span>${esc(p.horario)}</span></div>`);
+  if(p.tel)rows.push(`<div class="rc-drow"><span>📞</span><span>${esc(p.tel)}</span></div>`);
 
   const acts=[];
   acts.push(`<a class="rc-abtn rc-abtn-geo" href="geo:${p.lat},${p.lng}?q=${p.lat},${p.lng}">🗺️ Abrir Maps</a>`);
   acts.push(`<a class="rc-abtn rc-abtn-gm" href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" rel="noopener noreferrer">🟠 GMaps</a>`);
   acts.push(`<a class="rc-abtn rc-abtn-am" href="https://maps.apple.com/?q=${p.lat},${p.lng}" target="_blank" rel="noopener noreferrer">🍎 Maps</a>`);
-  if(p.wa){
-    const num=p.wa.replace(/\D/g,'');
+  if(p.tel&&(p.ch||'').includes('WA')){
+    const num=p.tel.replace(/\D/g,'');
     acts.push(`<a class="rc-abtn rc-abtn-wa" href="https://wa.me/${num}" target="_blank" rel="noopener noreferrer"><span class="rc-wa-icon"></span>WhatsApp</a>`);
   }
 
-  dtEl.innerHTML=`<div class="rc-dname">${p.nombre}</div>
-    <div class="rc-daddr">${p.dir}</div>
+  dtEl.innerHTML=`<div class="rc-dname">${esc(p.nombre)}</div>
     <div class="rc-dmeta">${rows.join('')}</div>
     <div class="rc-actions">${acts.join('')}</div>`;
 }
@@ -156,6 +136,7 @@ function selectPin(p){
 
 function initMap(){
   if(map)return;
+  if(!PUNTOS.length){document.getElementById('rc-empty').textContent='Sin lavanderias publicadas aun';return;}
   map=L.map('rc-map',{zoomControl:true,scrollWheelZoom:false,tap:true});
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
     attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -189,7 +170,14 @@ document.addEventListener('contentUnload',function(){
   if(map){map.remove();map=null;markers=[];}
 },{once:true});
 
-loadLeaflet(initMap);
+fetch(JSON_URL)
+  .then(r=>r.json())
+  .then(data=>{
+    const files=(data.galleries||{}).lavanderia||[];
+    PUNTOS=files.map((f,i)=>parseEntry(f,i)).filter(Boolean);
+    loadLeaflet(initMap);
+  })
+  .catch(()=>{document.getElementById('rc-empty').textContent='Error al cargar lavanderias';});
 })();
 </script>
 
