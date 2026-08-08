@@ -62,12 +62,25 @@ function mkNavNode(label,emoji){
   m.appendChild(pt);a.appendChild(ico);a.appendChild(m);
   return a;
 }
-function buildPages(imgs){
+let _GF=window.GridFit||null,_GFp=null;
+function loadGF(){
+  if(_GF)return Promise.resolve(_GF);
+  if(_GFp)return _GFp;
+  _GFp=new Promise(res=>{
+    const s=document.createElement('script');
+    s.src='web/scripts/Otros/GridFit.js';
+    s.onload=()=>{_GF=window.GridFit;res(_GF)};
+    s.onerror=()=>res(null);
+    document.head.appendChild(s);
+  });
+  return _GFp;
+}
+function buildPages(imgs,ps){
   const total=imgs.length,pages=[];
   let idx=0,p=0;
   while(idx<total){
     const hasPrev=p>0;
-    let slots=PAGE-(hasPrev?1:0);
+    let slots=ps-(hasPrev?1:0);
     const hasNext=(total-idx)>slots;
     if(hasNext)slots--;
     const count=Math.min(slots,total-idx);
@@ -341,7 +354,27 @@ function mkGrid(c,imgs){
   if(!imgs.length)return;
   const inner=document.createElement('div');inner.className='gi-grid-inner';c.appendChild(inner);
   const row=document.createElement('div');row.className='gi-grid-row';inner.appendChild(row);
-  let nav=null,pg=0,pages=buildPages(imgs);
+  let nav=null,pg=0,pageSize=PAGE,pages=buildPages(imgs,pageSize);
+  function applyPageSize(n){
+    if(n===pageSize)return;
+    pageSize=n;pg=0;pages=buildPages(imgs,pageSize);renderPage(0,false);
+  }
+  let ro=null,destroyed=false,pending=false;
+  function stop(){destroyed=true;if(ro){ro.disconnect();ro=null}}
+  if(!document.body.classList.contains('low-perf')){
+    loadGF().then(gf=>{
+      if(!gf||destroyed)return;
+      const scheduleCompute=()=>{
+        if(pending)return;pending=true;
+        _ric(()=>{pending=false;if(destroyed)return;
+          applyPageSize(gf.itemsPerPage(c,ITEM,ITEM,GAP,60));
+        });
+      };
+      scheduleCompute();
+      ro=new ResizeObserver(scheduleCompute);
+      ro.observe(c);
+    });
+  }
   function ensureKind(slot,kind,makeFn){
     let el=row.children[slot];
     if(!el){el=makeFn();el.dataset.kind=kind;row.appendChild(el);return el}
@@ -368,7 +401,7 @@ function mkGrid(c,imgs){
     inner.classList.remove('gi-anim');void inner.offsetWidth;inner.classList.add('gi-anim');
     if(scroll&&c.scrollIntoView)c.scrollIntoView({behavior:'smooth',block:'start'})}
   renderPage(0,false);
-  return{setImgs(ni){imgs=ni;pg=0;pages=buildPages(imgs);renderPage(0,false)}};
+  return{setImgs(ni){imgs=ni;pg=0;pages=buildPages(imgs,pageSize);renderPage(0,false)},stop};
 }
 
 function decorate(c){
@@ -436,10 +469,14 @@ async function pCont(c,isSw){
     c.innerHTML='';if(!imgs.length)return;
     if(isSw){mkCarousel(c,imgs);return}
     const grid=mkGrid(c,imgs);
-    if(grid&&!_geo){
-      const cb=()=>grid.setImgs(fFixed?rI(j,key,fFixed):idx._all);
-      _reRender.push(cb);
-      c.__stop=()=>{const i=_reRender.indexOf(cb);if(i>-1)_reRender.splice(i,1)};
+    if(grid){
+      c.__stop=grid.stop;
+      if(!_geo){
+        const cb=()=>grid.setImgs(fFixed?rI(j,key,fFixed):idx._all);
+        _reRender.push(cb);
+        const prevStop=c.__stop;
+        c.__stop=()=>{const i=_reRender.indexOf(cb);if(i>-1)_reRender.splice(i,1);if(prevStop)prevStop()};
+      }
     }
     return;
   }
@@ -448,10 +485,12 @@ async function pCont(c,isSw){
   const grid=mkGrid(c,idx._all);
   if(!grid)return;
   let curName=null;
+  c.__stop=grid.stop;
   if(!_geo){
     const cb=()=>grid.setImgs(curName?idx.f[curName]:idx._all);
     _reRender.push(cb);
-    c.__stop=()=>{const i=_reRender.indexOf(cb);if(i>-1)_reRender.splice(i,1)};
+    const prevStop=c.__stop;
+    c.__stop=()=>{const i=_reRender.indexOf(cb);if(i>-1)_reRender.splice(i,1);if(prevStop)prevStop()};
   }
   const bar=mkSubBtns(c,idx.f,name=>{
     curName=name;
