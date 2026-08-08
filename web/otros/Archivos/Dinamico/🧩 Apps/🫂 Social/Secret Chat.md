@@ -238,7 +238,7 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
 
 <script>
 !function(){
-const TRYSTERO_APP='cheagana-chat',HIST=200,DOM=80,IM_STK=524288,AUTO_DL_MAX=1048576;
+const HIST=200,DOM=80,IM_STK=524288,AUTO_DL_MAX=1048576;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const mk=(tag,cls)=>{const e=document.createElement(tag);if(cls)e.className=cls;return e;};
@@ -255,17 +255,26 @@ function ckSet(k,v){const sec=location.protocol==='https:'?';Secure':'';document
 let nick=ckGet('cw_nick')||'';
 function saveNick(n){nick=n;ckSet('cw_nick',n);}
 
-let trysteroP=null;
-function loadTrystero(){if(!trysteroP)trysteroP=import('https://esm.sh/trystero@0.25.3');return trysteroP;}
+let peerP=null;
+function loadPeerJS(){if(!peerP)peerP=import('https://esm.sh/peerjs@1.5.5').then(m=>m.Peer);return peerP;}
 
-let room=null,pid=null,curCfg=null;
-let pNk={},pAu={},pVStr={},pMu={},pendingJoinAnnounce={};
+const API='/api/chat',PING=10000;
+async function api(method,path,body){
+  const o={method,headers:{'Content-Type':'application/json'}};
+  if(body)o.body=JSON.stringify(body);
+  const r=await fetch(API+path,o);
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok)throw Object.assign(new Error(data.error||String(r.status)),{status:r.status});
+  return data;
+}
+
+let peer=null,pid=null,curCfg=null,curRoom=null,curToken=null,pingIv=null;
+let conns={},pNk={},pAu={},pVStr={},pMu={};
 let aStream=null,vStream=null,muted=false,vidOn=false;
 let hist=[],domCount=0,torrentClient=null;
-let msgAct=null,metaAct=null,histAct=null,muteAct=null,fileAct=null;
 
 let ircSocket=null,ircMode=false,ircNick='',ircChannel='',ircChanKey='',ircUsers=new Map();
-function inAnyChat(){return!!room||ircMode;}
+function inAnyChat(){return!!curRoom||ircMode;}
 
 let chatList=[];
 function loadChatList(){try{return JSON.parse(localStorage.getItem('cw_chats')||'[]');}catch{return[];}}
@@ -281,19 +290,8 @@ async function wakeAcquire(){
 async function wakeRelease(){
   if(wakeLock){await wakeLock.release().catch(()=>{});wakeLock=null;}
 }
-let hiddenAt=0;
-async function onVisChange(){
-  if(document.visibilityState==='visible'){
-    if(inAnyChat()&&!wakeLock)wakeAcquire();
-    if(hiddenAt&&Date.now()-hiddenAt>30000&&room&&!ircMode&&!reconnecting){
-      const peers=Object.keys(room.getPeers());
-      const ok=peers.length?await pingPeers(peers,5000):false;
-      if(!ok)reconnectRoom(false);
-    }
-    hiddenAt=0;
-  }else if(document.visibilityState==='hidden'){
-    hiddenAt=Date.now();
-  }
+function onVisChange(){
+  if(document.visibilityState==='visible'&&inAnyChat()&&!wakeLock)wakeAcquire();
 }
 document.addEventListener('visibilitychange',onVisChange);
 
@@ -394,101 +392,119 @@ $('cw-ad-ok').onclick=()=>{
 
 function meta(){return{nick};}
 
-let pendingLeave=null;
-async function connectNet(cfg){
-  if(pendingLeave){try{await pendingLeave;}catch(e){}pendingLeave=null;}
-  let joinRoom,selfId;
-  try{({joinRoom,selfId}=await loadTrystero());}
-  catch(e){addSys('Error al cargar Trystero');return false;}
-  pid=selfId;
+function initPeer(){
+  return new Promise((res,rej)=>{
+    if(peer&&!peer.destroyed&&pid){res();return;}
+    if(peer&&!peer.destroyed)peer.destroy();
+    loadPeerJS().then(Peer=>{
+      peer=new Peer();
+      peer.once('open',id=>{
+        pid=id;
+        peer.on('connection',conn=>onConn(conn));
+        peer.on('call',call=>{
+          const s=new MediaStream();
+          if(aStream)aStream.getTracks().forEach(t=>s.addTrack(t));
+          if(vStream)vStream.getTracks().forEach(t=>s.addTrack(t));
+          call.answer(s.getTracks().length?s:new MediaStream());
+          hCall(call);
+        });
+        peer.on('disconnected',()=>{if(curRoom)peer.reconnect();});
+        res();
+      });
+      peer.once('error',e=>rej(e));
+    }).catch(rej);
+  });
+}
 
-  try{
-    room=joinRoom({appId:TRYSTERO_APP,password:cfg.roomPw||undefined,relayConfig:{redundancy:12}},cfg.roomId,{
-      onJoinError:details=>{
-        console.error('trystero onJoinError',details);
-        addSys('No se pudo conectar con un participante (revisa tu red)');
-        refreshWaitState('Reintentando conexion...');
-      }
-    });
-  }catch(e){addSys('Error al unirse a la sala');return false;}
-
-  msgAct=room.makeAction('msg');
-  metaAct=room.makeAction('meta');
-  histAct=room.makeAction('hist');
-  muteAct=room.makeAction('mute');
-  fileAct=room.makeAction('file');
-
-  msgAct.onMessage=(d,{peerId})=>{
-    const col=gUC(peerId);
-    addMsg(pNk[peerId]||peerId.slice(0,8),d.v,false,col,avatarUrl(peerId),d.quote,d.mid);
-    hist.push({from:peerId,nick:pNk[peerId]||peerId.slice(0,8),v:d.v,col,quote:d.quote,mid:d.mid});
-    if(hist.length>HIST)hist.shift();
-    checkMention(d.v);
-  };
-  metaAct.onMessage=(d,{peerId})=>{
-    const announcing=pendingJoinAnnounce[peerId]!=null&&d.nick;
-    pNk[peerId]=d.nick||pNk[peerId]||peerId.slice(0,8);
-    renderPeers();
-    if(announcing){addSys(pNk[peerId]+' se unio');delete pendingJoinAnnounce[peerId];}
-  };
-  histAct.onMessage=(d,{peerId})=>{
-    if(!d||!d.length)return;
-    const known=new Set(hist.map(m=>m.mid).filter(Boolean));
-    d.forEach(m=>{
-      if(m.mid&&known.has(m.mid))return;
-      uC[m.from]=m.col||gUC(m.from);
-      addMsg(m.nick,m.v,false,m.col,avatarUrl(m.from),m.quote,m.mid);
-      hist.push(m);
-      if(m.mid)known.add(m.mid);
-    });
-    if(hist.length>HIST)hist.splice(0,hist.length-HIST);
-  };
-  muteAct.onMessage=(d,{peerId})=>{
-    pMu[peerId]=d;
-    if(pAu[peerId])pAu[peerId].muted=d;
-    const el=$('cw-vp-'+peerId);
-    if(el){const n=el.querySelector('.cw-vp-n');if(n)n.textContent=(pNk[peerId]||peerId.slice(0,8))+(d?' 🔇':'');}
-  };
-  fileAct.onMessage=(d,{peerId})=>addFileMsg(peerId,d);
-
-  room.onPeerJoin=peerId=>{
-    pNk[peerId]=peerId.slice(0,8);
-    metaAct.send(meta(),{target:peerId});
-    histAct.send(hist.slice(-HIST),{target:peerId});
-    if(aStream)room.addStream(aStream,{target:peerId});
-    if(vStream)room.addStream(vStream,{target:peerId});
+function onConn(conn){
+  conn.on('open',()=>{
+    conns[conn.peer]=conn;
+    const m=conn.metadata||{};
+    pNk[conn.peer]=m.nick||conn.peer.slice(0,8);
+    conn.send({t:'meta',v:meta()});
+    conn.send({t:'hist',v:hist.slice(-HIST)});
+    addSys((pNk[conn.peer]||conn.peer.slice(0,8))+' se unio');
     renderPeers();updateRoomCount();refreshWaitState();
-    const stamp=Date.now();
-    pendingJoinAnnounce[peerId]=stamp;
-    setTimeout(()=>{
-      if(pendingJoinAnnounce[peerId]===stamp){
-        addSys((pNk[peerId]||peerId.slice(0,8))+' se unio');
-        delete pendingJoinAnnounce[peerId];
-      }
-    },4000);
-  };
-  room.onPeerLeave=peerId=>{
-    addSys((pNk[peerId]||peerId.slice(0,8))+' salio');
-    delete pNk[peerId];
-    if(pAu[peerId]){pAu[peerId].pause();pAu[peerId].srcObject=null;pAu[peerId].remove();delete pAu[peerId];}
-    rmVid(peerId);renderPeers();updateRoomCount();
-    refreshWaitState('Conexion perdida, esperando...');
-  };
-  room.onPeerStream=(stream,peerId)=>{
-    if(stream.getVideoTracks().length){pVStr[peerId]=stream;addVidPeer(peerId,stream);}
-    if(stream.getAudioTracks().length){
-      let a=pAu[peerId];
-      if(!a){a=mk('audio');a.autoplay=a.playsInline=1;document.body.appendChild(a);pAu[peerId]=a;}
-      a.srcObject=new MediaStream(stream.getAudioTracks());
-      if(pMu[peerId])a.muted=true;
+    callPeer(conn.peer);
+  });
+  conn.on('data',d=>onData(d,conn.peer));
+  conn.on('close',()=>discPeer(conn.peer));
+  conn.on('error',()=>discPeer(conn.peer));
+}
+
+function callPeer(p){
+  const s=new MediaStream();
+  if(aStream)aStream.getTracks().forEach(t=>s.addTrack(t));
+  if(vStream)vStream.getTracks().forEach(t=>s.addTrack(t));
+  if(!s.getTracks().length)return;
+  hCall(peer.call(p,s,{metadata:meta()}));
+}
+
+function broadcast(data){Object.values(conns).filter(c=>c.open).forEach(c=>{try{c.send(data);}catch(e){}});}
+
+function onData(d,from){
+  if(!d||!d.t)return;
+  switch(d.t){
+    case'msg':{
+      const col=gUC(from);
+      addMsg(pNk[from]||from.slice(0,8),d.v,false,col,avatarUrl(from),d.quote,d.mid);
+      hist.push({t:'msg',from,nick:pNk[from]||from.slice(0,8),v:d.v,col,quote:d.quote,mid:d.mid});
+      if(hist.length>HIST)hist.shift();
+      checkMention(d.v);
+      break;
     }
-  };
-  return true;
+    case'meta':pNk[from]=d.v.nick||pNk[from];renderPeers();break;
+    case'hist':{
+      if(!d.v||!d.v.length)break;
+      const known=new Set(hist.map(m=>m.mid).filter(Boolean));
+      d.v.forEach(m=>{
+        if(m.t!=='msg')return;
+        if(m.mid&&known.has(m.mid))return;
+        uC[m.from]=m.col||gUC(m.from);
+        addMsg(m.nick,m.v,false,m.col,avatarUrl(m.from),m.quote,m.mid);
+        hist.push(m);
+        if(m.mid)known.add(m.mid);
+      });
+      if(hist.length>HIST)hist.splice(0,hist.length-HIST);
+      break;
+    }
+    case'mute':{
+      pMu[from]=d.v;
+      if(pAu[from])pAu[from].muted=d.v;
+      const el=$('cw-vp-'+from);
+      if(el){const n=el.querySelector('.cw-vp-n');if(n)n.textContent=(pNk[from]||from.slice(0,8))+(d.v?' 🔇':'');}
+      break;
+    }
+    case'file':addFileMsg(from,d);break;
+  }
+}
+
+function hCall(call){
+  call.on('stream',stream=>{
+    const p=call.peer;
+    if(stream.getVideoTracks().length){pVStr[p]=stream;addVidPeer(p,stream);}
+    if(stream.getAudioTracks().length){
+      let a=pAu[p];
+      if(!a){a=mk('audio');a.autoplay=a.playsInline=1;document.body.appendChild(a);pAu[p]=a;}
+      a.srcObject=new MediaStream(stream.getAudioTracks());
+      if(pMu[p])a.muted=true;
+    }
+  });
+  call.on('close',()=>rmVid(call.peer));
+}
+
+function discPeer(p){
+  if(!conns[p]&&!pNk[p])return;
+  addSys((pNk[p]||p.slice(0,8))+' salio');
+  delete conns[p];delete pNk[p];
+  if(pAu[p]){pAu[p].pause();pAu[p].srcObject=null;pAu[p].remove();delete pAu[p];}
+  rmVid(p);renderPeers();updateRoomCount();
+  refreshWaitState('Conexion perdida, esperando...');
 }
 
 async function enterRoom(cfg){
   $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
-  pNk={};pAu={};pVStr={};pMu={};pendingJoinAnnounce={};
+  conns={};pAu={};pVStr={};pMu={};pNk={};
   hist=[];domCount=0;curCfg=cfg;
 
   $('cw-ch-nm').textContent=cfg.label.length>26?cfg.label.slice(0,26)+'…':cfg.label;
@@ -498,73 +514,51 @@ async function enterRoom(cfg){
   $('cw-lobby').classList.add('hid');$('cw-chat').classList.add('on');
   setWaiting(true,'Conectando...');
 
-  const ok=await connectNet(cfg);
-  if(!ok)return goBack();
+  try{await initPeer();}catch(e){addSys('Error al conectar');return goBack();}
 
+  let data;
+  try{data=await api('POST',`/rooms/${cfg.roomId}/join`,{pw:cfg.roomPw||'',pid,nick});}
+  catch(e){addSys(e.status===403?'Contrasena incorrecta':(e.status===429?'Demasiados intentos, espera un rato':'Error al unirse'));return goBack();}
+
+  curRoom=cfg.roomId;curToken=data.token;
   wakeAcquire();maybeShowSharePrompt();
   addSys('Uniendose a la sala como '+nick);
-  refreshWaitState('Esperando a que alguien mas se conecte...');
-  setTimeout(()=>{if(room)updateRoomCount();},3000);
+
+  (data.peers||[]).forEach(p=>{
+    pNk[p.pid]=p.nick||p.pid.slice(0,8);
+    onConn(peer.connect(p.pid,{metadata:meta(),reliable:true}));
+  });
+  updateRoomCount();refreshWaitState('Esperando a que alguien mas se conecte...');
   startAudio();
-  startNetWatch();
+  startPresenceLoop();
 }
 
-let netPingIv=null,reconnecting=false,healthFailStreak=0;
-async function pingPeers(peers,timeoutMs){
-  let anyOk=false;
-  await Promise.all(peers.map(p=>
-    Promise.race([room.ping(p),new Promise(r=>setTimeout(r,timeoutMs))])
-      .then(ms=>{if(typeof ms==='number')anyOk=true;})
-      .catch(()=>{})
-  ));
-  return anyOk;
+function startPresenceLoop(){
+  stopPresenceLoop();
+  pingIv=setInterval(async()=>{
+    if(!curRoom)return;
+    try{
+      const d=await api('POST',`/rooms/${curRoom}/ping`,{pid,token:curToken});
+      const active=new Set((d.peers||[]).map(p=>p.pid));
+      Object.keys(conns).forEach(p=>{if(!active.has(p))discPeer(p);});
+      updateRoomCount();
+    }catch(e){}
+  },PING);
 }
-async function checkNetHealth(){
-  if(!room||reconnecting||ircMode)return;
-  const peers=Object.keys(room.getPeers());
-  if(!peers.length){healthFailStreak=0;return;}
-  const ok=await pingPeers(peers,8000);
-  if(ok){healthFailStreak=0;return;}
-  healthFailStreak++;
-  if(healthFailStreak>=2){healthFailStreak=0;reconnectRoom(true);}
-}
-function startNetWatch(){
-  stopNetWatch();
-  healthFailStreak=0;
-  netPingIv=setInterval(checkNetHealth,45000);
-}
-function stopNetWatch(){
-  if(netPingIv){clearInterval(netPingIv);netPingIv=null;}
-  healthFailStreak=0;
-}
-async function reconnectRoom(silent){
-  if(!curCfg||ircMode||!room||reconnecting)return;
-  reconnecting=true;
-  const cfg=curCfg;
-  if(!silent)addSys('Reconectando...');
-  setWaiting(true,'Reconectando...');
-  try{await room.leave();}catch(e){}
-  room=null;msgAct=metaAct=histAct=muteAct=fileAct=null;pNk={};pendingJoinAnnounce={};
-  const ok=await connectNet(cfg);
-  reconnecting=false;
-  if(!ok){addSys('No se pudo reconectar');return;}
-  if(!silent)addSys('Reconectado');
-  if(aStream)room.addStream(aStream);
-  if(vStream)room.addStream(vStream);
-  updateRoomCount();
-  refreshWaitState('Esperando a que alguien mas se conecte...');
+function stopPresenceLoop(){
+  if(pingIv){clearInterval(pingIv);pingIv=null;}
 }
 
 function updateRoomCount(){
-  if(!room)return;
-  const n=Object.keys(room.getPeers()).length+1;
+  if(!curRoom)return;
+  const n=Object.keys(conns).length+1;
   $('cw-ch-sb').textContent=(curCfg&&curCfg.roomPw?'🔒 ':'🔗 ')+n+' en sala';
 }
 
 async function startAudio(){
   try{
     aStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true},video:false});
-    if(room)room.addStream(aStream);
+    Object.keys(conns).forEach(p=>callPeer(p));
   }catch(e){}
 }
 
@@ -725,14 +719,15 @@ async function enterIrc(cfg){
 
 function goBack(){
   wakeRelease();
-  stopNetWatch();
+  stopPresenceLoop();
   if(ircMode){
     if(ircSocket){try{ircSocket.close();}catch(e){}ircSocket=null;}
     ircMode=false;ircUsers=new Map();ircChannel='';ircChanKey='';
-  }else if(room){
-    const oldRoom=room;
-    pendingLeave=(async()=>{try{await oldRoom.leave();}catch(e){}})();
-    room=null;msgAct=metaAct=histAct=muteAct=fileAct=null;pid=null;curCfg=null;pNk={};pendingJoinAnnounce={};
+  }else if(curRoom){
+    if(pid)api('DELETE',`/rooms/${curRoom}/leave`,{pid,token:curToken}).catch(()=>{});
+    Object.values(conns).forEach(c=>{try{c.close();}catch(e){}});
+    if(peer){try{peer.destroy();}catch(e){}peer=null;pid=null;}
+    conns={};pNk={};curCfg=null;curRoom=null;curToken=null;
   }
   if(aStream){aStream.getTracks().forEach(t=>t.stop());aStream=null;}
   if(vStream){vStream.getTracks().forEach(t=>t.stop());vStream=null;}
@@ -752,22 +747,18 @@ $('cw-bm').onclick=()=>{
   if(!aStream)return;muted=!muted;
   aStream.getAudioTracks().forEach(t=>t.enabled=!muted);
   $('cw-bm').textContent=muted?'🔇':'🎤';
-  if(muteAct)muteAct.send(muted);
+  broadcast({t:'mute',v:muted});
 };
 
 $('cw-bv').onclick=async()=>{
   if(!vidOn){
     try{
       vStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480},frameRate:{max:24}},audio:false});
-      addVidSelf();
-      if(room)room.addStream(vStream);
+      addVidSelf();Object.keys(conns).forEach(p=>callPeer(p));
       $('cw-vg').classList.add('on');vidOn=true;$('cw-bv').style.opacity='.5';
     }catch(e){addSys('Sin acceso a camara');}
   }else{
-    if(vStream){
-      if(room)room.removeStream(vStream);
-      vStream.getTracks().forEach(t=>t.stop());vStream=null;
-    }
+    if(vStream){vStream.getTracks().forEach(t=>t.stop());vStream=null;}
     rmVid('me');vidOn=false;$('cw-bv').style.opacity='1';
     if(!Object.keys(pVStr).length)$('cw-vg').classList.remove('on');
   }
@@ -810,8 +801,8 @@ function setWaiting(on,msg){
   $('cw-bp').disabled=on;$('cw-be').disabled=on;
 }
 function refreshWaitState(msg){
-  if(!room||ircMode)return;
-  const n=Object.keys(room.getPeers()).length;
+  if(!curRoom||ircMode)return;
+  const n=Object.keys(conns).length;
   if(n>0)setWaiting(false);
   else setWaiting(true,msg);
 }
@@ -839,9 +830,9 @@ function renderPeers(){
   };
   if(ircMode){
     [...ircUsers.keys()].forEach(u=>addBubble(u,u,u===ircNick));
-  }else if(room){
+  }else if(curRoom){
     addBubble(nick,pid||'me',true);
-    Object.keys(room.getPeers()).forEach(p=>addBubble(pNk[p]||p.slice(0,8),p,false));
+    Object.keys(conns).forEach(p=>addBubble(pNk[p]||p.slice(0,8),p,false));
   }
 }
 
@@ -934,13 +925,13 @@ function sendMsg(){
     $('cw-mi').value='';$('cw-mi').style.height='';
     return;
   }
-  if(!room)return;
+  if(!curRoom)return;
   const col=gUC(pid||'me');
   const q=quoting?{...quoting}:undefined;
   const mid=newMsgId();
-  msgAct.send({v,quote:q,mid});
+  broadcast({t:'msg',v,quote:q,mid});
   addMsg(nick,v,true,col,avatarUrl(pid||'me'),q,mid);
-  hist.push({from:pid||'me',nick,v,col,quote:q,mid});
+  hist.push({t:'msg',from:pid||'me',nick,v,col,quote:q,mid});
   if(hist.length>HIST)hist.shift();
   $('cw-mi').value='';$('cw-mi').style.height='';
   clearQuote();
@@ -1051,7 +1042,7 @@ async function downloadStickerTorrent(dd,wrap,fname){
 }
 
 async function sendSticker(fname){
-  if(!room&&!ircMode)return;
+  if(!curRoom&&!ircMode)return;
   const q=quoting?{...quoting}:undefined;
   try{
     const blob=await loadStickerBlob(fname);
@@ -1074,8 +1065,8 @@ function sendStickerMsg(fname,magnet,size,quote){
     clearQuote();
     return;
   }
-  if(!room)return;
-  fileAct.send(dd);
+  if(!curRoom)return;
+  broadcast({t:'file',...dd});
   addOwnStickerMsg(fname,dd);
   clearQuote();
 }
@@ -1110,11 +1101,11 @@ async function sendFileP2P(f){
         clearQuote();
         return;
       }
-      if(!room)return;
+      if(!curRoom)return;
       const id=torrent.infoHash,mid=newMsgId();
       let w=0,h=0;
       const dd={id,mid,magnet:torrent.magnetURI,name:f.name,size:f.size,mime:f.type||'application/octet-stream',w,h,quote:q};
-      const afterDims=()=>{fileAct.send(dd);addOwnFileMsg(f,dd,torrent);clearQuote();};
+      const afterDims=()=>{broadcast({t:'file',...dd});addOwnFileMsg(f,dd,torrent);clearQuote();};
       if(/^image\//.test(f.type)){
         const u=URL.createObjectURL(f),i=new Image();
         i.onload=()=>{dd.w=i.naturalWidth;dd.h=i.naturalHeight;URL.revokeObjectURL(u);afterDims();};
