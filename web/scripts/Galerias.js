@@ -39,6 +39,9 @@ _S.textContent=`
 .gallery-item .mc{height:${TEXT_H}px;display:flex;align-items:center;justify-content:center;padding:0 6px;box-sizing:border-box;overflow:hidden}
 .gallery-item .mc p{margin:0;font-size:.8em;color:white;line-height:1.2;text-align:center;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .gi-txt{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif!important}
+.gi-navtile{align-items:center;justify-content:center}
+.gi-navtile .mc{height:100%!important;padding:0 10px}
+.gi-navtile .mc p{font-weight:600;-webkit-line-clamp:4}
 .gi-section{position:relative;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;margin-top:14px}
 .gi-section:has(.grid-gallery){padding-left:0;padding-right:0}
 .gi-section>a.gi-hd{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);padding:0 14px;margin:0;background:inherit;display:inline-block;white-space:nowrap;text-decoration:none;color:inherit}
@@ -51,6 +54,28 @@ let _hidden=false;document.addEventListener('visibilitychange',()=>{_hidden=docu
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1]:n}
 function mL(p){return p.replace(/\.[^.]+$/,'.md')}
+const NAV_NEXT='Siguiente, mostrar mas',NAV_PREV='Anterior, mostrar anteriores';
+function mkNavNode(label){
+  const a=document.createElement('div');a.className='gallery-item gi-navtile';
+  const m=document.createElement('div');m.className='mc';
+  const pt=document.createElement('p');pt.className='gi-txt';pt.textContent=label;
+  m.appendChild(pt);a.appendChild(m);
+  return a;
+}
+function buildPages(imgs){
+  const total=imgs.length,pages=[];
+  let idx=0,p=0;
+  while(idx<total){
+    const hasPrev=p>0;
+    let slots=PAGE-(hasPrev?1:0);
+    const hasNext=(total-idx)>slots;
+    if(hasNext)slots--;
+    const count=Math.min(slots,total-idx);
+    pages.push({start:idx,end:idx+count,hasPrev,hasNext});
+    idx+=count;p++;
+  }
+  return pages.length?pages:[{start:0,end:0,hasPrev:false,hasNext:false}];
+}
 function mkNode(p,h,a){const t=a||nN(fN(p)),x=document.createElement('a');x.href=h||mL(p);x.className='gallery-item';const i=document.createElement('img');i.alt=t;i.decoding='async';i.loading='lazy';i.src=p;const m=document.createElement('div');m.className='mc';const pt=document.createElement('p');pt.className='gi-txt';pt.textContent=t;m.appendChild(pt);x.appendChild(i);x.appendChild(m);x._img=i;x._p=pt;x._src=p;x._raw=!!h;return x}
 function patchNode(a,p,h,t){if(a._src===p)return;const raw=!!h,s=t||nN(fN(p));a.href=raw?p:mL(p);a._p.textContent=s;a._img.src=p;a._img.alt=s;a._src=p;a._raw=raw}
 function bIdx(g){
@@ -316,26 +341,34 @@ function mkGrid(c,imgs){
   if(!imgs.length)return;
   const inner=document.createElement('div');inner.className='gi-grid-inner';c.appendChild(inner);
   const row=document.createElement('div');row.className='gi-grid-row';inner.appendChild(row);
-  let nav=null,pg=0;
-  const maxPg=()=>Math.ceil(imgs.length/PAGE)-1;
+  let nav=null,pg=0,pages=buildPages(imgs);
+  function ensureKind(slot,kind,makeFn){
+    let el=row.children[slot];
+    if(!el){el=makeFn();el.dataset.kind=kind;row.appendChild(el);return el}
+    if(el.dataset.kind!==kind){const ne=makeFn();ne.dataset.kind=kind;row.replaceChild(ne,el);return ne}
+    return el;
+  }
+  function goPrev(ev){if(ev)ev.preventDefault();if(pg>0){pg--;renderPage(pg,true)}}
+  function goNext(ev){if(ev)ev.preventDefault();if(pg<pages.length-1){pg++;renderPage(pg,true)}}
   function renderPage(p,scroll){
-    const total=imgs.length,s=p*PAGE,e=Math.min(s+PAGE,total),count=e-s;
-    const ch=row.children;
-    for(let i=0;i<count;i++){if(ch[i])patchNode(ch[i],imgs[s+i]);else row.appendChild(mkNode(imgs[s+i]))}
-    while(row.children.length>count)row.lastChild.remove();
-    if(total>PAGE){
+    const{start,end,hasPrev,hasNext}=pages[p];
+    let slot=0;
+    if(hasPrev){ensureKind(slot,'prev',()=>mkNavNode(NAV_PREV)).onclick=goPrev;slot++}
+    for(let i=start;i<end;i++,slot++){const el=ensureKind(slot,'img',()=>mkNode(imgs[i]));patchNode(el,imgs[i])}
+    if(hasNext){ensureKind(slot,'next',()=>mkNavNode(NAV_NEXT)).onclick=goNext;slot++}
+    while(row.children.length>slot)row.lastChild.remove();
+    if(pages.length>1){
       if(!nav){nav=document.createElement('div');nav.className='gi-pg';
         const bP=document.createElement('button');bP.textContent='Anterior';
         const bN=document.createElement('button');bN.textContent='Siguiente';
-        bP.onclick=()=>{pg--;renderPage(pg,true)};
-        bN.onclick=()=>{pg++;renderPage(pg,true)};
+        bP.onclick=goPrev;bN.onclick=goNext;
         nav.appendChild(bP);nav.appendChild(bN);inner.appendChild(nav)}
-      nav.firstChild.disabled=p===0;nav.lastChild.disabled=p===maxPg();nav.style.display=''}
+      nav.firstChild.disabled=p===0;nav.lastChild.disabled=p===pages.length-1;nav.style.display=''}
     else if(nav)nav.style.display='none';
     inner.classList.remove('gi-anim');void inner.offsetWidth;inner.classList.add('gi-anim');
     if(scroll&&c.scrollIntoView)c.scrollIntoView({behavior:'smooth',block:'start'})}
   renderPage(0,false);
-  return{setImgs(ni){imgs=ni;pg=0;renderPage(0,false)}};
+  return{setImgs(ni){imgs=ni;pg=0;pages=buildPages(imgs);renderPage(0,false)}};
 }
 
 function decorate(c){
