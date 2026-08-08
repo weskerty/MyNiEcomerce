@@ -39,9 +39,8 @@ _S.textContent=`
 .gallery-item .mc{height:${TEXT_H}px;display:flex;align-items:center;justify-content:center;padding:0 6px;box-sizing:border-box;overflow:hidden}
 .gallery-item .mc p{margin:0;font-size:.8em;color:white;line-height:1.2;text-align:center;word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .gi-txt{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif!important}
-.gi-navtile{align-items:center;justify-content:center}
-.gi-navtile .mc{height:100%!important;padding:0 10px}
-.gi-navtile .mc p{font-weight:600;-webkit-line-clamp:4}
+.gi-navtile-ico{height:${IMG_H}px;display:flex;align-items:center;justify-content:center;font-size:44px;line-height:1;background:rgba(255,255,255,.05)}
+.gi-navtile .mc p{font-weight:600}
 .gi-section{position:relative;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;margin-top:14px}
 .gi-section:has(.grid-gallery){padding-left:0;padding-right:0}
 .gi-section>a.gi-hd{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);padding:0 14px;margin:0;background:inherit;display:inline-block;white-space:nowrap;text-decoration:none;color:inherit}
@@ -55,11 +54,12 @@ function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1]:n}
 function mL(p){return p.replace(/\.[^.]+$/,'.md')}
 const NAV_NEXT='Siguiente, mostrar mas',NAV_PREV='Anterior, mostrar anteriores';
-function mkNavNode(label){
+function mkNavNode(label,emoji){
   const a=document.createElement('div');a.className='gallery-item gi-navtile';
+  const ico=document.createElement('div');ico.className='gi-navtile-ico';ico.textContent=emoji;
   const m=document.createElement('div');m.className='mc';
   const pt=document.createElement('p');pt.className='gi-txt';pt.textContent=label;
-  m.appendChild(pt);a.appendChild(m);
+  m.appendChild(pt);a.appendChild(ico);a.appendChild(m);
   return a;
 }
 function buildPages(imgs){
@@ -353,14 +353,14 @@ function mkGrid(c,imgs){
   function renderPage(p,scroll){
     const{start,end,hasPrev,hasNext}=pages[p];
     let slot=0;
-    if(hasPrev){ensureKind(slot,'prev',()=>mkNavNode(NAV_PREV)).onclick=goPrev;slot++}
+    if(hasPrev){ensureKind(slot,'prev',()=>mkNavNode(NAV_PREV,'⬅️')).onclick=goPrev;slot++}
     for(let i=start;i<end;i++,slot++){const el=ensureKind(slot,'img',()=>mkNode(imgs[i]));patchNode(el,imgs[i])}
-    if(hasNext){ensureKind(slot,'next',()=>mkNavNode(NAV_NEXT)).onclick=goNext;slot++}
+    if(hasNext){ensureKind(slot,'next',()=>mkNavNode(NAV_NEXT,'➡️')).onclick=goNext;slot++}
     while(row.children.length>slot)row.lastChild.remove();
     if(pages.length>1){
       if(!nav){nav=document.createElement('div');nav.className='gi-pg';
-        const bP=document.createElement('button');bP.textContent='Anterior';
-        const bN=document.createElement('button');bN.textContent='Siguiente';
+        const bP=document.createElement('button');bP.textContent='⬅️ Anterior';
+        const bN=document.createElement('button');bN.textContent='Siguiente ➡️';
         bP.onclick=goPrev;bN.onclick=goNext;
         nav.appendChild(bP);nav.appendChild(bN);inner.appendChild(nav)}
       nav.firstChild.disabled=p===0;nav.lastChild.disabled=p===pages.length-1;nav.style.display=''}
