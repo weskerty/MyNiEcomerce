@@ -247,6 +247,10 @@ const uC={};let cI=0;
 const gUC=pid=>{if(!uC[pid])uC[pid]=COLS[(cI++)%COLS.length];return uC[pid];};
 const fSz=b=>b>1048576?(b/1048576).toFixed(1)+'MB':(b/1024).toFixed(0)+'KB';
 
+const disqusEl=document.getElementById('disqus-container');
+const disqusPrevDisplay=disqusEl?disqusEl.style.display:null;
+if(disqusEl)disqusEl.style.display='none';
+
 function seedHash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
 const avatarUrl=pidLike=>`https://picsum.photos/seed/${seedHash(String(pidLike))}/64/64`;
 
@@ -269,7 +273,7 @@ async function api(method,path,body){
 }
 
 let peer=null,pid=null,curCfg=null,curRoom=null,curToken=null,pingIv=null;
-let conns={},pNk={},pAu={},pVStr={},pMu={},connectingSince={};
+let conns={},pNk={},pAu={},pVStr={},pMu={},connectingSince={},pingMisses={};
 let aStream=null,vStream=null,muted=false,vidOn=false;
 let hist=[],domCount=0,torrentClient=null;
 
@@ -420,6 +424,7 @@ function onConn(conn){
   conn.on('open',()=>{
     conns[conn.peer]=conn;
     delete connectingSince[conn.peer];
+    pingMisses[conn.peer]=0;
     const m=conn.metadata||{};
     pNk[conn.peer]=m.nick||conn.peer.slice(0,8);
     conn.send({t:'meta',v:meta()});
@@ -477,7 +482,29 @@ function onData(d,from){
       break;
     }
     case'file':addFileMsg(from,d);break;
+    case'ping':{const c=conns[from];if(c&&c.open)try{c.send({t:'pong'});}catch(e){}break;}
+    case'pong':pingMisses[from]=0;break;
   }
+}
+
+function pingConns(){
+  Object.keys(conns).forEach(p=>{
+    const c=conns[p];
+    if(!c||!c.open)return;
+    const misses=(pingMisses[p]||0)+1;
+    if(misses>2){
+      pingMisses[p]=0;
+      try{c.close();}catch(e){}
+      discPeer(p);
+      return;
+    }
+    pingMisses[p]=misses;
+    try{c.send({t:'ping'});}catch(e){
+      pingMisses[p]=0;
+      try{c.close();}catch(e2){}
+      discPeer(p);
+    }
+  });
 }
 
 function hCall(call){
@@ -496,6 +523,7 @@ function hCall(call){
 
 function discPeer(p){
   delete connectingSince[p];
+  delete pingMisses[p];
   if(!conns[p]&&!pNk[p])return;
   addSys((pNk[p]||p.slice(0,8))+' salio');
   delete conns[p];delete pNk[p];
@@ -517,7 +545,7 @@ function connectMissing(activePeers){
 
 async function enterRoom(cfg){
   $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
-  conns={};pAu={};pVStr={};pMu={};pNk={};connectingSince={};
+  conns={};pAu={};pVStr={};pMu={};pNk={};connectingSince={};pingMisses={};
   hist=[];domCount=0;curCfg=cfg;
 
   $('cw-ch-nm').textContent=cfg.label.length>26?cfg.label.slice(0,26)+'…':cfg.label;
@@ -547,6 +575,7 @@ function startPresenceLoop(){
   stopPresenceLoop();
   pingIv=setInterval(async()=>{
     if(!curRoom)return;
+    pingConns();
     try{
       const d=await api('POST',`/rooms/${curRoom}/ping`,{pid,token:curToken});
       const active=new Set((d.peers||[]).map(p=>p.pid));
@@ -738,7 +767,7 @@ function goBack(){
     if(pid)api('DELETE',`/rooms/${curRoom}/leave`,{pid,token:curToken}).catch(()=>{});
     Object.values(conns).forEach(c=>{try{c.close();}catch(e){}});
     if(peer){try{peer.destroy();}catch(e){}peer=null;pid=null;}
-    conns={};pNk={};connectingSince={};curCfg=null;curRoom=null;curToken=null;
+    conns={};pNk={};connectingSince={};pingMisses={};curCfg=null;curRoom=null;curToken=null;
   }
   if(aStream){aStream.getTracks().forEach(t=>t.stop());aStream=null;}
   if(vStream){vStream.getTracks().forEach(t=>t.stop());vStream=null;}
@@ -1041,9 +1070,20 @@ async function downloadStickerTorrent(dd,wrap,fname){
   try{
     const client=await getTorrentClient();
     client.add(dd.magnet,torrent=>{
+      const file=torrent.files[0];
+      if(!file||file.length>STICKER_MAX){
+        pr.textContent='Sticker invalido (supera 1MB)';
+        try{client.remove(torrent);}catch(e){}
+        return;
+      }
       torrent.on('done',async()=>{
-        const file=torrent.files[0];
         const blob=await file.blob();
+        const realHash=await hashBlob(blob);
+        if(realHash!==fname.split('.')[0]){
+          pr.textContent='Sticker invalido (no coincide el hash)';
+          try{client.remove(torrent);}catch(e){}
+          return;
+        }
         wrap.innerHTML='';
         const img=mk('img','cw-stk');img.src=URL.createObjectURL(blob);wrap.appendChild(img);
         saveStickerBlob(fname,blob).catch(()=>{});
@@ -1149,11 +1189,17 @@ function addOwnFileMsg(file,dd,torrent){
   mg.appendChild(d);mg.scrollTop=mg.scrollHeight;
 }
 
-function downloadTorrent(dd,wrap){
+function downloadTorrent(dd,wrap,auto){
   const pr=mk('div','cw-torrent-pr');pr.textContent='Descargando de la red...';
   wrap.innerHTML='';wrap.appendChild(pr);
   getTorrentClient().then(client=>{
     client.add(dd.magnet,torrent=>{
+      const file0=torrent.files[0];
+      if(auto&&file0&&file0.length>AUTO_DL_MAX){
+        try{client.remove(torrent);}catch(e){}
+        renderTorrentCard(dd,wrap);
+        return;
+      }
       const iv=setInterval(()=>{
         if(!document.body.contains(pr))return clearInterval(iv);
         pr.textContent=`Descargando... ${(torrent.progress*100).toFixed(0)}% (${torrent.numPeers} fuentes)`;
@@ -1203,7 +1249,7 @@ async function addFileMsg(from,dd){
     }catch(e){downloadStickerTorrent(dd,wrap,fname);}
     return;
   }
-  if(dd.size<=AUTO_DL_MAX)downloadTorrent(dd,wrap);
+  if(dd.size<=AUTO_DL_MAX)downloadTorrent(dd,wrap,true);
   else renderTorrentCard(dd,wrap);
 }
 
@@ -1262,6 +1308,7 @@ function teardown(){
   document.body.style.overflow='';
   document.removeEventListener('visibilitychange',onVisChange);
   if(torrentClient){try{torrentClient.destroy();}catch(e){}torrentClient=null;}
+  if(disqusEl)disqusEl.style.display=disqusPrevDisplay||'';
 }
 if(contentEl)contentEl.addEventListener('contentUnload',teardown,{once:true});
 window.addEventListener('beforeunload',teardown);
