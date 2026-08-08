@@ -67,7 +67,49 @@ No sumes a esa montaña de +62 millones de toneladas 😢
 
 ### Teléfonos Viejos
 
-Antes de tirar o dejar en un cajón un teléfono que ya no "sirve" para lo que el fabricante decidió, hay bastante que se puede hacer. Depende del sistema, pero en casi todos los casos hay una segunda vida real. Se listara por Modelo y Soluciones de la Mas Facil a la mas Completa.
+Antes de tirar o dejar en un cajón un teléfono que ya no "sirve" para lo que el fabricante decidió, hay bastante que se puede hacer. Depende del sistema, pero en casi todos los casos hay una segunda vida real. 
+
+# Antiguos Nokia/BlackBerry/Samsung etc
+
+### Certificados Nuevos: 
+https://tlsroot.litten.ca/
+
+Eso soluciona problemas de "Certificado Invalido" al intentar Acceder a la Web para descargar. 
+Debes descargar esos certificados e instalarlos, uno por uno. Asi cada vez que un certificado vence. (normalmente cada 5 o 10 años)
+
+# Telegram App
+
+![img](/img/chat.jpg) ![img](/img/image_viewer.jpg) ![img](/img/music_player.jpg)
+
+![img](/img/notification.jpg) ![img](/img/chat_info.jpg) ![img](/img/bot.jpg)
+
+https://nnproject.cc/mp/
+Eliges la app para el modelo de tu dispositivo.
+
+(alternativa https://github.com/faissaloo/telegram-micro)
+
+
+
+
+# Discord App
+https://gtrxac.fi/j2me/
+
+![Screenshots](img/screenshots.png)
+
+Eliges la app para el modelo de tu dispositivo, ejemplo discord_blackberry.jar para BlackBerrys 
+
+O una alternativa Web si la app no te sirve
+https://github.com/gtrxAC/discord-wap
+
+De esta manera aun puedes usar esos telefonos para comunicarte. 
+Usar estos telefonos son la manera mas segura de salir a la calle, mantienes comunicacion por Telegram o Discord, Tienen Radio, Tienen Musica, (la app de telegram permite ser reproductor de musica tambien) tienen llamadas y mensajes
+
+En caso de que te asalten solo pierdes ese telefono, y en casa se queda tu telefono nuevo.
+
+Esa es una buena manera de reutilizar estos dispositivos en mi opinion.
+
+Por mencionar tambien existe WA, http://nokia4ever.com/ pero requiere servidor y cofig compleja.
+
 
 <details>
   <summary style="font-size: 1.0em; font-weight: bold;"> Apple iOS </summary>
