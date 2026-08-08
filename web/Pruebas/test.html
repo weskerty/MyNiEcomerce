@@ -275,7 +275,16 @@ async function wakeAcquire(){
 async function wakeRelease(){
   if(wakeLock){await wakeLock.release().catch(()=>{});wakeLock=null;}
 }
-function onVisChange(){if(document.visibilityState==='visible'&&inAnyChat()&&!wakeLock)wakeAcquire();}
+let hiddenAt=0;
+function onVisChange(){
+  if(document.visibilityState==='visible'){
+    if(inAnyChat()&&!wakeLock)wakeAcquire();
+    if(hiddenAt&&Date.now()-hiddenAt>30000&&room)reconnectRoom(false);
+    hiddenAt=0;
+  }else if(document.visibilityState==='hidden'){
+    hiddenAt=Date.now();
+  }
+}
 document.addEventListener('visibilitychange',onVisChange);
 
 function showModal(id){$(id).showModal();document.body.style.overflow='hidden';}
@@ -374,24 +383,14 @@ $('cw-ad-ok').onclick=()=>{
 
 function meta(){return{nick};}
 
-async function enterRoom(cfg){
-  $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
-  pNk={};pAu={};pVStr={};pMu={};
-  hist=[];domCount=0;curCfg=cfg;
-
-  $('cw-ch-nm').textContent=cfg.label.length>26?cfg.label.slice(0,26)+'…':cfg.label;
-  $('cw-ch-sb').textContent='Conectando...';
-  $('cw-bm').style.display='';$('cw-bv').style.display='';
-  $('cw-ch-inv').style.display='';
-  $('cw-lobby').classList.add('hid');$('cw-chat').classList.add('on');
-
+async function connectNet(cfg){
   let joinRoom,selfId;
   try{({joinRoom,selfId}=await loadTrystero());}
-  catch(e){addSys('Error al cargar Trystero');return goBack();}
+  catch(e){addSys('Error al cargar Trystero');return false;}
   pid=selfId;
 
   try{room=joinRoom({appId:TRYSTERO_APP,password:cfg.roomPw||undefined,relayConfig:{redundancy:12}},cfg.roomId);}
-  catch(e){addSys('Error al unirse a la sala');return goBack();}
+  catch(e){addSys('Error al unirse a la sala');return false;}
 
   msgAct=room.makeAction('msg');
   metaAct=room.makeAction('meta');
@@ -444,11 +443,52 @@ async function enterRoom(cfg){
       if(pMu[peerId])a.muted=true;
     }
   };
+  return true;
+}
+
+async function enterRoom(cfg){
+  $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
+  pNk={};pAu={};pVStr={};pMu={};
+  hist=[];domCount=0;curCfg=cfg;
+
+  $('cw-ch-nm').textContent=cfg.label.length>26?cfg.label.slice(0,26)+'…':cfg.label;
+  $('cw-ch-sb').textContent='Conectando...';
+  $('cw-bm').style.display='';$('cw-bv').style.display='';
+  $('cw-ch-inv').style.display='';
+  $('cw-lobby').classList.add('hid');$('cw-chat').classList.add('on');
+
+  const ok=await connectNet(cfg);
+  if(!ok)return goBack();
 
   wakeAcquire();maybeShowSharePrompt();
   addSys('Uniendose a la sala como '+nick);
   setTimeout(()=>{if(room)updateRoomCount();},3000);
   startAudio();
+  startNetWatch();
+}
+
+let netWatchIv=null,reconnecting=false;
+function startNetWatch(){
+  stopNetWatch();
+  netWatchIv=setInterval(()=>reconnectRoom(true),240000);
+}
+function stopNetWatch(){
+  if(netWatchIv){clearInterval(netWatchIv);netWatchIv=null;}
+}
+async function reconnectRoom(silent){
+  if(!curCfg||ircMode||!room||reconnecting)return;
+  reconnecting=true;
+  const cfg=curCfg;
+  if(!silent)addSys('Reconectando...');
+  try{room.leave();}catch(e){}
+  room=null;msgAct=metaAct=histAct=muteAct=fileAct=null;pNk={};
+  const ok=await connectNet(cfg);
+  reconnecting=false;
+  if(!ok){addSys('No se pudo reconectar');return;}
+  if(!silent)addSys('Reconectado');
+  if(aStream)room.addStream(aStream);
+  if(vStream)room.addStream(vStream);
+  updateRoomCount();
 }
 
 function updateRoomCount(){
@@ -621,6 +661,7 @@ async function enterIrc(cfg){
 
 function goBack(){
   wakeRelease();
+  stopNetWatch();
   if(ircMode){
     if(ircSocket){try{ircSocket.close();}catch(e){}ircSocket=null;}
     ircMode=false;ircUsers=new Map();ircChannel='';ircChanKey='';

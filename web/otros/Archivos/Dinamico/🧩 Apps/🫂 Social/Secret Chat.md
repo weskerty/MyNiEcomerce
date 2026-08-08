@@ -52,9 +52,11 @@ body.low-perf .cw-flash .cw-msg-b{animation:none}
 .cw-torrent-pr{font-size:.64rem;color:rgba(255,255,255,.5);margin-top:2px}
 
 #cw-iw{border-top:1px solid rgba(255,255,255,.1)}
-#cw-ep{display:none;border-top:1px solid rgba(255,255,255,.08);max-height:260px}
-#cw-ep.on{display:flex;flex-direction:column}
-#cw-ep emoji-picker{--background:transparent;--border-color:rgba(255,255,255,.1);--text-color:#fff;width:100%;height:220px}
+#cw-sp{display:none;overflow-y:auto;padding:16px 12px;flex-wrap:wrap;gap:10px;align-content:flex-start;height:52vh;max-height:52vh}
+#cw-sp.on{display:flex}
+.cw-sp-item{position:relative;width:64px;height:64px;border:none;background:rgba(255,255,255,.05);border-radius:var(--cw-r-sm);cursor:pointer;padding:0;overflow:hidden;flex-shrink:0}
+.cw-sp-item img{width:100%;height:100%;object-fit:contain}
+.cw-sp-add{width:64px;height:64px;border:1px dashed rgba(255,255,255,.3);background:none;border-radius:var(--cw-r-sm);color:#fff;font-size:1.5rem;cursor:pointer;flex-shrink:0}
 #cw-ib{display:flex;align-items:flex-end;gap:6px;padding:8px 10px}
 #cw-mi{flex:1;padding:9px 13px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:18px;color:#fff;font-size:.88rem;outline:none;resize:none;max-height:110px;line-height:1.4}
 .cw-ibtn{border:none;background:rgba(255,255,255,.07);color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
@@ -77,6 +79,8 @@ body.low-perf .cw-flash .cw-msg-b{animation:none}
 .cw-quote{border-left:3px solid var(--accent);padding:3px 8px;margin-bottom:4px;border-radius:6px;background:rgba(255,255,255,.06)}
 .cw-quote-nm{font-size:.62rem;color:var(--accent-2,#38bdf8);font-weight:600}
 .cw-quote-tx{font-size:.72rem;color:rgba(255,255,255,.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cw-msg-b.cw-sticker-msg{background:transparent;padding:0}
+.cw-sticker-msg .cw-stk{background:transparent}
 
 dialog.cw-dlg{max-width:min(360px,calc(100vw - 40px))}
 dialog.cw-dlg[open]{display:flex;flex-direction:column;gap:10px}
@@ -119,14 +123,15 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
     <div id="cw-vg"><div id="cw-vl" style="display:flex;gap:8px"></div></div>
     <div id="cw-msgs"></div>
     <div id="cw-participants"></div>
+    <div id="cw-sp"></div>
+    <input type="file" id="cw-sp-file" accept="image/webp,image/avif,image/*" style="display:none">
     <div id="cw-iw">
       <div id="cw-qb">
         <div id="cw-qb-info"><div id="cw-qb-nm"></div><div id="cw-qb-tx"></div></div>
         <button id="cw-qb-x">✕</button>
       </div>
-      <div id="cw-ep"><div id="cw-epc"><emoji-picker id="cw-emj"></emoji-picker></div></div>
       <div id="cw-ib">
-        <button class="cw-ibtn" id="cw-be">😊</button>
+        <button class="cw-ibtn" id="cw-be">🏷️</button>
         <textarea id="cw-mi" rows="1" placeholder="Mensaje..."></textarea>
         <label class="cw-ibtn" style="cursor:pointer" title="Archivo (se comparte P2P via torrent)">📎<input type="file" id="cw-fl" style="display:none"></label>
         <button class="cw-ibtn send" id="cw-sn">➤</button>
@@ -152,7 +157,7 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
   <div>
     <div class="cw-lbl">Tipo</div>
     <select class="MI" id="cw-ad-tipo">
-      <option value="room">Sala P2P (directa, sin servidor)</option>
+      <option value="room">Sala P2P</option>
       <option value="irc">Canal IRC</option>
     </select>
   </div>
@@ -244,8 +249,6 @@ function ckSet(k,v){const sec=location.protocol==='https:'?';Secure':'';document
 let nick=ckGet('cw_nick')||'';
 function saveNick(n){nick=n;ckSet('cw_nick',n);}
 
-import('https://cdn.jsdelivr.net/npm/emoji-picker-element@1/index.js').catch(e=>console.error('[emoji-picker]',e));
-
 let trysteroP=null;
 function loadTrystero(){if(!trysteroP)trysteroP=import('https://esm.sh/trystero@0.25.3');return trysteroP;}
 
@@ -253,7 +256,6 @@ let room=null,pid=null,curCfg=null;
 let pNk={},pAu={},pVStr={},pMu={};
 let aStream=null,vStream=null,muted=false,vidOn=false;
 let hist=[],domCount=0,torrentClient=null;
-let epOpen=false;
 let msgAct=null,metaAct=null,histAct=null,muteAct=null,fileAct=null;
 
 let ircSocket=null,ircMode=false,ircNick='',ircChannel='',ircChanKey='',ircUsers=new Map();
@@ -273,7 +275,16 @@ async function wakeAcquire(){
 async function wakeRelease(){
   if(wakeLock){await wakeLock.release().catch(()=>{});wakeLock=null;}
 }
-function onVisChange(){if(document.visibilityState==='visible'&&inAnyChat()&&!wakeLock)wakeAcquire();}
+let hiddenAt=0;
+function onVisChange(){
+  if(document.visibilityState==='visible'){
+    if(inAnyChat()&&!wakeLock)wakeAcquire();
+    if(hiddenAt&&Date.now()-hiddenAt>30000&&room)reconnectRoom(false);
+    hiddenAt=0;
+  }else if(document.visibilityState==='hidden'){
+    hiddenAt=Date.now();
+  }
+}
 document.addEventListener('visibilitychange',onVisChange);
 
 function showModal(id){$(id).showModal();document.body.style.overflow='hidden';}
@@ -372,24 +383,14 @@ $('cw-ad-ok').onclick=()=>{
 
 function meta(){return{nick};}
 
-async function enterRoom(cfg){
-  $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
-  pNk={};pAu={};pVStr={};pMu={};
-  hist=[];domCount=0;curCfg=cfg;
-
-  $('cw-ch-nm').textContent=cfg.label.length>26?cfg.label.slice(0,26)+'…':cfg.label;
-  $('cw-ch-sb').textContent='Conectando...';
-  $('cw-bm').style.display='';$('cw-bv').style.display='';
-  $('cw-ch-inv').style.display='';
-  $('cw-lobby').classList.add('hid');$('cw-chat').classList.add('on');
-
+async function connectNet(cfg){
   let joinRoom,selfId;
   try{({joinRoom,selfId}=await loadTrystero());}
-  catch(e){addSys('Error al cargar Trystero');return goBack();}
+  catch(e){addSys('Error al cargar Trystero');return false;}
   pid=selfId;
 
   try{room=joinRoom({appId:TRYSTERO_APP,password:cfg.roomPw||undefined,relayConfig:{redundancy:12}},cfg.roomId);}
-  catch(e){addSys('Error al unirse a la sala');return goBack();}
+  catch(e){addSys('Error al unirse a la sala');return false;}
 
   msgAct=room.makeAction('msg');
   metaAct=room.makeAction('meta');
@@ -442,11 +443,52 @@ async function enterRoom(cfg){
       if(pMu[peerId])a.muted=true;
     }
   };
+  return true;
+}
+
+async function enterRoom(cfg){
+  $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
+  pNk={};pAu={};pVStr={};pMu={};
+  hist=[];domCount=0;curCfg=cfg;
+
+  $('cw-ch-nm').textContent=cfg.label.length>26?cfg.label.slice(0,26)+'…':cfg.label;
+  $('cw-ch-sb').textContent='Conectando...';
+  $('cw-bm').style.display='';$('cw-bv').style.display='';
+  $('cw-ch-inv').style.display='';
+  $('cw-lobby').classList.add('hid');$('cw-chat').classList.add('on');
+
+  const ok=await connectNet(cfg);
+  if(!ok)return goBack();
 
   wakeAcquire();maybeShowSharePrompt();
-  addSys('Conectado como '+nick);
-  updateRoomCount();
+  addSys('Uniendose a la sala como '+nick);
+  setTimeout(()=>{if(room)updateRoomCount();},3000);
   startAudio();
+  startNetWatch();
+}
+
+let netWatchIv=null,reconnecting=false;
+function startNetWatch(){
+  stopNetWatch();
+  netWatchIv=setInterval(()=>reconnectRoom(true),240000);
+}
+function stopNetWatch(){
+  if(netWatchIv){clearInterval(netWatchIv);netWatchIv=null;}
+}
+async function reconnectRoom(silent){
+  if(!curCfg||ircMode||!room||reconnecting)return;
+  reconnecting=true;
+  const cfg=curCfg;
+  if(!silent)addSys('Reconectando...');
+  try{room.leave();}catch(e){}
+  room=null;msgAct=metaAct=histAct=muteAct=fileAct=null;pNk={};
+  const ok=await connectNet(cfg);
+  reconnecting=false;
+  if(!ok){addSys('No se pudo reconectar');return;}
+  if(!silent)addSys('Reconectado');
+  if(aStream)room.addStream(aStream);
+  if(vStream)room.addStream(vStream);
+  updateRoomCount();
 }
 
 function updateRoomCount(){
@@ -464,9 +506,8 @@ async function startAudio(){
 
 $('cw-ch-inv').onclick=async()=>{
   if(!curCfg)return;
-  const txt='ID: '+curCfg.roomId+(curCfg.roomPw?'\nContrasena: '+curCfg.roomPw:'');
-  try{await navigator.clipboard.writeText(txt);addSys('Invitacion copiada al portapapeles');}
-  catch(e){addSys('No se pudo copiar la invitacion');}
+  try{await navigator.clipboard.writeText(curCfg.roomId);addSys('ID copiado al portapapeles');}
+  catch(e){addSys('No se pudo copiar el ID');}
 };
 
 let ircTransport='ws';
@@ -499,10 +540,18 @@ function ircAddIncoming(from,text){
   const m=text.match(MAGNET_RE);
   if(m){
     const mg=$('cw-msgs');trimDom(mg);
-    const dd={magnet:m[0],name:text.replace(m[0],'').trim()||'archivo compartido',size:0,mime:'application/octet-stream'};
+    const name=text.replace(m[0],'').trim()||'archivo compartido';
+    const dd={magnet:m[0],name,size:0,mime:'application/octet-stream'};
     const{d,inner}=mkBubble(from,col,avatarUrl(from),false);
     const wrap=mk('div');inner.appendChild(wrap);
-    renderTorrentCard(dd,wrap);
+    const sm=name.match(STICKER_RE);
+    if(sm){
+      inner.classList.add('cw-sticker-msg');
+      const fname=sm[1]+'.'+sm[2];
+      loadStickerBlob(fname).then(blob=>{
+        const img=mk('img','cw-stk');img.src=URL.createObjectURL(blob);wrap.appendChild(img);
+      }).catch(()=>downloadStickerTorrent(dd,wrap,fname));
+    }else renderTorrentCard(dd,wrap);
     mg.appendChild(d);mg.scrollTop=mg.scrollHeight;
   }else{
     addMsg(from,text,false,col,avatarUrl(from));
@@ -612,6 +661,7 @@ async function enterIrc(cfg){
 
 function goBack(){
   wakeRelease();
+  stopNetWatch();
   if(ircMode){
     if(ircSocket){try{ircSocket.close();}catch(e){}ircSocket=null;}
     ircMode=false;ircUsers=new Map();ircChannel='';ircChanKey='';
@@ -625,7 +675,7 @@ function goBack(){
   pAu={};pVStr={};pMu={};muted=false;vidOn=false;
   $('cw-bm').textContent='🎤';$('cw-bv').style.opacity='1';
   $('cw-ch-inv').style.display='none';
-  closeEmoji();hidePP();
+  setView('msgs');
   $('cw-chat').classList.remove('on');$('cw-lobby').classList.remove('hid');
   renderChatList();
 }
@@ -671,20 +721,22 @@ function addVidSelf(){mkVP('me',nick+' (vos)',vStream);}
 function addVidPeer(p,s){mkVP(p,pNk[p]||p,s);}
 function rmVid(p){const v=$('cw-vp-'+p);if(v)v.remove();delete pVStr[p];if(!Object.keys(pVStr).length&&!vidOn)$('cw-vg').classList.remove('on');}
 
-let showingParticipants=false;
-function showParticipants(v){
-  showingParticipants=v;
-  $('cw-participants').classList.toggle('on',v);
-  $('cw-msgs').classList.toggle('hid',v);
-  if(v)renderPeers();
+let curView='msgs';
+function setView(v){
+  curView=v;
+  $('cw-participants').classList.toggle('on',v==='participants');
+  $('cw-sp').classList.toggle('on',v==='stickers');
+  $('cw-msgs').classList.toggle('hid',v!=='msgs');
+  if(v==='participants')renderPeers();
+  if(v==='stickers')renderStickerPicker();
 }
-function hidePP(){showParticipants(false);}
-$('cw-bp').onclick=()=>showParticipants(!showingParticipants);
+$('cw-bp').onclick=()=>setView(curView==='participants'?'msgs':'participants');
+$('cw-be').onclick=()=>setView(curView==='stickers'?'msgs':'stickers');
 
 function mentionUser(nickName){
   const mi=$('cw-mi');
   mi.value=(mi.value&&!mi.value.endsWith(' ')?mi.value+' ':mi.value)+'@'+nickName+' ';
-  showParticipants(false);
+  setView('msgs');
   mi.focus();
 }
 
@@ -745,6 +797,16 @@ function setQuote(nickName,txt,mid){
 function clearQuote(){quoting=null;$('cw-qb').classList.remove('on');}
 $('cw-qb-x').onclick=clearQuote;
 
+function renderQuoteBlock(inner,quote){
+  if(!quote)return;
+  const q=mk('div','cw-quote');
+  const qn=mk('div','cw-quote-nm');qn.textContent=quote.nick;
+  const qt=mk('div','cw-quote-tx');qt.textContent=quote.txt;
+  q.append(qn,qt);
+  if(quote.mid){q.style.cursor='pointer';q.onclick=e=>{e.stopPropagation();scrollToMsg(quote.mid);};}
+  inner.appendChild(q);
+}
+
 function scrollToMsg(mid){
   if(!mid)return;
   const el=$('cw-msgs').querySelector(`[data-mid="${CSS.escape(mid)}"]`);
@@ -760,14 +822,7 @@ function addMsg(nm,txt,me,col,av,quote,mid){
   const atBottom=mg.scrollHeight-mg.scrollTop-mg.clientHeight<80;
   trimDom(mg);
   const{d,inner}=mkBubble(nm,col,av,me,mid,txt);
-  if(quote){
-    const q=mk('div','cw-quote');
-    const qn=mk('div','cw-quote-nm');qn.textContent=quote.nick;
-    const qt=mk('div','cw-quote-tx');qt.textContent=quote.txt;
-    q.append(qn,qt);
-    if(quote.mid){q.style.cursor='pointer';q.onclick=e=>{e.stopPropagation();scrollToMsg(quote.mid);};}
-    inner.appendChild(q);
-  }
+  renderQuoteBlock(inner,quote);
   const txtEl=mk('div');txtEl.textContent=txt;inner.appendChild(txtEl);
   mg.appendChild(d);
   if(atBottom||me)mg.scrollTop=mg.scrollHeight;
@@ -809,9 +864,147 @@ $('cw-sn').onclick=sendMsg;
 $('cw-mi').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}});
 $('cw-mi').addEventListener('input',function(){this.style.height='';this.style.height=Math.min(this.scrollHeight,110)+'px';});
 
-$('cw-be').onclick=()=>{epOpen=!epOpen;$('cw-ep').classList.toggle('on',epOpen);};
-function closeEmoji(){epOpen=false;$('cw-ep').classList.remove('on');}
-$('cw-emj').addEventListener('emoji-click',e=>{$('cw-mi').value+=(e.detail.unicode||'');$('cw-mi').focus();});
+
+const STICKER_MAX=1024*1024;
+const STICKER_RE=/^sticker_([0-9a-f]{64})\.(webp|avif)$/;
+let opfsStickersDir=null,stickerMagnetCache={};
+
+async function getStickersDir(){
+  if(opfsStickersDir)return opfsStickersDir;
+  const root=await navigator.storage.getDirectory();
+  const apps=await root.getDirectoryHandle('Apps',{create:true});
+  const chat=await apps.getDirectoryHandle('Chat',{create:true});
+  opfsStickersDir=await chat.getDirectoryHandle('Stickers',{create:true});
+  return opfsStickersDir;
+}
+async function saveStickerBlob(fname,blob){
+  const dir=await getStickersDir();
+  const fh=await dir.getFileHandle(fname,{create:true});
+  const w=await fh.createWritable();await w.write(blob);await w.close();
+}
+async function loadStickerBlob(fname){
+  const dir=await getStickersDir();
+  const fh=await dir.getFileHandle(fname);
+  return await fh.getFile();
+}
+async function listStickers(){
+  const dir=await getStickersDir();
+  const names=[];
+  for await(const[name,handle]of dir.entries()){if(handle.kind==='file')names.push(name);}
+  return names;
+}
+async function hashBlob(blob){
+  const buf=await blob.arrayBuffer();
+  const h=await crypto.subtle.digest('SHA-256',buf);
+  return[...new Uint8Array(h)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function processStickerImg(file){
+  if(file.type==='image/avif'){
+    if(file.size<=STICKER_MAX)return{blob:file,ext:'avif'};
+    alert('El sticker debe pesar menos de 1MB');
+    return null;
+  }
+  const url=URL.createObjectURL(file);
+  const img=new Image();
+  await new Promise(r=>{img.onload=r;img.src=url;});
+  URL.revokeObjectURL(url);
+  const cv=mk('canvas');cv.width=256;cv.height=256;
+  cv.getContext('2d').drawImage(img,0,0,256,256);
+  let q=0.85,blob=null,tries=0;
+  do{blob=await new Promise(r=>cv.toBlob(r,'image/webp',q));q=Math.max(0.05,q-0.1);tries++;}
+  while(blob&&blob.size>STICKER_MAX&&tries<12);
+  return{blob,ext:'webp'};
+}
+async function createStickerFromFile(file){
+  const result=await processStickerImg(file);
+  if(!result||!result.blob)return;
+  const hash=await hashBlob(result.blob);
+  const fname=hash+'.'+result.ext;
+  await saveStickerBlob(fname,result.blob);
+  renderStickerPicker();
+}
+
+function stickerMimeFor(fname){return fname.endsWith('.avif')?'image/avif':'image/webp';}
+async function mkStickerThumb(fname){
+  const btn=mk('button','cw-sp-item');
+  try{
+    const blob=await loadStickerBlob(fname);
+    const img=mk('img');img.src=URL.createObjectURL(blob);btn.appendChild(img);
+  }catch(e){}
+  btn.onclick=()=>{sendSticker(fname);setView('msgs');};
+  return btn;
+}
+async function renderStickerPicker(){
+  const grid=$('cw-sp');
+  grid.innerHTML='';
+  const addBtn=mk('button','cw-sp-add');addBtn.textContent='+';
+  addBtn.onclick=()=>$('cw-sp-file').click();
+  grid.appendChild(addBtn);
+  const all=await listStickers();
+  for(const fname of all)grid.appendChild(await mkStickerThumb(fname));
+}
+$('cw-sp-file').onchange=function(){
+  const f=this.files[0];this.value='';if(!f)return;
+  createStickerFromFile(f);
+};
+
+async function downloadStickerTorrent(dd,wrap,fname){
+  const pr=mk('div','cw-torrent-pr');pr.textContent='Descargando sticker...';
+  wrap.innerHTML='';wrap.appendChild(pr);
+  try{
+    const client=await getTorrentClient();
+    client.add(dd.magnet,torrent=>{
+      torrent.on('done',async()=>{
+        const file=torrent.files[0];
+        const blob=await file.blob();
+        wrap.innerHTML='';
+        const img=mk('img','cw-stk');img.src=URL.createObjectURL(blob);wrap.appendChild(img);
+        saveStickerBlob(fname,blob).catch(()=>{});
+      });
+    });
+  }catch(e){pr.textContent='Error al descargar sticker';}
+}
+
+async function sendSticker(fname){
+  if(!room&&!ircMode)return;
+  const q=quoting?{...quoting}:undefined;
+  try{
+    const blob=await loadStickerBlob(fname);
+    const mime=stickerMimeFor(fname);
+    if(stickerMagnetCache[fname]){sendStickerMsg(fname,stickerMagnetCache[fname],blob.size,q);return;}
+    const file=new File([blob],'sticker_'+fname,{type:mime});
+    const client=await getTorrentClient();
+    client.seed(file,{name:'sticker_'+fname},torrent=>{
+      stickerMagnetCache[fname]=torrent.magnetURI;
+      sendStickerMsg(fname,torrent.magnetURI,blob.size,q);
+    });
+  }catch(e){addSys('Error al enviar sticker: '+e.message);}
+}
+function sendStickerMsg(fname,magnet,size,quote){
+  const mid=newMsgId();
+  const dd={id:fname,mid,magnet,name:'sticker_'+fname,size,mime:stickerMimeFor(fname),w:0,h:0,quote};
+  if(ircMode){
+    ircSend('PRIVMSG '+ircChannel+' :'+dd.name+' '+magnet);
+    addOwnStickerMsg(fname,dd);
+    clearQuote();
+    return;
+  }
+  if(!room)return;
+  fileAct.send(dd);
+  addOwnStickerMsg(fname,dd);
+  clearQuote();
+}
+async function addOwnStickerMsg(fname,dd){
+  const mg=$('cw-msgs');trimDom(mg);
+  const{d,inner}=mkBubble(nick,gUC(pid||'me'),avatarUrl(pid||'me'),true,dd.mid,'🏷️ sticker');
+  inner.classList.add('cw-sticker-msg');
+  renderQuoteBlock(inner,dd.quote);
+  try{
+    const blob=await loadStickerBlob(fname);
+    const img=mk('img','cw-stk');img.src=URL.createObjectURL(blob);inner.appendChild(img);
+  }catch(e){}
+  mg.appendChild(d);mg.scrollTop=mg.scrollHeight;
+}
 
 async function getTorrentClient(){
   if(torrentClient)return torrentClient;
@@ -822,19 +1015,21 @@ async function getTorrentClient(){
 }
 
 async function sendFileP2P(f){
+  const q=quoting?{...quoting}:undefined;
   try{
     const client=await getTorrentClient();
     client.seed(f,{name:f.name},torrent=>{
       if(ircMode){
         ircSend('PRIVMSG '+ircChannel+' :'+f.name+' '+torrent.magnetURI);
-        addOwnFileMsg(f,{name:f.name,size:f.size,mime:f.type||'application/octet-stream'},torrent);
+        addOwnFileMsg(f,{name:f.name,size:f.size,mime:f.type||'application/octet-stream',quote:q},torrent);
+        clearQuote();
         return;
       }
       if(!room)return;
       const id=torrent.infoHash,mid=newMsgId();
       let w=0,h=0;
-      const dd={id,mid,magnet:torrent.magnetURI,name:f.name,size:f.size,mime:f.type||'application/octet-stream',w,h};
-      const afterDims=()=>{fileAct.send(dd);addOwnFileMsg(f,dd,torrent);};
+      const dd={id,mid,magnet:torrent.magnetURI,name:f.name,size:f.size,mime:f.type||'application/octet-stream',w,h,quote:q};
+      const afterDims=()=>{fileAct.send(dd);addOwnFileMsg(f,dd,torrent);clearQuote();};
       if(/^image\//.test(f.type)){
         const u=URL.createObjectURL(f),i=new Image();
         i.onload=()=>{dd.w=i.naturalWidth;dd.h=i.naturalHeight;URL.revokeObjectURL(u);afterDims();};
@@ -855,6 +1050,7 @@ const isStk=fm=>/^image\/(avif|webp|gif|png|jpeg)$/.test(fm.mime)&&fm.size<=IM_S
 function addOwnFileMsg(file,dd,torrent){
   const mg=$('cw-msgs');trimDom(mg);
   const{d,inner}=mkBubble(nick,gUC(pid||'me'),avatarUrl(pid||'me'),true,dd.mid,'📎 '+dd.name);
+  renderQuoteBlock(inner,dd.quote);
   const wrap=mk('div');inner.appendChild(wrap);
   const url=URL.createObjectURL(file);
   if(isStk(dd)){const img=mk('img','cw-stk');img.src=url;wrap.appendChild(img);}
@@ -907,8 +1103,19 @@ async function addFileMsg(from,dd){
   const mg=$('cw-msgs');trimDom(mg);
   const nm=pNk[from]||from,col=gUC(from);
   const{d,inner}=mkBubble(nm,col,avatarUrl(from),false,dd.mid,'📎 '+dd.name);
+  const sm=dd.name&&dd.name.match(STICKER_RE);
+  if(sm)inner.classList.add('cw-sticker-msg');
+  renderQuoteBlock(inner,dd.quote);
   const wrap=mk('div');inner.appendChild(wrap);
   mg.appendChild(d);mg.scrollTop=mg.scrollHeight;
+  if(sm){
+    const fname=sm[1]+'.'+sm[2];
+    try{
+      const blob=await loadStickerBlob(fname);
+      const img=mk('img','cw-stk');img.src=URL.createObjectURL(blob);wrap.appendChild(img);
+    }catch(e){downloadStickerTorrent(dd,wrap,fname);}
+    return;
+  }
   if(dd.size<=AUTO_DL_MAX)downloadTorrent(dd,wrap);
   else renderTorrentCard(dd,wrap);
 }
