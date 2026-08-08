@@ -253,7 +253,7 @@ let trysteroP=null;
 function loadTrystero(){if(!trysteroP)trysteroP=import('https://esm.sh/trystero@0.25.3');return trysteroP;}
 
 let room=null,pid=null,curCfg=null;
-let pNk={},pAu={},pVStr={},pMu={};
+let pNk={},pAu={},pVStr={},pMu={},pendingJoinAnnounce={};
 let aStream=null,vStream=null,muted=false,vidOn=false;
 let hist=[],domCount=0,torrentClient=null;
 let msgAct=null,metaAct=null,histAct=null,muteAct=null,fileAct=null;
@@ -405,7 +405,12 @@ async function connectNet(cfg){
     if(hist.length>HIST)hist.shift();
     checkMention(d.v);
   };
-  metaAct.onMessage=(d,peerId)=>{pNk[peerId]=d.nick||pNk[peerId]||peerId.slice(0,8);renderPeers();};
+  metaAct.onMessage=(d,peerId)=>{
+    const announcing=pendingJoinAnnounce[peerId]!=null&&d.nick;
+    pNk[peerId]=d.nick||pNk[peerId]||peerId.slice(0,8);
+    renderPeers();
+    if(announcing){addSys(pNk[peerId]+' se unio');delete pendingJoinAnnounce[peerId];}
+  };
   histAct.onMessage=(d,peerId)=>{
     if(!hist.length&&d?.length)d.forEach(m=>{
       uC[m.from]=m.col||gUC(m.from);
@@ -425,8 +430,15 @@ async function connectNet(cfg){
     histAct.send(hist.slice(-HIST),peerId);
     if(aStream)room.addStream(aStream,{target:peerId});
     if(vStream)room.addStream(vStream,{target:peerId});
-    addSys((pNk[peerId]||peerId.slice(0,8))+' se unio');
     renderPeers();updateRoomCount();
+    const stamp=Date.now();
+    pendingJoinAnnounce[peerId]=stamp;
+    setTimeout(()=>{
+      if(pendingJoinAnnounce[peerId]===stamp){
+        addSys((pNk[peerId]||peerId.slice(0,8))+' se unio');
+        delete pendingJoinAnnounce[peerId];
+      }
+    },4000);
   };
   room.onPeerLeave=peerId=>{
     addSys((pNk[peerId]||peerId.slice(0,8))+' salio');
@@ -448,7 +460,7 @@ async function connectNet(cfg){
 
 async function enterRoom(cfg){
   $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
-  pNk={};pAu={};pVStr={};pMu={};
+  pNk={};pAu={};pVStr={};pMu={};pendingJoinAnnounce={};
   hist=[];domCount=0;curCfg=cfg;
 
   $('cw-ch-nm').textContent=cfg.label.length>26?cfg.label.slice(0,26)+'…':cfg.label;
@@ -467,13 +479,27 @@ async function enterRoom(cfg){
   startNetWatch();
 }
 
-let netWatchIv=null,reconnecting=false;
+let netWatchIv=null,netPingIv=null,reconnecting=false;
+async function checkNetHealth(){
+  if(!room||reconnecting||ircMode)return;
+  const peers=Object.keys(room.getPeers());
+  if(!peers.length)return;
+  let anyOk=false;
+  await Promise.all(peers.map(p=>
+    Promise.race([room.ping(p),new Promise(r=>setTimeout(r,5000))])
+      .then(ms=>{if(typeof ms==='number')anyOk=true;})
+      .catch(()=>{})
+  ));
+  if(!anyOk)reconnectRoom(true);
+}
 function startNetWatch(){
   stopNetWatch();
-  netWatchIv=setInterval(()=>reconnectRoom(true),240000);
+  netPingIv=setInterval(checkNetHealth,45000);
+  netWatchIv=setInterval(()=>reconnectRoom(true),180000);
 }
 function stopNetWatch(){
   if(netWatchIv){clearInterval(netWatchIv);netWatchIv=null;}
+  if(netPingIv){clearInterval(netPingIv);netPingIv=null;}
 }
 async function reconnectRoom(silent){
   if(!curCfg||ircMode||!room||reconnecting)return;
@@ -481,7 +507,7 @@ async function reconnectRoom(silent){
   const cfg=curCfg;
   if(!silent)addSys('Reconectando...');
   try{room.leave();}catch(e){}
-  room=null;msgAct=metaAct=histAct=muteAct=fileAct=null;pNk={};
+  room=null;msgAct=metaAct=histAct=muteAct=fileAct=null;pNk={};pendingJoinAnnounce={};
   const ok=await connectNet(cfg);
   reconnecting=false;
   if(!ok){addSys('No se pudo reconectar');return;}
@@ -667,7 +693,7 @@ function goBack(){
     ircMode=false;ircUsers=new Map();ircChannel='';ircChanKey='';
   }else if(room){
     try{room.leave();}catch(e){}
-    room=null;msgAct=metaAct=histAct=muteAct=fileAct=null;pid=null;curCfg=null;pNk={};
+    room=null;msgAct=metaAct=histAct=muteAct=fileAct=null;pid=null;curCfg=null;pNk={};pendingJoinAnnounce={};
   }
   if(aStream){aStream.getTracks().forEach(t=>t.stop());aStream=null;}
   if(vStream){vStream.getTracks().forEach(t=>t.stop());vStream=null;}
