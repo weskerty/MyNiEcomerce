@@ -269,7 +269,7 @@ async function api(method,path,body){
 }
 
 let peer=null,pid=null,curCfg=null,curRoom=null,curToken=null,pingIv=null;
-let conns={},pNk={},pAu={},pVStr={},pMu={};
+let conns={},pNk={},pAu={},pVStr={},pMu={},connectingSince={};
 let aStream=null,vStream=null,muted=false,vidOn=false;
 let hist=[],domCount=0,torrentClient=null;
 
@@ -419,6 +419,7 @@ function initPeer(){
 function onConn(conn){
   conn.on('open',()=>{
     conns[conn.peer]=conn;
+    delete connectingSince[conn.peer];
     const m=conn.metadata||{};
     pNk[conn.peer]=m.nick||conn.peer.slice(0,8);
     conn.send({t:'meta',v:meta()});
@@ -494,6 +495,7 @@ function hCall(call){
 }
 
 function discPeer(p){
+  delete connectingSince[p];
   if(!conns[p]&&!pNk[p])return;
   addSys((pNk[p]||p.slice(0,8))+' salio');
   delete conns[p];delete pNk[p];
@@ -502,9 +504,20 @@ function discPeer(p){
   refreshWaitState('Conexion perdida, esperando...');
 }
 
+function connectMissing(activePeers){
+  (activePeers||[]).forEach(p=>{
+    if(p.pid===pid||conns[p.pid])return;
+    const since=connectingSince[p.pid];
+    if(since&&Date.now()-since<20000)return;
+    connectingSince[p.pid]=Date.now();
+    pNk[p.pid]=p.nick||pNk[p.pid]||p.pid.slice(0,8);
+    onConn(peer.connect(p.pid,{metadata:meta(),reliable:true}));
+  });
+}
+
 async function enterRoom(cfg){
   $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
-  conns={};pAu={};pVStr={};pMu={};pNk={};
+  conns={};pAu={};pVStr={};pMu={};pNk={};connectingSince={};
   hist=[];domCount=0;curCfg=cfg;
 
   $('cw-ch-nm').textContent=cfg.label.length>26?cfg.label.slice(0,26)+'…':cfg.label;
@@ -524,10 +537,7 @@ async function enterRoom(cfg){
   wakeAcquire();maybeShowSharePrompt();
   addSys('Uniendose a la sala como '+nick);
 
-  (data.peers||[]).forEach(p=>{
-    pNk[p.pid]=p.nick||p.pid.slice(0,8);
-    onConn(peer.connect(p.pid,{metadata:meta(),reliable:true}));
-  });
+  connectMissing(data.peers);
   updateRoomCount();refreshWaitState('Esperando a que alguien mas se conecte...');
   startAudio();
   startPresenceLoop();
@@ -541,6 +551,7 @@ function startPresenceLoop(){
       const d=await api('POST',`/rooms/${curRoom}/ping`,{pid,token:curToken});
       const active=new Set((d.peers||[]).map(p=>p.pid));
       Object.keys(conns).forEach(p=>{if(!active.has(p))discPeer(p);});
+      connectMissing(d.peers);
       updateRoomCount();
     }catch(e){}
   },PING);
@@ -727,7 +738,7 @@ function goBack(){
     if(pid)api('DELETE',`/rooms/${curRoom}/leave`,{pid,token:curToken}).catch(()=>{});
     Object.values(conns).forEach(c=>{try{c.close();}catch(e){}});
     if(peer){try{peer.destroy();}catch(e){}peer=null;pid=null;}
-    conns={};pNk={};curCfg=null;curRoom=null;curToken=null;
+    conns={};pNk={};connectingSince={};curCfg=null;curRoom=null;curToken=null;
   }
   if(aStream){aStream.getTracks().forEach(t=>t.stop());aStream=null;}
   if(vStream){vStream.getTracks().forEach(t=>t.stop());vStream=null;}
