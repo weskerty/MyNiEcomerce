@@ -65,6 +65,11 @@ body.low-perf .cw-flash .cw-msg-b{animation:none}
 #cw-participants{display:none;overflow-y:auto;padding:16px 12px;flex-wrap:wrap;gap:16px;align-content:flex-start;height:52vh;max-height:52vh}
 #cw-participants.on{display:flex}
 #cw-msgs.hid{display:none}
+#cw-wait{display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;height:52vh;max-height:52vh}
+#cw-wait.on{display:flex}
+#cw-wait-img{width:64px;height:64px;object-fit:contain;opacity:.85}
+#cw-wait-tx{font-size:.78rem;color:rgba(255,255,255,.55)}
+.cw-ibtn:disabled,#cw-mi:disabled{opacity:.4;cursor:default}
 .cw-bubble{display:flex;flex-direction:column;align-items:center;gap:6px;width:76px;cursor:pointer;background:none;border:none;font-family:inherit}
 .cw-bubble:disabled{cursor:default}
 .cw-bubble-c{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;color:#fff}
@@ -124,6 +129,7 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
     <div id="cw-msgs"></div>
     <div id="cw-participants"></div>
     <div id="cw-sp"></div>
+    <div id="cw-wait"><img id="cw-wait-img" alt=""><div id="cw-wait-tx">Conectando...</div></div>
     <input type="file" id="cw-sp-file" accept="image/webp,image/avif,image/*" style="display:none">
     <div id="cw-iw">
       <div id="cw-qb">
@@ -161,7 +167,7 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
       <option value="irc">Canal IRC</option>
     </select>
   </div>
-  <div>
+  <div id="cw-ad-nm-wrap">
     <div class="cw-lbl">Nombre</div>
     <input class="MI" id="cw-ad-nm" placeholder="Para identificarlo en tu lista..." maxlength="40">
   </div>
@@ -276,10 +282,14 @@ async function wakeRelease(){
   if(wakeLock){await wakeLock.release().catch(()=>{});wakeLock=null;}
 }
 let hiddenAt=0;
-function onVisChange(){
+async function onVisChange(){
   if(document.visibilityState==='visible'){
     if(inAnyChat()&&!wakeLock)wakeAcquire();
-    if(hiddenAt&&Date.now()-hiddenAt>30000&&room)reconnectRoom(false);
+    if(hiddenAt&&Date.now()-hiddenAt>30000&&room&&!ircMode&&!reconnecting){
+      const peers=Object.keys(room.getPeers());
+      const ok=peers.length?await pingPeers(peers,5000):false;
+      if(!ok)reconnectRoom(false);
+    }
     hiddenAt=0;
   }else if(document.visibilityState==='hidden'){
     hiddenAt=Date.now();
@@ -332,6 +342,7 @@ function adToggleFields(){
   const irc=$('cw-ad-tipo').value==='irc';
   $('cw-ad-room-fields').style.display=irc?'none':'';
   $('cw-ad-irc-fields').style.display=irc?'':'none';
+  $('cw-ad-nm-wrap').style.display=irc?'':'none';
 }
 $('cw-ad-tipo').onchange=adToggleFields;
 function ircToggleFields(){
@@ -349,20 +360,20 @@ $('cw-new').onclick=()=>{
   $('cw-irc-gw-url').value='';$('cw-irc-gw-host').value='default';$('cw-irc-gw-port').value='6667';
   $('cw-irc-chan').value='';$('cw-irc-key').value='';
   $('cw-irc-transport').value='ws';ircToggleFields();
-  showModal('cw-m-add');setTimeout(()=>$('cw-ad-nm').focus(),80);
+  showModal('cw-m-add');setTimeout(()=>$('cw-ad-rid').focus(),80);
 };
 $('cw-ad-rid-gen').onclick=()=>{$('cw-ad-rid').value=genRoomId();};
 $('cw-ad-cx').onclick=()=>hideModal('cw-m-add');
 $('cw-ad-ok').onclick=()=>{
-  const label=$('cw-ad-nm').value.trim();
-  if(!label)return;
   const kind=$('cw-ad-tipo').value==='irc'?'irc':'room';
   const id=Date.now().toString(36)+Math.random().toString(36).slice(2,7);
   if(kind==='room'){
     const rid=$('cw-ad-rid').value.trim();
     if(!rid)return;
-    chatList.push({id,kind,label,roomId:rid,roomPw:$('cw-ad-rpw').value||''});
+    chatList.push({id,kind,label:rid,roomId:rid,roomPw:$('cw-ad-rpw').value||''});
   }else{
+    const label=$('cw-ad-nm').value.trim();
+    if(!label)return;
     const chan=$('cw-irc-chan').value.trim();
     if(!chan)return;
     const transport=$('cw-irc-transport').value==='sockjs'?'sockjs':'ws';
@@ -383,14 +394,23 @@ $('cw-ad-ok').onclick=()=>{
 
 function meta(){return{nick};}
 
+let pendingLeave=null;
 async function connectNet(cfg){
+  if(pendingLeave){try{await pendingLeave;}catch(e){}pendingLeave=null;}
   let joinRoom,selfId;
   try{({joinRoom,selfId}=await loadTrystero());}
   catch(e){addSys('Error al cargar Trystero');return false;}
   pid=selfId;
 
-  try{room=joinRoom({appId:TRYSTERO_APP,password:cfg.roomPw||undefined,relayConfig:{redundancy:12}},cfg.roomId);}
-  catch(e){addSys('Error al unirse a la sala');return false;}
+  try{
+    room=joinRoom({appId:TRYSTERO_APP,password:cfg.roomPw||undefined,relayConfig:{redundancy:12}},cfg.roomId,{
+      onJoinError:details=>{
+        console.error('trystero onJoinError',details);
+        addSys('No se pudo conectar con un participante (revisa tu red)');
+        refreshWaitState('Reintentando conexion...');
+      }
+    });
+  }catch(e){addSys('Error al unirse a la sala');return false;}
 
   msgAct=room.makeAction('msg');
   metaAct=room.makeAction('meta');
@@ -398,39 +418,46 @@ async function connectNet(cfg){
   muteAct=room.makeAction('mute');
   fileAct=room.makeAction('file');
 
-  msgAct.onMessage=(d,peerId)=>{
+  msgAct.onMessage=(d,{peerId})=>{
     const col=gUC(peerId);
     addMsg(pNk[peerId]||peerId.slice(0,8),d.v,false,col,avatarUrl(peerId),d.quote,d.mid);
     hist.push({from:peerId,nick:pNk[peerId]||peerId.slice(0,8),v:d.v,col,quote:d.quote,mid:d.mid});
     if(hist.length>HIST)hist.shift();
     checkMention(d.v);
   };
-  metaAct.onMessage=(d,peerId)=>{
+  metaAct.onMessage=(d,{peerId})=>{
     const announcing=pendingJoinAnnounce[peerId]!=null&&d.nick;
     pNk[peerId]=d.nick||pNk[peerId]||peerId.slice(0,8);
     renderPeers();
     if(announcing){addSys(pNk[peerId]+' se unio');delete pendingJoinAnnounce[peerId];}
   };
-  histAct.onMessage=(d,peerId)=>{
-    if(!hist.length&&d?.length)d.forEach(m=>{
+  histAct.onMessage=(d,{peerId})=>{
+    if(!d||!d.length)return;
+    const known=new Set(hist.map(m=>m.mid).filter(Boolean));
+    d.forEach(m=>{
+      if(m.mid&&known.has(m.mid))return;
       uC[m.from]=m.col||gUC(m.from);
       addMsg(m.nick,m.v,false,m.col,avatarUrl(m.from),m.quote,m.mid);
       hist.push(m);
+      if(m.mid)known.add(m.mid);
     });
+    if(hist.length>HIST)hist.splice(0,hist.length-HIST);
   };
-  muteAct.onMessage=(d,peerId)=>{
+  muteAct.onMessage=(d,{peerId})=>{
+    pMu[peerId]=d;
+    if(pAu[peerId])pAu[peerId].muted=d;
     const el=$('cw-vp-'+peerId);
     if(el){const n=el.querySelector('.cw-vp-n');if(n)n.textContent=(pNk[peerId]||peerId.slice(0,8))+(d?' 🔇':'');}
   };
-  fileAct.onMessage=(d,peerId)=>addFileMsg(peerId,d);
+  fileAct.onMessage=(d,{peerId})=>addFileMsg(peerId,d);
 
   room.onPeerJoin=peerId=>{
     pNk[peerId]=peerId.slice(0,8);
-    metaAct.send(meta(),peerId);
-    histAct.send(hist.slice(-HIST),peerId);
+    metaAct.send(meta(),{target:peerId});
+    histAct.send(hist.slice(-HIST),{target:peerId});
     if(aStream)room.addStream(aStream,{target:peerId});
     if(vStream)room.addStream(vStream,{target:peerId});
-    renderPeers();updateRoomCount();
+    renderPeers();updateRoomCount();refreshWaitState();
     const stamp=Date.now();
     pendingJoinAnnounce[peerId]=stamp;
     setTimeout(()=>{
@@ -445,6 +472,7 @@ async function connectNet(cfg){
     delete pNk[peerId];
     if(pAu[peerId]){pAu[peerId].pause();pAu[peerId].srcObject=null;pAu[peerId].remove();delete pAu[peerId];}
     rmVid(peerId);renderPeers();updateRoomCount();
+    refreshWaitState('Conexion perdida, esperando...');
   };
   room.onPeerStream=(stream,peerId)=>{
     if(stream.getVideoTracks().length){pVStr[peerId]=stream;addVidPeer(peerId,stream);}
@@ -468,45 +496,54 @@ async function enterRoom(cfg){
   $('cw-bm').style.display='';$('cw-bv').style.display='';
   $('cw-ch-inv').style.display='';
   $('cw-lobby').classList.add('hid');$('cw-chat').classList.add('on');
+  setWaiting(true,'Conectando...');
 
   const ok=await connectNet(cfg);
   if(!ok)return goBack();
 
   wakeAcquire();maybeShowSharePrompt();
   addSys('Uniendose a la sala como '+nick);
+  refreshWaitState('Esperando a que alguien mas se conecte...');
   setTimeout(()=>{if(room)updateRoomCount();},3000);
   startAudio();
   startNetWatch();
 }
 
-let netWatchIv=null,netPingIv=null,reconnecting=false;
-async function checkNetHealth(){
-  if(!room||reconnecting||ircMode)return;
-  const peers=Object.keys(room.getPeers());
-  if(!peers.length)return;
+let netPingIv=null,reconnecting=false,healthFailStreak=0;
+async function pingPeers(peers,timeoutMs){
   let anyOk=false;
   await Promise.all(peers.map(p=>
-    Promise.race([room.ping(p),new Promise(r=>setTimeout(r,5000))])
+    Promise.race([room.ping(p),new Promise(r=>setTimeout(r,timeoutMs))])
       .then(ms=>{if(typeof ms==='number')anyOk=true;})
       .catch(()=>{})
   ));
-  if(!anyOk)reconnectRoom(true);
+  return anyOk;
+}
+async function checkNetHealth(){
+  if(!room||reconnecting||ircMode)return;
+  const peers=Object.keys(room.getPeers());
+  if(!peers.length){healthFailStreak=0;return;}
+  const ok=await pingPeers(peers,8000);
+  if(ok){healthFailStreak=0;return;}
+  healthFailStreak++;
+  if(healthFailStreak>=2){healthFailStreak=0;reconnectRoom(true);}
 }
 function startNetWatch(){
   stopNetWatch();
+  healthFailStreak=0;
   netPingIv=setInterval(checkNetHealth,45000);
-  netWatchIv=setInterval(()=>reconnectRoom(true),180000);
 }
 function stopNetWatch(){
-  if(netWatchIv){clearInterval(netWatchIv);netWatchIv=null;}
   if(netPingIv){clearInterval(netPingIv);netPingIv=null;}
+  healthFailStreak=0;
 }
 async function reconnectRoom(silent){
   if(!curCfg||ircMode||!room||reconnecting)return;
   reconnecting=true;
   const cfg=curCfg;
   if(!silent)addSys('Reconectando...');
-  try{room.leave();}catch(e){}
+  setWaiting(true,'Reconectando...');
+  try{await room.leave();}catch(e){}
   room=null;msgAct=metaAct=histAct=muteAct=fileAct=null;pNk={};pendingJoinAnnounce={};
   const ok=await connectNet(cfg);
   reconnecting=false;
@@ -515,6 +552,7 @@ async function reconnectRoom(silent){
   if(aStream)room.addStream(aStream);
   if(vStream)room.addStream(vStream);
   updateRoomCount();
+  refreshWaitState('Esperando a que alguien mas se conecte...');
 }
 
 function updateRoomCount(){
@@ -692,7 +730,8 @@ function goBack(){
     if(ircSocket){try{ircSocket.close();}catch(e){}ircSocket=null;}
     ircMode=false;ircUsers=new Map();ircChannel='';ircChanKey='';
   }else if(room){
-    try{room.leave();}catch(e){}
+    const oldRoom=room;
+    pendingLeave=(async()=>{try{await oldRoom.leave();}catch(e){}})();
     room=null;msgAct=metaAct=histAct=muteAct=fileAct=null;pid=null;curCfg=null;pNk={};pendingJoinAnnounce={};
   }
   if(aStream){aStream.getTracks().forEach(t=>t.stop());aStream=null;}
@@ -701,6 +740,8 @@ function goBack(){
   pAu={};pVStr={};pMu={};muted=false;vidOn=false;
   $('cw-bm').textContent='🎤';$('cw-bv').style.opacity='1';
   $('cw-ch-inv').style.display='none';
+  waiting=false;
+  $('cw-mi').disabled=$('cw-sn').disabled=$('cw-fl').disabled=$('cw-bp').disabled=$('cw-be').disabled=false;
   setView('msgs');
   $('cw-chat').classList.remove('on');$('cw-lobby').classList.remove('hid');
   renderChatList();
@@ -747,14 +788,32 @@ function addVidSelf(){mkVP('me',nick+' (vos)',vStream);}
 function addVidPeer(p,s){mkVP(p,pNk[p]||p,s);}
 function rmVid(p){const v=$('cw-vp-'+p);if(v)v.remove();delete pVStr[p];if(!Object.keys(pVStr).length&&!vidOn)$('cw-vg').classList.remove('on');}
 
-let curView='msgs';
+let curView='msgs',waiting=false;
 function setView(v){
   curView=v;
-  $('cw-participants').classList.toggle('on',v==='participants');
-  $('cw-sp').classList.toggle('on',v==='stickers');
-  $('cw-msgs').classList.toggle('hid',v!=='msgs');
-  if(v==='participants')renderPeers();
-  if(v==='stickers')renderStickerPicker();
+  $('cw-participants').classList.toggle('on',!waiting&&v==='participants');
+  $('cw-sp').classList.toggle('on',!waiting&&v==='stickers');
+  $('cw-msgs').classList.toggle('hid',waiting||v!=='msgs');
+  $('cw-wait').classList.toggle('on',waiting);
+  if(!waiting&&v==='participants')renderPeers();
+  if(!waiting&&v==='stickers')renderStickerPicker();
+}
+function setWaiting(on,msg){
+  if(waiting===on)return;
+  waiting=on;
+  if(on){
+    $('cw-wait-tx').textContent=msg||'Conectando...';
+    $('cw-wait-img').src=(window.__CFG&&window.__CFG.waitAnim)||'';
+  }
+  setView(curView);
+  $('cw-mi').disabled=on;$('cw-sn').disabled=on;$('cw-fl').disabled=on;
+  $('cw-bp').disabled=on;$('cw-be').disabled=on;
+}
+function refreshWaitState(msg){
+  if(!room||ircMode)return;
+  const n=Object.keys(room.getPeers()).length;
+  if(n>0)setWaiting(false);
+  else setWaiting(true,msg);
 }
 $('cw-bp').onclick=()=>setView(curView==='participants'?'msgs':'participants');
 $('cw-be').onclick=()=>setView(curView==='stickers'?'msgs':'stickers');
