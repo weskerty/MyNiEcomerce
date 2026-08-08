@@ -464,10 +464,14 @@ function onData(d,from){
       if(!d.v||!d.v.length)break;
       const known=new Set(hist.map(m=>m.mid).filter(Boolean));
       d.v.forEach(m=>{
-        if(m.t!=='msg')return;
+        if(m.t!=='msg'&&m.t!=='file')return;
         if(m.mid&&known.has(m.mid))return;
-        uC[m.from]=m.col||gUC(m.from);
-        addMsg(m.nick,m.v,false,m.col,avatarUrl(m.from),m.quote,m.mid);
+        if(m.t==='msg'){
+          uC[m.from]=m.col||gUC(m.from);
+          addMsg(m.nick,m.v,false,m.col,avatarUrl(m.from),m.quote,m.mid);
+        }else{
+          addFileMsg(m.from,m);
+        }
         hist.push(m);
         if(m.mid)known.add(m.mid);
       });
@@ -481,7 +485,12 @@ function onData(d,from){
       if(el){const n=el.querySelector('.cw-vp-n');if(n)n.textContent=(pNk[from]||from.slice(0,8))+(d.v?' 🔇':'');}
       break;
     }
-    case'file':addFileMsg(from,d);break;
+    case'file':{
+      addFileMsg(from,d);
+      hist.push({t:'file',from,...d});
+      if(hist.length>HIST)hist.shift();
+      break;
+    }
     case'ping':{const c=conns[from];if(c&&c.open)try{c.send({t:'pong'});}catch(e){}break;}
     case'pong':pingMisses[from]=0;break;
   }
@@ -1119,6 +1128,8 @@ function sendStickerMsg(fname,magnet,size,quote){
   if(!curRoom)return;
   broadcast({t:'file',...dd});
   addOwnStickerMsg(fname,dd);
+  hist.push({t:'file',from:pid||'me',...dd});
+  if(hist.length>HIST)hist.shift();
   clearQuote();
 }
 async function addOwnStickerMsg(fname,dd){
@@ -1156,7 +1167,13 @@ async function sendFileP2P(f){
       const id=torrent.infoHash,mid=newMsgId();
       let w=0,h=0;
       const dd={id,mid,magnet:torrent.magnetURI,name:f.name,size:f.size,mime:f.type||'application/octet-stream',w,h,quote:q};
-      const afterDims=()=>{broadcast({t:'file',...dd});addOwnFileMsg(f,dd,torrent);clearQuote();};
+      const afterDims=()=>{
+        broadcast({t:'file',...dd});
+        addOwnFileMsg(f,dd,torrent);
+        hist.push({t:'file',from:pid||'me',...dd});
+        if(hist.length>HIST)hist.shift();
+        clearQuote();
+      };
       if(/^image\//.test(f.type)){
         const u=URL.createObjectURL(f),i=new Image();
         i.onload=()=>{dd.w=i.naturalWidth;dd.h=i.naturalHeight;URL.revokeObjectURL(u);afterDims();};
