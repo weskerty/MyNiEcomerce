@@ -17,7 +17,7 @@
 #gsiStOv span{color:#fff;font-size:.95em}
 </style>
 <div class="gsi-wrap">
-<h2>Instalador GSI (Fastboot)</h2>
+<h2>Instalador GSI - NO PROBADO PELIGROSO USA FASTBOOT</h2>
 <p id="gsiSt">Comprobando espacio...</p>
 
 <div id="gsiChips" class="gsi-chips">
