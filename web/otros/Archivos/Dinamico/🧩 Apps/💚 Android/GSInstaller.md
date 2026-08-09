@@ -2,17 +2,21 @@
 .gsi-warn{color:#ffb300}
 #gsiLog{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:10px 12px;height:220px;overflow-y:auto;font-size:.8em;white-space:pre-wrap;margin:10px 0;font-family:monospace}
 .gsi-optrow{display:flex;align-items:center;gap:8px;margin:6px 0;flex-wrap:wrap}
-.gsi-optst{opacity:.7;font-size:.85em}
+.gsi-chips{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.9em;opacity:.9}
 #gsiProgWrap{display:none;margin:10px 0}
 #gsiProgBar{width:100%}
 #gsiPlanBody p{margin:4px 0}
-#gsiSlotBox label{cursor:pointer;margin-right:14px}
+#gsiSlotBox{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px}
+#gsiSlotBox label{cursor:pointer}
 #gsiRomUrl{flex:1;min-width:220px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:8px 12px;color:#fff;font-family:inherit}
 .gsi-wrap h3{margin-top:22px}
+.gsi-wrap{position:relative}
+#gsiStOv{position:absolute;inset:0;z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:rgba(0,0,0,.25);border-radius:12px}
+#gsiStOv img{width:56px;height:56px}
+#gsiStOv span{color:#fff;font-size:.95em}
 </style>
 <div class="gsi-wrap">
 <h2>Instalador GSI (Fastboot)</h2>
-<p>Flashea una GSI por fastboot directo desde el navegador, via WebUSB, sin instalar nada en la PC. No parchea Magisk ni KernelSU: eso hacelo antes de subir los archivos boot/vendor_boot/init_boot ya parchados.</p>
 <p id="gsiSt">Comprobando espacio...</p>
 <p id="gsiQuota"></p>
 
@@ -45,7 +49,7 @@
 
 <h3>Particiones opcionales</h3>
 <p style="opacity:.7;font-size:.85em">Dejalas vacias si no las necesitas. vbmeta faltante puede causar bootloop en algunos dispositivos.</p>
-<div id="gsiOptBox"></div>
+<div id="gsiOptBox" class="BS1"></div>
 
 <h3>Opciones</h3>
 <label><input type="checkbox" id="gsiWipeChk"> Borrar userdata + metadata (IRREVERSIBLE)</label>
@@ -60,6 +64,8 @@
 </div>
 
 <div id="gsiLog"></div>
+
+<div id="gsiStOv"><img id="gsiStOvImg"><span id="gsiStOvTxt">Iniciando...</span></div>
 </div>
 
 <dialog id="gsiPlanDlg">
@@ -73,6 +79,10 @@
 
 <script>
 (async()=>{
+const ovEl=document.getElementById("gsiStOv"),ovImg=document.getElementById("gsiStOvImg"),ovTxt=document.getElementById("gsiStOvTxt");
+function ovShow1(t){const wa=window.__CFG?.waitAnim;if(wa)ovImg.src=wa;ovTxt.textContent=t||"Cargando...";ovEl.style.display="flex"}
+function ovHide1(){ovEl.style.display="none"}
+ovShow1("Iniciando...");
 const { FastbootDevice } = await import("https://esm.unpkg.com/android-fastboot@1.1.3?bundle&target=esnext");
 const { ZipReader, BlobReader, BlobWriter } = await import("https://esm.unpkg.com/@zip.js/zip.js@2.8.36?bundle&target=esnext");
 
@@ -106,7 +116,24 @@ async function chkQuota1(){
   }catch(e){setSt1("No se pudo comprobar el espacio: "+e.message);return false}
 }
 
+function fixEp1(){
+  const dev=D1.device;
+  if(!dev||dev.__epFixed)return;
+  dev.__epFixed=true;
+  let realIn=null;
+  try{
+    for(const iface of dev.configuration.interfaces)for(const ep of iface.alternate.endpoints){
+      if(ep.endpointNumber===D1.epIn&&ep.direction==="in")realIn=ep.packetSize;
+    }
+  }catch(e){}
+  if(realIn&&realIn!==64){
+    const orig=dev.transferIn.bind(dev);
+    dev.transferIn=(ep,len)=>orig(ep,ep===D1.epIn?realIn:len);
+  }
+}
+
 async function readAll1(){
+  fixEp1();
   const r=await D1.runCommand("getvar:all");
   GVA1={};
   (r.text||"").split("\n").forEach(ln=>{
@@ -158,52 +185,64 @@ function superFree1(){
 function renderInfo1(){
   E1("gsiDevInfo").style.display="";
   const treble=gv1("treble-enabled"),batt=gv1("battery-soc");
+  const chips=[
+    "📱 "+gv1("product"),
+    "🤖 "+gv1("version-os"),
+    "🔢 API "+gv1("first-api-level"),
+    "⚙️ "+gv1("cpu-abi"),
+    (gv1("unlocked")==="yes"?"🔓 Desbloqueado":"🔒 BLOQUEADO"),
+    "🔋 "+(batt||"?")+"%"
+  ];
   let w="";
-  if(treble!=="true")w+='<p class="gsi-warn">Este dispositivo no reporta Treble activado, la GSI puede no funcionar</p>';
-  if(batt&&+batt<30)w+='<p class="gsi-warn">Bateria por debajo del 30%, riesgo de corte durante el flasheo</p>';
-  E1("gsiDevInfo").innerHTML=
-    "<p><b>Producto:</b> "+gv1("product")+" <b>Android:</b> "+gv1("version-os")+" <b>API:</b> "+gv1("first-api-level")+" <b>ABI:</b> "+gv1("cpu-abi")+"</p>"+
-    "<p><b>Bootloader:</b> "+(gv1("unlocked")==="yes"?"desbloqueado":"BLOQUEADO")+" <b>Bateria:</b> "+(batt||"no reportada")+"%</p>"+w;
+  if(treble!=="true")w+='<p class="gsi-warn">⚠️ No reporta Treble activado, la GSI puede no funcionar</p>';
+  if(batt&&+batt<30)w+='<p class="gsi-warn">⚠️ Bateria baja, riesgo de corte durante el flasheo</p>';
+  E1("gsiDevInfo").innerHTML='<div class="gsi-chips">'+chips.map(c=>"<span>"+c+"</span>").join("")+"</div>"+w;
 }
 
 function detectSlot1(){
   const sa=h2d1(gv1("partition-size:system_a")),sb=h2d1(gv1("partition-size:system_b"));
   const box=E1("gsiSlotBox");box.innerHTML="";
   if(sa>0&&sb>0){
-    const p=document.createElement("p");p.textContent="Elegi el slot destino:";box.appendChild(p);
+    const p=document.createElement("span");p.textContent="🔀 Slot:";box.appendChild(p);
     ["a","b"].forEach(s=>{
       const lbl=document.createElement("label");
       const rad=document.createElement("input");rad.type="radio";rad.name="gsiSlot";rad.value=s;rad.checked=s===SLOT1;
       rad.addEventListener("change",()=>{SLOT1=s;renderOptParts1()});
-      lbl.appendChild(rad);lbl.append(" Slot "+s.toUpperCase());
+      lbl.appendChild(rad);lbl.append(" "+s.toUpperCase());
       box.appendChild(lbl);
     });
   }else if(sa>0){
-    ISVAB1=true;SLOT1="a";box.textContent="Particion unica detectada (VAB), usando slot A";
+    ISVAB1=true;SLOT1="a";box.textContent="💿 Particion unica (VAB), slot A";
   }else if(sb>0){
-    ISVAB1=true;SLOT1="b";box.textContent="Particion unica detectada (VAB), usando slot B";
+    ISVAB1=true;SLOT1="b";box.textContent="💿 Particion unica (VAB), slot B";
   }else{
     box.innerHTML='<p class="gsi-warn">No se encontro particion system, no se puede continuar</p>';
   }
 }
 
+const OPICO1={vbmeta:"🔐",vbmeta_system:"🔐",vbmeta_vendor:"🔐",vbmeta_boot:"🔐",boot:"🥾",vendor_boot:"🚚",recovery:"🛠️"};
+
 function renderOptParts1(){
   const box=E1("gsiOptBox");box.innerHTML="";
   [...VPARTS1,...OPARTS1].forEach(p=>{
     if(!hasPart1(p+"_"+SLOT1))return;
-    const row=document.createElement("div");row.className="gsi-optrow";
-    const btn=document.createElement("a");btn.className="back-button";btn.textContent="Elegir "+p+".img";
-    const st=document.createElement("span");st.className="gsi-optst";
-    if(FILES1[p])st.textContent=FILES1[p].name;
+    const a=document.createElement("a");a.className="BS2";
+    const ico=document.createElement("span");ico.className="BS4";
+    const pt=document.createElement("p");pt.className="BS5";pt.textContent=p;
     const inp=document.createElement("input");inp.type="file";inp.accept=".img";inp.style.display="none";
+    function refresh(){
+      if(FILES1[p]){ico.textContent="✅";a.title=FILES1[p].name}
+      else{ico.textContent=OPICO1[p]||"📄";a.title="Elegir "+p+".img"}
+    }
     inp.addEventListener("change",()=>{
       if(!inp.files[0])return;
       FILES1[p]=inp.files[0];
-      st.textContent=inp.files[0].name;
+      refresh();
     });
-    btn.addEventListener("click",()=>inp.click());
-    row.appendChild(btn);row.appendChild(st);row.appendChild(inp);
-    box.appendChild(row);
+    a.addEventListener("click",()=>inp.click());
+    refresh();
+    a.appendChild(ico);a.appendChild(pt);a.appendChild(inp);
+    box.appendChild(a);
   });
 }
 
@@ -443,18 +482,23 @@ E1("gsiBtnUnlock").addEventListener("click",async()=>{
 
 E1("gsiBtnCnn").addEventListener("click",async()=>{
   setEn1(E1("gsiBtnCnn"),false);
+  ovShow1("Conectando...");
   setSt1("Selecciona el dispositivo en el dialogo de Chrome...");
   try{
     D1=new FastbootDevice();
     await D1.connect();
     D1.waitForDisconnect().then(()=>{setSt1("Dispositivo desconectado");setEn1(E1("gsiBtnCnn"),true)});
     setSt1("Conectado, leyendo informacion...");
+    ovShow1("Leyendo informacion...");
     await readAllRetry1(5,1000);
+    ovShow1("Entrando a fastbootd...");
     await ensureFbd1();
     afterConnect1();
   }catch(e){
     setSt1("Error: "+e.message);
     setEn1(E1("gsiBtnCnn"),true);
+  }finally{
+    ovHide1();
   }
 });
 
@@ -466,5 +510,6 @@ if(cont)cont.addEventListener("contentUnload",()=>{
 
 const ok=await chkQuota1();
 if(ok){E1("gsiConnBox").style.display="";setSt1("Listo para conectar")}
+ovHide1();
 })();
 </script>
