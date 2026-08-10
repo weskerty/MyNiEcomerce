@@ -1,5 +1,3 @@
-@import url('https://tetunori.github.io/fluent-emoji-webfont/dist/FluentEmojiColor.css');
-
 /* fuente */
 @font-face {
     font-family: 'Comfortaa';
@@ -34,6 +32,13 @@
     --r-sm: 12px;
     --r-md: 16px;
     --r-lg: 24px;
+
+    /* valores compartidos entre low-perf y prefers-reduced-motion */
+    --rdm-bg: #1e1f25;
+    --rdm-border: rgba(255,255,255,.08);
+    --rdm-va-bg: rgba(var(--accent-rgb),.4);
+    --rdm-back-bg: rgba(102,102,102,.4);
+    --rdm-shadow: 0 2px 4px rgba(0,0,0,.2);
 }
 .BOTON-L1{display:flex;flex-direction:column;align-items:center;gap:0;padding:7px 11px;background:linear-gradient(135deg,rgba(255,255,255,.25) 0%,rgba(255,255,255,.05) 50%,rgba(255,255,255,.15) 100%);border:1px solid rgba(255,255,255,.2);border-bottom:1px solid rgba(255,255,255,.05);border-radius:var(--r-lg);box-shadow:0 8px 32px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(255,255,255,.05);text-decoration:none;color:#fff;transition:transform .3s ease,background .3s ease,box-shadow .3s ease;cursor:pointer;overflow:hidden;position:relative}
 .BOTON-L1::before{content:'';position:absolute;top:0;left:-50%;width:200%;height:50%;background:linear-gradient(180deg,rgba(255,255,255,.15) 0%,transparent 100%);pointer-events:none;z-index:1}
@@ -240,7 +245,7 @@ th {
     padding: 20px;
     max-width: 800px;
     margin: 50px auto -40px;
-    box-shadow: 0 0 10px rgba(0,0,0,9), inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(255,255,255,.05);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(255,255,255,.05);
     position: relative;
     z-index: 1;
     overflow-wrap: break-word;
@@ -584,22 +589,20 @@ section hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:14px 0;
 .lk-dc:hover{background:rgba(88,101,242,.12)}
 .lk-dc::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z'/%3E%3C/svg%3E")}
 
-/* reduced motion y low perf: deben desactivar exactamente lo mismo */
+/* reduced motion y low perf desactivan lo mismo, valores en :root */
 @media (prefers-reduced-motion: reduce) {
 
     #disqus-container,
     .content {
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
-        background: #1e1f25 !important;
+        background: var(--rdm-bg) !important;
     }
-    .content { border-color: rgba(255,255,255,0.08) !important }
+    .content { border-color: var(--rdm-border) !important }
     .view-all-button,
-    .back-button { backdrop-filter: none !important; -webkit-backdrop-filter: none !important }
-    .view-all-button { background: rgba(var(--accent-rgb),0.4) }
-    .back-button { background: rgba(102,102,102,0.4) }
-    .view-all-button,
-    .back-button { box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important }
+    .back-button { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: var(--rdm-shadow) !important }
+    .view-all-button { background: var(--rdm-va-bg) }
+    .back-button { background: var(--rdm-back-bg) }
     .view-all-button:hover,
     .back-button:hover,
     blockquote:hover { transform: none !important }
@@ -609,15 +612,13 @@ body.low-perf #disqus-container,
 body.low-perf .content {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    background: #1e1f25 !important;
+    background: var(--rdm-bg) !important;
 }
-body.low-perf .content { border-color: rgba(255,255,255,0.08) !important }
+body.low-perf .content { border-color: var(--rdm-border) !important }
 body.low-perf .view-all-button,
-body.low-perf .back-button { backdrop-filter: none !important; -webkit-backdrop-filter: none !important }
-body.low-perf .view-all-button { background: rgba(var(--accent-rgb),0.4) }
-body.low-perf .back-button { background: rgba(102,102,102,0.4) }
-body.low-perf .view-all-button,
-body.low-perf .back-button { box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important }
+body.low-perf .back-button { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: var(--rdm-shadow) !important }
+body.low-perf .view-all-button { background: var(--rdm-va-bg) }
+body.low-perf .back-button { background: var(--rdm-back-bg) }
 body.low-perf .view-all-button:hover,
 body.low-perf .back-button:hover,
 body.low-perf blockquote:hover { transform: none !important }
@@ -650,10 +651,10 @@ backdrop-filter:blur(6px);
 -webkit-backdrop-filter:blur(6px);
 }
 @media (prefers-reduced-motion: reduce){
-dialog{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#1e1f25!important}
+dialog{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--rdm-bg)!important}
 dialog::backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 }
-body.low-perf dialog{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:#1e1f25!important}
+body.low-perf dialog{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--rdm-bg)!important}
 body.low-perf dialog::backdrop{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 
 /* inputs base */

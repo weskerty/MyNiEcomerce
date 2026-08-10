@@ -15,14 +15,14 @@ const NB_ROUTES=[
 const night=(h=>h>=19||h<5)(new Date().getHours());
 const grSrc=IMG_BASE+(night?"first_quarter_moon_face_animated.avif":"sun_with_face_animated.avif");
 
+function CB_H1(){
+  try{return decodeURIComponent(location.hash.slice(1))}catch(e){return location.hash.slice(1)}
+}
 function isHidden(){
-  let h;try{h=decodeURIComponent(location.hash.slice(1))}catch(e){h=location.hash.slice(1)}
-  return HIDE_PATHS.some(p=>h.includes(p));
+  return HIDE_PATHS.some(p=>CB_H1().includes(p));
 }
 function getRouteWA(){
-  const hash=location.hash;if(!hash)return null;
-  let dec;try{dec=decodeURIComponent(hash)}catch(e){dec=hash}
-  const mNM=dec.match(/NM=([^-\s]+)/);
+  const mNM=CB_H1().match(/NM=([^-\s]+)/);
   return mNM?mNM[1]:null;
 }
 
@@ -247,7 +247,7 @@ function syncNB(){
 
   if(_grShown)return;
 
-  const route=_nbRoute();
+  const route=CB_H1();
   [_iL,_iR].forEach((el,i)=>{
     const r=i===0?_rL:_rR;
     const wasActive=el.classList.contains('cb-na');
@@ -302,10 +302,6 @@ function syncNB(){
   }
 }
 
-function _nbRoute(){
-  let h;try{h=decodeURIComponent(location.hash.slice(1))}catch(e){h=location.hash.slice(1)}
-  return h;
-}
 
 if(!isHidden()){
   _grShown=true;
@@ -552,8 +548,7 @@ modal.addEventListener("click",ev=>{
 });
 
 function initProduct(){
-  const hash=location.hash;if(!hash)return;
-  let dec;try{dec=decodeURIComponent(hash)}catch(e){dec=hash}
+  const dec=CB_H1();if(!dec)return;
   const mID=dec.match(/ID=([^-\s]+)/),mPC=dec.match(/PC=([^-\s]+)/),mNB=dec.match(/NB=([^.]+)/),mNM=dec.match(/NM=([^-\s]+)/),mCD=dec.match(/CD=([^-\s]+)/),mCM=dec.match(/CM=([^-\s]+)/),mCH=dec.match(/CH=([^-\s]+)/),mTM=dec.match(/TM=(\d{2}\.\d{2}\.\d{4}\.\d{2}\.\d{2})/);
   if(!(mID&&mPC&&mNB&&mNM))return;
   let cs=document.getElementById("cs");
