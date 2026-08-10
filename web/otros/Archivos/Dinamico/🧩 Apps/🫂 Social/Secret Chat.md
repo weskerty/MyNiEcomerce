@@ -340,6 +340,18 @@ function clickChat(c){
 function routeChat(c){c.kind==='irc'?enterIrc(c):enterRoom(c);}
 $('cw-pf-cx').onclick=()=>hideModal('cw-m-perfil');
 
+function gHA(){
+  const h=window.location.hash;
+  if(!h)return'';
+  const pts=h.substring(1).split('#');
+  return pts.length>1?decodeURIComponent(pts[1]):'';
+}
+function tryAutoJoinDM(){
+  const m=gHA().match(/^dm=([^:]+):(.+)$/);
+  if(!m)return;
+  clickChat({id:'dm_'+m[1],kind:'room',label:'Chat directo',roomId:m[1],roomPw:m[2]});
+}
+
 function adToggleFields(){
   const irc=$('cw-ad-tipo').value==='irc';
   $('cw-ad-room-fields').style.display=irc?'none':'';
@@ -1330,6 +1342,6 @@ function teardown(){
 if(contentEl)contentEl.addEventListener('contentUnload',teardown,{once:true});
 window.addEventListener('beforeunload',teardown);
 
-renderChatList();checkPendingShare();
+renderChatList();checkPendingShare();tryAutoJoinDM();
 }();
 </script>
