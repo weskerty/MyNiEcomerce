@@ -93,12 +93,20 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
 .cw-lbl{font-size:.7rem;color:rgba(255,255,255,.5);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
 .cw-row{display:flex;gap:8px}
 .cw-row .Bp{flex:1}
+
+#cw-near-list{display:none;flex-direction:column;gap:6px;padding:6px 10px 14px;max-height:62vh;overflow-y:auto}
+#cw-near-list.on{display:flex}
+.cw-room-in{border-color:rgba(var(--accent-rgb),.5);background:rgba(var(--accent-rgb),.08)}
+
+#cw-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.97);border:1px solid rgba(255,255,255,.15);color:#fff;padding:10px 22px;border-radius:12px;font-size:.85em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999;max-width:80vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+#cw-toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 </style>
 
 <div id="chatw">
   <div id="cw-lobby">
     <div id="cw-lb-h">
       <h2>Chats</h2>
+      <button class="B Bi" id="cw-near" title="Cerca de mi" style="background:rgba(255,255,255,.08);border:none;color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer">🗺️</button>
       <button class="B Bi" id="cw-new" title="Agregar chat" style="background:rgba(255,255,255,.08);border:none;color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer">+</button>
     </div>
     <div id="cw-share-banner">Seleccionar chat para enviar</div>
@@ -106,6 +114,7 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
       <input id="cw-si" placeholder="Buscar chats..." type="search">
     </div>
     <div id="cw-list"><div id="cw-empty">Sin chats guardados. Toca + para agregar uno.</div></div>
+    <div id="cw-near-list"></div>
   </div>
 
   <div id="cw-chat">
@@ -145,6 +154,8 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
     </div>
   </div>
 </div>
+
+<div id="cw-toast"></div>
 
 <dialog class="cw-dlg" id="cw-m-perfil">
   <h3>Tu nombre</h3>
@@ -278,7 +289,47 @@ let aStream=null,vStream=null,muted=false,vidOn=false;
 let hist=[],domCount=0,torrentClient=null;
 
 let ircSocket=null,ircMode=false,ircNick='',ircChannel='',ircChanKey='',ircUsers=new Map();
-function inAnyChat(){return!!curRoom||ircMode;}
+function inAnyChat(){return!!curRoom||!!curDM||ircMode;}
+
+// --- DM directo (Cerca de mi): conexion P2P sin sala, sin bcrypt, sin espera inicial ---
+let curDM=null,dmQueue=[],dmReconnectTries={},pendingDM={};
+
+// --- geolocalizacion: se comparte apenas se abre el chat, igual que clima.md ---
+let _GU=window.GeoUtils||null,_GUp=null;
+function loadGU(){
+  if(_GU)return Promise.resolve(_GU);
+  if(_GUp)return _GUp;
+  _GUp=new Promise(res=>{
+    const s=document.createElement('script');
+    s.src='web/scripts/Otros/Geo/GeoUtils.js';
+    s.onload=()=>{_GU=window.GeoUtils;res(_GU)};
+    s.onerror=()=>res(null);
+    document.head.appendChild(s);
+  });
+  return _GUp;
+}
+const GEO_MIN_PING_MS=45000,GEO_MOVE_KM=0.15,GEO_CELL_PREC=4;
+let geoToken=null,geoLastPingAt=0,geoLastPos=null,geoWatchId=null,geoPingTimer=null,myGeoPos=null;
+let nearbyPeople=[],nearShown=false;
+
+function distBucket(km){
+  if(km<1)return'<1km';
+  if(km<3)return'1-3km';
+  if(km<10)return'3-10km';
+  if(km<30)return'10-30km';
+  return'30-60km';
+}
+
+let _toastTimer=null,_toastAction=null;
+function showToast(msg,action){
+  const t=$('cw-toast');
+  t.textContent=msg;
+  _toastAction=action||null;
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer=setTimeout(()=>t.classList.remove('show'),4000);
+}
+$('cw-toast').onclick=()=>{if(_toastAction)_toastAction();$('cw-toast').classList.remove('show');};
 
 let chatList=[];
 function loadChatList(){try{return JSON.parse(localStorage.getItem('cw_chats')||'[]');}catch{return[];}}
@@ -310,9 +361,21 @@ function genRoomId(){return'sala-'+Math.random().toString(36).slice(2,8);}
 function renderChatList(){
   const fv=$('cw-si').value.trim().toLowerCase();
   const arr=chatList.filter(c=>!fv||(c.label||'').toLowerCase().includes(fv));
+  const incoming=Object.entries(pendingDM);
   const lb=$('cw-list');
-  if(!arr.length){lb.innerHTML='<div id="cw-empty">Sin chats guardados. Toca + para agregar uno.</div>';return;}
+  if(!incoming.length&&!arr.length){lb.innerHTML='<div id="cw-empty">Sin chats guardados. Toca + para agregar uno.</div>';return;}
   lb.innerHTML='';
+  incoming.forEach(([fromPid,p])=>{
+    const d=mk('div','cw-room cw-room-in');
+    const ic=mk('div','cw-room-ic');ic.textContent='💬';
+    const tx=mk('div','cw-room-tx');
+    const nm=mk('div','cw-room-nm');nm.textContent=p.nick;
+    const sb=mk('div','cw-room-sb');sb.textContent='Quiere chatear con vos';
+    tx.append(nm,sb);
+    d.append(ic,tx);
+    d.onclick=()=>openIncomingDM(fromPid);
+    lb.appendChild(d);
+  });
   arr.forEach(c=>{
     const d=mk('div','cw-room');
     const ic=mk('div','cw-room-ic');ic.textContent=c.kind==='irc'?'🌐':(c.roomPw?'🔒':'🔗');
@@ -329,6 +392,88 @@ function renderChatList(){
 }
 $('cw-si').oninput=renderChatList;
 
+function renderNearby(){
+  const wrap=$('cw-near-list');
+  wrap.innerHTML='';
+  if(!nearbyPeople.length){wrap.innerHTML='<div id="cw-empty">Nadie cerca por ahora</div>';return;}
+  nearbyPeople.forEach(p=>{
+    const d=mk('div','cw-room');
+    const ic=mk('div','cw-room-ic');ic.textContent='🧑';
+    const tx=mk('div','cw-room-tx');
+    const nm=mk('div','cw-room-nm');nm.textContent=p.nick;
+    const sb=mk('div','cw-room-sb');sb.textContent=distBucket(p.km);
+    tx.append(nm,sb);
+    d.append(ic,tx);
+    d.onclick=()=>openDM(p.id,p.nick);
+    wrap.appendChild(d);
+  });
+}
+
+$('cw-near').onclick=()=>{
+  nearShown=!nearShown;
+  $('cw-list').style.display=nearShown?'none':'';
+  $('cw-near-list').classList.toggle('on',nearShown);
+  $('cw-near').style.background=nearShown?'rgba(74,222,128,.25)':'rgba(255,255,255,.08)';
+  if(nearShown)renderNearby();
+};
+
+async function geoPing(lat,lon){
+  myGeoPos={lat,lon};
+  try{
+    await initPeer();
+    const d=await api('POST','/ping',{pid,token:geoToken,nick:nick||'Anonimo',lat,lon});
+    geoToken=d.token;
+    geoLastPingAt=Date.now();
+    geoLastPos=myGeoPos;
+    fetchNearby();
+  }catch(e){}
+}
+
+function onGeoUpdate(pos){
+  const lat=pos.coords.latitude,lon=pos.coords.longitude;
+  const now=Date.now();
+  const moved=geoLastPos&&_GU?_GU.haversine(geoLastPos.lat,geoLastPos.lon,lat,lon):Infinity;
+  if(!geoLastPos||(now-geoLastPingAt>=GEO_MIN_PING_MS&&moved>=GEO_MOVE_KM)){
+    geoPing(lat,lon);
+  }else{
+    myGeoPos={lat,lon};
+  }
+}
+
+function startGeoShare(){
+  if(geoWatchId!=null||!navigator.geolocation)return;
+  geoWatchId=navigator.geolocation.watchPosition(onGeoUpdate,()=>{},{enableHighAccuracy:false,maximumAge:30000,timeout:15000});
+  geoPingTimer=setInterval(()=>{if(myGeoPos)fetchNearby();},60000);
+  localStorage.setItem('UBI','1');
+}
+
+function stopGeoShare(){
+  if(geoWatchId!=null){navigator.geolocation.clearWatch(geoWatchId);geoWatchId=null;}
+  if(geoPingTimer){clearInterval(geoPingTimer);geoPingTimer=null;}
+  if(geoToken&&pid){api('DELETE','/leave',{pid,token:geoToken}).catch(()=>{});geoToken=null;}
+}
+
+async function fetchNearby(){
+  if(!myGeoPos||!_GU)return;
+  const cell=_GU.encode(myGeoPos.lat,myGeoPos.lon,GEO_CELL_PREC);
+  let list;
+  try{list=await api('GET','/nearby?cell='+cell);}catch(e){return;}
+  nearbyPeople=list.filter(p=>p.id!==pid).map(p=>({...p,km:_GU.haversine(myGeoPos.lat,myGeoPos.lon,p.lat,p.lon)}));
+  nearbyPeople.sort((a,b)=>a.km-b.km);
+  if(nearShown)renderNearby();
+}
+
+function initGeoSharing(){
+  if(!navigator.geolocation)return;
+  loadGU().then(()=>{
+    navigator.geolocation.getCurrentPosition(
+      p=>{startGeoShare();onGeoUpdate(p);},
+      ()=>{},
+      {timeout:10000,maximumAge:60000}
+    );
+  });
+}
+
 function clickChat(c){
   if(!nick){
     $('cw-pf-nk').value='';showModal('cw-m-perfil');
@@ -339,18 +484,6 @@ function clickChat(c){
 }
 function routeChat(c){c.kind==='irc'?enterIrc(c):enterRoom(c);}
 $('cw-pf-cx').onclick=()=>hideModal('cw-m-perfil');
-
-function gHA(){
-  const h=window.location.hash;
-  if(!h)return'';
-  const pts=h.substring(1).split('#');
-  return pts.length>1?decodeURIComponent(pts[1]):'';
-}
-function tryAutoJoinDM(){
-  const m=gHA().match(/^dm=([^:]+):(.+)$/);
-  if(!m)return;
-  clickChat({id:'dm_'+m[1],kind:'room',label:'Chat directo',roomId:m[1],roomPw:m[2]});
-}
 
 function adToggleFields(){
   const irc=$('cw-ad-tipo').value==='irc';
@@ -407,6 +540,7 @@ $('cw-ad-ok').onclick=()=>{
 };
 
 function meta(){return{nick};}
+function dmMeta(){return{nick,dm:true};}
 
 function initPeer(){
   return new Promise((res,rej)=>{
@@ -416,7 +550,10 @@ function initPeer(){
       peer=new Peer();
       peer.once('open',id=>{
         pid=id;
-        peer.on('connection',conn=>onConn(conn));
+        peer.on('connection',conn=>{
+          if(conn.metadata&&conn.metadata.dm)onIncomingDM(conn);
+          else onConn(conn);
+        });
         peer.on('call',call=>{
           const s=new MediaStream();
           if(aStream)aStream.getTracks().forEach(t=>s.addTrack(t));
@@ -424,7 +561,7 @@ function initPeer(){
           call.answer(s.getTracks().length?s:new MediaStream());
           hCall(call);
         });
-        peer.on('disconnected',()=>{if(curRoom)peer.reconnect();});
+        peer.on('disconnected',()=>{if(curRoom||geoWatchId!=null)peer.reconnect();});
         res();
       });
       peer.once('error',e=>rej(e));
@@ -448,6 +585,102 @@ function onConn(conn){
   conn.on('data',d=>onData(d,conn.peer));
   conn.on('close',()=>discPeer(conn.peer));
   conn.on('error',()=>discPeer(conn.peer));
+}
+
+function wireDMConn(conn,otherPid){
+  const onOpen=()=>{
+    dmReconnectTries[otherPid]=0;
+    delete connectingSince[otherPid];
+    try{conn.send({t:'meta',v:meta()});}catch(e){}
+    if(curDM===otherPid&&dmQueue.length){dmQueue.forEach(d=>{try{conn.send(d);}catch(e){}});dmQueue=[];}
+    if(curDM===otherPid)$('cw-ch-sb').textContent='Conectado';
+    refreshWaitState();
+  };
+  if(conn.open)onOpen();else conn.on('open',onOpen);
+  conn.on('data',d=>onData(d,otherPid));
+  conn.on('close',()=>{discPeer(otherPid);if(curDM===otherPid)scheduleDMReconnect(otherPid);});
+  conn.on('error',()=>{discPeer(otherPid);if(curDM===otherPid)scheduleDMReconnect(otherPid);});
+}
+
+function scheduleDMReconnect(otherPid){
+  const tries=(dmReconnectTries[otherPid]||0)+1;
+  if(tries>3)return;
+  dmReconnectTries[otherPid]=tries;
+  setTimeout(()=>{
+    if(curDM!==otherPid||!peer||peer.destroyed)return;
+    const conn=peer.connect(otherPid,{metadata:dmMeta(),reliable:true});
+    conns[otherPid]=conn;
+    wireDMConn(conn,otherPid);
+  },2000*tries);
+}
+
+function enterDMUI(otherPid,otherNick){
+  $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
+  conns={};pAu={};pVStr={};pMu={};pNk={};connectingSince={};pingMisses={};
+  hist=[];domCount=0;curCfg=null;curRoom=null;curDM=otherPid;dmQueue=[];
+  pNk[otherPid]=otherNick;
+  $('cw-ch-nm').textContent=otherNick.length>26?otherNick.slice(0,26)+'…':otherNick;
+  $('cw-ch-sb').textContent='Conectando...';
+  $('cw-bm').style.display='';$('cw-bv').style.display='';
+  $('cw-ch-inv').style.display='none';
+  $('cw-bp').style.display='none';
+  $('cw-lobby').classList.add('hid');$('cw-chat').classList.add('on');
+}
+
+async function startDM(otherPid,otherNick){
+  enterDMUI(otherPid,otherNick);
+  try{await initPeer();}catch(e){addSys('Error al conectar');return goBack();}
+  const conn=peer.connect(otherPid,{metadata:dmMeta(),reliable:true});
+  conns[otherPid]=conn;
+  wireDMConn(conn,otherPid);
+  addSys('Conectando con '+otherNick+'...');
+  refreshWaitState();
+  wakeAcquire();
+}
+
+function openDM(otherPid,otherNick){
+  if(!nick){
+    $('cw-pf-nk').value='';showModal('cw-m-perfil');
+    $('cw-pf-ok').onclick=()=>{const n=$('cw-pf-nk').value.trim();if(!n)return;saveNick(n);hideModal('cw-m-perfil');startDM(otherPid,otherNick);};
+    return;
+  }
+  startDM(otherPid,otherNick);
+}
+
+function onIncomingDM(conn){
+  const fromPid=conn.peer;
+  const fromNick=(conn.metadata&&conn.metadata.nick)||fromPid.slice(0,8);
+  if(curDM===fromPid){
+    conns[fromPid]=conn;
+    wireDMConn(conn,fromPid);
+    refreshWaitState();
+    return;
+  }
+  pendingDM[fromPid]={conn,nick:fromNick};
+  conn.on('close',()=>{if(pendingDM[fromPid]&&pendingDM[fromPid].conn===conn){delete pendingDM[fromPid];renderChatList();}});
+  conn.on('error',()=>{if(pendingDM[fromPid]&&pendingDM[fromPid].conn===conn){delete pendingDM[fromPid];renderChatList();}});
+  showToast(fromNick+' quiere chatear con vos',()=>openIncomingDM(fromPid));
+  renderChatList();
+}
+
+function openIncomingDM(fromPid){
+  const p=pendingDM[fromPid];
+  if(!p)return;
+  const proceed=()=>{
+    delete pendingDM[fromPid];
+    enterDMUI(fromPid,p.nick);
+    conns[fromPid]=p.conn;
+    wireDMConn(p.conn,fromPid);
+    addSys('Conectado con '+p.nick);
+    refreshWaitState();
+    wakeAcquire();
+  };
+  if(!nick){
+    $('cw-pf-nk').value='';showModal('cw-m-perfil');
+    $('cw-pf-ok').onclick=()=>{const n=$('cw-pf-nk').value.trim();if(!n)return;saveNick(n);hideModal('cw-m-perfil');proceed();};
+    return;
+  }
+  proceed();
 }
 
 function callPeer(p){
@@ -550,7 +783,7 @@ function discPeer(p){
   delete conns[p];delete pNk[p];
   if(pAu[p]){pAu[p].pause();pAu[p].srcObject=null;pAu[p].remove();delete pAu[p];}
   rmVid(p);renderPeers();updateRoomCount();
-  refreshWaitState('Conexion perdida, esperando...');
+  refreshWaitState(curDM?'Reconectando...':'Conexion perdida, esperando...');
 }
 
 function connectMissing(activePeers){
@@ -787,8 +1020,11 @@ function goBack(){
   }else if(curRoom){
     if(pid)api('DELETE',`/rooms/${curRoom}/leave`,{pid,token:curToken}).catch(()=>{});
     Object.values(conns).forEach(c=>{try{c.close();}catch(e){}});
-    if(peer){try{peer.destroy();}catch(e){}peer=null;pid=null;}
     conns={};pNk={};connectingSince={};pingMisses={};curCfg=null;curRoom=null;curToken=null;
+  }else if(curDM){
+    const c=conns[curDM];
+    if(c){try{c.close();}catch(e){}}
+    conns={};pNk={};connectingSince={};pingMisses={};curDM=null;dmQueue=[];
   }
   if(aStream){aStream.getTracks().forEach(t=>t.stop());aStream=null;}
   if(vStream){vStream.getTracks().forEach(t=>t.stop());vStream=null;}
@@ -796,6 +1032,7 @@ function goBack(){
   pAu={};pVStr={};pMu={};muted=false;vidOn=false;
   $('cw-bm').textContent='🎤';$('cw-bv').style.opacity='1';
   $('cw-ch-inv').style.display='none';
+  $('cw-bp').style.display='';
   waiting=false;
   $('cw-mi').disabled=$('cw-sn').disabled=$('cw-fl').disabled=$('cw-bp').disabled=$('cw-be').disabled=false;
   setView('msgs');
@@ -862,10 +1099,10 @@ function setWaiting(on,msg){
   $('cw-bp').disabled=on;$('cw-be').disabled=on;
 }
 function refreshWaitState(msg){
-  if(!curRoom||ircMode)return;
+  if(ircMode||(!curRoom&&!curDM))return;
   const n=Object.keys(conns).length;
   if(n>0)setWaiting(false);
-  else setWaiting(true,msg);
+  else setWaiting(true,msg||(curDM?'Reconectando...':'Esperando a que alguien mas se conecte...'));
 }
 $('cw-bp').onclick=()=>setView(curView==='participants'?'msgs':'participants');
 $('cw-be').onclick=()=>setView(curView==='stickers'?'msgs':'stickers');
@@ -986,11 +1223,18 @@ function sendMsg(){
     $('cw-mi').value='';$('cw-mi').style.height='';
     return;
   }
-  if(!curRoom)return;
+  if(!curRoom&&!curDM)return;
   const col=gUC(pid||'me');
   const q=quoting?{...quoting}:undefined;
   const mid=newMsgId();
-  broadcast({t:'msg',v,quote:q,mid});
+  const data={t:'msg',v,quote:q,mid};
+  if(curDM){
+    const c=conns[curDM];
+    if(c&&c.open){try{c.send(data);}catch(e){}}
+    else dmQueue.push(data);
+  }else{
+    broadcast(data);
+  }
   addMsg(nick,v,true,col,avatarUrl(pid||'me'),q,mid);
   hist.push({t:'msg',from:pid||'me',nick,v,col,quote:q,mid});
   if(hist.length>HIST)hist.shift();
@@ -1114,7 +1358,7 @@ async function downloadStickerTorrent(dd,wrap,fname){
 }
 
 async function sendSticker(fname){
-  if(!curRoom&&!ircMode)return;
+  if(!curRoom&&!curDM&&!ircMode)return;
   const q=quoting?{...quoting}:undefined;
   try{
     const blob=await loadStickerBlob(fname);
@@ -1137,7 +1381,7 @@ function sendStickerMsg(fname,magnet,size,quote){
     clearQuote();
     return;
   }
-  if(!curRoom)return;
+  if(!curRoom&&!curDM)return;
   broadcast({t:'file',...dd});
   addOwnStickerMsg(fname,dd);
   hist.push({t:'file',from:pid||'me',...dd});
@@ -1175,7 +1419,7 @@ async function sendFileP2P(f){
         clearQuote();
         return;
       }
-      if(!curRoom)return;
+      if(!curRoom&&!curDM)return;
       const id=torrent.infoHash,mid=newMsgId();
       let w=0,h=0;
       const dd={id,mid,magnet:torrent.magnetURI,name:f.name,size:f.size,mime:f.type||'application/octet-stream',w,h,quote:q};
@@ -1333,6 +1577,8 @@ $('cw-share-discard').onclick=clearPendingShare;
 const contentEl=document.getElementById('content');
 function teardown(){
   if(inAnyChat())goBack();
+  stopGeoShare();
+  if(peer){try{peer.destroy();}catch(e){}peer=null;pid=null;}
   document.querySelectorAll('dialog.cw-dlg').forEach(dlg=>{if(dlg.open)dlg.close();});
   document.body.style.overflow='';
   document.removeEventListener('visibilitychange',onVisChange);
@@ -1342,6 +1588,7 @@ function teardown(){
 if(contentEl)contentEl.addEventListener('contentUnload',teardown,{once:true});
 window.addEventListener('beforeunload',teardown);
 
-renderChatList();checkPendingShare();tryAutoJoinDM();
+renderChatList();checkPendingShare();
+initPeer().then(initGeoSharing).catch(()=>{});
 }();
 </script>
