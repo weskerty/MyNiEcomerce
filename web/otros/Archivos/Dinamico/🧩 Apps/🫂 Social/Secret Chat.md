@@ -395,7 +395,7 @@ $('cw-si').oninput=renderChatList;
 function renderNearby(){
   const wrap=$('cw-near-list');
   wrap.innerHTML='';
-  if(!nearbyPeople.length){wrap.innerHTML='<div id="cw-empty">Nadie cerca por ahora</div>';return;}
+  if(!nearbyPeople.length){wrap.innerHTML='<div class="cw-empty-near" style="text-align:center;padding:26px;color:rgba(255,255,255,.5);font-size:.85rem">Nadie cerca por ahora</div>';return;}
   nearbyPeople.forEach(p=>{
     const d=mk('div','cw-room');
     const ic=mk('div','cw-room-ic');ic.textContent='🧑';
