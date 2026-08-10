@@ -1,7 +1,6 @@
 core.js permite arrastrar enlaces, incluso galeria e img
-core.js aveces no sube bien, en ios mierda krj
 
-galeria botones podrian ser propios elementos, el ultimo cuadro mostrar mas, cuando este en el siguiente el primer cuadro sea atras.
+
 galerias no clic derecho igual que core.ja heredar funcion, galerias imagen fallback si avif no funciona.
 
 core.js que añada inyeccion extra arriba de cada contenido cargado con env como un estilo o similar, inyecta html ahi, o como un plugin. asi tener barra de navegacion personalizable sin editar core.
