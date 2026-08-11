@@ -268,7 +268,10 @@ const avatarUrl=pidLike=>`https://picsum.photos/seed/${seedHash(String(pidLike))
 function ckGet(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
 function ckSet(k,v){const sec=location.protocol==='https:'?';Secure':'';document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=31536000;SameSite=Strict${sec}`;}
 let nick=ckGet('cw_nick')||'';
-function saveNick(n){nick=n;ckSet('cw_nick',n);}
+function saveNick(n){
+  nick=n;ckSet('cw_nick',n);
+  if(geoWatchId!=null&&myGeoPos)geoPing(myGeoPos.lat,myGeoPos.lon);
+}
 
 let peerP=null;
 function loadPeerJS(){if(!peerP)peerP=import('https://esm.sh/peerjs@1.5.5').then(m=>m.Peer);return peerP;}
@@ -291,8 +294,8 @@ let hist=[],domCount=0,torrentClient=null;
 let ircSocket=null,ircMode=false,ircNick='',ircChannel='',ircChanKey='',ircUsers=new Map();
 function inAnyChat(){return!!curRoom||!!curDM||ircMode;}
 
-// --- DM directo (Cerca de mi): conexion P2P sin sala, sin bcrypt, sin espera inicial ---
-let curDM=null,dmQueue=[],dmReconnectTries={},pendingDM={};
+// --- DM directo (Cerca de mi): conexion P2P sin sala, sin bcrypt, reusa el reloj de espera de las salas ---
+let curDM=null,dmReconnectTries={},pendingDM={};
 
 // --- geolocalizacion: se comparte apenas se abre el chat, igual que clima.md ---
 let _GU=window.GeoUtils||null,_GUp=null;
@@ -308,7 +311,7 @@ function loadGU(){
   });
   return _GUp;
 }
-const GEO_MIN_PING_MS=45000,GEO_MOVE_KM=0.15,GEO_CELL_PREC=4;
+const GEO_MIN_PING_MS=15000,GEO_MOVE_KM=0.15,GEO_CELL_PREC=4;
 let geoToken=null,geoLastPingAt=0,geoLastPos=null,geoWatchId=null,geoPingTimer=null,myGeoPos=null;
 let nearbyPeople=[],nearShown=false;
 
@@ -447,7 +450,7 @@ function startGeoShare(){
     if(!myGeoPos)return;
     if(Date.now()-geoLastPingAt>=GEO_MIN_PING_MS)geoPing(myGeoPos.lat,myGeoPos.lon);
     else fetchNearby();
-  },60000);
+  },20000);
   localStorage.setItem('UBI','1');
 }
 
@@ -471,7 +474,14 @@ function initGeoSharing(){
   if(!navigator.geolocation)return;
   loadGU().then(()=>{
     navigator.geolocation.getCurrentPosition(
-      p=>{startGeoShare();onGeoUpdate(p);},
+      p=>{
+        if(!nick){
+          $('cw-pf-nk').value='';showModal('cw-m-perfil');
+          $('cw-pf-ok').onclick=()=>{const n=$('cw-pf-nk').value.trim();if(!n)return;saveNick(n);hideModal('cw-m-perfil');startGeoShare();onGeoUpdate(p);};
+          return;
+        }
+        startGeoShare();onGeoUpdate(p);
+      },
       ()=>{},
       {timeout:10000,maximumAge:60000}
     );
@@ -593,12 +603,15 @@ function onConn(conn){
 
 function wireDMConn(conn,otherPid){
   const onOpen=()=>{
+    conns[otherPid]=conn;
     dmReconnectTries[otherPid]=0;
     delete connectingSince[otherPid];
     try{conn.send({t:'meta',v:meta()});}catch(e){}
     try{conn.send({t:'hist',v:hist.slice(-HIST)});}catch(e){}
-    if(curDM===otherPid&&dmQueue.length){dmQueue.forEach(d=>{try{conn.send(d);}catch(e){}});dmQueue=[];}
-    if(curDM===otherPid)$('cw-ch-sb').textContent='Conectado';
+    if(curDM===otherPid){
+      addSys((pNk[otherPid]||otherPid.slice(0,8))+' se conecto');
+      $('cw-ch-sb').textContent='Conectado';
+    }
     refreshWaitState();
   };
   if(conn.open)onOpen();else conn.on('open',onOpen);
@@ -622,7 +635,7 @@ function scheduleDMReconnect(otherPid){
 function enterDMUI(otherPid,otherNick){
   $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
   conns={};pAu={};pVStr={};pMu={};pNk={};connectingSince={};pingMisses={};
-  hist=[];domCount=0;curCfg=null;curRoom=null;curDM=otherPid;dmQueue=[];
+  hist=[];domCount=0;curCfg=null;curRoom=null;curDM=otherPid;
   pNk[otherPid]=otherNick;
   $('cw-ch-nm').textContent=otherNick.length>26?otherNick.slice(0,26)+'…':otherNick;
   $('cw-ch-sb').textContent='Conectando...';
@@ -634,12 +647,10 @@ function enterDMUI(otherPid,otherNick){
 
 async function startDM(otherPid,otherNick){
   enterDMUI(otherPid,otherNick);
+  setWaiting(true,'Conectando...');
   try{await initPeer();}catch(e){addSys('Error al conectar');return goBack();}
   const conn=peer.connect(otherPid,{metadata:dmMeta(),reliable:true});
-  conns[otherPid]=conn;
   wireDMConn(conn,otherPid);
-  addSys('Conectando con '+otherNick+'...');
-  refreshWaitState();
   wakeAcquire();
 }
 
@@ -674,10 +685,8 @@ function openIncomingDM(fromPid){
   const proceed=()=>{
     delete pendingDM[fromPid];
     enterDMUI(fromPid,p.nick);
-    conns[fromPid]=p.conn;
+    setWaiting(true,'Conectando...');
     wireDMConn(p.conn,fromPid);
-    addSys('Conectado con '+p.nick);
-    refreshWaitState();
     wakeAcquire();
   };
   if(!nick){
@@ -1029,7 +1038,8 @@ function goBack(){
   }else if(curDM){
     const c=conns[curDM];
     if(c){try{c.close();}catch(e){}}
-    conns={};pNk={};connectingSince={};pingMisses={};curDM=null;dmQueue=[];
+    delete dmReconnectTries[curDM];
+    conns={};pNk={};connectingSince={};pingMisses={};curDM=null;
   }
   if(aStream){aStream.getTracks().forEach(t=>t.stop());aStream=null;}
   if(vStream){vStream.getTracks().forEach(t=>t.stop());vStream=null;}
@@ -1232,14 +1242,7 @@ function sendMsg(){
   const col=gUC(pid||'me');
   const q=quoting?{...quoting}:undefined;
   const mid=newMsgId();
-  const data={t:'msg',v,quote:q,mid};
-  if(curDM){
-    const c=conns[curDM];
-    if(c&&c.open){try{c.send(data);}catch(e){}}
-    else dmQueue.push(data);
-  }else{
-    broadcast(data);
-  }
+  broadcast({t:'msg',v,quote:q,mid});
   addMsg(nick,v,true,col,avatarUrl(pid||'me'),q,mid);
   hist.push({t:'msg',from:pid||'me',nick,v,col,quote:q,mid});
   if(hist.length>HIST)hist.shift();
