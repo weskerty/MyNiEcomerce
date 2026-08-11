@@ -443,7 +443,11 @@ function onGeoUpdate(pos){
 function startGeoShare(){
   if(geoWatchId!=null||!navigator.geolocation)return;
   geoWatchId=navigator.geolocation.watchPosition(onGeoUpdate,()=>{},{enableHighAccuracy:false,maximumAge:30000,timeout:15000});
-  geoPingTimer=setInterval(()=>{if(myGeoPos)fetchNearby();},60000);
+  geoPingTimer=setInterval(()=>{
+    if(!myGeoPos)return;
+    if(Date.now()-geoLastPingAt>=GEO_MIN_PING_MS)geoPing(myGeoPos.lat,myGeoPos.lon);
+    else fetchNearby();
+  },60000);
   localStorage.setItem('UBI','1');
 }
 
