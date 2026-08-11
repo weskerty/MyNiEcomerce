@@ -596,6 +596,7 @@ function wireDMConn(conn,otherPid){
     dmReconnectTries[otherPid]=0;
     delete connectingSince[otherPid];
     try{conn.send({t:'meta',v:meta()});}catch(e){}
+    try{conn.send({t:'hist',v:hist.slice(-HIST)});}catch(e){}
     if(curDM===otherPid&&dmQueue.length){dmQueue.forEach(d=>{try{conn.send(d);}catch(e){}});dmQueue=[];}
     if(curDM===otherPid)$('cw-ch-sb').textContent='Conectado';
     refreshWaitState();
