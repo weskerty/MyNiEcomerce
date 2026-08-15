@@ -29,6 +29,7 @@
   <meta name="apple-mobile-web-app-title" content="Che Agana">
   <meta name="color-scheme" content="only dark">
 
+  <link rel="preconnect" href="https://tetunori.github.io" crossorigin>
   <link rel="stylesheet" href="https://tetunori.github.io/fluent-emoji-webfont/dist/FluentEmojiColor.css">
   <link rel="stylesheet" href="web/estilo.css">
 
@@ -60,6 +61,32 @@ if(DW1_EN){
   </video>
 
   <div class="content" id="content"></div>
+
+  <script type="application/json" id="app-config">
+  {
+    "home": "web/blogs.html",
+    "exit": "web/otros/Archivos/HTML/centralPage.html",
+    "404": "web/404.html",
+    "historyDepth": 2,
+    "cacheSize": 3,
+    "videoTimeout": 5000,
+    "loadingDelay": 1000,
+    "mobBreakpoint": 768,
+    "waitAnim": "web/otros/Archivos/Imagenes/Permanente/wait.avif",
+    "waitAnimDelay": 180,
+    "disqus": "amigos-steam",
+    "pluginsPath": "web/scripts/",
+    "plugins": ["chatBanner&Share.js", "Galerias.js", "install.js", "perfBench.js"],
+    "bg": [
+      { "month": 0,  "type": "image", "src": "web/otros/Archivos/Imagenes/pexels5834608AñoNuevo.avif" },
+      { "month": 1,  "type": "image", "src": "web/otros/Archivos/Imagenes/pexels-henkephotoart-29775986.jpg" },
+      { "month": 8,  "type": "video", "src": "https://github.com/user-attachments/assets/fd54742d-a7e9-49f4-b268-da16689918c1" },
+      { "month": 9,  "type": "image", "src": "web/otros/Archivos/Imagenes/pexels-vilas-5688958.jpg" },
+      { "month": 10, "type": "image", "src": "web/otros/Archivos/Imagenes/benjamin-shurance-W7zJGqbp6Xw-unsplash.jpg" },
+      { "month": 11, "type": "video", "src": "https://github.com/user-attachments/assets/b746d91d-55ae-4679-add6-fcf71e05dcd4" }
+    ]
+  }
+  </script>
 
   <pwa-install use-local-storage manifest-url="manifest.json"></pwa-install>
 

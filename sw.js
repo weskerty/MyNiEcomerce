@@ -1,4 +1,4 @@
-const V='v112';
+const V='v113';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -9,7 +9,6 @@ const PRE=[
 'web/scripts/Otros/MarkDownIT/markdownItAnchor.umd.min.js',
 'web/scripts/Otros/MiniSearch/index.js',
 'web/scripts/Otros/core.js',
-'web/scripts/config.json',
 'web/es.html',
 'web/estilo.css',
 'web/search.html',
@@ -285,7 +284,7 @@ self.addEventListener('fetch',e=>{
     return;
   }
 
-  if(url.pathname.endsWith('.md')){
+  if(url.pathname.endsWith('.md')||url.pathname.endsWith('.html')){
     e.respondWith((async()=>{
       const c=await caches.open(V);
       const cc=await c.match(e.request);
