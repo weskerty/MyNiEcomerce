@@ -2,7 +2,7 @@
 <script>
 setTimeout(function(){
   var a=document.createElement('a');
-  a.href='#web/otros/Archivos/HTML/Grupos.html';
+  a.href='#web/otros/Archivos/Dinamico/Ambiente/Extintos/extintos.html';
   document.body.appendChild(a);
   a.click();
   a.remove();

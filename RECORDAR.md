@@ -14,7 +14,7 @@ Mostrar instalador https://khmyznikov.com/pwa-install/ asi no se tiene que descu
 
 animacion paso pestañas captura en low device desactivar. low device sera el mismo que reducemotion
 
-
+discus comentarios, etiqueta dentro de contenido dinamico para que core.js cargue comentario aislado por publicacion
 
 404 hacer busqueda en search. No completado necesita cambios en core.js
 
