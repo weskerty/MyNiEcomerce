@@ -1,6 +1,7 @@
 Los politicos en su infinita sabiduria proponen para que se enseñe de manera forzada una religion en especifico en todas las escuelas
 
 # Una religion que niega la Existencia de la Virgen Maria.
+![wallpaper-](web/otros/Archivos/Imagenes/ForzarunaReligion/wallpaper-.jpg)
 
 # Paraguay es un pais mayormente de catolicos (mas del 70% de la poblacion)
 
@@ -10,3 +11,4 @@ Creer en la Virgen Maria debe ser libertad de cada uno, no una obligacion de otr
 
 ## Por que Esta mal que impongan una Religion?
 
+![EstadoLaic](web/otros/Archivos/Imagenes/ForzarunaReligion/EstadoLaic.jpg)
