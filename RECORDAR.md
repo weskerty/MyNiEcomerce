@@ -1,3 +1,5 @@
+index.html: pwa-install se auto-muestra solo al cargar la pagina (sin manual-apple/manual-chrome), con su texto generico por defecto ("Progressive web application..."). Google esta indexando ese texto como snippet en vez de la meta description real, porque el auto-popup renderiza antes de que el contenido real de #content termine de cargar. install.js ya llama a pi.showDialog(true) manualmente desde el boton #PI, asi que el auto-show es redundante con el flujo que ya existe. Arreglo: agregar manual-apple manual-chrome al tag pwa-install.
+
 core.js permite arrastrar enlaces, incluso galeria e img
 
 

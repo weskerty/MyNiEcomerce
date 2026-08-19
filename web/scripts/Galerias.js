@@ -458,9 +458,12 @@ async function pCont(c,isSw){
   if(ac.signal.aborted)return;c.__fetchAC=null;
   if(!IDX[j]){c.innerHTML='<p>Error</p>';return}
   const idxRaw=IDX[j][key];
-  if(!idxRaw||!idxRaw._all.length){if(isSw)decorate(c);return}
-  const idx=fCD0(idxRaw);
-  if(!idx._all.length){if(isSw)decorate(c);return}
+  const idx=fCD0(idxRaw||{_all:[],f:{}});
+  if(!idx._all.length){
+    if(isSw){decorate(c);c.parentNode.style.display='none';}
+    else c.style.display='none';
+    return;
+  }
   const wantBtns=!isSw&&!fFixed&&idx.f&&Object.keys(idx.f).length>1;
   if(!wantBtns){
     decorate(c);
