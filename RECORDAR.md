@@ -43,6 +43,14 @@ Hacer data.json de blog separado. (Ya Existe Logica solo falta editar Blog.html 
 Blog cargaria su propio notify/blog.js
 Esto para evitar evitar mezclarse con el peso de data.json de los productos. Actualmente esto no es un problema, data.json pesa muy poco.
 
+search.html indexa MiniSearch (ms.addAll) desde cero en cada visita. Con catalogo chico (hoy 16 items) es gratis, pero benchmark con 50000 items sinteticos dio ~630ms de indexado y ~53MB de heap en Node (no en celular real, capaz 4x-8x mas lento en gama baja). Si data.json crece de verdad, precalcular el indice server-side y servirlo como archivo estatico mitigaria eso.
+
+Backend (ServidorPOS/scripts): agregar 4MinisearchCache.js al pipeline, entre 3litemode.js y 9git.js (el runner de x.js ya ordena por numero de archivo, no requiere tocar x.js). Debe correr despues de 2converter.js (que ya deja data.json fresco al final de su IIFE siempre, sea cual sea CONVERT_MODE). Puede reusar web/scripts/Otros/MiniSearch/index.js via require() directo, no hace falta instalar minisearch como dependencia del backend.
+
+Ojo con esto antes de implementar: search.html carga MiniSearch del CDN pineado solo a version mayor (minisearch@7, no @7.2.0 exacto). El indice serializado (toJSON/loadJSON) es sensible a la version interna, asi que backend y navegador tienen que usar la misma version exacta o el indice precompilado podria fallar en el cliente de forma silenciosa. Fijar la version del CDN antes de precompilar.
+
+Escribir el resultado como archivo nuevo (ej. web/Dinamico/search-index.json), no reemplaza data.json. La ventana de frescura seria la misma que ya tiene data.json hoy (pipeline corre al iniciar el server y cada 90 min, sin trigger on-demand por aprobacion de producto).
+
 # 
 sw.js notifica pero no descarga el elemento, haciendo que al entrar en notificacion solo lleve al inicio, no a la nueva entrada
 
