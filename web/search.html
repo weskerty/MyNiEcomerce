@@ -91,10 +91,10 @@ function loadMS(cb){
 function buildItems(galleries){
   Object.entries(galleries).forEach(([cat,val])=>{
     if(Array.isArray(val)){
-      val.forEach(p=>{const f=fN(p);allItems.push({id:_idc++,name:nN(f),cat,sub:'',img:p,md:mL(p),hasNB:/NB=/.test(f)})});
+      val.forEach(p=>{const f=fN(p);allItems.push({id:_idc++,name:nN(f),cat,sub:'',img:p,hasNB:/NB=/.test(f),soldOut:/CD=0(?!\d)/.test(f)})});
     }else{
       Object.entries(val).forEach(([sub,arr])=>{
-        arr.forEach(p=>{const f=fN(p);allItems.push({id:_idc++,name:nN(f),cat,sub,img:p,md:mL(p),hasNB:/NB=/.test(f)})});
+        arr.forEach(p=>{const f=fN(p);allItems.push({id:_idc++,name:nN(f),cat,sub,img:p,hasNB:/NB=/.test(f),soldOut:/CD=0(?!\d)/.test(f)})});
       });
     }
   });
@@ -105,17 +105,17 @@ function buildItemsFromIdx(idx){
     const sec=idx[cat];
     if(Object.keys(sec.f).length){
       for(const sub in sec.f){
-        sec.f[sub].forEach(p=>{const f=fN(p);allItems.push({id:_idc++,name:nN(f),cat,sub,img:p,md:mL(p),hasNB:/NB=/.test(f)})});
+        sec.f[sub].forEach(p=>{const f=fN(p);allItems.push({id:_idc++,name:nN(f),cat,sub,img:p,hasNB:/NB=/.test(f),soldOut:/CD=0(?!\d)/.test(f)})});
       }
     }else{
-      sec._all.forEach(p=>{const f=fN(p);allItems.push({id:_idc++,name:nN(f),cat,sub:'',img:p,md:mL(p),hasNB:/NB=/.test(f)})});
+      sec._all.forEach(p=>{const f=fN(p);allItems.push({id:_idc++,name:nN(f),cat,sub:'',img:p,hasNB:/NB=/.test(f),soldOut:/CD=0(?!\d)/.test(f)})});
     }
   }
 }
 
 function mkItem(it){
   const a=document.createElement('a');
-  a.className='sh-it';a.href=it.md;
+  a.className='sh-it';a.href=mL(it.img);
   const img=document.createElement('img');
   img.src=it.img;img.alt=it.name;img.loading='lazy';img.decoding='async';img.width=58;img.height=58;
   const info=document.createElement('div');info.className='sh-it-info';
@@ -189,14 +189,14 @@ function paintThen(cb){
 function doSearch(){
   const q=inp.value.trim();
   clr.classList.toggle('sh-vis',q.length>0);
-  if(!q){curList=allItems.filter(it=>it.hasNB);curPg=0;renderPage(curList,0,false);return;}
+  if(!q){curList=allItems.filter(it=>it.hasNB&&!it.soldOut);curPg=0;renderPage(curList,0,false);return;}
   const ids=new Set(ms.search(q).map(x=>x.id));
   curList=allItems.filter(it=>ids.has(it.id));
   curPg=0;renderPage(curList,0,false);
 }
 
 function initMS(){
-  ms=new MiniSearch({fields:['name','cat','sub'],storeFields:['name','cat','sub','img','md'],searchOptions:{prefix:true,fuzzy:.3,combineWith:'OR'}});
+  ms=new MiniSearch({fields:['name','cat','sub'],searchOptions:{prefix:true,fuzzy:.3,combineWith:'OR'}});
   ms.addAll(allItems);
   ready=true;
   const q0=gHA();
@@ -207,7 +207,7 @@ function initMS(){
     curList=allItems.filter(it=>ids.has(it.id));
     curPg=0;renderPage(curList,0,true);
   }else{
-    curList=allItems.filter(it=>it.hasNB);curPg=0;
+    curList=allItems.filter(it=>it.hasNB&&!it.soldOut);curPg=0;
     renderPage(curList,0,false);
   }
 }
@@ -284,7 +284,7 @@ inp.addEventListener('input',()=>{
 
 clr.addEventListener('click',()=>{
   inp.value='';clr.classList.remove('sh-vis');inp.focus();
-  if(ready){curList=allItems.filter(it=>it.hasNB);curPg=0;renderPage(curList,0,false);}
+  if(ready){curList=allItems.filter(it=>it.hasNB&&!it.soldOut);curPg=0;renderPage(curList,0,false);}
 });
 
 function onCL(){

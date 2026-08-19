@@ -51,6 +51,8 @@ document.head.appendChild(_S);
 const IO=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){IO.unobserve(x.target);_observed.delete(x.target);x.target.__ld&&x.target.__ld()}})},{rootMargin:'300px'});
 let _hidden=false;document.addEventListener('visibilitychange',()=>{_hidden=document.hidden});
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
+const _CD0=/CD=0(?!\d)/;
+function fCD0(idx){return{_all:idx._all.filter(p=>!_CD0.test(p)),f:Object.fromEntries(Object.entries(idx.f).map(([k,v])=>[k,v.filter(p=>!_CD0.test(p))]))}}
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1]:n}
 function mL(p){return p.replace(/\.[^.]+$/,'.md')}
 const NAV_NEXT='Siguiente, mostrar mas',NAV_PREV='Anterior, mostrar anteriores';
@@ -117,11 +119,6 @@ async function lGD(j){
     return JC[j];
   }).catch(()=>{JC[j]=null;IDX[j]=null;delete JC[j+'_p'];return null});
   return JC[j+'_p'];
-}
-function rI(j,k,f){
-  const idx=IDX[j];if(!idx||!idx[k])return[];
-  const sec=idx[k];
-  return f?(sec.f[f]||[]):sec._all;
 }
 const _ric=window.requestIdleCallback||(cb=>setTimeout(cb,1));
 
@@ -460,19 +457,21 @@ async function pCont(c,isSw){
   await lGD(j);
   if(ac.signal.aborted)return;c.__fetchAC=null;
   if(!IDX[j]){c.innerHTML='<p>Error</p>';return}
-  const idx=IDX[j][key];
-  if(!idx||!idx._all.length){if(isSw)decorate(c);return}
+  const idxRaw=IDX[j][key];
+  if(!idxRaw||!idxRaw._all.length){if(isSw)decorate(c);return}
+  const idx=fCD0(idxRaw);
+  if(!idx._all.length){if(isSw)decorate(c);return}
   const wantBtns=!isSw&&!fFixed&&idx.f&&Object.keys(idx.f).length>1;
   if(!wantBtns){
     decorate(c);
-    const imgs=fFixed?rI(j,key,fFixed):idx._all;
+    const imgs=fFixed?(idx.f[fFixed]||[]):idx._all;
     c.innerHTML='';if(!imgs.length)return;
     if(isSw){mkCarousel(c,imgs);return}
     const grid=mkGrid(c,imgs);
     if(grid){
       c.__stop=grid.stop;
       if(!_geo){
-        const cb=()=>grid.setImgs(fFixed?rI(j,key,fFixed):idx._all);
+        const cb=()=>grid.setImgs(fFixed?(idx.f[fFixed]||[]):idx._all);
         _reRender.push(cb);
         const prevStop=c.__stop;
         c.__stop=()=>{const i=_reRender.indexOf(cb);if(i>-1)_reRender.splice(i,1);if(prevStop)prevStop()};
