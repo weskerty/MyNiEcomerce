@@ -1,7 +1,10 @@
-Los politicos en su infinita sabiduria proponen para que se enseñe de manera forzada una religion en especifico en todas las escuelas
+
+## Los politicos en su infinita sabiduria proponen para que se enseñe de manera forzada una religion en especifico en todas las escuelas
 
 # Una religion que niega la Existencia de la Virgen Maria.
 ![wallpaper-](web/otros/Archivos/Imagenes/ForzarunaReligion/wallpaper-.jpg)
+
+Fuente https://www.rdn.com.py/2026/08/18/el-cartismo-avanza-con-el-dia-de-la-iglesia-evangelica/
 
 # Paraguay es un pais mayormente de catolicos (mas del 70% de la poblacion)
 
