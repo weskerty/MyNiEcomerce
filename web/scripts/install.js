@@ -1,4 +1,12 @@
 !function(){
+const PI_K='PI_SEEN1';
+if(!localStorage.getItem(PI_K)){
+  localStorage.setItem(PI_K,'1');
+}else if(!window.__ENV?.pwa){
+  customElements.whenDefined('pwa-install').then(()=>{
+    document.querySelector('pwa-install')?.showDialog(true);
+  });
+}
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();
   window._PWA=e;
