@@ -83,8 +83,8 @@ function gHA(){
 
 function loadMS(cb){
   const s=document.createElement('script');
-  s.src=MS_CDN;s.onload=cb;
-  s.onerror=()=>{const f=document.createElement('script');f.src=MS_LOCAL;f.onload=cb;document.head.appendChild(f)};
+  s.src=MS_LOCAL;s.onload=cb;
+  s.onerror=()=>{const f=document.createElement('script');f.src=MS_CDN;f.onload=cb;document.head.appendChild(f)};
   document.head.appendChild(s);
 }
 
