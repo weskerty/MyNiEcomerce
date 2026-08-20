@@ -292,6 +292,7 @@ function onCL(){
   allItems=[];ready=false;ms=null;curList=[];curPg=0;_idc=0;
   document.addEventListener('contentUnload',onCU,{once:true});
   init();
+  inp.focus();
 }
 function onCU(){document.removeEventListener('contentLoaded',onCL);}
 document.addEventListener('contentLoaded',onCL);

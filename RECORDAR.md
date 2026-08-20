@@ -9,12 +9,8 @@ galerias no clic derecho igual que core.ja heredar funcion, galerias imagen fall
 
 core.js que añada inyeccion extra arriba de cada contenido cargado con env como un estilo o similar, inyecta html ahi, o como un plugin. asi tener barra de navegacion personalizable sin editar core.
 
-index.html no script puede probar una funcion script especifica de navegadores 2026, si no esta disponible manda a LiteWeb/NavegadoresModernos.html
+RESUELTO: index.html ya prueba compatibilidad de navegador (optional chaining via new Function) y manda a web/LiteMode/index.html si falla, mas el noscript descomentado para JS desactivado.
 
-
-frases script añadir nuevo, añadir numeracion, titulo, descripcion y auto busqueda.
-
-Mostrar instalador https://khmyznikov.com/pwa-install/ asi no se tiene que descubrir. Blog, central page, es, install.js plugin permanente es el que mostraria, pondria un marcador para no aparecer como rendimiento
 
 animacion paso pestañas captura en low device desactivar. low device sera el mismo que reducemotion
 
@@ -24,9 +20,7 @@ discus comentarios, etiqueta dentro de contenido dinamico para que core.js cargu
 
 ### Opcional
 
-https://socket.io/
-
-search abrir teclado.
+RESUELTO: search abrir teclado. inp.focus() agregado en onCL() de search.html.
 
 core.js prefetch de contenido al hacer hover/pointerdown sobre un link (llenar el cache "i" antes del click). Descartado por ahora: consume datos innecesarios en mobile. Si se retoma, condicionar a conexion wifi o navigator.connection.saveData===false.
 
@@ -56,7 +50,7 @@ Ojo con esto antes de implementar: search.html carga MiniSearch del CDN pineado 
 Escribir el resultado como archivo nuevo (ej. web/Dinamico/search-index.json), no reemplaza data.json. La ventana de frescura seria la misma que ya tiene data.json hoy (pipeline corre al iniciar el server y cada 90 min, sin trigger on-demand por aprobacion de producto).
 
 # 
-sw.js notifica pero no descarga el elemento, haciendo que al entrar en notificacion solo lleve al inicio, no a la nueva entrada
+sw.js notifica pero no descarga el elemento, haciendo que al entrar en notificacion solo lleve al inicio, no a la nueva entrada. Problema exclusivo de iOS, lo probe en iOS 16 - el handler notificationclick se ve correcto en la lectura del codigo, revisar primero que URL le pasa runOPFS() a cada notificacion, y si WindowClient.navigate() se comporta distinto en Safari/WebKit vs Chrome.
 
 
 
