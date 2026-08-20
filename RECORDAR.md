@@ -12,7 +12,7 @@ core.js que añada inyeccion extra arriba de cada contenido cargado con env como
 RESUELTO: index.html ya prueba compatibilidad de navegador (optional chaining via new Function) y manda a web/LiteMode/index.html si falla, mas el noscript descomentado para JS desactivado.
 
 
-animacion paso pestañas captura en low device desactivar. low device sera el mismo que reducemotion
+RESUELTO: animacion de transicion entre paginas (view transition) desactivada en low-perf. _vt() en core.js y regla CSS en estilo.css junto a la de prefers-reduced-motion.
 
 discus comentarios, etiqueta dentro de contenido dinamico para que core.js cargue comentario aislado por publicacion
 
@@ -50,7 +50,7 @@ Ojo con esto antes de implementar: search.html carga MiniSearch del CDN pineado 
 Escribir el resultado como archivo nuevo (ej. web/Dinamico/search-index.json), no reemplaza data.json. La ventana de frescura seria la misma que ya tiene data.json hoy (pipeline corre al iniciar el server y cada 90 min, sin trigger on-demand por aprobacion de producto).
 
 # 
-sw.js notifica pero no descarga el elemento, haciendo que al entrar en notificacion solo lleve al inicio, no a la nueva entrada. Problema exclusivo de iOS, lo probe en iOS 16 - el handler notificationclick se ve correcto en la lectura del codigo, revisar primero que URL le pasa runOPFS() a cada notificacion, y si WindowClient.navigate() se comporta distinto en Safari/WebKit vs Chrome.
+sw.js notifica pero no descarga el elemento, al entrar en notificacion solo lleva al inicio, no a la nueva entrada. Solo en iOS. Revisar que URL pasa runOPFS() a cada notificacion y si WindowClient.navigate() se comporta distinto en Safari/WebKit.
 
 
 

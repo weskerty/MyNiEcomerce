@@ -1,24 +1,18 @@
-const V='v114';
+const V='v115';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
 const FRASES_HTML='web/otros/Archivos/DataBase/Libros/cuentos.html';
 const PRE=[
 'index.html',
-'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
-'web/scripts/Otros/MarkDownIT/markdownItAnchor.umd.min.js',
-'web/scripts/Otros/MiniSearch/index.js',
 'web/scripts/Otros/core.js',
 'web/es.html',
 'web/estilo.css',
 'web/search.html',
 'web/blogs.html',
-'web/favicon.ico',
-'web/404.html',
 'web/otros/Archivos/HTML/centralPage.html',
 'web/otros/Archivos/HTML/apps.html',
 'web/otros/Archivos/HTML/Grupos.html',
-'web/otros/Archivos/Imagenes/wallpaper.avif',
 'web/scripts/Galerias.js',
 'web/scripts/chatBanner&Share.js',
 FRASES_HTML
@@ -27,6 +21,12 @@ FRASES_HTML
 
 const PERM_C='site-permanent';
 const PRE_PERM=[
+'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
+'web/scripts/Otros/MarkDownIT/markdownItAnchor.umd.min.js',
+'web/scripts/Otros/MiniSearch/index.js',
+'web/404.html',
+'web/favicon.ico',
+'web/otros/Archivos/Imagenes/wallpaper.avif',
 'web/otros/Archivos/Fuentes/Comfortaa/font.woff2',
 'web/otros/Archivos/Imagenes/Permanente/404.avif',
 'web/otros/Archivos/Imagenes/Permanente/wait.avif',
@@ -62,16 +62,20 @@ const DLA_C='dla-fetch';
 const DLA_TTL=600000;
 const SHARE_TTL=3600000;
 
+async function fetchT(input,init){
+  const ac=new AbortController();
+  const tid=setTimeout(()=>ac.abort(),MIRROR_TIMEOUT);
+  try{return await fetch(input,{...init,signal:ac.signal});}
+  finally{clearTimeout(tid);}
+}
+
 async function tryMirrors(pathname,init){
   for(const base of MIRRORS){
-    const ac=new AbortController();
-    const tid=setTimeout(()=>ac.abort(),MIRROR_TIMEOUT);
     try{
       const mirrorUrl=base.replace(/\/$/,'')+pathname;
-      const r=await fetch(mirrorUrl,{...init,signal:ac.signal,mode:'cors'});
+      const r=await fetchT(mirrorUrl,{...init,mode:'cors'});
       if(r&&r.ok){serverIsDown=true;return r;}
     }catch{}
-    finally{clearTimeout(tid);}
   }
   return null;
 }
@@ -80,12 +84,13 @@ async function fetchWithMirrors(input,init){
   const pathname=new URL(input instanceof Request?input.url:input,self.location).pathname;
   if(!serverIsDown){
     try{
-      return await fetch(input,init);
+      const r=await fetchT(input,init);
+      if(r.ok)return r;
     }catch{}
   }
   const mirrored=await tryMirrors(pathname,init);
   if(mirrored)return mirrored;
-  const r=await fetch(input,init);
+  const r=await fetchT(input,init);
   if(r?.ok)serverIsDown=false;
   return r;
 }

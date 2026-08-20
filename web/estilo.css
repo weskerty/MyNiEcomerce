@@ -631,6 +631,8 @@ body.low-perf blockquote:hover { transform: none !important }
     ::view-transition-old(content-swap),
     ::view-transition-new(content-swap){animation:none}
 }
+body.low-perf ::view-transition-old(content-swap),
+body.low-perf ::view-transition-new(content-swap){animation:none}
 
 /* modal generico dialog */
 dialog{
