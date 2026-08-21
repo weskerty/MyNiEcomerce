@@ -61,6 +61,8 @@ sw.js notifica pero no descarga el elemento, al entrar en notificacion solo llev
 
 
 
+ https://github.com/MONZikWasTaken/Framegen MIT a medias, no comercial.
+
 ### RECHAZADO
 Glass https://github.com/ybouane/liquidglass para fondo carrito search
 En web/Pruebas/GLASS.html. Rendimiento Deficiente con Video.
