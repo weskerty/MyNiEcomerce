@@ -2,7 +2,7 @@
 const PI_K='PI_SEEN1';
 if(!localStorage.getItem(PI_K)){
   localStorage.setItem(PI_K,'1');
-}else if(!window.__ENV?.pwa){
+}else if(!window.__ENV?.pwa&&localStorage.getItem('pwa-hide-install')!=='true'){
   customElements.whenDefined('pwa-install').then(()=>{
     document.querySelector('pwa-install')?.showDialog(true);
   });
