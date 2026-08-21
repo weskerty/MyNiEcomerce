@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
-Allow: /web/LiteMode/
+Allow: /A/
+Disallow: /web/LiteMode/
 Disallow: /web/*.md
 Disallow: /web/*.html
 
