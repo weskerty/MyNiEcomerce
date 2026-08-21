@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Allow: /web/LiteMode/
+Disallow: /web/*.md
+Disallow: /web/*.html
 
-Sitemap: https://www.cheagana.com/sitemap.xml
+Sitemap: https://cheagana.com/sitemap.xml
