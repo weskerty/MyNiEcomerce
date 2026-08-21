@@ -2,10 +2,11 @@ RESUELTO: pwa-install se auto-mostraba solo al cargar la pagina, con texto gener
 
 RESUELTO: fallback local de pwa-install no existia en disco. Agregado a scripts/Otros/update.sh (junto con mkdir -p para que cree la carpeta si falta) y ya se corrio una vez, asi que web/scripts/Otros/PwaInstall/pwa-install.bundle.js existe.
 
-core.js permite arrastrar enlaces, incluso galeria e img
+RESUELTO: core.js permitia arrastrar enlaces e imagenes (drag nativo del navegador). Agregado document.addEventListener("dragstart",ev=>ev.preventDefault()) sin condicionar a mobile, cubre tambien lo que inserta Galerias.js dinamicamente.
 
+RESUELTO: galerias no coincidia con el bloqueo de click derecho de core.js. Simplifique el de core.js (sin excepciones, igual que el de Galerias.js), asi quedan iguales sin duplicar logica.
 
-galerias no clic derecho igual que core.ja heredar funcion, galerias imagen fallback si avif no funciona.
+Pendiente: galerias imagen fallback si avif no funciona.
 
 core.js que añada inyeccion extra arriba de cada contenido cargado con env como un estilo o similar, inyecta html ahi, o como un plugin. asi tener barra de navegacion personalizable sin editar core.
 
@@ -13,6 +14,12 @@ RESUELTO: index.html ya prueba compatibilidad de navegador (optional chaining vi
 
 
 RESUELTO: animacion de transicion entre paginas (view transition) desactivada en low-perf. _vt() en core.js y regla CSS en estilo.css junto a la de prefers-reduced-motion.
+
+RESUELTO: video de fondo tambien se desactiva en low-perf, mismo criterio que la view transition (funcion a() en core.js).
+
+RESUELTO: touchmove no-pasivo (bloqueaba pellizco-zoom pero encarecia cualquier scroll tactil) reemplazado por touch-action:pan-x pan-y en estilo.css. Mismo resultado, sin listener por evento.
+
+RESUELTO: fetch del contenido principal en l() (core.js) ahora pide priority:'high' para competir mejor contra ads/fuentes externas por la conexion.
 
 discus comentarios, etiqueta dentro de contenido dinamico para que core.js cargue comentario aislado por publicacion
 
