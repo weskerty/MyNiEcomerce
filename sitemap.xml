@@ -31,8 +31,8 @@
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://cheagana.com/A/ParaguayLibre.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://cheagana.com/web/LiteMode/index.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
 </urlset>
