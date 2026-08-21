@@ -15,8 +15,8 @@
 .nv-list-it .nm{font-weight:600;font-size:.92em}
 .nv-list-it .dt{font-size:.75em;color:rgba(255,255,255,.5);margin-top:2px}
 .nv-empty{text-align:center;color:rgba(255,255,255,.5);padding:30px 10px;font-size:.9em}
-.nv-nr{display:flex;align-items:center;gap:8px}
-.nv-nr .nv-fg{flex:1;min-width:0}
+.nv-nr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.nv-nr .nv-fg{flex:1;min-width:120px}
 .nv-recbar{display:flex;gap:6px;flex-shrink:0}
 .nv-recst{text-align:center;font-size:.8em;color:rgba(255,255,255,.5);margin-top:6px;min-height:1.2em}
 .nv-recst.on{color:#f87171}
@@ -73,6 +73,7 @@
     <div class="nv-nr">
       <div class="nv-fg" id="ne-namewrap"><input id="ne-name" type="text" placeholder="Nombre de la Nota" maxlength="80"></div>
       <div class="nv-recbar">
+        <div class="BS2 BS2-CN" id="ne-battach" title="Adjuntar imagen o video"><div class="BS3"><span class="BS4">📎</span></div></div>
         <div class="BS2 BS2-CN" id="ne-brec" title="Grabar"><div class="BS3"><span class="BS4">⏺️</span></div></div>
         <div class="BS2 BS2-CN" id="ne-bpause" title="Pausar" style="display:none"><div class="BS3"><span class="BS4">⏸️</span></div></div>
         <div class="BS2 BS2-CN" id="ne-bresume" title="Reanudar" style="display:none"><div class="BS3"><span class="BS4">▶️</span></div></div>
@@ -99,23 +100,33 @@
 <script>
 (function(){
   const _self=document.currentScript;
+  const SAVE_DEBOUNCE=1000;
+  const MAX_SIZE=10*1024*1024;
   const LIBS=[
-    {k:'css',url:'https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css'},
-    {k:'js',url:'https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js'},
-    {k:'js',url:'https://cdn.jsdelivr.net/npm/dompurify@3.4.11/dist/purify.min.js'}
+    {k:'css',local:'web/scripts/Otros/EasyMDE/easymde.min.css',cdn:'https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.css'},
+    {k:'js',local:'web/scripts/Otros/EasyMDE/easymde.min.js',cdn:'https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.js',check:()=>window.EasyMDE},
+    {k:'js',local:'web/scripts/Otros/DOMPurify/purify.min.js',cdn:'https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js',check:()=>window.DOMPurify}
   ];
   function loadLib(l){
-    return new Promise((res,rej)=>{
+    return new Promise(res=>{
+      if(l.check&&l.check())return res();
       if(l.k==='css'){
-        if(document.querySelector(`link[href="${l.url}"]`))return res();
+        if(document.querySelector('link[data-nvlib="'+l.local+'"]'))return res();
         const e=document.createElement('link');
-        e.rel='stylesheet';e.href=l.url;e.onload=res;e.onerror=rej;
+        e.rel='stylesheet';e.dataset.nvlib=l.local;e.href=l.local;
+        e.onload=res;
+        e.onerror=()=>{e.onerror=null;e.onload=res;e.href=l.cdn;};
         document.head.appendChild(e);
       }else{
-        if(l.url.includes('easymde')&&window.EasyMDE)return res();
-        if(l.url.includes('purify')&&window.DOMPurify)return res();
         const e=document.createElement('script');
-        e.src=l.url;e.onload=res;e.onerror=rej;
+        e.src=l.local;
+        e.onload=res;
+        e.onerror=()=>{
+          e.onerror=res;e.onload=res;
+          const c=document.createElement('script');
+          c.src=l.cdn;c.onload=res;c.onerror=res;
+          document.head.appendChild(c);
+        };
         document.head.appendChild(e);
       }
     });
@@ -137,6 +148,7 @@
   }
 
   const _hasOPFS=typeof navigator.storage?.getDirectory==='function';
+  const _hasRec=typeof MediaRecorder!=='undefined'&&!!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia);
 
   async function getNVRoot(){
     const root=await navigator.storage.getDirectory();
@@ -157,7 +169,7 @@
 
   async function loadList(){
     const listEl=document.getElementById('nv-list');
-    if(!_hasOPFS){listEl.innerHTML='<div class="nv-empty">Tu navegador No es compatible con el Sistema de Archivos Privado o no concediste permisos.</div>';return;}
+    if(!_hasOPFS){listEl.innerHTML='<div class="nv-empty">Tu navegador no es compatible con el Sistema de Archivos Privado o no concediste permisos.</div>';return;}
     listEl.innerHTML='<div class="nv-empty">Cargando...</div>';
     try{
       const nv=await getNVRoot();
@@ -258,9 +270,10 @@
     });
   }
 
+  const attachBtn=document.getElementById('ne-battach');
   const recBtn=document.getElementById('ne-brec'),pauseBtn=document.getElementById('ne-bpause');
   const resumeBtn=document.getElementById('ne-bresume'),stopBtn=document.getElementById('ne-bstop');
-  const recSt=document.getElementById('ne-recst'),nameWrap=document.getElementById('ne-namewrap');
+  const recSt=document.getElementById('ne-recst');
 
   function setRecUI(state){
     const busy=state==='recording'||state==='paused';
@@ -268,68 +281,85 @@
     pauseBtn.style.display=state==='recording'?'flex':'none';
     resumeBtn.style.display=state==='paused'?'flex':'none';
     stopBtn.style.display=busy?'flex':'none';
-    nameWrap.style.display=busy?'none':'block';
     recSt.classList.toggle('on',state==='recording');
     recSt.textContent=state==='recording'?'Grabando...':state==='paused'?'En pausa':'';
   }
+
+  if(!_hasRec){
+    recBtn.style.display='none';
+    recSt.textContent='Grabar audio no esta disponible en este navegador';
+  }
+
+  function queueSave(){
+    clearTimeout(saveTO);
+    document.getElementById('ne-savest').textContent='Guardando...';
+    saveTO=setTimeout(saveMD,SAVE_DEBOUNCE);
+  }
+
+  let recBookmark=null;
 
   recBtn.onclick=async()=>{
     try{
       mediaStream=await navigator.mediaDevices.getUserMedia({audio:true});
       mediaRec=new MediaRecorder(mediaStream);
+      const noteDir=dirH;
+      recBookmark=mde?mde.codemirror.setBookmark(mde.codemirror.getCursor()):null;
       const chunks=[];
       mediaRec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
       mediaRec.onstop=async()=>{
         mediaStream.getTracks().forEach(t=>t.stop());
-        if(!chunks.length){setRecUI('idle');return;}
+        const bm=recBookmark;recBookmark=null;
+        if(!chunks.length){setRecUI('idle');if(bm)bm.clear();return;}
         const blob=new Blob(chunks,{type:mediaRec.mimeType||'audio/webm'});
+        if(blob.size>MAX_SIZE){toast('Audio supera 10MB, descartado','warn',3500);setRecUI('idle');if(bm)bm.clear();return;}
         const ext=extFromMime(blob.type);
         const fname='audio-'+Date.now()+Math.floor(Math.random()*1000)+'.'+ext;
-        const fh=await dirH.getFileHandle(fname,{create:true});
+        const fh=await noteDir.getFileHandle(fname,{create:true});
         const w=await fh.createWritable();
         await w.write(blob);
         await w.close();
         if(mde){
           const cm=mde.codemirror;
-          const cur=cm.getCursor();
-          cm.replaceRange('\n<audio controls src="'+fname+'"></audio>\n',cur);
+          const pos=bm&&bm.find()?bm.find():cm.getCursor();
+          cm.replaceRange('\n<audio controls src="'+fname+'"></audio>\n',pos);
         }
+        if(bm)bm.clear();
         setRecUI('idle');
         toast('Audio agregado');
-        clearTimeout(saveTO);
-        saveTO=setTimeout(saveMD,600);
+        queueSave();
       };
       mediaRec.start();
       setRecUI('recording');
-    }catch(e){toast('No se pudo acceder al microfono: '+e.message,'err',4000);}
+    }catch(e){toast('No se pudo iniciar la grabacion: '+e.message,'err',4000);}
   };
   pauseBtn.onclick=()=>{if(mediaRec&&mediaRec.state==='recording'){mediaRec.pause();setRecUI('paused');}};
   resumeBtn.onclick=()=>{if(mediaRec&&mediaRec.state==='paused'){mediaRec.resume();setRecUI('recording');}};
   stopBtn.onclick=()=>{if(mediaRec&&mediaRec.state!=='inactive')mediaRec.stop();};
 
-  const MAX_SIZE=10*1024*1024;
+  attachBtn.onclick=()=>document.getElementById('ne-filein').click();
 
   document.getElementById('ne-filein').onchange=async function(e){
     const files=[].slice.call(e.target.files);
     this.value='';
+    const noteDir=dirH;
+    const bm=mde?mde.codemirror.setBookmark(mde.codemirror.getCursor()):null;
     for(const f of files){
-      if(f.size>MAX_SIZE){toast(f.name+' supera 10MB...','warn',3500);continue;}
+      if(f.size>MAX_SIZE){toast(f.name+' supera 10MB, omitido','warn',3500);continue;}
       const extm=f.name.match(/\.(\w+)$/);
       const ext=extm?extm[1]:(f.type.split('/')[1]||'bin');
-      const n=Date.now()+Math.floor(Math.random()*1000);
-      const fname='media-'+n+'.'+ext;
-      const fh=await dirH.getFileHandle(fname,{create:true});
+      const fname='media-'+Date.now()+Math.floor(Math.random()*1000)+'.'+ext;
+      const fh=await noteDir.getFileHandle(fname,{create:true});
       const w=await fh.createWritable();
       await w.write(f);
       await w.close();
       if(mde){
         const cm=mde.codemirror;
-        const cur=cm.getCursor();
-        cm.replaceRange('![]('+fname+')\n',cur);
+        const pos=bm&&bm.find()?bm.find():cm.getCursor();
+        cm.replaceRange('!['+']('+fname+')\n',pos);
       }
     }
-    clearTimeout(saveTO);
-    saveTO=setTimeout(saveMD,600);
+    if(bm)bm.clear();
+    queueSave();
   };
 
   const MD_ALLOWED_TAGS=['b','i','em','strong','a','code','pre','br','p','ul','ol','li','h1','h2','h3','blockquote','img','audio','source'];
@@ -365,16 +395,9 @@
       element:document.getElementById('ne-mdtxt'),
       spellChecker:false,autofocus:false,status:false,
       scrollbarStyle:'null',
-      toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link',{
-        name:'adjuntar',action:()=>document.getElementById('ne-filein').click(),
-        className:'fa fa-picture-o',title:'Adjuntar imagen o video'
-      },'guide']
+      toolbar:['bold','italic','heading','|','quote','unordered-list','ordered-list','|','link','guide']
     });
-    mde.codemirror.on('change',()=>{
-      clearTimeout(saveTO);
-      document.getElementById('ne-savest').textContent='Editando...';
-      saveTO=setTimeout(saveMD,1500);
-    });
+    mde.codemirror.on('change',queueSave);
   }
 
   async function loadMD(){
@@ -401,8 +424,14 @@
     document.getElementById('ne-savest').textContent='Guardado '+new Date().toLocaleTimeString('es-PY',{hour:'2-digit',minute:'2-digit'});
   }
 
-  document.getElementById('ne-save').onclick=async()=>{
+  async function flushSave(){
+    if(!saveTO)return;
+    clearTimeout(saveTO);saveTO=null;
     await saveMD();
+  }
+
+  document.getElementById('ne-save').onclick=async()=>{
+    await flushSave();
     await saveInfo({nombre:document.getElementById('ne-name').value.trim()});
     stopRecordingIfActive();
     backToList();
@@ -416,6 +445,8 @@
   document.getElementById('ne-del').onclick=async e=>{
     e.preventDefault();
     if(!confirm('Borrar esta nota de voz completa? Esto no se puede deshacer.'))return;
+    clearTimeout(saveTO);saveTO=null;
+    stopRecordingIfActive();
     try{
       const nv=await getNVRoot();
       await nv.removeEntry(curId,{recursive:true});
@@ -426,11 +457,11 @@
 
   function stopRecordingIfActive(){
     if(mediaRec&&mediaRec.state!=='inactive')mediaRec.stop();
-    clearTimeout(saveTO);
   }
 
-  document.getElementById('nv-back').onclick=()=>{
+  document.getElementById('nv-back').onclick=async()=>{
     stopRecordingIfActive();
+    await flushSave();
     backToList();
   };
 
@@ -505,6 +536,7 @@
   if(_el){
     _el.addEventListener('contentUnload',function _cleanup(){
       stopRecordingIfActive();
+      if(saveTO){clearTimeout(saveTO);saveTO=null;saveMD();}
       if(mde){mde.toTextArea();mde=null;}
       clearReadBlobs();
       _el.removeEventListener('contentUnload',_cleanup);
