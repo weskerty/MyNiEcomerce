@@ -28,6 +28,13 @@ Las empresas que quieren entrar son varias. Una es [Primo Cano Martinez SA](http
 Desde el año 2000 hasta 2026 se han perdido millones de hectáreas de bosque. Los departamentos de Boquerón y Alto Paraguay registran una de las mayores tasas de deforestación *DEL MUNDO*
 <blockquote class="twitter-tweet" data-media-max-width="560"><p lang="es" dir="ltr">Desde el año 2000 hasta la actualidad de este post (2026) se han perdido millones de hectáreas de bosque. Los departamentos de Boquerón y Alto Paraguay registran una de las mayores tasas de deforestación DEL MUNDO <a href="https://t.co/PK8g3i9O4o">pic.twitter.com/PK8g3i9O4o</a></p>&mdash; Guillermo Cabrera (@Gillo97) <a href="https://x.com/Gillo97/status/2090890961215799766?ref_src=twsrc%5Etfw">August 21, 2026</a></blockquote> <script async src="https://platform.x.com/widgets.js" charset="utf-8"></script>
 
+### Comentarios
+<blockquote class="reddit-embed-bq" data-embed-height="296">
+<a href="https://www.reddit.com/r/Paraguay/comments/1vurh9e/comment/p53v6pn/">Comment</a><br> by
+<a href="https://www.reddit.com/user/Gillopy/">u/Gillopy</a> from discussion
+<a href="https://www.reddit.com/r/Paraguay/comments/1vurh9e/deforestaci%c3%b3n_en_paraguay/"></a><br> in
+<a href="https://www.reddit.com/r/Paraguay/">Paraguay</a>
+</blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>
 
 
 ## Cortina de Humo para Algo Peor?
