@@ -76,7 +76,7 @@ body.mob .sel, body.mob .sel * {
     -webkit-user-select: text;
 }
 
-body::before{content:"";position:fixed;inset:0;height:110vh;z-index:-1;background:url('otros/Archivos/Imagenes/wallpaper.avif') no-repeat center/cover;transform:translateZ(0);will-change:transform}
+body::before{content:"";position:fixed;inset:0;height:110vh;z-index:-1;background:url('otros/Archivos/Imagenes/wallpaper.webp') no-repeat center/cover;transform:translateZ(0);will-change:transform}
 
 #bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center}
 
