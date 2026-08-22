@@ -28,18 +28,11 @@ Las empresas que quieren entrar son varias. Una es [Primo Cano Martinez SA](http
 Desde el año 2000 hasta 2026 se han perdido millones de hectáreas de bosque. Los departamentos de Boquerón y Alto Paraguay registran una de las mayores tasas de deforestación *DEL MUNDO*
 <blockquote class="twitter-tweet" data-media-max-width="560"><p lang="es" dir="ltr">Desde el año 2000 hasta la actualidad de este post (2026) se han perdido millones de hectáreas de bosque. Los departamentos de Boquerón y Alto Paraguay registran una de las mayores tasas de deforestación DEL MUNDO <a href="https://t.co/PK8g3i9O4o">pic.twitter.com/PK8g3i9O4o</a></p>&mdash; Guillermo Cabrera (@Gillo97) <a href="https://x.com/Gillo97/status/2090890961215799766?ref_src=twsrc%5Etfw">August 21, 2026</a></blockquote> <script async src="https://platform.x.com/widgets.js" charset="utf-8"></script>
 
-### Comentarios
-<blockquote class="reddit-embed-bq" data-embed-height="296">
-<a href="https://www.reddit.com/r/Paraguay/comments/1vurh9e/comment/p53v6pn/">Comment</a><br> by
-<a href="https://www.reddit.com/user/Gillopy/">u/Gillopy</a> from discussion
-<a href="https://www.reddit.com/r/Paraguay/comments/1vurh9e/deforestaci%c3%b3n_en_paraguay/"></a><br> in
-<a href="https://www.reddit.com/r/Paraguay/">Paraguay</a>
-</blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>
 
 
 ## Cortina de Humo para Algo Peor?
 
-Mientras todo el pais discutia sobre Medanos una empresa llamada "Chaco Minerals" solicito buscar litio en casi dos millones de hectareas del Chaco. Eso es varias veces mas grande que todo el parque Medanos junto.
+Una empresa llamada "Chaco Minerals" solicito buscar litio en casi dos millones de hectareas del Chaco. Eso es varias veces mas grande que todo el parque Medanos junto.
 
 Un grupo de periodistas investigo esa empresa y encontro casos de Corrupcion. La empresa dice que esta registrada en 🍁Canada pero no aparece en ningun registro de ese pais. Uno de sus dueños sigue firmando papeles legales en Paraguay aunque los diarios de Ecuador dijeron que ese hombre murio en el año 2024. Y la persona que ahora maneja los recursos de la empresa es la misma funcionaria que era la encargada del Estado de aprobar esos mismos permisos.
 
@@ -91,6 +84,14 @@ Fuentes
 
 [Ultima Hora sobre Paso Yobai](https://www.ultimahora.com/paso-yobai-oro-unos-pocos-agua-metal-toxico-todos-n3039242)
 
+
+## Por que Importa?
+
+
+Por que Afecta nuestra salud, acaba con animales nativos del Paraguay etc. Podes pasar a leer mas aca [Fauna ya Extinta ↗️](#web/otros/Archivos/Dinamico/Blogs/Ambiente/Animales%20Extintos.md)
+
+
+
 ## Opiniones Personales
 
 
@@ -113,3 +114,13 @@ Incluso si lo de Medanos del Chaco no se aprueba esto dara una falsa sensacion d
 Analogia: Cometa = Daño Ambiental
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/FuBJf9ieU_s?si=8QpBjXCJWpaepyrv&amp;start=390" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+<h2>Que podemos hacer?</h2>
+<p>Se requieren cambios en las leyes para proteger activamente los recursos que Dios nos dio, pero como si los politicos hacen lo que quieren?</p>
+
+<p>Es por eso que primero debemos armar una comunidad que se interese por esto</p>
+
+<p>Puedes unirte a <a class="lk lk-wa" href="https://chat.whatsapp.com/FUCooyRJivk6CTbhEEwvf4" target="_blank" rel="noopener noreferrer">Comunidad en WhatsApp</a></p>
+
+<p>Si somos muchos podemos manifestarnos para presionar la aprobacion de leyes de proteccion ambiental.</p>
