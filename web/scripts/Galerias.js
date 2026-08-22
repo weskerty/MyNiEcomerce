@@ -58,7 +58,10 @@ const IO=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){IO.unob
 let _hidden=false;document.addEventListener('visibilitychange',()=>{_hidden=document.hidden});
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 const _CD0=/CD=0(?!\d)/;
-function fCD0(idx){return{_all:idx._all.filter(p=>!_CD0.test(p)),f:Object.fromEntries(Object.entries(idx.f).map(([k,v])=>[k,v.filter(p=>!_CD0.test(p))]))}}
+function fCD0(idx){
+  if(idx._f0)return idx._f0;
+  return idx._f0={_all:idx._all.filter(p=>!_CD0.test(p)),f:Object.fromEntries(Object.entries(idx.f).map(([k,v])=>[k,v.filter(p=>!_CD0.test(p))]))};
+}
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1]:n}
 function mL(p){return p.replace(/\.[^.]+$/,'.md')}
 const _PC=/PC=(\d+)/;
@@ -114,7 +117,7 @@ function bIdx(g){
     if(Array.isArray(v)){
       idx[k]={_all:v,f:{}};
     }else if(v&&typeof v==='object'){
-      const all=[];for(const f in v)all.push(...v[f]);
+      const all=[];for(const f in v)for(const p of v[f])all.push(p);
       idx[k]={_all:all,f:v};
     }
   }
@@ -159,11 +162,14 @@ function distOf(p){
   const ct=_GU.parseCT(p);
   return ct?_GU.haversine(_geo.lat,_geo.lon,ct.lat,ct.lon):Infinity;
 }
-function sortArr(arr){arr.sort((a,b)=>distOf(a)-distOf(b))}
 function sortIdxByCT(idx){
+  const dc=new Map();
+  const dOf=p=>{let v=dc.get(p);if(v===undefined)dc.set(p,v=distOf(p));return v};
+  const sortArr=arr=>arr.sort((a,b)=>dOf(a)-dOf(b));
   for(const k in idx){
     sortArr(idx[k]._all);
     for(const f in idx[k].f)sortArr(idx[k].f[f]);
+    idx[k]._f0=null;
   }
 }
 const _reRender=[];
@@ -502,8 +508,9 @@ async function pCont(c,isSw){
   await lGD(j);
   if(ac.signal.aborted)return;c.__fetchAC=null;
   if(!IDX[j]){c.innerHTML='<p>Error</p>';return}
-  const idxRaw=IDX[j][key];
-  const idx=fCD0(idxRaw||{_all:[],f:{}});
+  const idxRaw=IDX[j][key]||{_all:[],f:{}};
+  const fRaw=()=>fCD0(idxRaw);
+  const idx=fRaw();
   if(!idx._all.length){
     if(isSw){decorate(c);c.parentNode.style.display='none';}
     else c.style.display='none';
@@ -519,7 +526,7 @@ async function pCont(c,isSw){
     if(grid){
       c.__stop=grid.stop;
       if(!_geo){
-        const cb=()=>grid.setImgs(fFixed?(idx.f[fFixed]||[]):idx._all);
+        const cb=()=>{const r=fRaw();grid.setImgs(fFixed?(r.f[fFixed]||[]):r._all)};
         _reRender.push(cb);
         const prevStop=c.__stop;
         c.__stop=()=>{const i=_reRender.indexOf(cb);if(i>-1)_reRender.splice(i,1);if(prevStop)prevStop()};
@@ -534,16 +541,16 @@ async function pCont(c,isSw){
   let curName=null;
   c.__stop=grid.stop;
   if(!_geo){
-    const cb=()=>grid.setImgs(curName?idx.f[curName]:idx._all);
+    const cb=()=>{const r=fRaw();grid.setImgs(curName?r.f[curName]:r._all)};
     _reRender.push(cb);
     const prevStop=c.__stop;
     c.__stop=()=>{const i=_reRender.indexOf(cb);if(i>-1)_reRender.splice(i,1);if(prevStop)prevStop()};
   }
   const bar=mkSubBtns(c,idx.f,name=>{
     curName=name;
-    const imgs=name?idx.f[name]:idx._all;
+    const r=fRaw();
     if(c._h2)c._h2.textContent=name||c._baseTitle;
-    grid.setImgs(imgs);
+    grid.setImgs(name?r.f[name]:r._all);
   });
   c._subBar=bar;
 }

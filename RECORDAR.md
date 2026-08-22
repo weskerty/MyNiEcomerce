@@ -21,9 +21,12 @@ core.js loader de plugins (DOMContentLoaded, Promise.all sobre cfg.plugins): los
 core.js mismo loader de plugins: o.onerror=n resuelve la promesa igual que onload, asi que un plugin que falla en cargar no deja ningun rastro (ni console.warn). Agregar log minimo en el onerror si se necesita debuggear fallos de plugins en produccion.
 
 
-Search buscar ID= tambien
+search.html cuando llega la ubicacion reconstruye el indice solo con el data.json principal, pierdo blogs, apps y juegos de la busqueda hasta recargar la pagina.
 
-Galerias podria mostrar precios antes de entrar, search tambien...
+Galerias.js: el carrusel no se reordena cuando llega la ubicacion, solo las grillas. Al entrar de nuevo ya sale ordenado. Decidi que no importa.
+
+Galerias.js: si arrastro el carrusel justo mientras esta animando, el gesto se descarta por la guarda `busy` en `onDown` y termina navegando al producto. Ademas `busy` se libera solo en `transitionend`, si la transicion se interrumpe queda trabado para siempre. Se arreglan juntos con un timeout de respaldo en doAdvance/doRetreat.
+
 
 
 
