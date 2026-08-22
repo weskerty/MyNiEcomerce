@@ -10,17 +10,17 @@
     --font-h: 'Comfortaa', 'Fluent Emoji Color', sans-serif;
     --gap-btn-l:12px;
     color-scheme: only dark;
-    /* brillo compartido de los botones "de vidrio" (BOTON-L1, BOTON-M2, BS2, view-all-button, back-button, button:not([class])) */
+
     --glass-spot: radial-gradient(circle at 30% 20%, rgba(255,255,255,.2), transparent 55%);
     --glass-sweep: linear-gradient(120deg, transparent 40%, rgba(255,255,255,.13), transparent 60%);
 
-    /* acento del sitio (headers, CTA principal, focus) */
+
     --accent-rgb: 26,115,232;   /* #1a73e8 */
     --accent: rgb(var(--accent-rgb));
     --accent-2-rgb: 56,189,248; /* #38bdf8 */
     --accent-2: rgb(var(--accent-2-rgb));
 
-    /* paleta de "cuenta/privado" (AgregarProducto.html, privado.js) - distinta a proposito del acento del sitio */
+
     --acc-rgb: 79,142,247;   /* #4f8ef7 */
     --acc: rgb(var(--acc-rgb));
     --acc2: #a78bfa;
@@ -95,7 +95,7 @@ video#bg-video {
     will-change: transform;
 }
 
-/* elementos de texto */
+
 a { color: lightblue; cursor: pointer; text-decoration: none }
 a:hover { text-decoration: underline }
 
@@ -560,6 +560,8 @@ body.low-perf .BMD1::before{display:none}
 /* details summary */
 details{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:var(--r-md);margin:10px 0;overflow:hidden;transition:border-color .2s}
 details[open]{border-color:rgba(255,255,255,.18)}
+details::details-content{display:grid;grid-template-rows:0fr;overflow:hidden;opacity:0;translate:0 .6rem;content-visibility:hidden;transition:grid-template-rows .35s ease,opacity .3s ease,translate .3s ease,content-visibility .35s allow-discrete}
+details[open]::details-content{grid-template-rows:1fr;opacity:1;translate:none;content-visibility:visible}
 summary{cursor:pointer;padding:15px 18px;font-size:1.05em;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px;color:#fff;user-select:none}
 summary::-webkit-details-marker{display:none}
 summary::after{content:'›';margin-left:auto;font-size:1.2em;opacity:.5;transition:transform .22s}
@@ -569,6 +571,7 @@ section{padding:14px 16px}
 section h3{margin:12px 0 6px;font-size:.98em;color:rgba(255,255,255,.75);font-weight:600}
 section p{margin:0 0 10px;color:rgba(255,255,255,.55);font-size:.9em}
 section hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:14px 0;height:auto;background:none}
+
 
 /* svg redes sociales */
 .lk{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;font-size:.78em;font-weight:600;text-decoration:none;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;transition:background .18s,transform .15s}
