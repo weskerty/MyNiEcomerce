@@ -59,6 +59,7 @@ Escribir el resultado como archivo nuevo (ej. web/Dinamico/search-index.json), n
 # 
 sw.js notifica pero no descarga el elemento, al entrar en notificacion solo lleva al inicio, no a la nueva entrada. Solo en iOS. Revisar que URL pasa runOPFS() a cada notificacion y si WindowClient.navigate() se comporta distinto en Safari/WebKit.
 
+core.js solo ejecutar en 595972184435 blogs y poco mas.
 
 
  https://github.com/MONZikWasTaken/Framegen MIT a medias, no comercial.

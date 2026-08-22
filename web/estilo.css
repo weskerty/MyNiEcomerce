@@ -57,7 +57,7 @@ button, a, label, input {
     -webkit-tap-highlight-color: transparent;
 }
 
-Body {
+body {
     margin: 0;
     color: #fff;
     background: #000;
@@ -66,17 +66,17 @@ Body {
     line-height: 1.6;
 }
 
-Body.mob {
+body.mob {
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
 }
-Body.mob .sel, Body.mob .sel * {
+body.mob .sel, body.mob .sel * {
     user-select: text;
     -webkit-user-select: text;
 }
 
-Body::before{content:"";position:fixed;inset:0;height:110vh;z-index:-1;background:url('otros/Archivos/Imagenes/wallpaper.avif') no-repeat center/cover;transform:translateZ(0);will-change:transform}
+body::before{content:"";position:fixed;inset:0;height:110vh;z-index:-1;background:url('otros/Archivos/Imagenes/wallpaper.avif') no-repeat center/cover;transform:translateZ(0);will-change:transform}
 
 #bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center}
 
@@ -208,6 +208,20 @@ th {
     background: rgba(255,255,255,.06);
     color: rgba(255,255,255,.85);
     font-weight: 600;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    background: #232323;
+    z-index: 2;
+}
+
+tr > *:first-child {
+    position: sticky;
+    left: 0;
+    background: #232323;
+    box-shadow: 1px 0 0 rgba(255,255,255,.12);
 }
 
 
@@ -571,7 +585,6 @@ section{padding:14px 16px}
 section h3{margin:12px 0 6px;font-size:.98em;color:rgba(255,255,255,.75);font-weight:600}
 section p{margin:0 0 10px;color:rgba(255,255,255,.55);font-size:.9em}
 section hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:14px 0;height:auto;background:none}
-
 
 /* svg redes sociales */
 .lk{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;font-size:.78em;font-weight:600;text-decoration:none;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;transition:background .18s,transform .15s}
