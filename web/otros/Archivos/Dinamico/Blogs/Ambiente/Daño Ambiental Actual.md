@@ -7,7 +7,7 @@ Este es un resumen simple de lo que esta pasando con el ambiente en Paraguay est
 Tiene mas de seiscientas mil hectareas. Ahi hay dunas de arena y bosques secos. Abajo de la tierra esta el acuifero Yrenda que es la reserva de agua dulce mas importante de toda esa zona seca. Tambien viven ahi los *ULTIMOS* guanacos de Paraguay.
 El guanaco es un pariente cercano del camello y de la llama 🐪. Puedes leer mas sobre el en [Wikipedia ↗️](https://es.wikipedia.org/wiki/Lama_guanicoe)
 
-[![Foto Temporal CDN cambiar](https://grupovierci.brightspotcdn.com/dims4/default/81f5a15/2147483647/strip/true/resize/1000x563!/quality/90/?url=https%3A%2F%2Fk2-prod-grupo-vierci.s3.us-east-1.amazonaws.com%2Fbrightspot%2F45%2Ff1%2F342919a54ee491614ff101b8fcae%2Favistameinto.webp)
+![wanako](web/otros/Archivos/Imagenes/DañoAmbientalActual/wanako.webp)
 
 
 
