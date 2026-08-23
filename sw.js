@@ -1,4 +1,4 @@
-const V='v120';
+const V='v121';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -19,7 +19,7 @@ FRASES_HTML
 ];
 
 
-const PERM_C='site-permanent';
+const PERM_C='permanent';
 const PRE_PERM=[
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
 'web/scripts/Otros/MarkDownIT/markdownItAnchor.umd.min.js',
