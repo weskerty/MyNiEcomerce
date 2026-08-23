@@ -45,7 +45,7 @@ N_ICO,
 N_BANNER
 ];
 
-const TEMP_ROUTES=[{match:'/api/',ttl:18000000}];
+const TEMP_ROUTES=[{match:'/api/chat/',ttl:15000},{match:'/api/',ttl:18000000}];
 const EXT_CACHE=[
   {origin:'tetunori.github.io',ttl:0},
   {origin:'esm.unpkg.com',ttl:0}
