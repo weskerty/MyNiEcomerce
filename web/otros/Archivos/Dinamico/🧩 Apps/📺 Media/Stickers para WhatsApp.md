@@ -136,7 +136,7 @@
 
 <script>
 (function(){
-  const ITEM=120,GAP=8,PG_FALLBACK=12,MAX_SEL=10,CD_MS=10000,ADS=false;
+  const ITEM=120,GAP=8,PG_FALLBACK=6,MAX_SEL=10,CD_MS=10000,ADS=false;
   const MAX_F=30,MAX_SZ=20*1024*1024,DIM=256,TARGET=900*1024;
   const WA=window.__CFG?.waitAnim||'';
   document.getElementById('sc-ck').src=WA;

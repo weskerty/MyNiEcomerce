@@ -6,7 +6,7 @@ window.GridFit={
     const top=container.getBoundingClientRect().top;
     const avail=Math.max(itemH,window.innerHeight-top-(reserveBottom||0));
     const rows=Math.max(2,Math.floor((avail+gap)/(itemH+gap)));
-    return Math.max(8,Math.min(12,cols*rows));
+    return Math.max(6,Math.min(12,cols*rows));
   }
 };
 }();
