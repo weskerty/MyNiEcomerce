@@ -23,6 +23,12 @@ core.js mismo loader de plugins: o.onerror=n resuelve la promesa igual que onloa
 
 search.html cuando llega la ubicacion reconstruye el indice solo con el data.json principal, pierdo blogs, apps y juegos de la busqueda hasta recargar la pagina.
 
+Localizador.md: las categorias siguen hardcodeadas en CAT_EMOJI/CAT_LABEL y en los botones del html. Si subo un punto con una categoria nueva, parseEntry lo descarta en silencio (`if(!CAT_EMOJI[cat])return null`). Para hacerlo dinamico: generar los chips de las categorias que traiga el data.json y dejar esas tablas como opcional de lindura, cayendo al slug con guiones cambiados por espacios.
+
+Localizador.md: mkIcon recibe `sel` y no lo usa, asi que seleccionar un pin no lo destaca en el mapa y se hacen dos setIcon al pedo.
+
+Localizador.md: geoLocate() corre solo al abrir y si acepto setea localStorage.UBI, lo que activa el geo-ordenamiento en todo el sitio. CLAUDE.md dice que UBI nunca se setea automatico. Decidir cual de los dos vale.
+
 Galerias.js: el carrusel no se reordena cuando llega la ubicacion, solo las grillas. Al entrar de nuevo ya sale ordenado. Decidi que no importa.
 
 Galerias.js: si arrastro el carrusel justo mientras esta animando, el gesto se descarta por la guarda `busy` en `onDown` y termina navegando al producto. Ademas `busy` se libera solo en `transitionend`, si la transicion se interrumpe queda trabado para siempre. Se arreglan juntos con un timeout de respaldo en doAdvance/doRetreat.

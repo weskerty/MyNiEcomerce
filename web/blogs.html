@@ -28,9 +28,12 @@
 .bl-dot:nth-child(3){animation-delay:.3s}
 @keyframes blP{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
 .BN_BR{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
-#nt-btn,.BN_RL{padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:.78rem;letter-spacing:.05em;cursor:pointer;transition:background .2s,transform .15s;line-height:1.2}
+#nt-btn,.BN_RL,.BN_CB{padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:.78rem;letter-spacing:.05em;cursor:pointer;transition:background .2s,transform .15s;line-height:1.2}
 #nt-btn{display:none}
-#nt-btn:hover,.BN_RL:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
+#nt-btn:hover,.BN_RL:hover,.BN_CB:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
+.BN_CBX{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:0 0 14px}
+.BN_CB{font-family:inherit}
+.BN_CB.BN_CA{background:rgba(var(--accent-2-rgb),.18);border-color:rgba(var(--accent-2-rgb),.45);color:var(--accent-2)}
 #nt-btn:disabled{opacity:.5;cursor:default;transform:none}
 #BN_RB{display:contents}
 .BN_RL{display:inline-flex;align-items:center;text-decoration:none;border-color:rgba(255,140,0,.35);background:rgba(255,140,0,.08);color:#ffaa33}
@@ -67,6 +70,7 @@
 
 </div>
 </div>
+<div class="BN_CBX" id="bl-cats"></div>
 <div class="bl-dots" id="bl-ld"><div class="bl-dot"></div><div class="bl-dot"></div><div class="bl-dot"></div></div>
 <div class="bl-grid" id="bl-gr" style="display:none"></div>
 <div id="bl-nav"></div>
@@ -79,7 +83,7 @@ const DJ='web/otros/Archivos/Dinamico/Blogs/data.json';
 const RSS=window.__CFG?.rss||[];
 const RU=p=>'/api/rss?url='+encodeURIComponent(p);
 const PAGE=30;
-let curList=[],curPg=0,imgIO=null,fetchAC=null,rssAC=null,_ini=false;
+let curList=[],curPg=0,imgIO=null,fetchAC=null,rssAC=null,_ini=false,_lst=[],_cat=null;
 
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 function mL(p){return p.replace(/\.[^.]+$/,'.md')}
@@ -129,6 +133,31 @@ async function BN_FR(){
       .catch(()=>[])
   ));
   return all.flat();
+}
+
+function BN_CF(){
+  const gr=document.getElementById('bl-gr');
+  if(!gr)return;
+  curList=_cat?_lst.filter(x=>x.t==='b'&&x.cat===_cat):_lst;
+  curPg=0;
+  renderPage(gr,curList,0,true);
+}
+
+function BN_CB1(cats){
+  const box=document.getElementById('bl-cats');
+  if(!box)return;
+  box.innerHTML='';
+  if(cats.length<2)return;
+  cats.forEach(name=>{
+    const b=document.createElement('button');
+    b.className='BN_CB';b.textContent=name;
+    b.addEventListener('click',()=>{
+      _cat=_cat===name?null:name;
+      [...box.children].forEach(x=>x.classList.toggle('BN_CA',x===b&&_cat!==null));
+      BN_CF();
+    });
+    box.appendChild(b);
+  });
 }
 
 function BN_RB1(){
@@ -257,7 +286,8 @@ async function init(){
   gr.style.display='';
   const bl=galleries?parseBlogs(galleries):[];
   const items=BN_MIX(bl,nw);
-  curList=items;curPg=0;
+  _lst=items;curList=items;curPg=0;_cat=null;
+  BN_CB1([...new Set(bl.map(x=>x.cat))]);
   renderPage(gr,items,0,false);
 }
 

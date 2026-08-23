@@ -207,10 +207,9 @@ function applyFilter(){
   document.getElementById('rc-empty').style.display='';
   document.getElementById('rc-detail').style.display='none';
   const visible=visibleList();
+  const vis=new Set(visible.map(p=>p.id));
   markers.forEach(({id,marker})=>{
-    const p=PUNTOS.find(x=>x.id===id);
-    const show=visible.includes(p);
-    if(show){if(!map.hasLayer(marker))marker.addTo(map);}
+    if(vis.has(id)){if(!map.hasLayer(marker))marker.addTo(map);}
     else{if(map.hasLayer(marker))marker.remove();}
   });
   if(visible.length){
@@ -254,16 +253,20 @@ function initMap(){
   map.fitBounds(bounds,{padding:[32,32],maxZoom:13});
 }
 
+const LF_L='web/scripts/Otros/Leaflet/',LF_C='https://cdn.jsdelivr.net/npm/leaflet@1/dist/';
 function loadLeaflet(cb){
   if(window.L){cb();return;}
   const css=document.createElement('link');
-  css.rel='stylesheet';
-  css.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';
+  css.rel='stylesheet';css.href=LF_L+'leaflet.css';
+  css.onerror=()=>{css.href=LF_C+'leaflet.css'};
   document.head.appendChild(css);
-  const s=document.createElement('script');
-  s.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
-  s.onload=cb;
-  document.head.appendChild(s);
+  const add=(src,fb)=>{
+    const s=document.createElement('script');
+    s.src=src;s.onload=cb;
+    s.onerror=fb||(()=>{document.getElementById('rc-empty').textContent='Error al cargar el mapa'});
+    document.head.appendChild(s);
+  };
+  add(LF_L+'leaflet.js',()=>add(LF_C+'leaflet.js'));
 }
 
 function selectCat(cat){
@@ -306,7 +309,7 @@ fetch(JSON_URL)
     PUNTOS=files.map((f,i)=>parseEntry(f,i)).filter(Boolean);
     const initCat=gHA();
     if(initCat&&CAT_EMOJI[initCat])selectCat(initCat);
-    loadLeaflet(initMap);
+    loadLeaflet(()=>{initMap();if(_filter&&map)applyFilter();});
   })
   .catch(()=>{document.getElementById('rc-empty').textContent='Error al cargar lugares';});
 })();
