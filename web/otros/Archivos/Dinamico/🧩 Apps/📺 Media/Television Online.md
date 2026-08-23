@@ -348,6 +348,29 @@ async function playLink(u){
   }
 }
 
+async function opfsDir(){
+  const root=await navigator.storage.getDirectory();
+  const apps=await root.getDirectoryHandle('Apps',{create:true});
+  return await apps.getDirectoryHandle('Cast',{create:true});
+}
+async function opfsGet(name){
+  const dir=await opfsDir();
+  return await(await dir.getFileHandle(name)).getFile();
+}
+async function opfsSave(f,name){
+  const dir=await opfsDir();
+  const fh=await dir.getFileHandle(name,{create:true});
+  await f.stream().pipeTo(await fh.createWritable());
+  return await fh.getFile();
+}
+async function opfsClear(){
+  try{
+    const root=await navigator.storage.getDirectory();
+    const apps=await root.getDirectoryHandle('Apps');
+    await apps.removeEntry('Cast',{recursive:true});
+  }catch(e){}
+}
+
 async function getWT(){
   if(wt)return wt;
   const[a,b]=await Promise.all([import(M_WT),import(M_HCS)]);
@@ -356,25 +379,16 @@ async function getWT(){
   wt.on('error',e=>msg('Error Archivo '+(e&&e.message?e.message:''),true));
   return wt;
 }
-async function isFrag(f){
-  try{
-    const u=new Uint8Array(await f.slice(0,65536).arrayBuffer());
-    for(let i=0;i<u.length-3;i++)if(u[i]===109&&u[i+1]===111&&u[i+2]===111&&u[i+3]===102)return true;
-  }catch(e){}
-  return false;
-}
 async function sendFile(f){
   msg('Preparando archivo...');
-  let frag=false,c=null;
+  let c=null;
+  try{c=await getWT();}
+  catch(e){msg('No se pudo preparar el envio',true);return;}
+  if(seedT){try{seedT.destroy({destroyStore:true});}catch(e){}seedT=null;}
   try{
-    frag=(f.type||'').includes('webm')||await isFrag(f);
-    c=await getWT();
-  }catch(e){msg('No se pudo preparar el envio',true);return;}
-  if(seedT){try{seedT.destroy();}catch(e){}seedT=null;}
-  try{
-  c.seed(f,{name:f.name,store:HCS},t=>{
+  c.seed(f,{name:f.name,store:HCS,destroyStoreOnDestroy:true},t=>{
     seedT=t;
-    send({t:'file',magnet:t.magnetURI,name:f.name,mime:f.type||'',frag});
+    send({t:'file',magnet:t.magnetURI,name:f.name,mime:f.type||''});
     msg('Esperando que la TV empiece a descargar');
     bar(0);
     t.on('upload',()=>{
@@ -385,30 +399,30 @@ async function sendFile(f){
   });
   }catch(e){msg('No se pudo preparar el envio',true);}
 }
+
 async function recvFile(d){
-  msg(d.frag?'Descargando, ya se puede ver':'Descargando, hay que esperar a que termine');
+  msg('Descargando, se vera cuando termine');
   bar(0);
   let c;
   try{c=await getWT();}catch(e){msg('No se pudo recibir el archivo',true);bar(null);return;}
-  if(curTorrent){curTorrent.destroy();curTorrent=null;}
-  c.add(d.magnet,{store:HCS},t=>{
+  if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
+  await opfsClear();
+  c.add(d.magnet,{store:HCS,destroyStoreOnDestroy:true},t=>{
     curTorrent=t;
     const f=t.files[0];
     if(!f){msg('Error Archivo, torrent vacio',true);return;}
     t.on('download',()=>bar(t.progress*100));
-    if(d.frag&&f.streamTo){
-      const v=$('ct-video');
-      v.classList.add('on');v.srcObject=null;
-      try{f.streamTo(v);}catch(e){}
-      v.play().catch(()=>{});
-      msg('');
-    }
     t.once('done',async()=>{
       bar(null);
       send({t:'fileok'});
-      if(d.frag)return;
       try{
-        playSrc(URL.createObjectURL(await f.blob()));
+        msg('Guardando...');
+        const ext=String(d.name||'').match(/\.[a-zA-Z0-9]{1,8}$/);
+        const nm='recibido'+(ext?ext[0]:'');
+        await opfsSave(f,nm);
+        try{await t.destroy({destroyStore:true});}catch(e){}
+        curTorrent=null;
+        playSrc(URL.createObjectURL(await opfsGet(nm)));
         msg('');
       }catch(e){msg('Error Archivo, no se pudo abrir',true);}
     });
@@ -429,8 +443,9 @@ async function shareScreen(){
 function stopAll(local){
   if(scrStream){scrStream.getTracks().forEach(t=>t.stop());scrStream=null;}
   if(curCall){try{curCall.close();}catch(e){}curCall=null;}
-  if(curTorrent){try{curTorrent.destroy();}catch(e){}curTorrent=null;}
+  if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
   exitFS();
+  opfsClear();
   const v=$('ct-video');
   v.pause();v.removeAttribute('src');v.srcObject=null;v.classList.remove('on');v.load();
   bar(null);msg('');
@@ -474,7 +489,9 @@ function teardown(){
   leaveRoom();
   Object.values(conns).forEach(c=>{try{c.close();}catch(e){}});
   conns={};
+  if(seedT){try{seedT.destroy({destroyStore:true});}catch(e){}seedT=null;}
   if(wt){try{wt.destroy();}catch(e){}wt=null;}
+  opfsClear();
   if(peer&&!peer.destroyed){try{peer.destroy();}catch(e){}}
   peer=null;pid=null;
   wlDrop();
