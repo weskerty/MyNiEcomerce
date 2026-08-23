@@ -1,5 +1,3 @@
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
-<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
 <style>
 :root{
 --g1:rgba(255,255,255,0.06);
@@ -261,6 +259,35 @@ const AP_DINAMICO_BASE=(()=>{
   return base||'/web/Dinamico';
 })();
 const AP_MAX_SIZE=200*1024;
+const AP_LIBS=[
+  {k:'css',local:'web/scripts/Otros/EasyMDE/easymde.min.css',cdn:'https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.css'},
+  {k:'js',local:'web/scripts/Otros/EasyMDE/easymde.min.js',cdn:'https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.js',check:()=>window.EasyMDE}
+];
+function AP_loadLib(l){
+  return new Promise(res=>{
+    if(l.check&&l.check())return res();
+    if(l.k==='css'){
+      if(document.querySelector('link[data-aplib="'+l.local+'"]'))return res();
+      const e=document.createElement('link');
+      e.rel='stylesheet';e.dataset.aplib=l.local;e.href=l.local;
+      e.onload=res;
+      e.onerror=()=>{e.onerror=null;e.onload=res;e.href=l.cdn;};
+      document.head.appendChild(e);
+    }else{
+      const e=document.createElement('script');
+      e.src=l.local;
+      e.onload=res;
+      e.onerror=()=>{
+        e.onerror=res;e.onload=res;
+        const c=document.createElement('script');
+        c.src=l.cdn;c.onload=res;c.onerror=res;
+        document.head.appendChild(c);
+      };
+      document.head.appendChild(e);
+    }
+  });
+}
+const AP_libsReady=Promise.all(AP_LIBS.map(AP_loadLib));
 const AP_PW_SYMBOLS=/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~`]/;
 
 function AP_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
@@ -508,6 +535,7 @@ document.getElementById('ap-nb').oninput=function(){
 };
 
 function AP_initMDE(){
+  if(!window.EasyMDE)return;
   if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;}
   _AP_mde=new EasyMDE({
     element:document.getElementById('ap-mdtxt'),
@@ -521,7 +549,7 @@ function AP_showMain(){
   document.getElementById('ap-auth').style.display='none';
   document.getElementById('ap-main').style.display='block';
   AP_loadCats().then(AP_refreshIdsEnUso);
-  setTimeout(AP_initMDE,100);
+  AP_libsReady.then(AP_initMDE);
 }
 
 window.AP_login=async function(){
@@ -619,7 +647,7 @@ function AP_resetForm(){
   document.getElementById('ap-img')._blob=null;
   document.getElementById('ap-img')._ext=null;
   _AP_editando=null;
-  if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;setTimeout(AP_initMDE,50);}
+  if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;AP_libsReady.then(AP_initMDE);}
   document.getElementById('ap-submit').textContent='Enviar Solicitud';
 }
 

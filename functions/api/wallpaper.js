@@ -69,7 +69,13 @@ export async function onRequestGet(context){
 
   const tr=u.searchParams.get('track');
   if(tr&&env.UNSPLASH_KEY){
-    context.waitUntil(fetch(`${decodeURIComponent(tr)}?client_id=${env.UNSPLASH_KEY}`).catch(()=>{}));
+    try{
+      const d=new URL(decodeURIComponent(tr));
+      if(d.origin==='https://api.unsplash.com'&&d.pathname.startsWith('/photos/')){
+        d.searchParams.set('client_id',env.UNSPLASH_KEY);
+        context.waitUntil(fetch(d.href).catch(()=>{}));
+      }
+    }catch{}
     return new Response('ok',{headers:{'cache-control':'no-store'}});
   }
 
