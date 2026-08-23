@@ -15,8 +15,12 @@
 #ct-code{text-align:center;font-size:1.6rem;font-weight:700;letter-spacing:.09em;margin:10px 0 2px}
 #ct-hint{text-align:center;font-size:.76rem;color:rgba(255,255,255,.55);margin-bottom:12px}
 #ct-join{flex:1;min-width:150px;padding:10px;border-radius:var(--ct-r);border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.25);color:#fff;font-size:.9rem}
-#ct-cam{display:none;width:100%;max-width:330px;border-radius:var(--ct-r);margin:10px auto 0}
-#ct-cam.on{display:block}
+.ct-mod{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
+.ct-mod.on{display:flex}
+#ct-cam{width:100%;max-width:360px;border-radius:var(--ct-r);background:#000}
+#ct-wait{display:none;text-align:center;padding:20px 10px;font-size:.95rem;color:rgba(255,255,255,.72)}
+#ct-wait.on{display:block}
+#ct-send.off{display:none}
 #ct-main{display:none}
 #ct-main.on{display:block}
 #ct-pair.off{display:none}
@@ -44,12 +48,13 @@
 <div class="ct-row">
 <input id="ct-join" placeholder="Codigo del otro dispositivo" autocomplete="off">
 <button class="ct-b" id="ct-go">Unirse</button>
-<button class="ct-b" id="ct-scan">Escanear</button>
+<button class="ct-b" id="ct-scan" title="Escanear con la camara">📷</button>
 </div>
-<video id="ct-cam" playsinline muted></video>
 </div>
 <div class="ct-card" id="ct-main">
-<div class="ct-h"><h3>Conectado</h3><span class="ct-net" id="ct-net">Revisando</span></div>
+<div class="ct-h"><h3 id="ct-tt">Conectado</h3><span class="ct-net" id="ct-net">Revisando</span></div>
+<div id="ct-wait">Esperando contenido del otro dispositivo</div>
+<div id="ct-send">
 <input id="ct-link" placeholder="Pega un enlace https de video" autocomplete="off">
 <div class="ct-row">
 <button class="ct-b on" id="ct-send-link">Enviar enlace</button>
@@ -57,10 +62,15 @@
 <button class="ct-b ct-hid" id="ct-send-scr">Espejar pantalla</button>
 <button class="ct-b" id="ct-stop">Detener</button>
 </div>
+</div>
 <input type="file" id="ct-fi" accept="video/*,audio/*" class="ct-hid">
 <div id="ct-bar"><i id="ct-bar-i"></i></div>
 <div id="ct-msg"></div>
 <video id="ct-video" controls playsinline></video>
+</div>
+<div class="ct-mod" id="ct-cmod">
+<video id="ct-cam" playsinline muted></video>
+<button class="ct-b" id="ct-ccl">Cerrar</button>
 </div>
 </div>
 
@@ -76,7 +86,7 @@ const M_HCS='https://esm.unpkg.com/hybrid-chunk-store@1.2.6?bundle&target=esnext
 const M_QR='https://esm.unpkg.com/qr-creator@1.0.0?bundle&target=esnext';
 let peer=null,pid=null,room=null,token=null,pingIv=null,conns={},wl=null;
 let wt=null,HCS=null,curTorrent=null,camStream=null,scanRun=false,scrStream=null,curCall=null;
-let dead=false;
+let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null;
 const HP=location.hash.replace(/^#/,'').split('#');
 const CTP=HP[0]||'';
 const PRE=(HP[1]||'').trim().toUpperCase();
@@ -142,39 +152,95 @@ async function initPeer(){
 
 function hookConn(c){
   conns[c.peer]=c;
+  miss[c.peer]=0;
   c.on('open',()=>{
     $('ct-pair').classList.add('off');
     $('ct-main').classList.add('on');
+    $('ct-tt').textContent=isHost?'Modo TV':'Enviar a la TV';
+    $('ct-wait').classList.toggle('on',isHost);
+    $('ct-send').classList.toggle('off',isHost);
+    startHB();
     netCheck(c);
   });
-  c.on('data',d=>onData(d));
-  c.on('close',()=>{delete conns[c.peer];if(!Object.keys(conns).length)msg('Se desconecto el otro dispositivo',true);});
-  c.on('error',()=>{delete conns[c.peer];});
+  c.on('data',d=>onData(d,c.peer));
+  c.on('close',()=>dropPeer(c.peer));
+  c.on('error',()=>dropPeer(c.peer));
+}
+function dropPeer(p){
+  const c=conns[p];
+  if(c){try{c.close();}catch(e){}}
+  delete conns[p];delete miss[p];
+  if(!Object.keys(conns).length)resetPair('Se desconecto el otro dispositivo');
 }
 function send(d){
   Object.values(conns).forEach(c=>{if(c.open)try{c.send(d);}catch(e){}});
 }
+function startHB(){
+  if(hbIv)return;
+  hbIv=setInterval(()=>{
+    Object.keys(conns).forEach(p=>{
+      const c=conns[p];
+      if(!c||!c.open){dropPeer(p);return;}
+      miss[p]=(miss[p]||0)+1;
+      if(miss[p]>3){dropPeer(p);return;}
+      try{c.send({t:'ping'});}catch(e){dropPeer(p);}
+    });
+  },5000);
+}
+function stopHB(){if(hbIv){clearInterval(hbIv);hbIv=null;}}
+async function resetPair(txt){
+  stopHB();
+  stopAll(false);
+  $('ct-main').classList.remove('on');
+  $('ct-pair').classList.remove('off');
+  $('ct-net').className='ct-net';
+  $('ct-net').textContent='Revisando';
+  msg(txt||'',!!txt);
+  if(dead)return;
+  isHost=true;
+  myCode=genCode();
+  await joinRoom('cast-'+myCode);
+  showQR(myCode);
+}
 
-async function netCheck(c){
+function isPriv(a){
+  if(!a)return false;
+  if(a.endsWith('.local'))return true;
+  if(/^10\.|^192\.168\.|^169\.254\./.test(a))return true;
+  if(/^172\.(1[6-9]|2\d|3[01])\./.test(a))return true;
+  return /^(fe80|fc|fd)/i.test(a);
+}
+let netMine=null,netPeer=null;
+function netPaint(){
+  if(netMine==null&&netPeer==null)return;
+  const local=netMine!==false&&netPeer!==false;
   const el=$('ct-net');
+  el.className='ct-net '+(local?'local':'net');
+  el.textContent=local?'Red local, no gasta datos':'Por internet, gasta datos';
+}
+async function netCheck(c){
   const pc=c.peerConnection;
-  if(!pc){el.textContent='Conectado';return;}
-  for(let i=0;i<10;i++){
+  if(!pc){$('ct-net').textContent='Conectado';return;}
+  for(let i=0;i<12;i++){
     try{
       const st=await pc.getStats();
       let pair=null;
-      st.forEach(r=>{if(r.type==='candidate-pair'&&r.state==='succeeded')pair=r;});
+      st.forEach(r=>{if(r.type==='candidate-pair'&&(r.nominated||r.state==='succeeded'))pair=r;});
       if(pair){
         const lc=st.get(pair.localCandidateId),rc=st.get(pair.remoteCandidateId);
-        const a=lc&&lc.candidateType,b=rc&&rc.candidateType;
-        if(a==='host'&&b==='host'){el.textContent='Red local, no gasta datos';el.className='ct-net local';}
-        else{el.textContent='Por internet, gasta datos';el.className='ct-net net';}
+        const ta=lc&&lc.candidateType,tb=rc&&rc.candidateType;
+        const relay=ta==='relay'||tb==='relay';
+        const near=t=>t==='host'||t==='prflx';
+        const local=!relay&&((near(ta)&&near(tb))||isPriv(rc&&rc.address)||isPriv(lc&&lc.address));
+        netMine=local;
+        netPaint();
+        send({t:'net',v:local});
         return;
       }
     }catch(e){}
     await new Promise(r=>setTimeout(r,600));
   }
-  el.textContent='Conectado';
+  $('ct-net').textContent='Conectado';
 }
 
 async function joinRoom(rid){
@@ -226,7 +292,8 @@ async function scan(){
   const v=$('ct-cam');
   try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});}
   catch(e){msg('Sin acceso a la camara',true);return;}
-  v.srcObject=camStream;v.classList.add('on');
+  v.srcObject=camStream;
+  $('ct-cmod').classList.add('on');
   await v.play().catch(()=>{});
   scanRun=true;
   const det=new BarcodeDetector({formats:['qr_code']});
@@ -246,14 +313,17 @@ function stopScan(){
   scanRun=false;
   if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
   const v=$('ct-cam');
-  v.srcObject=null;v.classList.remove('on');
+  v.srcObject=null;
+  $('ct-cmod').classList.remove('on');
 }
 
 async function doJoin(){
   const code=($('ct-join').value||'').trim().toUpperCase();
   if(!code)return;
+  if(code===myCode){msg('Ese es tu propio codigo',true);return;}
   msg('Conectando...');
   leaveRoom();
+  isHost=false;
   if(await joinRoom('cast-'+code))msg('');
 }
 
@@ -314,10 +384,17 @@ async function sendFile(f){
   msg('Preparando archivo...');
   const frag=(f.type||'').includes('webm')||await isFrag(f);
   const c=await getWT();
+  if(seedT){try{seedT.destroy();}catch(e){}seedT=null;}
   c.seed(f,{name:f.name,store:HCS},t=>{
+    seedT=t;
     send({t:'file',magnet:t.magnetURI,name:f.name,mime:f.type||'',frag});
-    msg('Enviando '+f.name);
-    t.on('upload',()=>bar(t.progress*100));
+    msg('Esperando que la TV empiece a descargar');
+    bar(0);
+    t.on('upload',()=>{
+      const p=Math.min(100,t.uploaded/f.size*100);
+      msg('Enviando '+f.name);
+      bar(p);
+    });
   });
 }
 async function recvFile(d){
@@ -339,6 +416,7 @@ async function recvFile(d){
     }
     t.once('done',async()=>{
       bar(null);
+      send({t:'fileok'});
       if(d.frag)return;
       try{
         playSrc(URL.createObjectURL(await f.blob()));
@@ -369,8 +447,13 @@ function stopAll(local){
   if(local)send({t:'stop'});
 }
 
-function onData(d){
+function onData(d,from){
   if(!d||!d.t)return;
+  if(from)miss[from]=0;
+  if(d.t==='ping'){const c=conns[from];if(c&&c.open)try{c.send({t:'pong'});}catch(e){}return;}
+  if(d.t==='pong')return;
+  if(d.t==='net'){netPeer=!!d.v;netPaint();return;}
+  if(d.t==='fileok'){bar(null);msg('Enviado');return;}
   if(d.t==='link')playLink(d.v);
   else if(d.t==='file')recvFile(d);
   else if(d.t==='stop')stopAll(false);
@@ -378,6 +461,7 @@ function onData(d){
 
 $('ct-go').onclick=doJoin;
 $('ct-scan').onclick=scan;
+$('ct-ccl').onclick=stopScan;
 $('ct-join').addEventListener('keydown',e=>{if(e.key==='Enter')doJoin();});
 $('ct-send-link').onclick=()=>{
   const u=($('ct-link').value||'').trim();
@@ -395,6 +479,7 @@ if(navigator.mediaDevices&&navigator.mediaDevices.getDisplayMedia)$('ct-send-scr
 function teardown(){
   dead=true;
   stopScan();
+  stopHB();
   stopAll(false);
   leaveRoom();
   Object.values(conns).forEach(c=>{try{c.close();}catch(e){}});
@@ -420,9 +505,10 @@ if(cEl)cEl.addEventListener('contentUnload',teardown,{once:true});
     doJoin();
     return;
   }
-  const code=genCode();
-  await joinRoom('cast-'+code);
-  showQR(code);
+  isHost=true;
+  myCode=genCode();
+  await joinRoom('cast-'+myCode);
+  showQR(myCode);
 })();
 })();
 </script>

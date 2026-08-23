@@ -1,4 +1,4 @@
-const V='v121';
+const V='v122';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -45,7 +45,7 @@ N_ICO,
 N_BANNER
 ];
 
-const TEMP_ROUTES=[{match:'/api/chat/',ttl:15000},{match:'/api/',ttl:18000000}];
+const TEMP_ROUTES=[{match:'/api/chat/',ttl:14000},{match:'/api/',ttl:18000000}];
 const EXT_CACHE=[
   {origin:'tetunori.github.io',ttl:0},
   {origin:'esm.unpkg.com',ttl:0}
