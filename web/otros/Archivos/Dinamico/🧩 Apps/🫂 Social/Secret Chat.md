@@ -253,6 +253,7 @@ const HIST=200,DOM=80,IM_STK=524288,AUTO_DL_MAX=1048576;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const mk=(tag,cls)=>{const e=document.createElement(tag);if(cls)e.className=cls;return e;};
+const imgB=(blob,cls)=>{const i=mk('img',cls),u=URL.createObjectURL(blob);i.onload=()=>URL.revokeObjectURL(u);i.onerror=()=>URL.revokeObjectURL(u);i.src=u;return i;};
 const COLS=['#e8a0a0','#e8c4a0','#a8d8a0','#a0c4e8','#c4a8e8','#e8a8d0','#a8dede','#e8e0a0'];
 const uC={};let cI=0;
 const gUC=pid=>{if(!uC[pid])uC[pid]=COLS[(cI++)%COLS.length];return uC[pid];};
@@ -289,7 +290,7 @@ async function api(method,path,body){
 let peer=null,pid=null,curCfg=null,curRoom=null,curToken=null,pingIv=null;
 let conns={},pNk={},pAu={},pVStr={},pMu={},connectingSince={},pingMisses={};
 let aStream=null,vStream=null,muted=false,vidOn=false;
-let hist=[],domCount=0,torrentClient=null;
+let hist=[],domCount=0,torrentClient=null,torrentStore=null;
 
 let ircSocket=null,ircMode=false,ircNick='',ircChannel='',ircChanKey='',ircUsers=new Map();
 function inAnyChat(){return!!curRoom||!!curDM||ircMode;}
@@ -879,8 +880,9 @@ $('cw-ch-inv').onclick=async()=>{
 let ircTransport='ws';
 function ircSend(raw){
   if(!ircSocket||ircSocket.readyState!==1)return;
-  if(ircTransport==='sockjs')ircSocket.send(':1 '+raw);
-  else ircSocket.send(raw+'\r\n');
+  const line=String(raw).replace(/[\r\n]+/g,' ');
+  if(ircTransport==='sockjs')ircSocket.send(':1 '+line);
+  else ircSocket.send(line+'\r\n');
 }
 
 function ircParseLine(line){
@@ -915,7 +917,7 @@ function ircAddIncoming(from,text){
       inner.classList.add('cw-sticker-msg');
       const fname=sm[1]+'.'+sm[2];
       loadStickerBlob(fname).then(blob=>{
-        const img=mk('img','cw-stk');img.src=URL.createObjectURL(blob);wrap.appendChild(img);
+        wrap.appendChild(imgB(blob,'cw-stk'));
       }).catch(()=>downloadStickerTorrent(dd,wrap,fname));
     }else renderTorrentCard(dd,wrap);
     mg.appendChild(d);mg.scrollTop=mg.scrollHeight;
@@ -1318,7 +1320,7 @@ async function mkStickerThumb(fname){
   const btn=mk('button','cw-sp-item');
   try{
     const blob=await loadStickerBlob(fname);
-    const img=mk('img');img.src=URL.createObjectURL(blob);btn.appendChild(img);
+    btn.appendChild(imgB(blob));
   }catch(e){}
   btn.onclick=()=>{sendSticker(fname);setView('msgs');};
   return btn;
@@ -1342,7 +1344,7 @@ async function downloadStickerTorrent(dd,wrap,fname){
   wrap.innerHTML='';wrap.appendChild(pr);
   try{
     const client=await getTorrentClient();
-    client.add(dd.magnet,torrent=>{
+    client.add(dd.magnet,{store:torrentStore},torrent=>{
       const file=torrent.files[0];
       if(!file||file.length>STICKER_MAX){
         pr.textContent='Sticker invalido (supera 1MB)';
@@ -1358,7 +1360,7 @@ async function downloadStickerTorrent(dd,wrap,fname){
           return;
         }
         wrap.innerHTML='';
-        const img=mk('img','cw-stk');img.src=URL.createObjectURL(blob);wrap.appendChild(img);
+        wrap.appendChild(imgB(blob,'cw-stk'));
         saveStickerBlob(fname,blob).catch(()=>{});
       });
     });
@@ -1374,7 +1376,7 @@ async function sendSticker(fname){
     if(stickerMagnetCache[fname]){sendStickerMsg(fname,stickerMagnetCache[fname],blob.size,q);return;}
     const file=new File([blob],'sticker_'+fname,{type:mime});
     const client=await getTorrentClient();
-    client.seed(file,{name:'sticker_'+fname},torrent=>{
+    client.seed(file,{name:'sticker_'+fname,store:torrentStore},torrent=>{
       stickerMagnetCache[fname]=torrent.magnetURI;
       sendStickerMsg(fname,torrent.magnetURI,blob.size,q);
     });
@@ -1403,15 +1405,19 @@ async function addOwnStickerMsg(fname,dd){
   renderQuoteBlock(inner,dd.quote);
   try{
     const blob=await loadStickerBlob(fname);
-    const img=mk('img','cw-stk');img.src=URL.createObjectURL(blob);inner.appendChild(img);
+    inner.appendChild(imgB(blob,'cw-stk'));
   }catch(e){}
   mg.appendChild(d);mg.scrollTop=mg.scrollHeight;
 }
 
 async function getTorrentClient(){
   if(torrentClient)return torrentClient;
-  const{default:WebTorrent}=await import('https://esm.sh/webtorrent@3.0.16/dist/webtorrent.min.js');
-  torrentClient=new WebTorrent();
+  const[wt,hcs]=await Promise.all([
+    import('https://esm.sh/webtorrent@3.0.16/dist/webtorrent.min.js'),
+    import('https://esm.sh/hybrid-chunk-store@1.2.6')
+  ]);
+  torrentStore=hcs.default||hcs;
+  torrentClient=new(wt.default||wt)();
   torrentClient.on('error',e=>console.error('[webtorrent]',e.message));
   return torrentClient;
 }
@@ -1420,7 +1426,7 @@ async function sendFileP2P(f){
   const q=quoting?{...quoting}:undefined;
   try{
     const client=await getTorrentClient();
-    client.seed(f,{name:f.name},torrent=>{
+    client.seed(f,{name:f.name,store:torrentStore},torrent=>{
       if(ircMode){
         ircSend('PRIVMSG '+ircChannel+' :'+f.name+' '+torrent.magnetURI);
         addOwnFileMsg(f,{name:f.name,size:f.size,mime:f.type||'application/octet-stream',quote:q},torrent);
@@ -1441,7 +1447,7 @@ async function sendFileP2P(f){
       if(/^image\//.test(f.type)){
         const u=URL.createObjectURL(f),i=new Image();
         i.onload=()=>{dd.w=i.naturalWidth;dd.h=i.naturalHeight;URL.revokeObjectURL(u);afterDims();};
-        i.onerror=()=>afterDims();
+        i.onerror=()=>{URL.revokeObjectURL(u);afterDims();};
         i.src=u;
       }else afterDims();
     });
@@ -1460,9 +1466,9 @@ function addOwnFileMsg(file,dd,torrent){
   const{d,inner}=mkBubble(nick,gUC(pid||'me'),avatarUrl(pid||'me'),true,dd.mid,'📎 '+dd.name);
   renderQuoteBlock(inner,dd.quote);
   const wrap=mk('div');inner.appendChild(wrap);
-  const url=URL.createObjectURL(file);
-  if(isStk(dd)){const img=mk('img','cw-stk');img.src=url;wrap.appendChild(img);}
+  if(isStk(dd)){wrap.appendChild(imgB(file,'cw-stk'));}
   else{
+    const url=URL.createObjectURL(file);
     const btn=mk('div','cw-dl');btn.innerHTML=`⬇ ${esc(dd.name)} <span style="opacity:.6">(${fSz(dd.size)})</span>`;
     btn.onclick=()=>{const a=mk('a');a.href=url;a.download=dd.name;a.click();};
     wrap.appendChild(btn);
@@ -1474,7 +1480,7 @@ function downloadTorrent(dd,wrap,auto){
   const pr=mk('div','cw-torrent-pr');pr.textContent='Descargando de la red...';
   wrap.innerHTML='';wrap.appendChild(pr);
   getTorrentClient().then(client=>{
-    client.add(dd.magnet,torrent=>{
+    client.add(dd.magnet,{store:torrentStore},torrent=>{
       const file0=torrent.files[0];
       if(auto&&file0&&file0.length>AUTO_DL_MAX){
         try{client.remove(torrent);}catch(e){}
@@ -1489,10 +1495,10 @@ function downloadTorrent(dd,wrap,auto){
         clearInterval(iv);
         const file=torrent.files[0];
         const blob=await file.blob();
-        const url=URL.createObjectURL(blob);
         wrap.innerHTML='';
-        if(isStk(dd)){const img=mk('img','cw-stk');img.src=url;wrap.appendChild(img);}
+        if(isStk(dd)){wrap.appendChild(imgB(blob,'cw-stk'));}
         else{
+          const url=URL.createObjectURL(blob);
           const btn=mk('div','cw-dl');btn.innerHTML=`✓ ${esc(dd.name)} <span style="opacity:.6">(${fSz(dd.size)})</span>`;
           const a=mk('a');a.href=url;a.download=dd.name;
           btn.onclick=()=>a.click();
@@ -1526,7 +1532,7 @@ async function addFileMsg(from,dd){
     const fname=sm[1]+'.'+sm[2];
     try{
       const blob=await loadStickerBlob(fname);
-      const img=mk('img','cw-stk');img.src=URL.createObjectURL(blob);wrap.appendChild(img);
+      wrap.appendChild(imgB(blob,'cw-stk'));
     }catch(e){downloadStickerTorrent(dd,wrap,fname);}
     return;
   }
@@ -1591,6 +1597,7 @@ function teardown(){
   document.body.style.overflow='';
   document.removeEventListener('visibilitychange',onVisChange);
   if(torrentClient){try{torrentClient.destroy();}catch(e){}torrentClient=null;}
+  window.removeEventListener('beforeunload',teardown);
   if(disqusEl)disqusEl.style.display=disqusPrevDisplay||'';
 }
 if(contentEl)contentEl.addEventListener('contentUnload',teardown,{once:true});
