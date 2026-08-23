@@ -86,7 +86,7 @@ const M_QR='https://esm.unpkg.com/qr-creator@1.0.0?bundle&target=esnext';
 const M_H5Q='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
 let peer=null,pid=null,room=null,token=null,pingIv=null,conns={},wl=null;
 let wt=null,HCS=null,curTorrent=null,qrCam=null,scrStream=null,curCall=null;
-let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null,linked=false,joinTo=null;
+let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null,linked=false,joinTo=null,fsTry=false,fsArm=null;
 const HP=location.hash.replace(/^#/,'').split('#');
 const CTP=HP[0]||'';
 const PRE=(HP[1]||'').trim().toUpperCase();
@@ -299,14 +299,47 @@ async function doJoin(){
   },15000);
 }
 
+function fsReq(){
+  const v=$('ct-video');
+  if(v.requestFullscreen)return v.requestFullscreen();
+  if(v.webkitRequestFullscreen)return Promise.resolve(v.webkitRequestFullscreen());
+  if(v.webkitEnterFullscreen)return Promise.resolve(v.webkitEnterFullscreen());
+  return Promise.reject();
+}
+function fsDisarm(){
+  if(!fsArm)return;
+  document.removeEventListener('click',fsArm);
+  fsArm=null;
+}
+function fsArmar(){
+  if(fsArm)return;
+  msg('Toca la pantalla para verlo completo');
+  fsArm=()=>{
+    fsDisarm();
+    msg('');
+    fsReq().catch(()=>{});
+  };
+  document.addEventListener('click',fsArm);
+}
+async function goFS(){
+  try{await fsReq();fsDisarm();}
+  catch(e){fsArmar();}
+}
+function exitFS(){
+  fsDisarm();
+  if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
+  else if(document.webkitFullscreenElement&&document.webkitExitFullscreen)document.webkitExitFullscreen();
+}
 function playStream(s){
   const v=$('ct-video');
+  fsTry=false;
   v.classList.add('on');
   v.srcObject=s;
   v.play().catch(()=>msg('Toca el video para reproducir'));
 }
 function playSrc(u){
   const v=$('ct-video');
+  fsTry=false;
   v.classList.add('on');
   v.srcObject=null;
   v.src=u;
@@ -387,6 +420,7 @@ async function recvFile(d){
     t.on('download',()=>bar(t.progress*100));
     if(d.frag&&f.streamTo){
       const v=$('ct-video');
+      fsTry=false;
       v.classList.add('on');v.srcObject=null;
       try{f.streamTo(v);}catch(e){}
       v.play().catch(()=>{});
@@ -419,6 +453,7 @@ function stopAll(local){
   if(scrStream){scrStream.getTracks().forEach(t=>t.stop());scrStream=null;}
   if(curCall){try{curCall.close();}catch(e){}curCall=null;}
   if(curTorrent){try{curTorrent.destroy();}catch(e){}curTorrent=null;}
+  exitFS();
   const v=$('ct-video');
   v.pause();v.removeAttribute('src');v.srcObject=null;v.classList.remove('on');v.load();
   bar(null);msg('');
@@ -436,6 +471,11 @@ function onData(d,from){
   else if(d.t==='stop')stopAll(false);
 }
 
+$('ct-video').addEventListener('playing',()=>{
+  if(fsTry)return;
+  fsTry=true;
+  goFS();
+});
 $('ct-go').onclick=doJoin;
 $('ct-scan').onclick=scan;
 $('ct-ccl').onclick=stopScan;
