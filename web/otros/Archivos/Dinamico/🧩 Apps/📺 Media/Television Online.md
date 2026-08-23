@@ -17,7 +17,9 @@
 #ct-join{flex:1;min-width:150px;padding:10px;border-radius:var(--ct-r);border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.25);color:#fff;font-size:.9rem}
 .ct-mod{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.92);flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
 .ct-mod.on{display:flex}
-#ct-cam{width:100%;max-width:360px;border-radius:var(--ct-r);background:#000}
+#ct-reader{width:100%;max-width:360px}
+#ct-reader video{width:100%!important;border-radius:var(--ct-r)}
+#ct-reader img{display:none!important}
 #ct-wait{display:none;text-align:center;padding:20px 10px;font-size:.95rem;color:rgba(255,255,255,.72)}
 #ct-wait.on{display:block}
 #ct-send.off{display:none}
@@ -66,7 +68,7 @@
 </div>
 <div id="ct-msg"></div>
 <div class="ct-mod" id="ct-cmod">
-<video id="ct-cam" playsinline muted></video>
+<div id="ct-reader"></div>
 <button class="ct-b" id="ct-ccl">Cerrar</button>
 </div>
 </div>
@@ -78,11 +80,12 @@ if(!CTE)return;
 const $=i=>document.getElementById(i);
 const API='/api/chat',PING=10000;
 const M_PEER='https://esm.unpkg.com/peerjs@1.5.5?bundle&target=esnext';
-const M_WT='https://esm.unpkg.com/webtorrent@3.0.21?bundle&target=esnext';
-const M_HCS='https://esm.unpkg.com/hybrid-chunk-store@1.2.6?bundle&target=esnext';
+const M_WT='https://esm.sh/webtorrent@3.0.16/dist/webtorrent.min.js';
+const M_HCS='https://esm.sh/hybrid-chunk-store@1.2.6';
 const M_QR='https://esm.unpkg.com/qr-creator@1.0.0?bundle&target=esnext';
+const M_H5Q='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
 let peer=null,pid=null,room=null,token=null,pingIv=null,conns={},wl=null;
-let wt=null,HCS=null,curTorrent=null,camStream=null,scanRun=false,scrStream=null,curCall=null;
+let wt=null,HCS=null,curTorrent=null,qrCam=null,scrStream=null,curCall=null;
 let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null,linked=false,joinTo=null;
 const HP=location.hash.replace(/^#/,'').split('#');
 const CTP=HP[0]||'';
@@ -242,38 +245,43 @@ async function showQR(code){
     const QR=(await import(M_QR)).default;
     const box=$('ct-qr');
     box.innerHTML='';
-    QR.render({text:location.origin+location.pathname+'#'+CTP+'#'+code,radius:.4,ecLevel:'M',size:174,fill:'#000',background:'#fff'},box);
+    QR.render({text:code,radius:.4,ecLevel:'M',size:174,fill:'#000',background:'#fff'},box);
   }catch(e){$('ct-qr').textContent='QR no disponible';}
 }
 
+function loadJS(u){
+  return new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src=u;s.onload=res;s.onerror=rej;
+    document.head.appendChild(s);
+  });
+}
 async function scan(){
-  if(scanRun)return;
-  if(!('BarcodeDetector'in window)){msg('Este navegador no puede escanear, escribe el codigo',true);return;}
-  const v=$('ct-cam');
-  try{camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});}
-  catch(e){msg('Sin acceso a la camara',true);return;}
-  v.srcObject=camStream;
+  if(qrCam)return;
   $('ct-cmod').classList.add('on');
-  await v.play().catch(()=>{});
-  scanRun=true;
-  const det=new BarcodeDetector({formats:['qr_code']});
-  while(scanRun&&!dead){
-    try{
-      const r=await det.detect(v);
-      if(r&&r.length){
-        const raw=(r[0].rawValue||'').trim();
-        const code=(raw.includes('#')?raw.split('#').pop():raw).toUpperCase();
-        if(code){stopScan();$('ct-join').value=code;doJoin();return;}
-      }
-    }catch(e){}
-    await new Promise(r=>setTimeout(r,350));
+  msg('Iniciando camara...');
+  try{
+    if(!window.Html5Qrcode)await loadJS(M_H5Q);
+    $('ct-reader').innerHTML='';
+    qrCam=new Html5Qrcode('ct-reader');
+    await qrCam.start({facingMode:'environment'},{fps:10,qrbox:{width:240,height:240}},raw=>{
+      const s=String(raw||'').trim();
+      const code=(s.includes('#')?s.split('#').pop():s).trim().toUpperCase();
+      if(!code)return;
+      stopScan();
+      $('ct-join').value=code;
+      doJoin();
+    },()=>{});
+    msg('Apunta al codigo QR');
+  }catch(e){
+    stopScan();
+    msg('Error camara',true);
   }
 }
 function stopScan(){
-  scanRun=false;
-  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
-  const v=$('ct-cam');
-  v.srcObject=null;
+  const c=qrCam;
+  qrCam=null;
+  if(c)c.stop().catch(()=>{}).then(()=>{try{c.clear();}catch(e){}});
   $('ct-cmod').classList.remove('on');
 }
 
@@ -287,7 +295,7 @@ async function doJoin(){
   if(!await joinRoom('cast-'+code))return;
   clearTimeout(joinTo);
   joinTo=setTimeout(()=>{
-    if(!linked)msg('No se encontro ese codigo, revisa que la TV siga esperando',true);
+    if(!linked)msg('No se encontro ese codigo',true);
   },15000);
 }
 
@@ -325,7 +333,7 @@ async function playLink(u){
     playSrc(URL.createObjectURL(b));
     msg('');
   }catch(e){
-    msg('Error Enlace, el servidor no lo permite o no es https',true);
+    msg('Enlace no compatible',true);
   }
 }
 
@@ -334,7 +342,7 @@ async function getWT(){
   const[a,b]=await Promise.all([import(M_WT),import(M_HCS)]);
   HCS=b.default||b;
   wt=new(a.default||a)();
-  wt.on('error',()=>{});
+  wt.on('error',e=>msg('Error Archivo '+(e&&e.message?e.message:''),true));
   return wt;
 }
 async function isFrag(f){
@@ -346,9 +354,13 @@ async function isFrag(f){
 }
 async function sendFile(f){
   msg('Preparando archivo...');
-  const frag=(f.type||'').includes('webm')||await isFrag(f);
-  const c=await getWT();
+  let frag=false,c=null;
+  try{
+    frag=(f.type||'').includes('webm')||await isFrag(f);
+    c=await getWT();
+  }catch(e){msg('No se pudo preparar el envio',true);return;}
   if(seedT){try{seedT.destroy();}catch(e){}seedT=null;}
+  try{
   c.seed(f,{name:f.name,store:HCS},t=>{
     seedT=t;
     send({t:'file',magnet:t.magnetURI,name:f.name,mime:f.type||'',frag});
@@ -360,11 +372,13 @@ async function sendFile(f){
       bar(p);
     });
   });
+  }catch(e){msg('No se pudo preparar el envio',true);}
 }
 async function recvFile(d){
-  msg(d.frag?'Descargando, se reproduce mientras baja':'Este formato necesita descargarse entero antes de verse');
+  msg(d.frag?'Descargando, ya se puede ver':'Descargando, hay que esperar a que termine');
   bar(0);
-  const c=await getWT();
+  let c;
+  try{c=await getWT();}catch(e){msg('No se pudo recibir el archivo',true);bar(null);return;}
   if(curTorrent){curTorrent.destroy();curTorrent=null;}
   c.add(d.magnet,{store:HCS},t=>{
     curTorrent=t;

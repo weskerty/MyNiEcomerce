@@ -54,3 +54,7 @@ Resuscripcion a la mierda de PWA de iOS en [centralPage](/web/otros/Archivos/HTM
 Espero que te sea útil. Si lo mejorás me gustaria ver tambien 🥺👉👈
 
 Respetá la licencia: libre para usar, no para revender.
+
+Desde hace un tiempo (bc93efa) se usa IA. 
+
+Asi que realmente ese codigo no puede tener licencia, eres libre de usar como quieras.
