@@ -35,6 +35,8 @@
 #ct-bar{height:5px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:8px;display:none}
 #ct-bar.on{display:block}
 #ct-bar i{display:block;height:100%;width:0;background:var(--accent,#4ade80);transition:width .3s}
+#ct-stop-w{display:none;margin-top:8px}
+#ct-stop-w.on{display:flex}
 .ct-hid{display:none}
 </style>
 
@@ -59,9 +61,9 @@
 <button class="ct-b on" id="ct-send-link">Enviar enlace</button>
 <button class="ct-b" id="ct-send-file">Enviar archivo</button>
 <button class="ct-b ct-hid" id="ct-send-scr">Espejar pantalla</button>
-<button class="ct-b" id="ct-stop">Detener</button>
 </div>
 </div>
+<div class="ct-row" id="ct-stop-w"><button class="ct-b" id="ct-stop">Detener</button></div>
 <input type="file" id="ct-fi" accept="video/*,audio/*" class="ct-hid">
 <div id="ct-bar"><i id="ct-bar-i"></i></div>
 <video id="ct-video" controls playsinline></video>
@@ -78,7 +80,7 @@
 const CTE=document.getElementById('ctw');
 if(!CTE)return;
 const $=i=>document.getElementById(i);
-const API='/api/chat',PING=10000;
+const API='/api/chat',PING=10000,CT_RT=20000,CT_MB=209715200;
 const M_PEER='https://esm.unpkg.com/peerjs@1.5.5?bundle&target=esnext';
 const M_WT='https://esm.sh/webtorrent@3.0.16/dist/webtorrent.min.js';
 const M_HCS='https://esm.sh/hybrid-chunk-store@1.2.6';
@@ -87,8 +89,8 @@ const M_H5Q='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
 let peer=null,pid=null,room=null,token=null,pingIv=null,conns={},wl=null;
 let wt=null,HCS=null,curTorrent=null,qrCam=null,scrStream=null,curCall=null;
 let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null,linked=false,joinTo=null;
+let cSince={},curURL=null,fsArm=false,lastProg=-1;
 const HP=location.hash.replace(/^#/,'').split('#');
-const CTP=HP[0]||'';
 const PRE=(HP[1]||'').trim().toUpperCase();
 
 async function api(m,p,b){
@@ -113,9 +115,18 @@ function bar(v){
 }
 function genCode(){
   const A='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+  const r=crypto.getRandomValues(new Uint32Array(5));
   let s='';
-  for(let i=0;i<5;i++)s+=A[Math.floor(Math.random()*A.length)];
+  for(let i=0;i<5;i++)s+=A[r[i]%A.length];
   return s;
+}
+function okURL(u){
+  try{const x=new URL(u,location.href);return x.protocol==='https:'||x.protocol==='http:';}
+  catch(e){return false;}
+}
+function vLive(){
+  const v=$('ct-video');
+  return v.classList.contains('on')&&!v.ended&&!!(v.currentSrc||v.srcObject);
 }
 
 async function wlGet(){
@@ -135,6 +146,12 @@ async function initPeer(){
   const Peer=pm.Peer||pm.default;
   await new Promise((res,rej)=>{
     peer=new Peer();
+    peer.on('error',e=>{
+      const t=e&&e.type;
+      if(t==='peer-unavailable')return;
+      if(!pid){rej(e);return;}
+      if(!dead)msg('Error Conexion '+(t||''),true);
+    });
     peer.once('open',id=>{
       pid=id;
       peer.on('connection',c=>hookConn(c));
@@ -146,7 +163,6 @@ async function initPeer(){
       peer.on('disconnected',()=>{if(room&&!dead)peer.reconnect();});
       res();
     });
-    peer.once('error',rej);
   });
 }
 
@@ -155,6 +171,7 @@ function hookConn(c){
   miss[c.peer]=0;
   c.on('open',()=>{
     linked=true;
+    delete cSince[c.peer];
     clearTimeout(joinTo);
     msg('');
     $('ct-pair').classList.add('off');
@@ -162,6 +179,7 @@ function hookConn(c){
     $('ct-tt').textContent=isHost?'Modo TV':'Enviar a la TV';
     $('ct-wait').classList.toggle('on',isHost);
     $('ct-send').classList.toggle('off',isHost);
+    $('ct-stop-w').classList.add('on');
     startHB();
   });
   c.on('data',d=>onData(d,c.peer));
@@ -172,8 +190,9 @@ function dropPeer(p){
   const c=conns[p];
   if(c){try{c.close();}catch(e){}}
   delete conns[p];delete miss[p];
-  if(Object.keys(conns).length)return;
-  if(linked)resetPair('Se desconecto el otro dispositivo');
+  if(Object.keys(conns).length||!linked)return;
+  if(vLive()){linked=false;stopHB();msg('Se desconecto el otro dispositivo');return;}
+  resetPair('Se desconecto el otro dispositivo');
 }
 function send(d){
   Object.values(conns).forEach(c=>{if(c.open)try{c.send(d);}catch(e){}});
@@ -196,10 +215,13 @@ async function resetPair(txt){
   clearTimeout(joinTo);
   stopHB();
   stopAll(false);
+  cSince={};
+  $('ct-stop-w').classList.remove('on');
   $('ct-main').classList.remove('on');
   $('ct-pair').classList.remove('off');
   msg(txt||'',!!txt);
   if(dead)return;
+  leaveRoom();
   isHost=true;
   myCode=genCode();
   await joinRoom('cast-'+myCode);
@@ -217,9 +239,16 @@ async function joinRoom(rid){
   return true;
 }
 function connectMissing(peers){
+  if(!peer||peer.destroyed)return;
   (peers||[]).forEach(p=>{
-    if(p.pid===pid||conns[p.pid])return;
-    hookConn(peer.connect(p.pid,{reliable:true}));
+    if(p.pid===pid)return;
+    const c=conns[p.pid];
+    if(c&&c.open)return;
+    if(cSince[p.pid]&&Date.now()-cSince[p.pid]<CT_RT)return;
+    if(c){try{c.close();}catch(e){}delete conns[p.pid];delete miss[p.pid];}
+    cSince[p.pid]=Date.now();
+    const nc=peer.connect(p.pid,{reliable:true});
+    if(nc)hookConn(nc);
   });
 }
 function startPing(){
@@ -245,7 +274,7 @@ async function showQR(code){
     const QR=(await import(M_QR)).default;
     const box=$('ct-qr');
     box.innerHTML='';
-    QR.render({text:code,radius:.4,ecLevel:'M',size:174,fill:'#000',background:'#fff'},box);
+    QR.render({text:code,radius:.4,ecLevel:'M',size:174,quiet:2,fill:'#000',background:'#fff'},box);
   }catch(e){$('ct-qr').textContent='QR no disponible';}
 }
 
@@ -263,8 +292,9 @@ async function scan(){
   try{
     if(!window.Html5Qrcode)await loadJS(M_H5Q);
     $('ct-reader').innerHTML='';
-    qrCam=new Html5Qrcode('ct-reader');
-    await qrCam.start({facingMode:'environment'},{fps:10,qrbox:{width:240,height:240}},raw=>{
+    const inst=new Html5Qrcode('ct-reader');
+    qrCam=inst;
+    await inst.start({facingMode:'environment'},{fps:10,qrbox:{width:240,height:240}},raw=>{
       const s=String(raw||'').trim();
       const code=(s.includes('#')?s.split('#').pop():s).trim().toUpperCase();
       if(!code)return;
@@ -272,16 +302,21 @@ async function scan(){
       $('ct-join').value=code;
       doJoin();
     },()=>{});
+    if(qrCam!==inst){killScan(inst);return;}
     msg('Apunta al codigo QR');
   }catch(e){
     stopScan();
     msg('Error camara',true);
   }
 }
+function killScan(c){
+  if(!c)return;
+  Promise.resolve().then(()=>c.stop()).catch(()=>{}).then(()=>{try{c.clear();}catch(e){}});
+}
 function stopScan(){
   const c=qrCam;
   qrCam=null;
-  if(c)c.stop().catch(()=>{}).then(()=>{try{c.clear();}catch(e){}});
+  killScan(c);
   $('ct-cmod').classList.remove('on');
 }
 
@@ -295,7 +330,7 @@ async function doJoin(){
   if(!await joinRoom('cast-'+code))return;
   clearTimeout(joinTo);
   joinTo=setTimeout(()=>{
-    if(!linked)msg('No se encontro ese codigo',true);
+    if(!linked)resetPair('No se encontro ese codigo');
   },15000);
 }
 
@@ -310,22 +345,41 @@ function exitFS(){
   if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
   else if(document.webkitFullscreenElement&&document.webkitExitFullscreen)document.webkitExitFullscreen();
 }
+function inFS(){
+  return !!(document.fullscreenElement||document.webkitFullscreenElement||$('ct-video').webkitDisplayingFullscreen);
+}
+function fsTry(){
+  if(!fsArm||dead||inFS())return;
+  fsArm=false;
+  fsReq().catch(()=>{fsArm=true;});
+}
+function onFS(){
+  if(!inFS())fsArm=false;
+}
+function vShow(){
+  $('ct-video').classList.add('on');
+  $('ct-stop-w').classList.add('on');
+  fsArm=true;
+}
 function playStream(s){
   const v=$('ct-video');
-  v.classList.add('on');
+  vShow();
   v.srcObject=s;
-  v.play().catch(()=>msg('Toca el video para reproducir'));
+  v.play().then(fsTry,()=>msg('Toca el video para verlo'));
 }
 function playSrc(u){
   const v=$('ct-video');
-  v.classList.add('on');
+  vShow();
   v.srcObject=null;
   v.src=u;
-  v.play().catch(()=>msg('Toca el video para reproducir'));
+  if(curURL&&curURL!==u)URL.revokeObjectURL(curURL);
+  curURL=u.slice(0,5)==='blob:'?u:null;
+  v.play().then(fsTry,()=>msg('Toca el video para verlo'));
 }
 
 async function playLink(u){
   const v=$('ct-video');
+  if(!okURL(u)){msg('Enlace no valido',true);return;}
   msg('Cargando enlace...');
   const ok=await new Promise(res=>{
     const done=r=>{v.removeEventListener('error',onE);v.removeEventListener('loadeddata',onL);res(r);};
@@ -340,6 +394,7 @@ async function playLink(u){
   try{
     const r=await fetch(u);
     if(!r.ok)throw 0;
+    if(Number(r.headers.get('content-length')||0)>CT_MB){msg('Enlace muy pesado, usa Enviar archivo',true);return;}
     const b=await r.blob();
     playSrc(URL.createObjectURL(b));
     msg('');
@@ -391,11 +446,6 @@ async function sendFile(f){
     send({t:'file',magnet:t.magnetURI,name:f.name,mime:f.type||''});
     msg('Esperando que la TV empiece a descargar');
     bar(0);
-    t.on('upload',()=>{
-      const p=Math.min(100,t.uploaded/f.size*100);
-      msg('Enviando '+f.name);
-      bar(p);
-    });
   });
   }catch(e){msg('No se pudo preparar el envio',true);}
 }
@@ -403,6 +453,7 @@ async function sendFile(f){
 async function recvFile(d){
   msg('Descargando, se vera cuando termine');
   bar(0);
+  lastProg=-1;
   let c;
   try{c=await getWT();}catch(e){msg('No se pudo recibir el archivo',true);bar(null);return;}
   if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
@@ -411,7 +462,11 @@ async function recvFile(d){
     curTorrent=t;
     const f=t.files[0];
     if(!f){msg('Error Archivo, torrent vacio',true);return;}
-    t.on('download',()=>bar(t.progress*100));
+    t.on('download',()=>{
+      const p=t.progress*100;
+      bar(p);
+      if(p-lastProg>=1){lastProg=p;send({t:'prog',v:p});}
+    });
     t.once('done',async()=>{
       bar(null);
       send({t:'fileok'});
@@ -420,7 +475,7 @@ async function recvFile(d){
         const ext=String(d.name||'').match(/\.[a-zA-Z0-9]{1,8}$/);
         const nm='recibido'+(ext?ext[0]:'');
         await opfsSave(f,nm);
-        try{await t.destroy({destroyStore:true});}catch(e){}
+        await new Promise(r=>{try{t.destroy({destroyStore:true},r);}catch(e){r();}});
         curTorrent=null;
         playSrc(URL.createObjectURL(await opfsGet(nm)));
         msg('');
@@ -433,8 +488,8 @@ async function shareScreen(){
   if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia){msg('Este dispositivo no puede compartir pantalla',true);return;}
   try{scrStream=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30},audio:true});}
   catch(e){return;}
-  const to=Object.keys(conns)[0];
-  if(!to){msg('Sin conexion',true);return;}
+  const to=Object.keys(conns).find(p=>conns[p]&&conns[p].open);
+  if(!to){scrStream.getTracks().forEach(t=>t.stop());scrStream=null;msg('Sin conexion',true);return;}
   curCall=peer.call(to,scrStream);
   msg('Compartiendo pantalla');
   scrStream.getVideoTracks()[0].addEventListener('ended',()=>stopAll(true));
@@ -444,10 +499,12 @@ function stopAll(local){
   if(scrStream){scrStream.getTracks().forEach(t=>t.stop());scrStream=null;}
   if(curCall){try{curCall.close();}catch(e){}curCall=null;}
   if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
+  fsArm=false;
   exitFS();
   opfsClear();
   const v=$('ct-video');
   v.pause();v.removeAttribute('src');v.srcObject=null;v.classList.remove('on');v.load();
+  if(curURL){URL.revokeObjectURL(curURL);curURL=null;}
   bar(null);msg('');
   if(local)send({t:'stop'});
 }
@@ -458,12 +515,17 @@ function onData(d,from){
   if(d.t==='ping'){const c=conns[from];if(c&&c.open)try{c.send({t:'pong'});}catch(e){}return;}
   if(d.t==='pong')return;
   if(d.t==='fileok'){bar(null);msg('Enviado');return;}
+  if(d.t==='prog'){bar(d.v);msg('Enviando archivo');return;}
   if(d.t==='link')playLink(d.v);
   else if(d.t==='file')recvFile(d);
   else if(d.t==='stop')stopAll(false);
 }
 
-$('ct-video').addEventListener('playing',()=>fsReq().catch(()=>{}));
+$('ct-video').addEventListener('playing',fsTry);
+$('ct-video').addEventListener('click',fsTry);
+$('ct-video').addEventListener('webkitendfullscreen',onFS);
+document.addEventListener('fullscreenchange',onFS);
+document.addEventListener('webkitfullscreenchange',onFS);
 $('ct-go').onclick=doJoin;
 $('ct-scan').onclick=scan;
 $('ct-ccl').onclick=stopScan;
@@ -471,13 +533,17 @@ $('ct-join').addEventListener('keydown',e=>{if(e.key==='Enter')doJoin();});
 $('ct-send-link').onclick=()=>{
   const u=($('ct-link').value||'').trim();
   if(!u)return;
+  if(!okURL(u)){msg('Enlace no valido',true);return;}
   send({t:'link',v:u});
   msg('Enlace enviado');
 };
 $('ct-send-file').onclick=()=>$('ct-fi').click();
-$('ct-fi').onchange=e=>{const f=e.target.files[0];if(f)sendFile(f);};
+$('ct-fi').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)sendFile(f);};
 $('ct-send-scr').onclick=shareScreen;
-$('ct-stop').onclick=()=>stopAll(true);
+$('ct-stop').onclick=()=>{
+  stopAll(true);
+  if(!linked&&!dead)resetPair();
+};
 
 if(navigator.mediaDevices&&navigator.mediaDevices.getDisplayMedia)$('ct-send-scr').classList.remove('ct-hid');
 
@@ -494,10 +560,15 @@ function teardown(){
   opfsClear();
   if(peer&&!peer.destroyed){try{peer.destroy();}catch(e){}}
   peer=null;pid=null;
+  if(curURL){URL.revokeObjectURL(curURL);curURL=null;}
   wlDrop();
   document.removeEventListener('visibilitychange',onVis);
+  document.removeEventListener('fullscreenchange',onFS);
+  document.removeEventListener('webkitfullscreenchange',onFS);
+  window.removeEventListener('beforeunload',teardown);
 }
 document.addEventListener('visibilitychange',onVis);
+window.addEventListener('beforeunload',teardown);
 const cEl=document.getElementById('content');
 if(cEl)cEl.addEventListener('contentUnload',teardown,{once:true});
 

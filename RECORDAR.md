@@ -89,3 +89,10 @@ Una nota sin etiqueta la toma 4time.js y se la escribe una vez, sacando la fecha
 
 Ojo: la fecha de creacion del filesystem (birthtime) no sirve y no se puede arreglar. Se perdio con la copia comun del 13/08 (siete notas comparten el mismo segundo) y en Linux no hay forma de escribirla: touch solo toca mtime, cp y mv entre filesystems la ponen en ahora, y mv dentro del mismo filesystem la conserva porque es el mismo inodo. Solo se falsea cambiando el reloj del sistema, que en este server rompe timestamps de commits y handshakes TLS.
 
+PeerJS lo uso pelado en Secret Chat y en Television Online (`new Peer()` sin iceServers), o sea solo los STUN por defecto. Sin TURN, telefono con datos moviles contra TV en wifi puede no conectar nunca por el CGNAT de las operadoras. Si pasa seguido, conseguir un TURN.
+
+Television Online: la TV espera la descarga entera antes de reproducir. Para que se vea mientras baja hace falta `client.createServer()` de WebTorrent mas `file.streamTo()`, que en el navegador quiere registrar el service worker propio de WebTorrent y yo ya tengo el mio en sw.js. Ver si conviven antes de intentarlo.
+
+Television Online: de los tres trackers wss por defecto de WebTorrent solo vive tracker.webtorrent.dev. Si un dia el envio de archivos deja de andar, mirar eso antes que el codigo.
+
+Television Online: cuando entro con el codigo en el hash (`#...md#CODIGO`) se muestra el QR del codigo ajeno con el cartel de "escanea este codigo". Funciona (sirve para que se sume un tercero) pero el texto confunde.

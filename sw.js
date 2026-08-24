@@ -48,7 +48,8 @@ N_BANNER
 const TEMP_ROUTES=[{match:'/api/chat/',ttl:14000},{match:'/api/',ttl:18000000}];
 const EXT_CACHE=[
   {origin:'tetunori.github.io',ttl:0},
-  {origin:'esm.unpkg.com',ttl:0}
+  {origin:'esm.unpkg.com',ttl:0},
+  {origin:'unpkg.com',ttl:0}
 ];
 const MIRRORS=['https://weskerty.github.io/MyNiEcomerce','https://lawiskapy.codeberg.page/kore.js','https://cheagana.netlify.app','https://mc.cheagana.com'];
 const MIRROR_TIMEOUT=2000;
