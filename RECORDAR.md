@@ -96,3 +96,9 @@ Television Online: la TV espera la descarga entera antes de reproducir. Para que
 Television Online: de los tres trackers wss por defecto de WebTorrent solo vive tracker.webtorrent.dev. Si un dia el envio de archivos deja de andar, mirar eso antes que el codigo.
 
 Television Online: cuando entro con el codigo en el hash (`#...md#CODIGO`) se muestra el QR del codigo ajeno con el cartel de "escanea este codigo". Funciona (sirve para que se sume un tercero) pero el texto confunde.
+
+Television Online: el modo enlace ya reproduce HLS (nativo primero, hls.js de respaldo). Lo que queda afuera es el IPTV en http:// pelado, que lo bloquea mixed content, y los canales con token o DRM. Para esos no hay arreglo del lado del navegador.
+
+Television Online: los dos canales de la galeria (SNT y La Tele) son un `<meta refresh>` a la web del canal, o sea que la seccion es un directorio de links y te saca del sitio. Ahora que la pagina reproduce HLS, si consigo los m3u8 se podrian ver adentro y castear a la TV.
+
+Secret Chat y Television Online: webtorrent, hybrid-chunk-store y sockjs-client siguen saliendo de esm.sh, que no esta en EXT_CACHE, asi que se rebajan en cada visita. Agregar ese origen los dejaria cacheados de una sola vez. peerjs y html5-qrcode ya estan resueltos por unpkg.

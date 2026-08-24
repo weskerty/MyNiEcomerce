@@ -63,7 +63,7 @@
 <button class="ct-b ct-hid" id="ct-send-scr">Espejar pantalla</button>
 </div>
 </div>
-<div class="ct-row" id="ct-stop-w"><button class="ct-b" id="ct-stop">Detener</button></div>
+<div class="ct-row" id="ct-stop-w"><button class="ct-b" id="ct-stop">Detener</button><button class="ct-b ct-hid" id="ct-fs" title="Pantalla completa">⛶</button></div>
 <input type="file" id="ct-fi" accept="video/*,audio/*" class="ct-hid">
 <div id="ct-bar"><i id="ct-bar-i"></i></div>
 <video id="ct-video" controls playsinline></video>
@@ -80,16 +80,17 @@
 const CTE=document.getElementById('ctw');
 if(!CTE)return;
 const $=i=>document.getElementById(i);
-const API='/api/chat',PING=10000,CT_RT=20000,CT_MB=209715200;
+const API='/api/chat',PING=10000,CT_RT=20000,CT_MB=209715200,CT_GR=60000;
 const M_PEER='https://esm.unpkg.com/peerjs@1.5.5?bundle&target=esnext';
 const M_WT='https://esm.sh/webtorrent@3.0.16/dist/webtorrent.min.js';
 const M_HCS='https://esm.sh/hybrid-chunk-store@1.2.6';
 const M_QR='https://esm.unpkg.com/qr-creator@1.0.0?bundle&target=esnext';
 const M_H5Q='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
+const M_HLS='https://unpkg.com/hls.js@1.7.1/dist/hls.min.mjs';
 let peer=null,pid=null,room=null,token=null,pingIv=null,conns={},wl=null;
 let wt=null,HCS=null,curTorrent=null,qrCam=null,scrStream=null,curCall=null;
 let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null,linked=false,joinTo=null;
-let cSince={},curURL=null,fsArm=false,lastProg=-1;
+let cSince={},curURL=null,fsArm=false,lastProg=-1,hls=null,wasLinked=false,graceTo=null;
 const HP=location.hash.replace(/^#/,'').split('#');
 const PRE=(HP[1]||'').trim().toUpperCase();
 
@@ -124,6 +125,8 @@ function okURL(u){
   try{const x=new URL(u,location.href);return x.protocol==='https:'||x.protocol==='http:';}
   catch(e){return false;}
 }
+function isHLS(u){return /\.m3u8($|[?#])/i.test(u);}
+function killHLS(){if(hls){try{hls.destroy();}catch(e){}hls=null;}}
 function vLive(){
   const v=$('ct-video');
   return v.classList.contains('on')&&!v.ended&&!!(v.currentSrc||v.srcObject);
@@ -137,7 +140,27 @@ async function wlDrop(){
   if(wl){await wl.release().catch(()=>{});wl=null;}
 }
 function onVis(){
-  if(document.visibilityState==='visible'&&!wl&&!dead)wlGet();
+  if(document.visibilityState!=='visible'||dead)return;
+  wlGet();
+  chkConn();
+}
+function chkConn(){
+  if(dead)return;
+  Object.keys(conns).forEach(p=>{
+    const c=conns[p];
+    if(c&&c.open)return;
+    if(c){try{c.close();}catch(e){}}
+    delete conns[p];delete miss[p];
+  });
+  if(Object.keys(conns).length||!wasLinked)return;
+  if(linked)loseLink('Se desconecto el otro dispositivo');
+  rejoin();
+}
+async function rejoin(){
+  if(dead||!room||linked)return;
+  msg('Reconectando...');
+  cSince={};
+  await joinRoom(room);
 }
 
 async function initPeer(){
@@ -170,9 +193,9 @@ function hookConn(c){
   conns[c.peer]=c;
   miss[c.peer]=0;
   c.on('open',()=>{
-    linked=true;
+    linked=true;wasLinked=true;
     delete cSince[c.peer];
-    clearTimeout(joinTo);
+    clearTimeout(joinTo);clearTimeout(graceTo);
     msg('');
     $('ct-pair').classList.add('off');
     $('ct-main').classList.add('on');
@@ -191,8 +214,19 @@ function dropPeer(p){
   if(c){try{c.close();}catch(e){}}
   delete conns[p];delete miss[p];
   if(Object.keys(conns).length||!linked)return;
-  if(vLive()){linked=false;stopHB();msg('Se desconecto el otro dispositivo');return;}
-  resetPair('Se desconecto el otro dispositivo');
+  loseLink('Se desconecto el otro dispositivo');
+}
+function loseLink(txt){
+  linked=false;
+  stopHB();
+  clearTimeout(graceTo);
+  msg(txt,true);
+  if(!vLive()){
+    $('ct-main').classList.remove('on');
+    $('ct-pair').classList.remove('off');
+    $('ct-stop-w').classList.remove('on');
+  }
+  graceTo=setTimeout(()=>{if(!linked&&!dead)resetPair();},CT_GR);
 }
 function send(d){
   Object.values(conns).forEach(c=>{if(c.open)try{c.send(d);}catch(e){}});
@@ -211,8 +245,8 @@ function startHB(){
 }
 function stopHB(){if(hbIv){clearInterval(hbIv);hbIv=null;}}
 async function resetPair(txt){
-  linked=false;
-  clearTimeout(joinTo);
+  linked=false;wasLinked=false;
+  clearTimeout(joinTo);clearTimeout(graceTo);
   stopHB();
   stopAll(false);
   cSince={};
@@ -359,6 +393,7 @@ function onFS(){
 function vShow(){
   $('ct-video').classList.add('on');
   $('ct-stop-w').classList.add('on');
+  $('ct-fs').classList.remove('ct-hid');
   fsArm=true;
 }
 function playStream(s){
@@ -369,6 +404,7 @@ function playStream(s){
 }
 function playSrc(u){
   const v=$('ct-video');
+  killHLS();
   vShow();
   v.srcObject=null;
   v.src=u;
@@ -377,30 +413,68 @@ function playSrc(u){
   v.play().then(fsTry,()=>msg('Toca el video para verlo'));
 }
 
-async function playLink(u){
+function vWait(ms){
   const v=$('ct-video');
-  if(!okURL(u)){msg('Enlace no valido',true);return;}
-  msg('Cargando enlace...');
-  const ok=await new Promise(res=>{
-    const done=r=>{v.removeEventListener('error',onE);v.removeEventListener('loadeddata',onL);res(r);};
+  return new Promise(res=>{
+    const done=r=>{clearTimeout(t);v.removeEventListener('error',onE);v.removeEventListener('loadeddata',onL);res(r);};
     const onE=()=>done(false),onL=()=>done(true);
-    v.addEventListener('error',onE,{once:true});
-    v.addEventListener('loadeddata',onL,{once:true});
-    playSrc(u);
-    setTimeout(()=>done(false),12000);
+    const t=setTimeout(()=>done(false),ms);
+    v.addEventListener('error',onE);
+    v.addEventListener('loadeddata',onL);
   });
-  if(ok){msg('');return;}
-  msg('No se pudo reproducir directo, descargando...');
+}
+async function tryNat(u){
+  const p=vWait(12000);
+  playSrc(u);
+  return p;
+}
+async function tryDL(u){
   try{
     const r=await fetch(u);
-    if(!r.ok)throw 0;
-    if(Number(r.headers.get('content-length')||0)>CT_MB){msg('Enlace muy pesado, usa Enviar archivo',true);return;}
+    if(!r.ok)return false;
+    if(Number(r.headers.get('content-length')||0)>CT_MB)return 'big';
     const b=await r.blob();
+    const p=vWait(12000);
     playSrc(URL.createObjectURL(b));
-    msg('');
-  }catch(e){
-    msg('Enlace no compatible',true);
+    return p;
+  }catch(e){return false;}
+}
+async function tryHLS(u){
+  const v=$('ct-video');
+  let H;
+  try{H=(await import(M_HLS)).default;}catch(e){return false;}
+  if(!H||!H.isSupported())return false;
+  killHLS();
+  vShow();
+  v.srcObject=null;
+  v.removeAttribute('src');
+  if(curURL){URL.revokeObjectURL(curURL);curURL=null;}
+  hls=new H();
+  let fin;
+  const bad=new Promise(r=>{fin=r;});
+  hls.on(H.Events.ERROR,(_,d)=>{if(d&&d.fatal)fin(false);});
+  hls.on(H.Events.MANIFEST_PARSED,()=>v.play().then(fsTry,()=>msg('Toca el video para verlo')));
+  hls.loadSource(u);
+  hls.attachMedia(v);
+  const ok=await Promise.race([vWait(15000),bad]);
+  if(!ok)killHLS();
+  return ok;
+}
+async function playLink(u){
+  if(!okURL(u)){msg('Enlace no valido',true);return;}
+  msg('Cargando enlace...');
+  if(await tryNat(u)){msg('');return;}
+  if(!isHLS(u)){
+    msg('No se pudo reproducir directo, descargando...');
+    const r=await tryDL(u);
+    if(r===true){msg('');return;}
+    if(r==='big'){msg('Enlace muy pesado, usa Enviar archivo',true);return;}
   }
+  msg('Probando modo stream...');
+  if(await tryHLS(u)){msg('');return;}
+  const v=$('ct-video');
+  v.removeAttribute('src');v.load();v.classList.remove('on');
+  msg('Enlace no compatible',true);
 }
 
 async function opfsDir(){
@@ -499,11 +573,13 @@ function stopAll(local){
   if(scrStream){scrStream.getTracks().forEach(t=>t.stop());scrStream=null;}
   if(curCall){try{curCall.close();}catch(e){}curCall=null;}
   if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
+  killHLS();
   fsArm=false;
   exitFS();
   opfsClear();
   const v=$('ct-video');
   v.pause();v.removeAttribute('src');v.srcObject=null;v.classList.remove('on');v.load();
+  $('ct-fs').classList.add('ct-hid');
   if(curURL){URL.revokeObjectURL(curURL);curURL=null;}
   bar(null);msg('');
   if(local)send({t:'stop'});
@@ -522,8 +598,8 @@ function onData(d,from){
 }
 
 $('ct-video').addEventListener('playing',fsTry);
-$('ct-video').addEventListener('click',fsTry);
 $('ct-video').addEventListener('webkitendfullscreen',onFS);
+$('ct-fs').onclick=()=>{fsArm=true;fsTry();};
 document.addEventListener('fullscreenchange',onFS);
 document.addEventListener('webkitfullscreenchange',onFS);
 $('ct-go').onclick=doJoin;
@@ -563,11 +639,13 @@ function teardown(){
   if(curURL){URL.revokeObjectURL(curURL);curURL=null;}
   wlDrop();
   document.removeEventListener('visibilitychange',onVis);
+  window.removeEventListener('online',chkConn);
   document.removeEventListener('fullscreenchange',onFS);
   document.removeEventListener('webkitfullscreenchange',onFS);
   window.removeEventListener('beforeunload',teardown);
 }
 document.addEventListener('visibilitychange',onVis);
+window.addEventListener('online',chkConn);
 window.addEventListener('beforeunload',teardown);
 const cEl=document.getElementById('content');
 if(cEl)cEl.addEventListener('contentUnload',teardown,{once:true});

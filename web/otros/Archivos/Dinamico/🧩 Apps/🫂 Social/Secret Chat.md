@@ -37,7 +37,6 @@
 .cw-msg{display:flex;gap:8px;max-width:82%;align-items:flex-end}
 .cw-msg.me{flex-direction:row-reverse;align-self:flex-end}
 .cw-msg .cw-avi{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;flex-shrink:0;overflow:hidden}
-.cw-msg .cw-avi img{width:100%;height:100%;object-fit:cover}
 .cw-msg-b{padding:8px 12px;border-radius:16px;font-size:.86rem;line-height:1.4;word-break:break-word;background:rgba(255,255,255,.06)}
 .cw-msg.me .cw-msg-b{background:rgba(var(--accent-rgb),.28);border-bottom-right-radius:4px}
 .cw-msg:not(.me) .cw-msg-b{border-bottom-left-radius:4px}
@@ -147,7 +146,7 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
       </div>
       <div id="cw-ib">
         <button class="cw-ibtn" id="cw-be">🏷️</button>
-        <textarea id="cw-mi" rows="1" placeholder="Mensaje..."></textarea>
+        <textarea id="cw-mi" rows="1" placeholder="Mensaje..." maxlength="4000"></textarea>
         <label class="cw-ibtn" style="cursor:pointer" title="Archivo (se comparte P2P via torrent)">📎<input type="file" id="cw-fl" style="display:none"></label>
         <button class="cw-ibtn send" id="cw-sn">➤</button>
       </div>
@@ -249,7 +248,7 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
 
 <script>
 !function(){
-const HIST=200,DOM=80,IM_STK=524288,AUTO_DL_MAX=1048576;
+const HIST=200,DOM=80,IM_STK=524288,AUTO_DL_MAX=1048576,MSG_MAX=4000;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const mk=(tag,cls)=>{const e=document.createElement(tag);if(cls)e.className=cls;return e;};
@@ -258,13 +257,17 @@ const COLS=['#e8a0a0','#e8c4a0','#a8d8a0','#a0c4e8','#c4a8e8','#e8a8d0','#a8dede
 const uC={};let cI=0;
 const gUC=pid=>{if(!uC[pid])uC[pid]=COLS[(cI++)%COLS.length];return uC[pid];};
 const fSz=b=>b>1048576?(b/1048576).toFixed(1)+'MB':(b/1024).toFixed(0)+'KB';
+const cut=v=>String(v==null?'':v).slice(0,MSG_MAX);
+function dlBlob(blob,name){
+  const u=URL.createObjectURL(blob);
+  const a=mk('a');a.href=u;a.download=name;a.click();
+  setTimeout(()=>URL.revokeObjectURL(u),15000);
+}
 
 const disqusEl=document.getElementById('disqus-container');
 const disqusPrevDisplay=disqusEl?disqusEl.style.display:null;
 if(disqusEl)disqusEl.style.display='none';
 
-function seedHash(s){let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h;}
-const avatarUrl=pidLike=>`https://picsum.photos/seed/${seedHash(String(pidLike))}/64/64`;
 
 function ckGet(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
 function ckSet(k,v){const sec=location.protocol==='https:'?';Secure':'';document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=31536000;SameSite=Strict${sec}`;}
@@ -275,7 +278,7 @@ function saveNick(n){
 }
 
 let peerP=null;
-function loadPeerJS(){if(!peerP)peerP=import('https://esm.sh/peerjs@1.5.5').then(m=>m.Peer);return peerP;}
+function loadPeerJS(){if(!peerP)peerP=import('https://esm.unpkg.com/peerjs@1.5.5?bundle&target=esnext').then(m=>m.Peer||m.default);return peerP;}
 
 const API='/api/chat',PING=10000;
 async function api(method,path,body){
@@ -289,7 +292,7 @@ async function api(method,path,body){
 
 let peer=null,pid=null,curCfg=null,curRoom=null,curToken=null,pingIv=null;
 let conns={},pNk={},pAu={},pVStr={},pMu={},connectingSince={},pingMisses={};
-let aStream=null,vStream=null,muted=false,vidOn=false;
+let aStream=null,vStream=null,muted=false,vidOn=false,pCalls={};
 let hist=[],domCount=0,torrentClient=null,torrentStore=null;
 
 let ircSocket=null,ircMode=false,ircNick='',ircChannel='',ircChanKey='',ircUsers=new Map();
@@ -563,6 +566,12 @@ function initPeer(){
     if(peer&&!peer.destroyed)peer.destroy();
     loadPeerJS().then(Peer=>{
       peer=new Peer();
+      peer.on('error',e=>{
+        const t=e&&e.type;
+        if(t==='peer-unavailable')return;
+        if(!pid){rej(e);return;}
+        if(inAnyChat())addSys('Error de conexion '+(t||''));
+      });
       peer.once('open',id=>{
         pid=id;
         peer.on('connection',conn=>{
@@ -579,7 +588,6 @@ function initPeer(){
         peer.on('disconnected',()=>{if(curRoom||geoWatchId!=null)peer.reconnect();});
         res();
       });
-      peer.once('error',e=>rej(e));
     }).catch(rej);
   });
 }
@@ -628,6 +636,7 @@ function scheduleDMReconnect(otherPid){
   setTimeout(()=>{
     if(curDM!==otherPid||!peer||peer.destroyed)return;
     const conn=peer.connect(otherPid,{metadata:dmMeta(),reliable:true});
+    if(!conn)return;
     conns[otherPid]=conn;
     wireDMConn(conn,otherPid);
   },2000*tries);
@@ -635,7 +644,7 @@ function scheduleDMReconnect(otherPid){
 
 function enterDMUI(otherPid,otherNick){
   $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
-  conns={};pAu={};pVStr={};pMu={};pNk={};connectingSince={};pingMisses={};
+  conns={};pAu={};pVStr={};pMu={};pNk={};connectingSince={};pingMisses={};pCalls={};
   hist=[];domCount=0;curCfg=null;curRoom=null;curDM=otherPid;
   pNk[otherPid]=otherNick;
   $('cw-ch-nm').textContent=otherNick.length>26?otherNick.slice(0,26)+'…':otherNick;
@@ -649,8 +658,9 @@ function enterDMUI(otherPid,otherNick){
 async function startDM(otherPid,otherNick){
   enterDMUI(otherPid,otherNick);
   setWaiting(true,'Conectando...');
-  try{await initPeer();}catch(e){addSys('Error al conectar');return goBack();}
+  try{await initPeer();}catch(e){showToast('Error al conectar');return goBack();}
   const conn=peer.connect(otherPid,{metadata:dmMeta(),reliable:true});
+  if(!conn){showToast('Error al conectar');return goBack();}
   wireDMConn(conn,otherPid);
   wakeAcquire();
 }
@@ -712,23 +722,24 @@ function onData(d,from){
   if(!d||!d.t)return;
   switch(d.t){
     case'msg':{
-      const col=gUC(from);
-      addMsg(pNk[from]||from.slice(0,8),d.v,false,col,avatarUrl(from),d.quote,d.mid);
-      hist.push({t:'msg',from,nick:pNk[from]||from.slice(0,8),v:d.v,col,quote:d.quote,mid:d.mid});
+      const col=gUC(from),tx=cut(d.v);
+      addMsg(pNk[from]||from.slice(0,8),tx,false,col,d.quote,d.mid);
+      hist.push({t:'msg',from,nick:pNk[from]||from.slice(0,8),v:tx,col,quote:d.quote,mid:d.mid});
       if(hist.length>HIST)hist.shift();
-      checkMention(d.v);
+      checkMention(tx);
       break;
     }
     case'meta':pNk[from]=d.v.nick||pNk[from];renderPeers();break;
     case'hist':{
       if(!d.v||!d.v.length)break;
       const known=new Set(hist.map(m=>m.mid).filter(Boolean));
-      d.v.forEach(m=>{
+      d.v.slice(-HIST).forEach(m=>{
         if(m.t!=='msg'&&m.t!=='file')return;
         if(m.mid&&known.has(m.mid))return;
         if(m.t==='msg'){
           uC[m.from]=m.col||gUC(m.from);
-          addMsg(m.nick,m.v,false,m.col,avatarUrl(m.from),m.quote,m.mid);
+          m.v=cut(m.v);
+          addMsg(m.nick,m.v,false,m.col,m.quote,m.mid);
         }else{
           addFileMsg(m.from,m);
         }
@@ -777,6 +788,9 @@ function pingConns(){
 }
 
 function hCall(call){
+  const cp=call.peer;
+  if(pCalls[cp]&&pCalls[cp]!==call){try{pCalls[cp].close();}catch(e){}}
+  pCalls[cp]=call;
   call.on('stream',stream=>{
     const p=call.peer;
     if(stream.getVideoTracks().length){pVStr[p]=stream;addVidPeer(p,stream);}
@@ -787,12 +801,13 @@ function hCall(call){
       if(pMu[p])a.muted=true;
     }
   });
-  call.on('close',()=>rmVid(call.peer));
+  call.on('close',()=>{rmVid(cp);if(pCalls[cp]===call)delete pCalls[cp];});
 }
 
 function discPeer(p){
   delete connectingSince[p];
   delete pingMisses[p];
+  if(pCalls[p]){try{pCalls[p].close();}catch(e){}delete pCalls[p];}
   if(!conns[p]&&!pNk[p])return;
   addSys((pNk[p]||p.slice(0,8))+' salio');
   delete conns[p];delete pNk[p];
@@ -802,19 +817,23 @@ function discPeer(p){
 }
 
 function connectMissing(activePeers){
+  if(!peer||peer.destroyed)return;
   (activePeers||[]).forEach(p=>{
     if(p.pid===pid||conns[p.pid])return;
     const since=connectingSince[p.pid];
-    if(since&&Date.now()-since<20000)return;
-    connectingSince[p.pid]=Date.now();
+    if(since&&Date.now()-since.t<20000)return;
+    if(since&&since.c){try{since.c.close();}catch(e){}}
     pNk[p.pid]=p.nick||pNk[p.pid]||p.pid.slice(0,8);
-    onConn(peer.connect(p.pid,{metadata:meta(),reliable:true}));
+    const c=peer.connect(p.pid,{metadata:meta(),reliable:true});
+    if(!c){delete connectingSince[p.pid];return;}
+    connectingSince[p.pid]={t:Date.now(),c};
+    onConn(c);
   });
 }
 
 async function enterRoom(cfg){
   $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
-  conns={};pAu={};pVStr={};pMu={};pNk={};connectingSince={};pingMisses={};
+  conns={};pAu={};pVStr={};pMu={};pNk={};connectingSince={};pingMisses={};pCalls={};
   hist=[];domCount=0;curCfg=cfg;
 
   $('cw-ch-nm').textContent=cfg.label.length>26?cfg.label.slice(0,26)+'…':cfg.label;
@@ -824,11 +843,11 @@ async function enterRoom(cfg){
   $('cw-lobby').classList.add('hid');$('cw-chat').classList.add('on');
   setWaiting(true,'Conectando...');
 
-  try{await initPeer();}catch(e){addSys('Error al conectar');return goBack();}
+  try{await initPeer();}catch(e){showToast('Error al conectar');return goBack();}
 
   let data;
   try{data=await api('POST',`/rooms/${cfg.roomId}/join`,{pw:cfg.roomPw||'',pid,nick});}
-  catch(e){addSys(e.status===403?'Contrasena incorrecta':(e.status===429?'Demasiados intentos, espera un rato':'Error al unirse'));return goBack();}
+  catch(e){showToast(e.status===403?'Contrasena incorrecta':(e.status===429?'Demasiados intentos, espera un rato':'Error al unirse'));return goBack();}
 
   curRoom=cfg.roomId;curToken=data.token;
   wakeAcquire();maybeShowSharePrompt();
@@ -877,7 +896,7 @@ $('cw-ch-inv').onclick=async()=>{
   catch(e){addSys('No se pudo copiar el ID');}
 };
 
-let ircTransport='ws';
+let ircTransport='ws',ircNickTries=0;
 function ircSend(raw){
   if(!ircSocket||ircSocket.readyState!==1)return;
   const line=String(raw).replace(/[\r\n]+/g,' ');
@@ -910,7 +929,7 @@ function ircAddIncoming(from,text){
     const mg=$('cw-msgs');trimDom(mg);
     const name=text.replace(m[0],'').trim()||'archivo compartido';
     const dd={magnet:m[0],name,size:0,mime:'application/octet-stream'};
-    const{d,inner}=mkBubble(from,col,avatarUrl(from),false);
+    const{d,inner}=mkBubble(from,col,false);
     const wrap=mk('div');inner.appendChild(wrap);
     const sm=name.match(STICKER_RE);
     if(sm){
@@ -922,7 +941,7 @@ function ircAddIncoming(from,text){
     }else renderTorrentCard(dd,wrap);
     mg.appendChild(d);mg.scrollTop=mg.scrollHeight;
   }else{
-    addMsg(from,text,false,col,avatarUrl(from));
+    addMsg(from,text,false,col);
     checkMention(text);
   }
 }
@@ -968,13 +987,19 @@ function ircHandleLine(line){
     return;
   }
   if(command==='366'){renderPeers();return;}
-  if(command==='433'){addSys('Nick en uso, reconectando con otro...');ircNick+='_';ircSend('NICK '+ircNick);return;}
+  if(command==='433'||command==='432'){
+    if(ircNickTries++>=5){addSys('No se pudo elegir un nick');return;}
+    ircNick='Guest'+Math.floor(Math.random()*99999);
+    addSys('Nick en uso, probando '+ircNick);
+    ircSend('NICK '+ircNick);
+    return;
+  }
 }
 
 async function enterIrc(cfg){
   $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
   hist=[];domCount=0;ircUsers=new Map();
-  ircMode=true;
+  ircMode=true;ircNickTries=0;
   ircTransport=cfg.transport==='sockjs'?'sockjs':'ws';
   ircNick=(nick||('Guest'+Math.floor(Math.random()*9999))).replace(/[^a-zA-Z0-9_-]/g,'')||'Guest'+Math.floor(Math.random()*9999);
   ircChannel=cfg.channel.startsWith('#')?cfg.channel:'#'+cfg.channel;
@@ -990,7 +1015,7 @@ async function enterIrc(cfg){
     try{
       const{default:SockJS}=await import('https://esm.sh/sockjs-client@1.6.1');
       ircSocket=new SockJS(cfg.gatewayUrl);
-    }catch(e){addSys('No se pudo conectar: '+e.message);return goBack();}
+    }catch(e){showToast('No se pudo conectar');return goBack();}
     ircSocket.onopen=()=>{
       ircSocket.send(':0 CONTROL START');
       ircSend('HOST '+(cfg.gatewayHost||'default')+':'+(cfg.gatewayPort||6667));
@@ -1004,7 +1029,7 @@ async function enterIrc(cfg){
     };
   }else{
     try{ircSocket=new WebSocket(`wss://${cfg.host}:${cfg.port}/`);}
-    catch(e){addSys('No se pudo conectar: '+e.message);return goBack();}
+    catch(e){showToast('No se pudo conectar');return goBack();}
     let buf='';
     ircSocket.onopen=()=>{
       ircSend('NICK '+ircNick);
@@ -1043,10 +1068,14 @@ function goBack(){
     delete dmReconnectTries[curDM];
     conns={};pNk={};connectingSince={};pingMisses={};curDM=null;
   }
+  Object.values(pCalls).forEach(c=>{try{c.close();}catch(e){}});
+  pCalls={};
   if(aStream){aStream.getTracks().forEach(t=>t.stop());aStream=null;}
   if(vStream){vStream.getTracks().forEach(t=>t.stop());vStream=null;}
   Object.values(pAu).forEach(a=>{a.pause();a.srcObject=null;a.remove();});
   pAu={};pVStr={};pMu={};muted=false;vidOn=false;
+  $('cw-msgs').innerHTML='';$('cw-vl').innerHTML='';$('cw-vg').classList.remove('on');
+  domCount=0;hist=[];clearQuote();
   $('cw-bm').textContent='🎤';$('cw-bv').style.opacity='1';
   $('cw-ch-inv').style.display='none';
   $('cw-bp').style.display='';
@@ -1105,7 +1134,10 @@ function setView(v){
   if(!waiting&&v==='stickers')renderStickerPicker();
 }
 function setWaiting(on,msg){
-  if(waiting===on)return;
+  if(waiting===on){
+    if(on&&msg)$('cw-wait-tx').textContent=msg;
+    return;
+  }
   waiting=on;
   if(on){
     $('cw-wait-tx').textContent=msg||'Conectando...';
@@ -1156,7 +1188,7 @@ function trimDom(mg){if(domCount>=DOM){const f=mg.querySelector('.cw-msg,.cw-sys
 let msgSeq=0;
 function newMsgId(){return(pid||'me')+'_'+Date.now()+'_'+(msgSeq++);}
 
-function mkBubble(nm,col,av,me,mid,quoteLabel){
+function mkBubble(nm,col,me,mid,quoteLabel){
   const d=mk('div','cw-msg'+(me?' me':''));
   if(mid)d.dataset.mid=mid;
   const bwrap=mk('div');
@@ -1170,7 +1202,8 @@ function mkBubble(nm,col,av,me,mid,quoteLabel){
     d.appendChild(bwrap);
   }else{
     const avd=mk('div','cw-avi');
-    const img=mk('img');img.src=av;avd.appendChild(img);
+    avd.textContent=String(nm||'?').slice(0,2).toUpperCase();
+    avd.style.background=col;
     d.append(avd,bwrap);
   }
   if(quoteLabel!=null)d.addEventListener('dblclick',()=>setQuote(nm,quoteLabel,mid));
@@ -1208,11 +1241,11 @@ function scrollToMsg(mid){
   setTimeout(()=>el.classList.remove('cw-flash'),1200);
 }
 
-function addMsg(nm,txt,me,col,av,quote,mid){
+function addMsg(nm,txt,me,col,quote,mid){
   const mg=$('cw-msgs');
   const atBottom=mg.scrollHeight-mg.scrollTop-mg.clientHeight<80;
   trimDom(mg);
-  const{d,inner}=mkBubble(nm,col,av,me,mid,txt);
+  const{d,inner}=mkBubble(nm,col,me,mid,txt);
   renderQuoteBlock(inner,quote);
   const txtEl=mk('div');txtEl.textContent=txt;inner.appendChild(txtEl);
   mg.appendChild(d);
@@ -1233,10 +1266,10 @@ function checkMention(text){
 }
 
 function sendMsg(){
-  const v=$('cw-mi').value.trim();if(!v)return;
+  const v=$('cw-mi').value.trim().slice(0,MSG_MAX);if(!v)return;
   if(ircMode){
     ircSend('PRIVMSG '+ircChannel+' :'+v);
-    addMsg(ircNick,v,true,gUC(ircNick),avatarUrl(ircNick));
+    addMsg(ircNick,v,true,gUC(ircNick));
     $('cw-mi').value='';$('cw-mi').style.height='';
     return;
   }
@@ -1245,7 +1278,7 @@ function sendMsg(){
   const q=quoting?{...quoting}:undefined;
   const mid=newMsgId();
   broadcast({t:'msg',v,quote:q,mid});
-  addMsg(nick,v,true,col,avatarUrl(pid||'me'),q,mid);
+  addMsg(nick,v,true,col,q,mid);
   hist.push({t:'msg',from:pid||'me',nick,v,col,quote:q,mid});
   if(hist.length>HIST)hist.shift();
   $('cw-mi').value='';$('cw-mi').style.height='';
@@ -1297,8 +1330,9 @@ async function processStickerImg(file){
   }
   const url=URL.createObjectURL(file);
   const img=new Image();
-  await new Promise(r=>{img.onload=r;img.src=url;});
+  const ok=await new Promise(r=>{img.onload=()=>r(true);img.onerror=()=>r(false);img.src=url;});
   URL.revokeObjectURL(url);
+  if(!ok){alert('No se pudo leer la imagen');return null;}
   const cv=mk('canvas');cv.width=256;cv.height=256;
   cv.getContext('2d').drawImage(img,0,0,256,256);
   let q=0.85,blob=null,tries=0;
@@ -1332,7 +1366,7 @@ async function renderStickerPicker(){
   addBtn.onclick=()=>$('cw-sp-file').click();
   grid.appendChild(addBtn);
   const all=await listStickers();
-  for(const fname of all)grid.appendChild(await mkStickerThumb(fname));
+  (await Promise.all(all.map(f=>mkStickerThumb(f)))).forEach(b=>grid.appendChild(b));
 }
 $('cw-sp-file').onchange=function(){
   const f=this.files[0];this.value='';if(!f)return;
@@ -1400,7 +1434,7 @@ function sendStickerMsg(fname,magnet,size,quote){
 }
 async function addOwnStickerMsg(fname,dd){
   const mg=$('cw-msgs');trimDom(mg);
-  const{d,inner}=mkBubble(nick,gUC(pid||'me'),avatarUrl(pid||'me'),true,dd.mid,'🏷️ sticker');
+  const{d,inner}=mkBubble(nick,gUC(pid||'me'),true,dd.mid,'🏷️ sticker');
   inner.classList.add('cw-sticker-msg');
   renderQuoteBlock(inner,dd.quote);
   try{
@@ -1483,14 +1517,13 @@ const isStk=fm=>/^image\/(avif|webp|gif|png|jpeg)$/.test(fm.mime)&&fm.size<=IM_S
 
 function addOwnFileMsg(file,dd,torrent){
   const mg=$('cw-msgs');trimDom(mg);
-  const{d,inner}=mkBubble(nick,gUC(pid||'me'),avatarUrl(pid||'me'),true,dd.mid,'📎 '+dd.name);
+  const{d,inner}=mkBubble(nick,gUC(pid||'me'),true,dd.mid,'📎 '+dd.name);
   renderQuoteBlock(inner,dd.quote);
   const wrap=mk('div');inner.appendChild(wrap);
   if(isStk(dd)){wrap.appendChild(imgB(file,'cw-stk'));}
   else{
-    const url=URL.createObjectURL(file);
     const btn=mk('div','cw-dl');btn.innerHTML=`⬇ ${esc(dd.name)} <span style="opacity:.6">(${fSz(dd.size)})</span>`;
-    btn.onclick=()=>{const a=mk('a');a.href=url;a.download=dd.name;a.click();};
+    btn.onclick=()=>dlBlob(file,dd.name);
     wrap.appendChild(btn);
   }
   mg.appendChild(d);mg.scrollTop=mg.scrollHeight;
@@ -1525,13 +1558,11 @@ function downloadTorrent(dd,wrap,auto){
           pr.textContent='Guardando...';
           const local=await cwDlSave(file,String(dd.id||dd.mid||Date.now()));
           try{torrent.destroy({destroyStore:true});}catch(e){}
-          const url=URL.createObjectURL(local);
           wrap.innerHTML='';
           const btn=mk('div','cw-dl');btn.innerHTML=`✓ ${esc(dd.name)} <span style="opacity:.6">(${fSz(dd.size)})</span>`;
-          const a=mk('a');a.href=url;a.download=dd.name;
-          btn.onclick=()=>a.click();
+          btn.onclick=()=>dlBlob(local,dd.name);
           wrap.appendChild(btn);
-          a.click();
+          dlBlob(local,dd.name);
         }catch(e){pr.textContent='Error al guardar: '+e.message;}
       });
     });
@@ -1550,7 +1581,7 @@ function renderTorrentCard(dd,wrap){
 async function addFileMsg(from,dd){
   const mg=$('cw-msgs');trimDom(mg);
   const nm=pNk[from]||from,col=gUC(from);
-  const{d,inner}=mkBubble(nm,col,avatarUrl(from),false,dd.mid,'📎 '+dd.name);
+  const{d,inner}=mkBubble(nm,col,false,dd.mid,'📎 '+dd.name);
   const sm=dd.name&&dd.name.match(STICKER_RE);
   if(sm)inner.classList.add('cw-sticker-msg');
   renderQuoteBlock(inner,dd.quote);
