@@ -109,3 +109,5 @@ No es determinismo. Es contexto. Y el contexto importa más de lo que nos han en
 ._ic{display:block;margin:0 auto 8px}
 <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Backhand%20Index%20Pointing%20Down.png" width="90px">
 </style>
+
+<!--FE=2026-04-16T21:52:22.000Z-->

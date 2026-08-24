@@ -85,3 +85,4 @@ Pero si no, Debes hacer prueba y error con esta app;
 
 <iframe width="315" height="560" src="https://www.youtube.com/embed/ayJysNyCgVw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
+<!--FE=2026-04-16T21:52:22.000Z-->

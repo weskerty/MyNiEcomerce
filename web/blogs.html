@@ -80,6 +80,13 @@
 <script>
 (function(){
 const DJ='web/otros/Archivos/Dinamico/Blogs/data.json';
+const TJ='web/otros/Archivos/Dinamico/Blogs/time.json';
+let BN_T1=null;
+async function BN_FT1(){
+  if(BN_T1)return BN_T1;
+  try{BN_T1=await(await fetch(TJ)).json();}catch(e){BN_T1={};}
+  return BN_T1;
+}
 const RSS=window.__CFG?.rss||[];
 const RU=p=>'/api/rss?url='+encodeURIComponent(p);
 const PAGE=30;
@@ -97,6 +104,8 @@ function parseBlogs(galleries){
     const arr=sub[k];if(!Array.isArray(arr))return;
     arr.forEach(p=>{if(typeof p==='string')out.push({t:'b',img:p,md:mL(p),name:nN(fN(p)),cat:k==='_r'?'BLOG':k});});
   });
+  const T=BN_T1||{};
+  out.sort((a,b)=>(T[b.md]||'').localeCompare(T[a.md]||''));
   return out;
 }
 
@@ -281,7 +290,7 @@ async function init(){
   _ini=true;
   BN_RB1();
   gr.innerHTML='';
-  const[galleries,nw]=await Promise.all([fetchData(),BN_FR()]);
+  const[galleries,nw]=await Promise.all([fetchData(),BN_FR(),BN_FT1()]);
   if(ld)ld.style.display='none';
   gr.style.display='';
   const bl=galleries?parseBlogs(galleries):[];

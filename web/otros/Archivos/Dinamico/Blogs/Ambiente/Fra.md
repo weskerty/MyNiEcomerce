@@ -20,3 +20,4 @@ La Falacia de las Técnicas "Limpias" y el Camino a Seguir
 
 No existen actuqlmente versiones sustentables del fracking. Sueken decir que si, y dan ejemolos como el uso de agua salada, el reciclaje de aguas residuales o el sellado mejorado son insuficientes, costosas y no logran eliminar los mismos problemas wue ya existen, solo cambian el metodo de la actividad. Las fugas siguen siendo comunes y la responsabilidad legal de las empresas es casi inexistente por no haber regulaciones sobre esto.
 
+<!--FE=2026-08-03T11:31:48.000Z-->

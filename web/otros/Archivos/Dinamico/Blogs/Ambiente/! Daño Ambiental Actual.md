@@ -125,3 +125,5 @@ Analogia: Cometa = Daño Ambiental
 <p>Puedes unirte a <a class="lk lk-wa" href="https://chat.whatsapp.com/FUCooyRJivk6CTbhEEwvf4" target="_blank" rel="noopener noreferrer">Comunidad en WhatsApp</a></p>
 
 <p>Si somos muchos podemos manifestarnos para presionar la aprobacion de leyes de proteccion ambiental.</p>
+
+<!--FE=2026-08-15T06:00:04.000Z-->

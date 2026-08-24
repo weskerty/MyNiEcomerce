@@ -78,3 +78,14 @@ La carpeta de imagenes sale del titulo (blogs) o del ID (productos), asi que ren
 RND() no arregla las 3 notas legacy: si SN(titulo viejo) no existe como carpeta, el rename tira Old not exist y se saltea todo, quedando como antes. O sea que esas 3 siguen sin poder limpiarse solas hasta que renombre la carpeta a mano o corra el GC.
 
 Pendiente GC de imagenes huerfanas: 494KB hoy. La regla que sirve es limpiar solo un directorio de Imagenes/ que referencie exactamente un .md y ningun html/js escrito a mano. Con eso Permanente (18 refs), Grupos (Grupos.html), 7798162143347 (2 .md) y los que no tienen .md dueño quedan afuera solos, sin lista de exclusiones. Ojo: hay que ignorar data.json en el escaneo, lo regenera 2converter.js desde el filesystem y refleja los huerfanos tambien, si lo cuento como referencia nunca borra nada. Hacerlo como script del pipeline con --dry-run por defecto.
+
+Orden del blog: cada .md lleva al final una etiqueta oculta <!--FE=fecha ISO-->. Esa es la fuente de verdad. 4time.js recorre los .md, lee la etiqueta y genera time.json, que es solo un cache derivado: si lo borro se regenera igual desde las etiquetas. blogs.html no parsea nada, solo lee time.json y ordena.
+
+La etiqueta va al FINAL y no al principio a proposito: 3litemode.js corta el titulo con /^#{2,5} .+\n/ anclado al inicio, y una etiqueta arriba lo rompe y el titulo sale duplicado en LiteMode. Verificado en navegador que como comentario HTML no se ve y que LM_DESC1 la limpia de la description.
+
+Para reordenar el blog a mano, edito la etiqueta FE= dentro del .md, no time.json (ese se regenera). Ya no hace falta el "!" de Daño Ambiental para que quede primero.
+
+Una nota sin etiqueta la toma 4time.js y se la escribe una vez, sacando la fecha de time.json si esta, si no de git log --follow, si no del mtime.
+
+Ojo: la fecha de creacion del filesystem (birthtime) no sirve y no se puede arreglar. Se perdio con la copia comun del 13/08 (siete notas comparten el mismo segundo) y en Linux no hay forma de escribirla: touch solo toca mtime, cp y mv entre filesystems la ponen en ahora, y mv dentro del mismo filesystem la conserva porque es el mismo inodo. Solo se falsea cambiando el reloj del sistema, que en este server rompe timestamps de commits y handshakes TLS.
+
