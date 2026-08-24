@@ -21,6 +21,9 @@ Tenemos que cuidar el ambiente para que este cuide de nosotros.</p>
 <iframe width="100%" height="315" src="https://www.youtube-nocookie.com/embed/ihq_TLPugZI?si=CchKDJMswyOXUVrU&amp;controls=0" title="YouTube video player" frameborder="0" allow="encrypted-media; picture-in-picture; " referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </details>
 
+![r/LukaGOGO](web/otros/Archivos/Imagenes/AnimalesExtintos/imagemt7d12cs.webp)
+Y para 2040 como estara? [Ver mas Fotos del Lugar ↗️](https://maps.app.goo.gl/5527m4aHhywEtFLu5)
+
 <h2>Que podemos hacer?</h2>
 <p>Se requieren cambios en las leyes para proteger activamente los recursos que Dios nos dio, pero como si los politicos hacen lo que quieren?</p>
 
