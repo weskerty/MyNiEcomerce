@@ -70,3 +70,11 @@ La compresion de cloudflare ya resuelve la redundancia. Se mitigo con mas data.j
 
 
 
+
+Borrado de blog/producto ahora borra tambien web/otros/Archivos/Imagenes/{SN(NB o ID)}. Sirve de aca en adelante porque la carpeta se crea con el mismo SN(), pero de las 6 notas actuales solo coinciden 3: "! Daño Ambiental Actual", "Chau esponja Plástica..." y "Letra Digital para Disléxicos" tienen la carpeta con otro nombre (sin tilde, capitalizada distinto, o cortada), asi que al borrarlas la carpeta va a quedar. El endpoint no avisa, si la ruta no existe devuelve ok igual.
+
+La carpeta de imagenes sale del titulo (blogs) o del ID (productos), asi que renombrar dejaba la carpeta vieja huerfana. Ya no: al guardar una edicion, RND() en editor.js renombra la carpeta y reescribe las rutas dentro del .md. Si falla el reescrito, deshace el rename de la carpeta, para no dejar las imagenes rotas en vivo. Con esto el problema deja de crecer aunque siga editando nombres.
+
+RND() no arregla las 3 notas legacy: si SN(titulo viejo) no existe como carpeta, el rename tira Old not exist y se saltea todo, quedando como antes. O sea que esas 3 siguen sin poder limpiarse solas hasta que renombre la carpeta a mano o corra el GC.
+
+Pendiente GC de imagenes huerfanas: 494KB hoy. La regla que sirve es limpiar solo un directorio de Imagenes/ que referencie exactamente un .md y ningun html/js escrito a mano. Con eso Permanente (18 refs), Grupos (Grupos.html), 7798162143347 (2 .md) y los que no tienen .md dueño quedan afuera solos, sin lista de exclusiones. Ojo: hay que ignorar data.json en el escaneo, lo regenera 2converter.js desde el filesystem y refleja los huerfanos tambien, si lo cuento como referencia nunca borra nada. Hacerlo como script del pipeline con --dry-run por defecto.

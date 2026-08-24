@@ -82,7 +82,8 @@ Debes descargar esos certificados e instalarlos, uno por uno. Asi cada vez que u
 ### Discord App
 https://gtrxac.fi/j2me/
 
-![image](web/otros/Archivos/Imagenes/DarNuevousoaDispositivosViejos/image.webp)
+![image](web/otros/Archivos/Imagenes/DarNuevousoaDispositivosViejos/imagemt7arw4y.webp)
+
 
 Eliges la app para el modelo de tu dispositivo, ejemplo el [discord_blackberry.jar para BlackBerrys📥](https://github.com/gtrxAC/discord-j2me/releases/latest/download/discord_blackberry.jar) 
 Esa app es para los anteriores a BBOS10
