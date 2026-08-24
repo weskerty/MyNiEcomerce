@@ -77,29 +77,34 @@ https://tlsroot.litten.ca/
 Eso soluciona problemas de "Certificado Invalido" al intentar Acceder a la Web para descargar. 
 Debes descargar esos certificados e instalarlos, uno por uno. Asi cada vez que un certificado vence. (normalmente cada 5 o 10 años)
 
-# Telegram App
 
-![img](/img/chat.jpg) ![img](/img/image_viewer.jpg) ![img](/img/music_player.jpg)
 
-![img](/img/notification.jpg) ![img](/img/chat_info.jpg) ![img](/img/bot.jpg)
+### Discord App
+https://gtrxac.fi/j2me/
+
+![image](web/otros/Archivos/Imagenes/DarNuevousoaDispositivosViejos/image.webp)
+
+Eliges la app para el modelo de tu dispositivo, ejemplo el [discord_blackberry.jar para BlackBerrys📥](https://github.com/gtrxAC/discord-j2me/releases/latest/download/discord_blackberry.jar) 
+Esa app es para los anteriores a BBOS10
+
+Para otros Dispositivos como los Nokia busca su version Aqui:
+https://github.com/gtrxAC/discord-wap
+
+### Telegram App
+
 
 https://nnproject.cc/mp/
 Eliges la app para el modelo de tu dispositivo.
 
 (alternativa https://github.com/faissaloo/telegram-micro)
 
+### Web Browser
+Tambien existe un Navegador Web para ver ciertas paginas WML-HTML
+[Descargalo desde Aqui 📥](https://github.com/gtrxAC/BlueWAP/releases/latest/download/bluewap_client_nobt.jar) o visita su [Repositorio ↗️](https://github.com/gtrxAC/BlueWAP#bluewap)
 
+Las paginas debes ser antiguas para poder verse. CheAgana.com tiene una version simplificada que se puede ver
+![image](web/otros/Archivos/Imagenes/DarNuevousoaDispositivosViejos/image.webp)
 
-
-# Discord App
-https://gtrxac.fi/j2me/
-
-![Screenshots](img/screenshots.png)
-
-Eliges la app para el modelo de tu dispositivo, ejemplo discord_blackberry.jar para BlackBerrys 
-
-O una alternativa Web si la app no te sirve
-https://github.com/gtrxAC/discord-wap
 
 De esta manera aun puedes usar esos telefonos para comunicarte. 
 Usar estos telefonos son la manera mas segura de salir a la calle, mantienes comunicacion por Telegram o Discord, Tienen Radio, Tienen Musica, (la app de telegram permite ser reproductor de musica tambien) tienen llamadas y mensajes
@@ -109,6 +114,8 @@ En caso de que te asalten solo pierdes ese telefono, y en casa se queda tu telef
 Esa es una buena manera de reutilizar estos dispositivos en mi opinion.
 
 Por mencionar tambien existe WA, http://nokia4ever.com/ pero requiere servidor y cofig compleja.
+
+
 
 
 <details>
