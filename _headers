@@ -8,3 +8,27 @@
 
 /web/Dinamico/data.json
   Cache-Control: no-cache
+
+/web/Dinamico/*
+  X-Robots-Tag: noindex
+
+/web/otros/*
+  X-Robots-Tag: noindex
+
+/web/Pruebas/*
+  X-Robots-Tag: noindex
+
+/web/scripts/*
+  X-Robots-Tag: noindex
+
+/web/es
+  X-Robots-Tag: noindex
+
+/web/blogs
+  X-Robots-Tag: noindex
+
+/web/search
+  X-Robots-Tag: noindex
+
+/web/404
+  X-Robots-Tag: noindex
