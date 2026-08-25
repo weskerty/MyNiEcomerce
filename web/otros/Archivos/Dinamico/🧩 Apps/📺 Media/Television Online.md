@@ -41,9 +41,16 @@
 #ct-rc.on{display:block}
 #ct-rc-t{font-size:.75rem;color:rgba(255,255,255,.6);white-space:nowrap;margin-left:auto}
 #ct-rc-s{width:100%;margin-top:8px;accent-color:var(--accent,#4ade80)}
+#ct-rc-d{font-size:.68rem;color:rgba(255,255,255,.45);text-align:center;margin-top:6px;min-height:1em}
 #ct-wt{display:none;justify-content:center;padding:12px 0}
 #ct-wt.on{display:flex}
 #ct-wt img{width:52px;height:52px;object-fit:contain}
+#ct-ch{display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)}
+#ct-ch.on{display:block}
+#ct-ch-h{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+#ct-ch-f{flex:1;min-width:0;padding:8px 12px;border-radius:var(--ct-r);border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.25);color:#fff;font-size:.85rem}
+#ct-ch-n{font-size:.72rem;color:rgba(255,255,255,.55);white-space:nowrap}
+#ct-ch-g{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-height:48vh;overflow-y:auto;padding:2px}
 .ct-hid{display:none}
 </style>
 
@@ -77,9 +84,18 @@
 <span id="ct-rc-t">0:00 / 0:00</span>
 </div>
 <input type="range" id="ct-rc-s" min="0" max="1000" value="0">
+<div id="ct-rc-d"></div>
 </div>
 </div>
 <div class="ct-row" id="ct-stop-w"><button class="ct-b" id="ct-stop">Detener</button><button class="ct-b ct-hid" id="ct-fs">Pantalla Completa</button></div>
+<div id="ct-ch">
+<div id="ct-ch-h">
+<input id="ct-ch-f" placeholder="Buscar canal..." autocomplete="off">
+<span id="ct-ch-n"></span>
+<button class="ct-b" id="ct-ch-x">✕</button>
+</div>
+<div id="ct-ch-g"></div>
+</div>
 <input type="file" id="ct-fi" accept="video/*,audio/*" class="ct-hid">
 <div id="ct-bar"><i id="ct-bar-i"></i></div>
 <video id="ct-video" controls playsinline></video>
@@ -104,11 +120,12 @@ const M_HCS='https://esm.sh/hybrid-chunk-store@1.2.6';
 const M_QR='https://esm.unpkg.com/qr-creator@1.0.0?bundle&target=esnext';
 const M_H5Q='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
 const M_HLS='https://unpkg.com/hls.js@1.7.1/dist/hls.min.mjs';
+const M_DASH='https://unpkg.com/dashjs@5.2.1/dist/modern/esm/dash.all.min.js';
 let peer=null,pid=null,room=null,token=null,pingIv=null,conns={},wl=null;
 let wt=null,HCS=null,curTorrent=null,qrCam=null,scrStream=null,curCall=null;
 let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null,linked=false,joinTo=null;
 let cSince={},curURL=null,lastProg=-1,hls=null,wasLinked=false;
-let stIv=null,rst={p:true,ct:0,d:0},rcDrag=false;
+let stIv=null,rst={p:true,ct:0,d:0},rcDrag=false,dsh=null;
 const HP=location.hash.replace(/^#/,'').split('#');
 const PRE=(HP[1]||'').trim().toUpperCase();
 
@@ -132,6 +149,111 @@ function wtOn(){
   w.classList.add('on');
 }
 function wtOff(){$('ct-wt').classList.remove('on');}
+const M3U_MAX=8388608,CH_MAX=120;
+let chAll=[],shareURL=null;
+async function shareGet(){
+  if(shareURL)return;
+  try{
+    const r=await fetch('/_share_pending');
+    const d=await r.json();
+    if(!d)return;
+    const v=String(d.url||d.text||'').trim();
+    if(!v||!okURL(v))return;
+    shareURL=v;
+    if(!$('ct-link').value)$('ct-link').value=v;
+    if(!linked)msg('Se enviara al conectar con la TV');
+  }catch(e){}
+}
+async function shareClear(){
+  try{await fetch('/_share_clear',{method:'POST'});}catch(e){}
+}
+async function shareSend(){
+  if(!shareURL||!linked||isHost)return;
+  const v=shareURL;
+  shareURL=null;
+  shareClear();
+  wtOn();
+  let lista=false;
+  try{lista=await chTry(v);}catch(e){}
+  wtOff();
+  if(lista){$('ct-link').value='';return;}
+  send({t:'link',v});
+  $('ct-link').value='';
+  msg('Enviado lo compartido');
+}
+function chParse(txt){
+  const out=[];
+  let cur=null,skip=false;
+  for(const raw of txt.split(/\r?\n/)){
+    const l=raw.trim();
+    if(!l)continue;
+    if(l.slice(0,7)==='#EXTINF'){
+      const i=l.indexOf(',');
+      cur={
+        name:(i>=0?l.slice(i+1):'').trim()||'Canal',
+        logo:(l.match(/tvg-logo="([^"]*)"/)||[])[1]||'',
+        group:(l.match(/group-title="([^"]*)"/)||[])[1]||''
+      };
+      skip=false;continue;
+    }
+    if(l[0]==='#'){
+      if(l.startsWith('#KODIPROP')||l.startsWith('#EXTHTTP')||l.startsWith('#EXTVLCOPT'))skip=true;
+      continue;
+    }
+    if(cur&&!skip&&/^https?:\/\//i.test(l)&&/\.(m3u8|mpd|mp4|webm)($|[?#])/i.test(l))out.push({...cur,url:l});
+    cur=null;skip=false;
+  }
+  return out;
+}
+function chNode(c){
+  const a=mkEl('div','gallery-item');
+  if(c.logo&&/^https?:\/\//i.test(c.logo)){
+    const im=mkEl('img');
+    im.loading='lazy';im.alt='';
+    im.onerror=()=>{im.remove();a.insertBefore(chIco(),a.firstChild);};
+    im.src=c.logo;
+    a.appendChild(im);
+  }else a.appendChild(chIco());
+  const m=mkEl('div','mc'),p=mkEl('p','gi-txt');
+  p.textContent=c.name;m.appendChild(p);a.appendChild(m);
+  a.onclick=()=>{
+    if(!linked){msg('Conecta la TV primero',true);return;}
+    send({t:'link',v:c.url});
+    msg('Enviado: '+c.name);
+  };
+  return a;
+}
+function chIco(){const d=mkEl('div','gi-navtile-ico');d.textContent='📺';return d;}
+function mkEl(t,c){const e=document.createElement(t);if(c)e.className=c;return e;}
+function chDraw(list){
+  const g=$('ct-ch-g');
+  g.innerHTML='';
+  list.slice(0,CH_MAX).forEach(c=>g.appendChild(chNode(c)));
+  $('ct-ch-n').textContent=list.length+(list.length>CH_MAX?' (+'+CH_MAX+')':'');
+}
+function chHide(){$('ct-ch').classList.remove('on');$('ct-ch-g').innerHTML='';chAll=[];}
+async function chTry(u){
+  if(!/\.m3u8?($|[?#])/i.test(u))return false;
+  const ac=new AbortController();
+  const to=setTimeout(()=>ac.abort(),20000);
+  try{
+    const r=await fetch(u,{signal:ac.signal});
+    if(!r.ok)return false;
+    if(Number(r.headers.get('content-length')||0)>M3U_MAX)return false;
+    const t=await r.text();
+    if(!/^\s*#EXTM3U/.test(t))return false;
+    if(/#EXT-X-/.test(t))return false;
+    const ch=chParse(t);
+    if(!ch.length)return false;
+    chAll=ch;
+    $('ct-ch-f').value='';
+    chDraw(ch);
+    $('ct-ch').classList.add('on');
+    msg('Lista con '+ch.length+' canales compatibles');
+    return true;
+  }catch(e){return false;}
+  finally{clearTimeout(to);}
+}
 async function pasteIn(){
   try{
     const el=$('ct-link');
@@ -159,12 +281,27 @@ function okURL(u){
   catch(e){return false;}
 }
 function isHLS(u){return /\.m3u8($|[?#])/i.test(u);}
+function isDASH(u){return /\.mpd($|[?#])/i.test(u);}
 function killHLS(){if(hls){try{hls.destroy();}catch(e){}hls=null;}}
+function killDASH(){if(dsh){try{dsh.destroy();}catch(e){}dsh=null;}}
 const fmtT=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
+function vDiag(v){
+  let buf=0;
+  try{
+    const b=v.buffered,t=v.currentTime||0;
+    for(let i=0;i<b.length;i++){if(t>=b.start(i)&&t<=b.end(i)){buf=b.end(i)-t;break;}}
+  }catch(e){}
+  let dr=0;
+  try{
+    const q=v.getVideoPlaybackQuality?v.getVideoPlaybackQuality():null;
+    dr=q?(q.droppedVideoFrames||0):(v.webkitDroppedFrameCount||0);
+  }catch(e){}
+  return{w:v.videoWidth||0,h:v.videoHeight||0,bf:Math.round(buf*10)/10,df:dr};
+}
 function stSend(){
   const v=$('ct-video');
   if(!v.classList.contains('on'))return;
-  send({t:'st',p:v.paused,ct:v.currentTime||0,d:isFinite(v.duration)?v.duration:0});
+  send({t:'st',p:v.paused,ct:v.currentTime||0,d:isFinite(v.duration)?v.duration:0,...vDiag(v)});
 }
 function stStart(){if(!stIv)stIv=setInterval(stSend,1000);}
 function stStop(){if(stIv){clearInterval(stIv);stIv=null;}}
@@ -176,9 +313,15 @@ function rcShow(d){
   const sl=$('ct-rc-s');
   sl.disabled=!d.d;
   if(!rcDrag&&d.d>0)sl.value=Math.round(d.ct/d.d*1000);
+  const p=[];
+  if(d.w)p.push(d.w+'x'+d.h);
+  if(d.bf!=null)p.push('buffer '+d.bf+'s');
+  if(d.df)p.push(d.df+' frames perdidos');
+  $('ct-rc-d').textContent=p.join('  ·  ');
 }
 function rcHide(){
   $('ct-rc').classList.remove('on');
+  $('ct-rc-d').textContent='';
   rst={p:true,ct:0,d:0};rcDrag=false;
 }
 function vLive(){
@@ -197,6 +340,7 @@ function onVis(){
   if(document.visibilityState!=='visible'||dead)return;
   wlGet();
   chkConn();
+  shareGet().then(shareSend);
 }
 function chkConn(){
   if(dead)return;
@@ -259,7 +403,7 @@ function hookConn(c){
     $('ct-stop-w').classList.add('on');
     $('ct-go').disabled=false;
     wtOff();
-    if(!isHost)pasteIn();
+    if(!isHost){shareSend();pasteIn();}
     startHB();
   });
   c.on('data',d=>onData(d,c.peer));
@@ -306,6 +450,7 @@ async function resetPair(txt){
   stopAll(false);
   cSince={};
   $('ct-stop-w').classList.remove('on');
+  chHide();
   $('ct-main').classList.remove('on');
   $('ct-pair').classList.remove('off');
   msg(txt||'',!!txt);
@@ -439,13 +584,11 @@ function exitFS(){
   if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
   else if(document.webkitFullscreenElement&&document.webkitExitFullscreen)document.webkitExitFullscreen();
 }
-function fsGo(){fsReq().catch(()=>{});}
 function vShow(){
   $('ct-video').classList.add('on');
   $('ct-stop-w').classList.add('on');
   $('ct-fs').classList.remove('ct-hid');
   stStart();
-  fsGo();
 }
 function playStream(s){
   const v=$('ct-video');
@@ -455,7 +598,7 @@ function playStream(s){
 }
 function playSrc(u){
   const v=$('ct-video');
-  killHLS();
+  killHLS();killDASH();
   vShow();
   v.srcObject=null;
   v.src=u;
@@ -507,12 +650,36 @@ async function tryDLA(u){
   if(await tryNat(d.url))return true;
   return await tryHLS(d.url);
 }
+async function tryDASH(u){
+  const v=$('ct-video');
+  let MP;
+  try{
+    const m=await import(M_DASH);
+    MP=m.MediaPlayer||(m.default&&m.default.MediaPlayer);
+  }catch(e){return false;}
+  if(!MP)return false;
+  killHLS();killDASH();
+  vShow();
+  v.srcObject=null;
+  v.removeAttribute('src');
+  if(curURL){URL.revokeObjectURL(curURL);curURL=null;}
+  let fin;
+  const bad=new Promise(r=>{fin=r;});
+  try{
+    dsh=MP().create();
+    dsh.on('error',()=>fin(false));
+    dsh.initialize(v,u,true);
+  }catch(e){killDASH();return false;}
+  const ok=await Promise.race([vWait(15000),bad]);
+  if(!ok)killDASH();
+  return ok;
+}
 async function tryHLS(u){
   const v=$('ct-video');
   let H;
   try{H=(await import(M_HLS)).default;}catch(e){return false;}
   if(!H||!H.isSupported())return false;
-  killHLS();
+  killHLS();killDASH();
   vShow();
   v.srcObject=null;
   v.removeAttribute('src');
@@ -534,14 +701,19 @@ async function playLink(u){
   try{
     msg('Cargando enlace...');
     if(await tryNat(u)){msg('');return;}
-    if(!isHLS(u)){
-      msg('No se pudo reproducir directo, descargando...');
-      const r=await tryDL(u);
-      if(r===true){msg('');return;}
-      if(r==='big'){msg('Enlace muy pesado, usa Enviar archivo',true);return;}
+    if(isDASH(u)){
+      msg('Probando modo stream...');
+      if(await tryDASH(u)){msg('');return;}
+    }else{
+      if(!isHLS(u)){
+        msg('No se pudo reproducir directo, descargando...');
+        const r=await tryDL(u);
+        if(r===true){msg('');return;}
+        if(r==='big'){msg('Enlace muy pesado, usa Enviar archivo',true);return;}
+      }
+      msg('Probando modo stream...');
+      if(await tryHLS(u)){msg('');return;}
     }
-    msg('Probando modo stream...');
-    if(await tryHLS(u)){msg('');return;}
     if(await tryDLA(u)){msg('');return;}
     const v=$('ct-video');
     v.removeAttribute('src');v.load();v.classList.remove('on');
@@ -649,7 +821,7 @@ function stopAll(local){
   if(scrStream){scrStream.getTracks().forEach(t=>t.stop());scrStream=null;}
   if(curCall){try{curCall.close();}catch(e){}curCall=null;}
   if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
-  killHLS();
+  killHLS();killDASH();
   stStop();
   rcHide();
   wtOff();
@@ -685,7 +857,7 @@ function onData(d,from){
   else if(d.t==='stop')stopAll(false);
 }
 
-$('ct-fs').onclick=fsGo;
+$('ct-fs').onclick=()=>{fsReq().catch(()=>{});};
 $('ct-video').addEventListener('play',stSend);
 $('ct-video').addEventListener('pause',stSend);
 $('ct-video').addEventListener('seeked',stSend);
@@ -705,16 +877,26 @@ $('ct-go').onclick=doJoin;
 $('ct-scan').onclick=scan;
 $('ct-ccl').onclick=stopScan;
 $('ct-join').addEventListener('keydown',e=>{if(e.key==='Enter')doJoin();});
-$('ct-send-link').onclick=()=>{
+$('ct-send-link').onclick=async()=>{
   const u=($('ct-link').value||'').trim();
   if(!u)return;
   if(!okURL(u)){msg('Enlace no valido',true);return;}
+  wtOn();
+  let esLista=false;
+  try{esLista=await chTry(u);}catch(e){}
+  wtOff();
+  if(esLista){$('ct-link').value='';return;}
   send({t:'link',v:u});
   $('ct-link').value='';
   msg('Enlace enviado');
   wtOn();
   setTimeout(wtOff,6000);
 };
+$('ct-ch-x').onclick=chHide;
+$('ct-ch-f').addEventListener('input',()=>{
+  const q=$('ct-ch-f').value.trim().toLowerCase();
+  chDraw(q?chAll.filter(c=>(c.name+' '+c.group).toLowerCase().includes(q)):chAll);
+});
 $('ct-link').addEventListener('focus',pasteIn);
 $('ct-send-file').onclick=()=>$('ct-fi').click();
 $('ct-fi').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)sendFile(f);};
@@ -753,6 +935,7 @@ if(cEl)cEl.addEventListener('contentUnload',teardown,{once:true});
 
 (async function(){
   wlGet();
+  shareGet();
   try{
     await initPeer();
   }catch(e){msg('Error Conexion, no se pudo iniciar',true);return;}
