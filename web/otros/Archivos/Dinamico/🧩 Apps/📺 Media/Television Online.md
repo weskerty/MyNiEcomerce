@@ -80,7 +80,7 @@
 const CTE=document.getElementById('ctw');
 if(!CTE)return;
 const $=i=>document.getElementById(i);
-const API='/api/chat',PING=10000,CT_RT=20000,CT_MB=209715200,CT_GR=60000;
+const API='/api/chat',PING=10000,CT_RT=20000,CT_MB=209715200;
 const M_PEER='https://esm.unpkg.com/peerjs@1.5.5?bundle&target=esnext';
 const M_WT='https://esm.sh/webtorrent@3.0.16/dist/webtorrent.min.js';
 const M_HCS='https://esm.sh/hybrid-chunk-store@1.2.6';
@@ -90,7 +90,7 @@ const M_HLS='https://unpkg.com/hls.js@1.7.1/dist/hls.min.mjs';
 let peer=null,pid=null,room=null,token=null,pingIv=null,conns={},wl=null;
 let wt=null,HCS=null,curTorrent=null,qrCam=null,scrStream=null,curCall=null;
 let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null,linked=false,joinTo=null;
-let cSince={},curURL=null,fsArm=false,lastProg=-1,hls=null,wasLinked=false,graceTo=null;
+let cSince={},curURL=null,lastProg=-1,hls=null,wasLinked=false;
 const HP=location.hash.replace(/^#/,'').split('#');
 const PRE=(HP[1]||'').trim().toUpperCase();
 
@@ -195,7 +195,7 @@ function hookConn(c){
   c.on('open',()=>{
     linked=true;wasLinked=true;
     delete cSince[c.peer];
-    clearTimeout(joinTo);clearTimeout(graceTo);
+    clearTimeout(joinTo);
     msg('');
     $('ct-pair').classList.add('off');
     $('ct-main').classList.add('on');
@@ -219,14 +219,11 @@ function dropPeer(p){
 function loseLink(txt){
   linked=false;
   stopHB();
-  clearTimeout(graceTo);
   msg(txt,true);
-  if(!vLive()){
-    $('ct-main').classList.remove('on');
-    $('ct-pair').classList.remove('off');
-    $('ct-stop-w').classList.remove('on');
-  }
-  graceTo=setTimeout(()=>{if(!linked&&!dead)resetPair();},CT_GR);
+  if(vLive())return;
+  $('ct-main').classList.remove('on');
+  $('ct-pair').classList.remove('off');
+  $('ct-stop-w').classList.remove('on');
 }
 function send(d){
   Object.values(conns).forEach(c=>{if(c.open)try{c.send(d);}catch(e){}});
@@ -246,7 +243,7 @@ function startHB(){
 function stopHB(){if(hbIv){clearInterval(hbIv);hbIv=null;}}
 async function resetPair(txt){
   linked=false;wasLinked=false;
-  clearTimeout(joinTo);clearTimeout(graceTo);
+  clearTimeout(joinTo);
   stopHB();
   stopAll(false);
   cSince={};
@@ -257,7 +254,7 @@ async function resetPair(txt){
   if(dead)return;
   leaveRoom();
   isHost=true;
-  myCode=genCode();
+  if(!myCode)myCode=genCode();
   await joinRoom('cast-'+myCode);
   showQR(myCode);
 }
@@ -379,28 +376,18 @@ function exitFS(){
   if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
   else if(document.webkitFullscreenElement&&document.webkitExitFullscreen)document.webkitExitFullscreen();
 }
-function inFS(){
-  return !!(document.fullscreenElement||document.webkitFullscreenElement||$('ct-video').webkitDisplayingFullscreen);
-}
-function fsTry(){
-  if(!fsArm||dead||inFS())return;
-  fsArm=false;
-  fsReq().catch(()=>{fsArm=true;});
-}
-function onFS(){
-  if(!inFS())fsArm=false;
-}
+function fsGo(){fsReq().catch(()=>{});}
 function vShow(){
   $('ct-video').classList.add('on');
   $('ct-stop-w').classList.add('on');
   $('ct-fs').classList.remove('ct-hid');
-  fsArm=true;
+  fsGo();
 }
 function playStream(s){
   const v=$('ct-video');
   vShow();
   v.srcObject=s;
-  v.play().then(fsTry,()=>msg('Toca el video para verlo'));
+  v.play().catch(()=>msg('Toca el video para verlo'));
 }
 function playSrc(u){
   const v=$('ct-video');
@@ -410,7 +397,7 @@ function playSrc(u){
   v.src=u;
   if(curURL&&curURL!==u)URL.revokeObjectURL(curURL);
   curURL=u.slice(0,5)==='blob:'?u:null;
-  v.play().then(fsTry,()=>msg('Toca el video para verlo'));
+  v.play().catch(()=>msg('Toca el video para verlo'));
 }
 
 function vWait(ms){
@@ -453,7 +440,7 @@ async function tryHLS(u){
   let fin;
   const bad=new Promise(r=>{fin=r;});
   hls.on(H.Events.ERROR,(_,d)=>{if(d&&d.fatal)fin(false);});
-  hls.on(H.Events.MANIFEST_PARSED,()=>v.play().then(fsTry,()=>msg('Toca el video para verlo')));
+  hls.on(H.Events.MANIFEST_PARSED,()=>v.play().catch(()=>msg('Toca el video para verlo')));
   hls.loadSource(u);
   hls.attachMedia(v);
   const ok=await Promise.race([vWait(15000),bad]);
@@ -574,7 +561,6 @@ function stopAll(local){
   if(curCall){try{curCall.close();}catch(e){}curCall=null;}
   if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
   killHLS();
-  fsArm=false;
   exitFS();
   opfsClear();
   const v=$('ct-video');
@@ -597,11 +583,7 @@ function onData(d,from){
   else if(d.t==='stop')stopAll(false);
 }
 
-$('ct-video').addEventListener('playing',fsTry);
-$('ct-video').addEventListener('webkitendfullscreen',onFS);
-$('ct-fs').onclick=()=>{fsArm=true;fsTry();};
-document.addEventListener('fullscreenchange',onFS);
-document.addEventListener('webkitfullscreenchange',onFS);
+$('ct-fs').onclick=fsGo;
 $('ct-go').onclick=doJoin;
 $('ct-scan').onclick=scan;
 $('ct-ccl').onclick=stopScan;
@@ -640,8 +622,6 @@ function teardown(){
   wlDrop();
   document.removeEventListener('visibilitychange',onVis);
   window.removeEventListener('online',chkConn);
-  document.removeEventListener('fullscreenchange',onFS);
-  document.removeEventListener('webkitfullscreenchange',onFS);
   window.removeEventListener('beforeunload',teardown);
 }
 document.addEventListener('visibilitychange',onVis);
