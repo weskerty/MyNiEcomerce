@@ -390,6 +390,15 @@ async function ensureSrv(){
 function isHLS(u){return /\.m3u8($|[?#])/i.test(u);}
 function isDASH(u){return /\.mpd($|[?#])/i.test(u);}
 function killHLS(){if(hls){try{hls.destroy();}catch(e){}hls=null;}}
+function torKill(t){
+  return new Promise(r=>{
+    if(!t)return r();
+    let done=false;
+    const fin=()=>{if(!done){done=true;r();}};
+    setTimeout(fin,8000);
+    try{t.destroy({destroyStore:true},fin);}catch(e){fin();}
+  });
+}
 function killDASH(){if(dsh){try{dsh.destroy();}catch(e){}dsh=null;}}
 const fmtT=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
 function vDiag(v){
@@ -889,7 +898,8 @@ async function torStream(f,sub){
   v.removeAttribute('src');
   if(curURL){URL.revokeObjectURL(curURL);curURL=null;}
   clrSubs();
-  const p=vWait(25000);
+  msg('Preparando reproduccion...');
+  const p=vWait(75000);
   try{f.streamTo(v);}catch(e){return false;}
   const ok=await p;
   if(!ok)return false;
@@ -905,7 +915,11 @@ async function recvFile(d){
   lastProg=-1;
   let c;
   try{c=await getWT();}catch(e){msg('No se pudo recibir el archivo',true);bar(null);return;}
-  if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
+  if(curTorrent){const old=curTorrent;curTorrent=null;await torKill(old);}
+  try{
+    const prev=await c.get(d.magnet);
+    if(prev)await torKill(prev);
+  }catch(e){}
   await opfsClear();
   c.add(d.magnet,{store:HCS,destroyStoreOnDestroy:true,announce:WT_TR},async t=>{
     curTorrent=t;
@@ -927,7 +941,8 @@ async function recvFile(d){
         $('ct-video').poster=posterURL;
       }).catch(()=>{});
     }
-    if(await torStream(f,sub)){
+    const strOk=await torStream(f,sub);
+    if(strOk){
       try{t.deselect(0,t.pieces.length-1);}catch(e){}
       try{f.select(1);}catch(e){}
       if(sub)try{sub.select(1);}catch(e){}
@@ -948,8 +963,8 @@ async function recvFile(d){
         const nm='recibido'+(ext?ext[0]:'');
         await opfsSave(f,nm);
         const sb=sub?await(await sub.blob()).text().catch(()=>null):null;
-        await new Promise(r=>{try{t.destroy({destroyStore:true},r);}catch(e){r();}});
         curTorrent=null;
+        await torKill(t);
         playSrc(URL.createObjectURL(await opfsGet(nm)));
         if(sb){
           const vtt=/^\s*WEBVTT/.test(sb)?sb:srt2vtt(sb);
