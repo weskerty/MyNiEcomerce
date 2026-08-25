@@ -37,6 +37,10 @@
 #ct-bar i{display:block;height:100%;width:0;background:var(--accent,#4ade80);transition:width .3s}
 #ct-stop-w{display:none;margin-top:8px}
 #ct-stop-w.on{display:flex}
+#ct-rc{display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)}
+#ct-rc.on{display:block}
+#ct-rc-t{font-size:.75rem;color:rgba(255,255,255,.6);white-space:nowrap;margin-left:auto}
+#ct-rc-s{width:100%;margin-top:8px;accent-color:var(--accent,#4ade80)}
 .ct-hid{display:none}
 </style>
 
@@ -61,6 +65,15 @@
 <button class="ct-b on" id="ct-send-link">Enviar enlace</button>
 <button class="ct-b" id="ct-send-file">Enviar archivo</button>
 <button class="ct-b ct-hid" id="ct-send-scr">Espejar pantalla</button>
+</div>
+<div id="ct-rc">
+<div class="ct-row">
+<button class="ct-b" id="ct-rc-b" title="Pausa">⏸</button>
+<button class="ct-b" id="ct-rc-m" title="Atras 10s">⏪</button>
+<button class="ct-b" id="ct-rc-p" title="Adelante 10s">⏩</button>
+<span id="ct-rc-t">0:00 / 0:00</span>
+</div>
+<input type="range" id="ct-rc-s" min="0" max="1000" value="0">
 </div>
 </div>
 <div class="ct-row" id="ct-stop-w"><button class="ct-b" id="ct-stop">Detener</button><button class="ct-b ct-hid" id="ct-fs" title="Pantalla completa">⛶</button></div>
@@ -91,6 +104,7 @@ let peer=null,pid=null,room=null,token=null,pingIv=null,conns={},wl=null;
 let wt=null,HCS=null,curTorrent=null,qrCam=null,scrStream=null,curCall=null;
 let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null,linked=false,joinTo=null;
 let cSince={},curURL=null,lastProg=-1,hls=null,wasLinked=false;
+let stIv=null,rst={p:true,ct:0,d:0},rcDrag=false;
 const HP=location.hash.replace(/^#/,'').split('#');
 const PRE=(HP[1]||'').trim().toUpperCase();
 
@@ -127,6 +141,27 @@ function okURL(u){
 }
 function isHLS(u){return /\.m3u8($|[?#])/i.test(u);}
 function killHLS(){if(hls){try{hls.destroy();}catch(e){}hls=null;}}
+const fmtT=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
+function stSend(){
+  const v=$('ct-video');
+  if(!v.classList.contains('on'))return;
+  send({t:'st',p:v.paused,ct:v.currentTime||0,d:isFinite(v.duration)?v.duration:0});
+}
+function stStart(){if(!stIv)stIv=setInterval(stSend,1000);}
+function stStop(){if(stIv){clearInterval(stIv);stIv=null;}}
+function rcShow(d){
+  rst=d;
+  $('ct-rc').classList.add('on');
+  $('ct-rc-b').textContent=d.p?'▶':'⏸';
+  $('ct-rc-t').textContent=fmtT(d.ct)+' / '+(d.d?fmtT(d.d):'--:--');
+  const sl=$('ct-rc-s');
+  sl.disabled=!d.d;
+  if(!rcDrag&&d.d>0)sl.value=Math.round(d.ct/d.d*1000);
+}
+function rcHide(){
+  $('ct-rc').classList.remove('on');
+  rst={p:true,ct:0,d:0};rcDrag=false;
+}
 function vLive(){
   const v=$('ct-video');
   return v.classList.contains('on')&&!v.ended&&!!(v.currentSrc||v.srcObject);
@@ -219,6 +254,7 @@ function dropPeer(p){
 function loseLink(txt){
   linked=false;
   stopHB();
+  rcHide();
   msg(txt,true);
   if(vLive())return;
   $('ct-main').classList.remove('on');
@@ -381,6 +417,7 @@ function vShow(){
   $('ct-video').classList.add('on');
   $('ct-stop-w').classList.add('on');
   $('ct-fs').classList.remove('ct-hid');
+  stStart();
   fsGo();
 }
 function playStream(s){
@@ -426,6 +463,23 @@ async function tryDL(u){
     return p;
   }catch(e){return false;}
 }
+async function tryDLA(u){
+  msg('Buscando otra fuente...');
+  const ac=new AbortController();
+  const to=setTimeout(()=>ac.abort(),45000);
+  let d;
+  try{
+    const r=await fetch('/api/dla',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({url:u,mode:'stream'}),signal:ac.signal});
+    if(!r.ok)return false;
+    d=await r.json();
+  }catch(e){return false;}
+  finally{clearTimeout(to);}
+  if(!d||!d.url||!okURL(d.url))return false;
+  if(String(d.protocol||'').indexOf('dash')>=0)return false;
+  msg('Reproduciendo'+(d.height?' '+d.height+'p':''));
+  if(await tryNat(d.url))return true;
+  return await tryHLS(d.url);
+}
 async function tryHLS(u){
   const v=$('ct-video');
   let H;
@@ -459,6 +513,7 @@ async function playLink(u){
   }
   msg('Probando modo stream...');
   if(await tryHLS(u)){msg('');return;}
+  if(await tryDLA(u)){msg('');return;}
   const v=$('ct-video');
   v.removeAttribute('src');v.load();v.classList.remove('on');
   msg('Enlace no compatible',true);
@@ -561,6 +616,8 @@ function stopAll(local){
   if(curCall){try{curCall.close();}catch(e){}curCall=null;}
   if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
   killHLS();
+  stStop();
+  rcHide();
   exitFS();
   opfsClear();
   const v=$('ct-video');
@@ -578,12 +635,37 @@ function onData(d,from){
   if(d.t==='pong')return;
   if(d.t==='fileok'){bar(null);msg('Enviado');return;}
   if(d.t==='prog'){bar(d.v);msg('Enviando archivo');return;}
+  if(d.t==='st'){rcShow(d);return;}
+  if(d.t==='ctl'){
+    const v=$('ct-video');
+    if(!v.classList.contains('on'))return;
+    if(d.a==='play')v.play().catch(()=>{});
+    else if(d.a==='pause')v.pause();
+    else if(d.a==='seek'&&isFinite(d.v))v.currentTime=Math.max(0,d.v);
+    stSend();
+    return;
+  }
   if(d.t==='link')playLink(d.v);
   else if(d.t==='file')recvFile(d);
   else if(d.t==='stop')stopAll(false);
 }
 
 $('ct-fs').onclick=fsGo;
+$('ct-video').addEventListener('play',stSend);
+$('ct-video').addEventListener('pause',stSend);
+$('ct-video').addEventListener('seeked',stSend);
+$('ct-rc-b').onclick=()=>send({t:'ctl',a:rst.p?'play':'pause'});
+$('ct-rc-m').onclick=()=>send({t:'ctl',a:'seek',v:Math.max(0,rst.ct-10)});
+$('ct-rc-p').onclick=()=>send({t:'ctl',a:'seek',v:rst.ct+10});
+$('ct-rc-s').addEventListener('pointerdown',()=>{rcDrag=true;});
+$('ct-rc-s').addEventListener('input',()=>{
+  if(!rst.d)return;
+  $('ct-rc-t').textContent=fmtT($('ct-rc-s').value/1000*rst.d)+' / '+fmtT(rst.d);
+});
+$('ct-rc-s').addEventListener('change',()=>{
+  rcDrag=false;
+  if(rst.d)send({t:'ctl',a:'seek',v:$('ct-rc-s').value/1000*rst.d});
+});
 $('ct-go').onclick=doJoin;
 $('ct-scan').onclick=scan;
 $('ct-ccl').onclick=stopScan;

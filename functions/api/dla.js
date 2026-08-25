@@ -19,8 +19,8 @@ export async function onRequestGet(context){
 export async function onRequestPost(context){
  const{request,env}=context;
 
- let raw,type;
- try{const j=await request.json();raw=j.url;type=j.type;}
+ let raw,type,mode,fresh;
+ try{const j=await request.json();raw=j.url;type=j.type;mode=j.mode;fresh=j.fresh;}
  catch{return new Response(JSON.stringify({error:'Invalid body'}),{status:400,headers:RH_JSON});}
 
  const m=URL_RE.exec(String(raw||''));
@@ -29,7 +29,7 @@ export async function onRequestPost(context){
  const res=await fetch(`${env.SERVER_URL}/dla`,{
   method:'POST',
   headers:{'x-bridge-key':env.BRIDGE_KEY,'content-type':'application/json','x-real-ip':request.headers.get('cf-connecting-ip')||''},
-  body:JSON.stringify({url:m[0],type:type==='audio'?'audio':'video'})
+  body:JSON.stringify({url:m[0],type:type==='audio'?'audio':'video',...(mode==='stream'&&{mode:'stream'}),...(fresh&&{fresh:1})})
  });
 
  const j=await res.json().catch(()=>({}));
