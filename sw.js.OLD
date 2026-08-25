@@ -99,59 +99,6 @@ async function fetchWithMirrors(input,init){
 }
 
 
-// SW WebTorrent inicio
-const WT_PATH='/webtorrent';
-const WT_TO=15000;
-function wtHdr(h){const o={};for(const[k,v]of h.entries())o[k]=v;return o;}
-async function wtCli(id){
-  if(id){const c=await self.clients.get(id).catch(()=>null);if(c)return c;}
-  const all=await self.clients.matchAll({type:'window'});
-  return all[0]||null;
-}
-async function wtHandle(e){
-  const u=new URL(e.request.url);
-  if(u.pathname.endsWith('/keepalive/')||u.pathname.endsWith('/keepalive'))return new Response(null,{status:204});
-  if(u.pathname.endsWith('/cancel/')||u.pathname.endsWith('/cancel'))
-    return new Response(new ReadableStream({start(c){c.enqueue(new Uint8Array([0]));}}));
-  const cli=await wtCli(e.clientId||e.resultingClientId);
-  if(!cli)return new Response('',{status:503});
-  const ch=new MessageChannel();
-  const q=[];
-  let dead=false;
-  ch.port1.onmessage=m=>{const r=q.shift();if(r)r(m.data);};
-  const wait=()=>new Promise(r=>{
-    q.push(r);
-    setTimeout(()=>{const i=q.indexOf(r);if(i>=0){q.splice(i,1);r(undefined);}},WT_TO);
-  });
-  const ask=()=>{const p=wait();if(!dead)ch.port1.postMessage(true);return p;};
-  const done=()=>{if(dead)return;dead=true;try{ch.port1.postMessage(false);}catch(x){}};
-  const head=wait();
-  try{
-    cli.postMessage({
-      type:'webtorrent',
-      url:e.request.url,
-      method:e.request.method,
-      headers:wtHdr(e.request.headers),
-      destination:e.request.destination,
-      scope:self.registration.scope
-    },[ch.port2]);
-  }catch(x){return new Response('',{status:503});}
-  const h=await head;
-  if(!h)return new Response('',{status:504});
-  if(h.body!=='STREAM')return new Response(h.body,{status:h.status,headers:h.headers});
-  const body=new ReadableStream({
-    async pull(ctrl){
-      const chunk=await ask();
-      if(chunk){ctrl.enqueue(chunk);return;}
-      dead=true;
-      ctrl.close();
-    },
-    cancel(){done();}
-  });
-  return new Response(body,{status:h.status,headers:h.headers});
-}
-// SW WebTorrent fin
-
 async function tmpGet(req){
   const c=await caches.open(TEMP_C);
   const r=await c.match(req);
@@ -263,12 +210,6 @@ self.addEventListener('activate',e=>{
 self.addEventListener('fetch',e=>{
   const url=new URL(e.request.url);
 
-  // SW WebTorrent inicio
-  if(url.origin===self.location.origin&&url.pathname.startsWith(WT_PATH)){
-    e.respondWith(wtHandle(e));
-    return;
-  }
-  // SW WebTorrent fin
 
   if(url.pathname==='/_share'&&e.request.method==='POST'){
     e.respondWith((async()=>{

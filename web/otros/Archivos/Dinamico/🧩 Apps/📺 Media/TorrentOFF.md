@@ -24,7 +24,11 @@ body.low-perf .tdl-card{backdrop-filter:none!important}
 .tdl-stats{display:flex;gap:14px;flex-wrap:wrap;font-size:.85em;opacity:.85;margin-top:8px}
 .tdl-warn{margin-top:8px;font-size:.85em;color:#f2a13a}
 .tdl-files{margin-top:10px;display:flex;flex-direction:column;gap:4px;font-size:.9em}
-.tdl-file{display:flex;justify-content:space-between;gap:10px;opacity:.85}
+.tdl-file{display:flex;justify-content:space-between;gap:10px;opacity:.85;flex-wrap:wrap;align-items:center}
+.tdl-play{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:inherit;border-radius:8px;padding:3px 9px;font-size:.85em;cursor:pointer}
+.tdl-play:disabled{opacity:.4;cursor:default}
+.tdl-player{width:100%;max-height:60vh;margin-top:6px;border-radius:8px;background:#000}
+.tdl-perr{width:100%;font-size:.8em;opacity:.7;margin-top:4px}
 .tdl-fsz{opacity:.6;white-space:nowrap}
 .tdl-dllink{color:#1a73e8;text-decoration:none;font-size:.9em}
 .tdl-dllink:hover{text-decoration:underline}
@@ -50,6 +54,8 @@ const HASWL="wakeLock" in navigator;
 const root=document.getElementById("content");
 const list=root.querySelector(".tdl-list");
 let WT=null,CL=null,DIR=null,WL=null,MAXACT=2,_uid=0;
+let SRV=null,SRVNO=false;
+const PLAYABLE=/\.(mp4|webm|m4v|mov|mkv|mp3|m4a|ogg|opus|flac|wav)$/i;
 const QUEUE=[],PAUSED=[],ACT=new Map();
 
 function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
@@ -86,6 +92,69 @@ async function ensureClient(){
         CL=null;
     });
     return CL;
+}
+async function ensureServer(){
+    if(SRV)return SRV;
+    if(SRVNO)return null;
+    try{
+        if(!("serviceWorker" in navigator)){SRVNO=true;return null;}
+        const reg=await navigator.serviceWorker.ready;
+        if(!reg||!reg.active){SRVNO=true;return null;}
+        const cl=await ensureClient();
+        if(!cl){SRVNO=true;return null;}
+        SRV=cl.createServer({controller:reg});
+        return SRV;
+    }catch(e){SRVNO=true;return null;}
+}
+function playNow(f,d,btn){
+    const old=d.querySelector(".tdl-player");
+    if(old)old.remove();
+    const oe=d.querySelector(".tdl-perr");
+    if(oe)oe.remove();
+    const isA=/\.(mp3|m4a|ogg|opus|flac|wav)$/i.test(f.name);
+    const el=document.createElement(isA?"audio":"video");
+    el.controls=true;
+    el.className="tdl-player";
+    el.addEventListener("error",()=>{
+        const w=document.createElement("div");
+        w.className="tdl-perr";
+        w.textContent="El navegador no puede reproducir este formato. Se sigue descargando.";
+        d.appendChild(w);
+        el.remove();
+    });
+    d.appendChild(el);
+    try{
+        f.streamTo(el);
+        if(btn)btn.textContent="▶ Reproduciendo";
+    }catch(e){
+        el.remove();
+        const w=document.createElement("div");
+        w.className="tdl-perr";
+        w.textContent="No se pudo reproducir: "+esc(e&&e.message||String(e));
+        d.appendChild(w);
+    }
+}
+async function renderFiles(t,fEl){
+    fEl.innerHTML="";
+    const srv=await ensureServer();
+    t.files.forEach(f=>{
+        const d=document.createElement("div");
+        d.className="tdl-file";
+        const nm=document.createElement("span");
+        nm.textContent=f.name;
+        const sz=document.createElement("span");
+        sz.className="tdl-fsz";
+        sz.textContent=fmtB(f.length);
+        d.append(nm,sz);
+        if(srv&&PLAYABLE.test(f.name)){
+            const b=document.createElement("button");
+            b.className="tdl-play";
+            b.textContent="▶ Reproducir";
+            b.onclick=()=>playNow(f,d,b);
+            d.appendChild(b);
+        }
+        fEl.appendChild(d);
+    });
 }
 function showGlobalError(err){
     const b=document.createElement("div");
@@ -177,14 +246,14 @@ async function startActive(entry){
     if(DIR)opts.storeOpts={rootDir:DIR};
     const torrent=CL.add(entry.source,opts,t=>{
         entry.el.querySelector(".tdl-name").textContent=t.name;
-        entry.el.querySelector(".tdl-files").innerHTML=t.files.map(f=>`<div class="tdl-file">${esc(f.name)} <span class="tdl-fsz">${fmtB(f.length)}</span></div>`).join("");
+        renderFiles(t,entry.el.querySelector(".tdl-files"));
     });
     const timers=[];
     timers.push(setTimeout(()=>{
         if(!torrent.ready){
             const w=entry.el.querySelector(".tdl-warn");
             w.hidden=false;
-            w.textContent="Sin compatibles;
+            w.textContent="Sin fuentes WebRTC compatibles";
         }
     },20000));
     timers.push(setTimeout(()=>{
