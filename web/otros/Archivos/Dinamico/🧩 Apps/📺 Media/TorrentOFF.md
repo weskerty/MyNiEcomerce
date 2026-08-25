@@ -106,7 +106,7 @@ async function ensureServer(){
         return SRV;
     }catch(e){SRVNO=true;return null;}
 }
-function playNow(f,d,btn){
+function playNow(f,d,btn,retry){
     const old=d.querySelector(".tdl-player");
     if(old)old.remove();
     const oe=d.querySelector(".tdl-perr");
@@ -115,12 +115,32 @@ function playNow(f,d,btn){
     const el=document.createElement(isA?"audio":"video");
     el.controls=true;
     el.className="tdl-player";
-    el.addEventListener("error",()=>{
-        const w=document.createElement("div");
+    const say=t=>{
+        const w=d.querySelector(".tdl-perr")||document.createElement("div");
         w.className="tdl-perr";
-        w.textContent="El navegador no puede reproducir este formato. Se sigue descargando.";
+        w.textContent=t;
         d.appendChild(w);
+    };
+    el.addEventListener("loadeddata",()=>{
+        const w=d.querySelector(".tdl-perr");
+        if(w)w.remove();
+    });
+    el.addEventListener("error",()=>{
+        const c=el.error?el.error.code:0;
+        if(c===4){
+            say("El navegador no puede reproducir este formato. Se sigue descargando.");
+            el.remove();
+            if(btn)btn.textContent="▶ Reproducir";
+            return;
+        }
+        if(!retry){
+            say("Buscando el inicio del archivo, reintentando...");
+            setTimeout(()=>playNow(f,d,btn,true),4000);
+            return;
+        }
+        say("Todavia no hay suficiente descargado. Proba de nuevo en un rato.");
         el.remove();
+        if(btn)btn.textContent="▶ Reproducir";
     });
     d.appendChild(el);
     try{
@@ -128,10 +148,8 @@ function playNow(f,d,btn){
         if(btn)btn.textContent="▶ Reproduciendo";
     }catch(e){
         el.remove();
-        const w=document.createElement("div");
-        w.className="tdl-perr";
-        w.textContent="No se pudo reproducir: "+esc(e&&e.message||String(e));
-        d.appendChild(w);
+        say("No se pudo reproducir: "+(e&&e.message||String(e)));
+        if(btn)btn.textContent="▶ Reproducir";
     }
 }
 async function renderFiles(t,fEl){
