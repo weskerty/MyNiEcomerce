@@ -41,6 +41,9 @@
 #ct-rc.on{display:block}
 #ct-rc-t{font-size:.75rem;color:rgba(255,255,255,.6);white-space:nowrap;margin-left:auto}
 #ct-rc-s{width:100%;margin-top:8px;accent-color:var(--accent,#4ade80)}
+#ct-wt{display:none;justify-content:center;padding:12px 0}
+#ct-wt.on{display:flex}
+#ct-wt img{width:52px;height:52px;object-fit:contain}
 .ct-hid{display:none}
 </style>
 
@@ -76,11 +79,12 @@
 <input type="range" id="ct-rc-s" min="0" max="1000" value="0">
 </div>
 </div>
-<div class="ct-row" id="ct-stop-w"><button class="ct-b" id="ct-stop">Detener</button><button class="ct-b ct-hid" id="ct-fs" title="Pantalla completa">⛶</button></div>
+<div class="ct-row" id="ct-stop-w"><button class="ct-b" id="ct-stop">Detener</button><button class="ct-b ct-hid" id="ct-fs">Pantalla Completa</button></div>
 <input type="file" id="ct-fi" accept="video/*,audio/*" class="ct-hid">
 <div id="ct-bar"><i id="ct-bar-i"></i></div>
 <video id="ct-video" controls playsinline></video>
 </div>
+<div id="ct-wt"><img alt=""></div>
 <div id="ct-msg"></div>
 <div class="ct-mod" id="ct-cmod">
 <div id="ct-reader"></div>
@@ -121,6 +125,21 @@ function msg(t,err){
   e.textContent=t;
   e.classList.toggle('err',!!err);
   e.classList.toggle('on',!!t);
+}
+function wtOn(){
+  const w=$('ct-wt'),i=w.querySelector('img');
+  if(!i.src)i.src=(window.__CFG&&window.__CFG.waitAnim)||'';
+  w.classList.add('on');
+}
+function wtOff(){$('ct-wt').classList.remove('on');}
+async function pasteIn(){
+  try{
+    const el=$('ct-link');
+    if(el.value.trim())return;
+    if(!navigator.clipboard||!navigator.clipboard.readText)return;
+    const t=(await navigator.clipboard.readText()||'').trim();
+    if(t&&t.length<2048&&okURL(t))el.value=t;
+  }catch(e){}
 }
 function bar(v){
   const b=$('ct-bar');
@@ -238,6 +257,9 @@ function hookConn(c){
     $('ct-wait').classList.toggle('on',isHost);
     $('ct-send').classList.toggle('off',isHost);
     $('ct-stop-w').classList.add('on');
+    $('ct-go').disabled=false;
+    wtOff();
+    if(!isHost)pasteIn();
     startHB();
   });
   c.on('data',d=>onData(d,c.peer));
@@ -391,12 +413,17 @@ async function doJoin(){
   const code=($('ct-join').value||'').trim().toUpperCase();
   if(!code)return;
   if(code===myCode){msg('Ese es tu propio codigo',true);return;}
+  if($('ct-go').disabled)return;
+  $('ct-go').disabled=true;
+  wtOn();
   msg('Conectando...');
   leaveRoom();
   isHost=false;
-  if(!await joinRoom('cast-'+code))return;
+  if(!await joinRoom('cast-'+code)){$('ct-go').disabled=false;wtOff();return;}
   clearTimeout(joinTo);
   joinTo=setTimeout(()=>{
+    $('ct-go').disabled=false;
+    wtOff();
     if(!linked)resetPair('No se encontro ese codigo');
   },15000);
 }
@@ -503,20 +530,23 @@ async function tryHLS(u){
 }
 async function playLink(u){
   if(!okURL(u)){msg('Enlace no valido',true);return;}
-  msg('Cargando enlace...');
-  if(await tryNat(u)){msg('');return;}
-  if(!isHLS(u)){
-    msg('No se pudo reproducir directo, descargando...');
-    const r=await tryDL(u);
-    if(r===true){msg('');return;}
-    if(r==='big'){msg('Enlace muy pesado, usa Enviar archivo',true);return;}
-  }
-  msg('Probando modo stream...');
-  if(await tryHLS(u)){msg('');return;}
-  if(await tryDLA(u)){msg('');return;}
-  const v=$('ct-video');
-  v.removeAttribute('src');v.load();v.classList.remove('on');
-  msg('Enlace no compatible',true);
+  wtOn();
+  try{
+    msg('Cargando enlace...');
+    if(await tryNat(u)){msg('');return;}
+    if(!isHLS(u)){
+      msg('No se pudo reproducir directo, descargando...');
+      const r=await tryDL(u);
+      if(r===true){msg('');return;}
+      if(r==='big'){msg('Enlace muy pesado, usa Enviar archivo',true);return;}
+    }
+    msg('Probando modo stream...');
+    if(await tryHLS(u)){msg('');return;}
+    if(await tryDLA(u)){msg('');return;}
+    const v=$('ct-video');
+    v.removeAttribute('src');v.load();v.classList.remove('on');
+    msg('Enlace no compatible',true);
+  }finally{wtOff();}
 }
 
 async function opfsDir(){
@@ -552,22 +582,25 @@ async function getWT(){
 }
 async function sendFile(f){
   msg('Preparando archivo...');
+  wtOn();
   let c=null;
   try{c=await getWT();}
-  catch(e){msg('No se pudo preparar el envio',true);return;}
+  catch(e){wtOff();msg('No se pudo preparar el envio',true);return;}
   if(seedT){try{seedT.destroy({destroyStore:true});}catch(e){}seedT=null;}
   try{
   c.seed(f,{name:f.name,store:HCS,destroyStoreOnDestroy:true},t=>{
     seedT=t;
     send({t:'file',magnet:t.magnetURI,name:f.name,mime:f.type||''});
     msg('Esperando que la TV empiece a descargar');
+    wtOff();
     bar(0);
   });
-  }catch(e){msg('No se pudo preparar el envio',true);}
+  }catch(e){wtOff();msg('No se pudo preparar el envio',true);}
 }
 
 async function recvFile(d){
   msg('Descargando, se vera cuando termine');
+  wtOn();
   bar(0);
   lastProg=-1;
   let c;
@@ -587,6 +620,7 @@ async function recvFile(d){
       bar(null);
       send({t:'fileok'});
       try{
+        wtOff();
         msg('Guardando...');
         const ext=String(d.name||'').match(/\.[a-zA-Z0-9]{1,8}$/);
         const nm='recibido'+(ext?ext[0]:'');
@@ -618,6 +652,7 @@ function stopAll(local){
   killHLS();
   stStop();
   rcHide();
+  wtOff();
   exitFS();
   opfsClear();
   const v=$('ct-video');
@@ -675,8 +710,12 @@ $('ct-send-link').onclick=()=>{
   if(!u)return;
   if(!okURL(u)){msg('Enlace no valido',true);return;}
   send({t:'link',v:u});
+  $('ct-link').value='';
   msg('Enlace enviado');
+  wtOn();
+  setTimeout(wtOff,6000);
 };
+$('ct-link').addEventListener('focus',pasteIn);
 $('ct-send-file').onclick=()=>$('ct-fi').click();
 $('ct-fi').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)sendFile(f);};
 $('ct-send-scr').onclick=shareScreen;
