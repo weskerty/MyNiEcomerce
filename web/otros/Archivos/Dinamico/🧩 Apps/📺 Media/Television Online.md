@@ -158,7 +158,7 @@ async function shareGet(){
     const d=await r.json();
     if(!d)return;
     const v=String(d.url||d.text||'').trim();
-    if(!v||!okURL(v))return;
+    if(!v||(!okURL(v)&&!isMag(v)))return;
     shareURL=v;
     if(!$('ct-link').value)$('ct-link').value=v;
     if(!linked)msg('Se enviara al conectar con la TV');
@@ -172,6 +172,12 @@ async function shareSend(){
   const v=shareURL;
   shareURL=null;
   shareClear();
+  if(isMag(v)){
+    send({t:'file',magnet:v,name:magName(v)||'torrent',mime:''});
+    $('ct-link').value='';
+    msg('Torrent compartido enviado');
+    return;
+  }
   wtOn();
   let lista=false;
   try{lista=await chTry(v);}catch(e){}
@@ -279,6 +285,14 @@ function genCode(){
 function okURL(u){
   try{const x=new URL(u,location.href);return x.protocol==='https:'||x.protocol==='http:';}
   catch(e){return false;}
+}
+const WT_TR=['wss://tracker.webtorrent.dev','wss://tracker.openwebtorrent.com','wss://tracker.btorrent.xyz'];
+function isMag(u){return /^magnet:\?/i.test(String(u||'').trim());}
+function magName(u){
+  try{
+    const q=new URLSearchParams(String(u).slice(String(u).indexOf('?')+1));
+    return (q.get('dn')||'').trim();
+  }catch(e){return '';}
 }
 const VID_RE=/\.(mp4|webm|m4v|mov|mkv|avi)$/i;
 const SUB_RE=/\.(srt|vtt)$/i;
@@ -855,7 +869,7 @@ async function sendFile(f){
   catch(e){wtOff();msg('No se pudo preparar el envio',true);return;}
   if(seedT){try{seedT.destroy({destroyStore:true});}catch(e){}seedT=null;}
   try{
-  c.seed(f,{name:f.name,store:HCS,destroyStoreOnDestroy:true},t=>{
+  c.seed(f,{name:f.name,store:HCS,destroyStoreOnDestroy:true,announce:WT_TR},t=>{
     seedT=t;
     send({t:'file',magnet:t.magnetURI,name:f.name,mime:f.type||''});
     msg('Esperando que la TV empiece a descargar');
@@ -893,7 +907,7 @@ async function recvFile(d){
   try{c=await getWT();}catch(e){msg('No se pudo recibir el archivo',true);bar(null);return;}
   if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
   await opfsClear();
-  c.add(d.magnet,{store:HCS,destroyStoreOnDestroy:true},async t=>{
+  c.add(d.magnet,{store:HCS,destroyStoreOnDestroy:true,announce:WT_TR},async t=>{
     curTorrent=t;
     const vids=pickVid(t.files);
     const f=vids[0]||t.files[0];
@@ -1027,6 +1041,14 @@ $('ct-join').addEventListener('keydown',e=>{if(e.key==='Enter')doJoin();});
 $('ct-send-link').onclick=async()=>{
   const u=($('ct-link').value||'').trim();
   if(!u)return;
+  if(isMag(u)){
+    send({t:'file',magnet:u,name:magName(u)||'torrent',mime:''});
+    $('ct-link').value='';
+    msg('Torrent enviado');
+    wtOn();
+    setTimeout(wtOff,6000);
+    return;
+  }
   if(!okURL(u)){msg('Enlace no valido',true);return;}
   wtOn();
   let esLista=false;
