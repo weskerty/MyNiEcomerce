@@ -106,21 +106,33 @@ async function ensureServer(){
         return SRV;
     }catch(e){SRVNO=true;return null;}
 }
-function playNow(f,d,btn,retry){
+function liveFile(ih,name){
+    if(!CL)return null;
+    const t=(CL.torrents||[]).find(x=>x&&!x.destroyed&&x.infoHash===ih);
+    if(!t)return null;
+    return (t.files||[]).find(f=>f.name===name)||null;
+}
+function playNow(getF,d,btn,retry){
     const old=d.querySelector(".tdl-player");
     if(old)old.remove();
     const oe=d.querySelector(".tdl-perr");
     if(oe)oe.remove();
-    const isA=/\.(mp3|m4a|ogg|opus|flac|wav)$/i.test(f.name);
-    const el=document.createElement(isA?"audio":"video");
-    el.controls=true;
-    el.className="tdl-player";
     const say=t=>{
         const w=d.querySelector(".tdl-perr")||document.createElement("div");
         w.className="tdl-perr";
         w.textContent=t;
         d.appendChild(w);
     };
+    const f=typeof getF==="function"?getF():getF;
+    if(!f){
+        say("El torrent no esta activo. Reanudalo para reproducir.");
+        if(btn)btn.textContent="▶ Reproducir";
+        return;
+    }
+    const isA=/\.(mp3|m4a|ogg|opus|flac|wav)$/i.test(f.name);
+    const el=document.createElement(isA?"audio":"video");
+    el.controls=true;
+    el.className="tdl-player";
     el.addEventListener("loadeddata",()=>{
         const w=d.querySelector(".tdl-perr");
         if(w)w.remove();
@@ -135,7 +147,7 @@ function playNow(f,d,btn,retry){
         }
         if(!retry){
             say("Buscando el inicio del archivo, reintentando...");
-            setTimeout(()=>playNow(f,d,btn,true),4000);
+            setTimeout(()=>playNow(getF,d,btn,true),4000);
             return;
         }
         say("Todavia no hay suficiente descargado. Proba de nuevo en un rato.");
@@ -165,10 +177,11 @@ async function renderFiles(t,fEl){
         sz.textContent=fmtB(f.length);
         d.append(nm,sz);
         if(srv&&PLAYABLE.test(f.name)){
+            const ih=t.infoHash,nm=f.name;
             const b=document.createElement("button");
             b.className="tdl-play";
             b.textContent="▶ Reproducir";
-            b.onclick=()=>playNow(f,d,b);
+            b.onclick=()=>playNow(()=>liveFile(ih,nm),d,b);
             d.appendChild(b);
         }
         fEl.appendChild(d);
@@ -426,6 +439,7 @@ const TICK=setInterval(()=>{
 function cleanup(){
     clearInterval(TICK);
     if(CL){CL.destroy();CL=null}
+    SRV=null;SRVNO=false;
     if(WL){WL.release().catch(()=>{});WL=null}
     QUEUE.length=0;PAUSED.length=0;ACT.clear();
 }
