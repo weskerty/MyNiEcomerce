@@ -280,6 +280,99 @@ function okURL(u){
   try{const x=new URL(u,location.href);return x.protocol==='https:'||x.protocol==='http:';}
   catch(e){return false;}
 }
+const VID_RE=/\.(mp4|webm|m4v|mov|mkv|avi)$/i;
+const SUB_RE=/\.(srt|vtt)$/i;
+const IMG_RE=/\.(jpg|jpeg|png|webp|avif|gif)$/i;
+let srvWT=null,srvNo=false,posterURL=null;
+function langScore(l){
+  const L=String(l||'').toLowerCase().replace('_','-');
+  if(L==='es'||L==='spa'||L==='spanish'||L==='espanol'||L==='español')return 2;
+  if(L==='es-es'||L==='spa-es')return 1;
+  if(L.indexOf('es-')===0||L.indexOf('spa-')===0)return 3;
+  if(/(^|[^a-z])(espanol|español|spanish|latino)([^a-z]|$)/.test(L))return 2;
+  return -1;
+}
+function subLang(n){
+  const m=String(n).match(/[.\-_]([a-z]{2,3}(?:-[a-z0-9]{2,4})?)\.(srt|vtt)$/i);
+  return m?m[1]:'';
+}
+function pickVid(files){
+  return (files||[]).filter(f=>VID_RE.test(f.name)).sort((a,b)=>b.length-a.length);
+}
+function pickSub(files){
+  const c=(files||[]).filter(f=>SUB_RE.test(f.name)).map(f=>({f,s:langScore(subLang(f.name))})).filter(x=>x.s>=0);
+  if(!c.length)return null;
+  c.sort((a,b)=>b.s-a.s);
+  return c[0].f;
+}
+function srt2vtt(t){
+  return 'WEBVTT\n\n'+String(t).replace(/\r/g,'').replace(/(\d\d:\d\d:\d\d),(\d{1,3})/g,'$1.$2');
+}
+function clrSubs(){
+  const v=$('ct-video');
+  v.querySelectorAll('track').forEach(t=>{if(t.src&&t.src.slice(0,5)==='blob:')URL.revokeObjectURL(t.src);t.remove();});
+}
+function clrPoster(){
+  const v=$('ct-video');
+  v.removeAttribute('poster');
+  if(posterURL){URL.revokeObjectURL(posterURL);posterURL=null;}
+}
+async function addSub(f){
+  try{
+    const raw=await f.text?await f.text():await(await f.blob()).text();
+    const vtt=/^\s*WEBVTT/.test(raw)?raw:srt2vtt(raw);
+    const url=URL.createObjectURL(new Blob([vtt],{type:'text/vtt'}));
+    const tr=document.createElement('track');
+    tr.kind='subtitles';
+    tr.srclang='es';
+    tr.label='Espanol';
+    tr.default=true;
+    tr.src=url;
+    $('ct-video').appendChild(tr);
+    return true;
+  }catch(e){return false;}
+}
+function subEs(){
+  const v=$('ct-video');
+  try{
+    const tt=v.textTracks;
+    let bi=-1,bs=-1;
+    for(let i=0;i<tt.length;i++){
+      const sc=langScore(tt[i].language||tt[i].label||'');
+      if(sc>bs){bs=sc;bi=i;}
+    }
+    for(let i=0;i<tt.length;i++)tt[i].mode=(i===bi&&bs>=0)?'showing':'disabled';
+  }catch(e){}
+  try{
+    if(hls&&hls.subtitleTracks&&hls.subtitleTracks.length){
+      let bi=-1,bs=-1;
+      hls.subtitleTracks.forEach((t,i)=>{const sc=langScore(t.lang||t.name);if(sc>bs){bs=sc;bi=i;}});
+      hls.subtitleTrack=bs>=0?bi:-1;
+    }
+  }catch(e){}
+  try{
+    if(dsh&&dsh.getTracksFor){
+      const ts=dsh.getTracksFor('text')||[];
+      let best=null,bs=-1;
+      ts.forEach(t=>{const sc=langScore(t.lang||t.id);if(sc>bs){bs=sc;best=t;}});
+      if(best&&bs>=0){dsh.setCurrentTrack(best);if(dsh.enableText)dsh.enableText(true);}
+      else if(dsh.enableText)dsh.enableText(false);
+    }
+  }catch(e){}
+}
+async function ensureSrv(){
+  if(srvWT)return srvWT;
+  if(srvNo)return null;
+  try{
+    if(!('serviceWorker' in navigator)){srvNo=true;return null;}
+    const reg=await navigator.serviceWorker.ready;
+    if(!reg||!reg.active){srvNo=true;return null;}
+    const c=await getWT();
+    if(!c){srvNo=true;return null;}
+    srvWT=c.createServer({controller:reg});
+    return srvWT;
+  }catch(e){srvNo=true;return null;}
+}
 function isHLS(u){return /\.m3u8($|[?#])/i.test(u);}
 function isDASH(u){return /\.mpd($|[?#])/i.test(u);}
 function killHLS(){if(hls){try{hls.destroy();}catch(e){}hls=null;}}
@@ -599,6 +692,7 @@ function playStream(s){
 function playSrc(u){
   const v=$('ct-video');
   killHLS();killDASH();
+  clrSubs();
   vShow();
   v.srcObject=null;
   v.src=u;
@@ -693,6 +787,7 @@ async function tryHLS(u){
   hls.attachMedia(v);
   const ok=await Promise.race([vWait(15000),bad]);
   if(!ok)killHLS();
+  else subEs();
   return ok;
 }
 async function playLink(u){
@@ -770,6 +865,25 @@ async function sendFile(f){
   }catch(e){wtOff();msg('No se pudo preparar el envio',true);}
 }
 
+async function torStream(f,sub){
+  const srv=await ensureSrv();
+  if(!srv)return false;
+  const v=$('ct-video');
+  killHLS();killDASH();
+  vShow();
+  v.srcObject=null;
+  v.removeAttribute('src');
+  if(curURL){URL.revokeObjectURL(curURL);curURL=null;}
+  clrSubs();
+  const p=vWait(25000);
+  try{f.streamTo(v);}catch(e){return false;}
+  const ok=await p;
+  if(!ok)return false;
+  if(sub)await addSub(sub);
+  subEs();
+  v.play().catch(()=>msg('Toca el video para verlo'));
+  return true;
+}
 async function recvFile(d){
   msg('Descargando, se vera cuando termine');
   wtOn();
@@ -779,15 +893,37 @@ async function recvFile(d){
   try{c=await getWT();}catch(e){msg('No se pudo recibir el archivo',true);bar(null);return;}
   if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
   await opfsClear();
-  c.add(d.magnet,{store:HCS,destroyStoreOnDestroy:true},t=>{
+  c.add(d.magnet,{store:HCS,destroyStoreOnDestroy:true},async t=>{
     curTorrent=t;
-    const f=t.files[0];
+    const vids=pickVid(t.files);
+    const f=vids[0]||t.files[0];
     if(!f){msg('Error Archivo, torrent vacio',true);return;}
+    const sub=pickSub(t.files);
+    const img=(t.files||[]).find(x=>IMG_RE.test(x.name));
     t.on('download',()=>{
       const p=t.progress*100;
       bar(p);
       if(p-lastProg>=1){lastProg=p;send({t:'prog',v:p});}
     });
+    if(img){
+      try{img.select(1);}catch(e){}
+      img.blob().then(b=>{
+        clrPoster();
+        posterURL=URL.createObjectURL(b);
+        $('ct-video').poster=posterURL;
+      }).catch(()=>{});
+    }
+    if(await torStream(f,sub)){
+      try{t.deselect(0,t.pieces.length-1);}catch(e){}
+      try{f.select(1);}catch(e){}
+      if(sub)try{sub.select(1);}catch(e){}
+      if(img)try{img.select(1);}catch(e){}
+      wtOff();
+      msg('');
+      send({t:'fileok'});
+      return;
+    }
+    msg('Descargando, se vera cuando termine');
     t.once('done',async()=>{
       bar(null);
       send({t:'fileok'});
@@ -797,9 +933,18 @@ async function recvFile(d){
         const ext=String(d.name||'').match(/\.[a-zA-Z0-9]{1,8}$/);
         const nm='recibido'+(ext?ext[0]:'');
         await opfsSave(f,nm);
+        const sb=sub?await(await sub.blob()).text().catch(()=>null):null;
         await new Promise(r=>{try{t.destroy({destroyStore:true},r);}catch(e){r();}});
         curTorrent=null;
         playSrc(URL.createObjectURL(await opfsGet(nm)));
+        if(sb){
+          const vtt=/^\s*WEBVTT/.test(sb)?sb:srt2vtt(sb);
+          const tr=document.createElement('track');
+          tr.kind='subtitles';tr.srclang='es';tr.label='Espanol';tr.default=true;
+          tr.src=URL.createObjectURL(new Blob([vtt],{type:'text/vtt'}));
+          $('ct-video').appendChild(tr);
+          subEs();
+        }
         msg('');
       }catch(e){msg('Error Archivo, no se pudo abrir',true);}
     });
@@ -822,6 +967,8 @@ function stopAll(local){
   if(curCall){try{curCall.close();}catch(e){}curCall=null;}
   if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
   killHLS();killDASH();
+  clrSubs();
+  clrPoster();
   stStop();
   rcHide();
   wtOff();
