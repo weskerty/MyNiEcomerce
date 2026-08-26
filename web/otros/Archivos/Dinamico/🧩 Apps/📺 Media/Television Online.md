@@ -839,8 +839,8 @@ function vWait(ms){
     v.addEventListener('loadeddata',onL);
   });
 }
-async function tryNat(u){
-  const p=vWait(12000);
+async function tryNat(u,ms){
+  const p=vWait(ms||12000);
   playSrc(u);
   return p;
 }
@@ -866,11 +866,19 @@ async function tryDLA(u){
     d=await r.json();
   }catch(e){return false;}
   finally{clearTimeout(to);}
-  if(!d||!d.url||!okURL(d.url))return false;
-  if(String(d.protocol||'').indexOf('dash')>=0)return false;
-  msg('Cargando enlace...');
-  if(await tryNat(d.url))return true;
-  return await tryHLS(d.url);
+  if(!d||!d.url)return false;
+  const cand=[d].concat(Array.isArray(d.alts)?d.alts:[])
+    .filter(c=>c&&c.url&&okURL(c.url)&&String(c.protocol||'').indexOf('dash')<0)
+    .slice(0,4);
+  if(!cand.length)return false;
+  for(let i=0;i<cand.length;i++){
+    const c=cand[i];
+    const hls=isHLS(c.url)||String(c.protocol||'').indexOf('m3u8')>=0;
+    msg('Cargando enlace...');
+    if(await tryNat(c.url,hls?6000:12000))return true;
+    if(hls&&await tryHLS(c.url))return true;
+  }
+  return false;
 }
 async function tryDASH(u){
   const v=$('ct-video');
