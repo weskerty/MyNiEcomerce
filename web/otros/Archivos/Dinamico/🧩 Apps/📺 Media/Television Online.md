@@ -25,6 +25,14 @@
 #ct-send.off{display:none}
 #ct-main{display:none}
 #ct-main.on{display:block}
+#ct-main.loc.on{display:flex;flex-direction:column;gap:0}
+#ct-main.loc .ct-h{order:0}
+#ct-main.loc #ct-video{order:1}
+#ct-main.loc #ct-bar{order:2}
+#ct-main.loc #ct-stop-w{order:3}
+#ct-main.loc #ct-ch{order:4}
+#ct-main.loc #ct-ch-g{max-height:34vh}
+#ct-main.loc #ct-video.on{margin-bottom:8px}
 #ct-pair.off{display:none}
 #ct-link{width:100%;padding:10px;border-radius:var(--ct-r);border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.25);color:#fff;font-size:.85rem;margin-bottom:8px}
 #ct-video{width:100%;max-height:64vh;background:#000;border-radius:var(--ct-r);display:none}
@@ -688,6 +696,7 @@ function localMode(on){
   localOn=on;
   $('ct-pair').classList.toggle('off',on);
   $('ct-main').classList.toggle('on',on);
+  $('ct-main').classList.toggle('loc',on);
   if(on){
     $('ct-send').classList.add('off');
     $('ct-wait').classList.remove('on');
