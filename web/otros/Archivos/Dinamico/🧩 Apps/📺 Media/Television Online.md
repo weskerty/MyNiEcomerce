@@ -1,7 +1,7 @@
 ## Reproductor
 
 <style>
-#ctw{--ct-r:var(--r-md,16px);display:flex;flex-direction:column;gap:12px}
+#ctw{--ct-r:var(--r-md,16px);display:flex;flex-direction:column;gap:12px;position:relative}
 #ctw *{box-sizing:border-box}
 #ctw button{cursor:pointer;font-family:inherit}
 .ct-card{border:1px solid rgba(255,255,255,.1);border-radius:var(--ct-r);padding:14px}
@@ -42,9 +42,10 @@
 #ct-rc-t{font-size:.75rem;color:rgba(255,255,255,.6);white-space:nowrap;margin-left:auto}
 #ct-rc-s{width:100%;margin-top:8px;accent-color:var(--accent,#4ade80)}
 #ct-rc-d{font-size:.68rem;color:rgba(255,255,255,.45);text-align:center;margin-top:6px;min-height:1em}
-#ct-wt{display:none;justify-content:center;padding:12px 0}
+#ct-wt{display:none;position:absolute;inset:-8px;z-index:60;background:rgba(12,12,14,.72);flex-direction:column;align-items:center;justify-content:center;gap:12px;border-radius:var(--ct-r);text-align:center;padding:16px}
 #ct-wt.on{display:flex}
-#ct-wt img{width:52px;height:52px;object-fit:contain}
+#ct-wt img{width:56px;height:56px;object-fit:contain}
+#ct-wt-t{font-size:.85rem;color:rgba(255,255,255,.85);max-width:80%}
 #ct-ch{display:none;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)}
 #ct-ch.on{display:block}
 #ct-ch-h{display:flex;gap:8px;align-items:center;margin-bottom:8px}
@@ -59,9 +60,9 @@
 <div class="ct-h"><h3>Conectar TV y telefono</h3></div>
 <div id="ct-qr"></div>
 <div id="ct-code">...</div>
-<div id="ct-hint">Escanea este codigo desde el otro dispositivo</div>
+<div id="ct-hint">Escanea este codigo desde el otro dispositivo, o pega un enlace para verlo aca</div>
 <div class="ct-row">
-<input id="ct-join" placeholder="Codigo del otro dispositivo" autocomplete="off">
+<input id="ct-join" placeholder="Codigo, enlace, magnet o lista" autocomplete="off">
 <button class="ct-b" id="ct-go">Unirse</button>
 <button class="ct-b" id="ct-scan" title="Escanear con la camara">📷</button>
 </div>
@@ -100,7 +101,7 @@
 <div id="ct-bar"><i id="ct-bar-i"></i></div>
 <video id="ct-video" controls playsinline></video>
 </div>
-<div id="ct-wt"><img alt=""></div>
+<div id="ct-wt"><img alt=""><div id="ct-wt-t"></div></div>
 <div id="ct-msg"></div>
 <div class="ct-mod" id="ct-cmod">
 <div id="ct-reader"></div>
@@ -124,7 +125,7 @@ const M_DASH='https://unpkg.com/dashjs@5.2.1/dist/modern/esm/dash.all.min.js';
 let peer=null,pid=null,room=null,token=null,pingIv=null,conns={},wl=null;
 let wt=null,HCS=null,curTorrent=null,qrCam=null,scrStream=null,curCall=null;
 let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null,linked=false,joinTo=null;
-let cSince={},curURL=null,lastProg=-1,hls=null,wasLinked=false;
+let cSince={},curURL=null,lastProg=-1,hls=null,wasLinked=false,localOn=false;
 let stIv=null,rst={p:true,ct:0,d:0},rcDrag=false,dsh=null;
 const HP=location.hash.replace(/^#/,'').split('#');
 const PRE=(HP[1]||'').trim().toUpperCase();
@@ -142,6 +143,8 @@ function msg(t,err){
   e.textContent=t;
   e.classList.toggle('err',!!err);
   e.classList.toggle('on',!!t);
+  const w=$('ct-wt-t');
+  if(w)w.textContent=t||'';
 }
 function wtOn(){
   const w=$('ct-wt'),i=w.querySelector('img');
@@ -223,6 +226,7 @@ function chNode(c){
   const m=mkEl('div','mc'),p=mkEl('p','gi-txt');
   p.textContent=c.name;m.appendChild(p);a.appendChild(m);
   a.onclick=()=>{
+    if(localOn){playLink(c.url);return;}
     if(!linked){msg('Conecta la TV primero',true);return;}
     send({t:'link',v:c.url});
     msg('Enviado: '+c.name);
@@ -275,13 +279,15 @@ function bar(v){
   b.classList.add('on');
   $('ct-bar-i').style.width=Math.max(0,Math.min(100,v))+'%';
 }
+const PIN_A='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+const PIN_RE=/^KD[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{6}$/;
 function genCode(){
-  const A='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-  const r=crypto.getRandomValues(new Uint32Array(5));
-  let s='';
-  for(let i=0;i<5;i++)s+=A[r[i]%A.length];
+  const r=crypto.getRandomValues(new Uint32Array(6));
+  let s='KD';
+  for(let i=0;i<6;i++)s+=PIN_A[r[i]%PIN_A.length];
   return s;
 }
+function isPin(v){return PIN_RE.test(String(v||'').trim().toUpperCase());}
 function okURL(u){
   try{const x=new URL(u,location.href);return x.protocol==='https:'||x.protocol==='http:';}
   catch(e){return false;}
@@ -517,7 +523,6 @@ function hookConn(c){
     $('ct-wait').classList.toggle('on',isHost);
     $('ct-send').classList.toggle('off',isHost);
     $('ct-stop-w').classList.add('on');
-    $('ct-go').disabled=false;
     wtOff();
     if(!isHost){shareSend();pasteIn();}
     startHB();
@@ -573,20 +578,29 @@ async function resetPair(txt){
   if(dead)return;
   leaveRoom();
   isHost=true;
-  if(!myCode)myCode=genCode();
-  await joinRoom('cast-'+myCode);
+  await newRoom();
   showQR(myCode);
 }
 
-async function joinRoom(rid){
+async function joinRoom(rid,noConn){
   await initPeer();
   let d;
   try{d=await api('POST','/rooms/'+rid+'/join',{pw:'',pid,nick:'cast'});}
   catch(e){msg(e.status===429?'Demasiados intentos, espera un rato':'Error al unirse',true);return false;}
   room=rid;token=d.token;
-  connectMissing(d.peers);
+  if(!noConn)connectMissing(d.peers);
   startPing();
-  return true;
+  return d;
+}
+async function newRoom(){
+  for(let i=0;i<4;i++){
+    if(!myCode||i>0)myCode=genCode();
+    const d=await joinRoom('cast-'+myCode,true);
+    if(!d)return false;
+    if(!d.peers||!d.peers.length)return d;
+    leaveRoom();
+  }
+  return false;
 }
 function connectMissing(peers){
   if(!peer||peer.destroyed)return;
@@ -670,20 +684,45 @@ function stopScan(){
   $('ct-cmod').classList.remove('on');
 }
 
+function localMode(on){
+  localOn=on;
+  $('ct-pair').classList.toggle('off',on);
+  $('ct-main').classList.toggle('on',on);
+  if(on){
+    $('ct-send').classList.add('off');
+    $('ct-wait').classList.remove('on');
+    $('ct-tt').textContent='Viendo aca';
+    $('ct-stop-w').classList.add('on');
+  }
+}
+async function localGo(v){
+  localMode(true);
+  msg('');
+  if(isMag(v)){await recvFile({magnet:v,name:magName(v)||'torrent'});return;}
+  wtOn();
+  let lista=false;
+  try{lista=await chTry(v);}catch(e){}
+  wtOff();
+  if(lista)return;
+  await playLink(v);
+}
 async function doJoin(){
-  const code=($('ct-join').value||'').trim().toUpperCase();
-  if(!code)return;
+  const raw=($('ct-join').value||'').trim();
+  if(!raw)return;
+  if(!isPin(raw)){
+    if(!okURL(raw)&&!isMag(raw)){msg('No parece un codigo ni un enlace',true);return;}
+    $('ct-join').value='';
+    return localGo(raw);
+  }
+  const code=raw.toUpperCase();
   if(code===myCode){msg('Ese es tu propio codigo',true);return;}
-  if($('ct-go').disabled)return;
-  $('ct-go').disabled=true;
   wtOn();
   msg('Conectando...');
   leaveRoom();
   isHost=false;
-  if(!await joinRoom('cast-'+code)){$('ct-go').disabled=false;wtOff();return;}
+  if(!await joinRoom('cast-'+code)){wtOff();return;}
   clearTimeout(joinTo);
   joinTo=setTimeout(()=>{
-    $('ct-go').disabled=false;
     wtOff();
     if(!linked)resetPair('No se encontro ese codigo');
   },15000);
@@ -1087,6 +1126,7 @@ $('ct-fi').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)sendFil
 $('ct-send-scr').onclick=shareScreen;
 $('ct-stop').onclick=()=>{
   stopAll(true);
+  if(localOn){localMode(false);chHide();msg('');return;}
   if(!linked&&!dead)resetPair();
 };
 
@@ -1130,8 +1170,7 @@ if(cEl)cEl.addEventListener('contentUnload',teardown,{once:true});
     return;
   }
   isHost=true;
-  myCode=genCode();
-  await joinRoom('cast-'+myCode);
+  await newRoom();
   showQR(myCode);
 })();
 })();
