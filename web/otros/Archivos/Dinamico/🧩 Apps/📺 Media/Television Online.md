@@ -10,6 +10,7 @@
 .ct-b{border:none;border-radius:var(--ct-r);padding:10px 16px;font-size:.85rem;background:rgba(255,255,255,.08);color:#fff}
 .ct-b.on{background:var(--accent,#4ade80);color:#000;font-weight:600}
 .ct-b:disabled{opacity:.4;cursor:not-allowed}
+.ct-b.rec{background:rgba(248,113,113,.4);color:#fff;font-weight:600}
 .ct-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 #ct-qr{width:190px;height:190px;background:#fff;border-radius:var(--ct-r);padding:8px;display:flex;align-items:center;justify-content:center;margin:0 auto}
 #ct-code{text-align:center;font-size:1.6rem;font-weight:700;letter-spacing:.09em;margin:10px 0 2px}
@@ -96,7 +97,7 @@
 <div id="ct-rc-d"></div>
 </div>
 </div>
-<div class="ct-row" id="ct-stop-w"><button class="ct-b" id="ct-stop">Detener</button><button class="ct-b ct-hid" id="ct-fs">Pantalla Completa</button></div>
+<div class="ct-row" id="ct-stop-w"><button class="ct-b" id="ct-stop">Detener</button><button class="ct-b ct-hid" id="ct-fs">Pantalla Completa</button><button class="ct-b ct-hid" id="ct-rec">⏺ Grabar</button></div>
 <div id="ct-ch">
 <div id="ct-ch-h">
 <input id="ct-ch-f" placeholder="Buscar canal..." autocomplete="off">
@@ -135,6 +136,7 @@ let wt=null,HCS=null,curTorrent=null,qrCam=null,scrStream=null,curCall=null;
 let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null,linked=false,joinTo=null;
 let cSince={},curURL=null,lastProg=-1,hls=null,wasLinked=false,localOn=false;
 let stIv=null,rst={p:true,ct:0,d:0},rcDrag=false,dsh=null;
+let rec=null,recCh=[],recIv=null,recT0=0;
 const HP=location.hash.replace(/^#/,'').split('#');
 const PRE=(HP[1]||'').trim().toUpperCase();
 
@@ -414,6 +416,60 @@ function torKill(t){
   });
 }
 function killDASH(){if(dsh){try{dsh.destroy();}catch(e){}dsh=null;}}
+function dlBlob(blob,name){
+  const u=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=u;a.download=name;a.click();
+  setTimeout(()=>URL.revokeObjectURL(u),15000);
+}
+function recMime(){
+  if(!window.MediaRecorder)return '';
+  const c=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
+  for(const m of c){try{if(MediaRecorder.isTypeSupported(m))return m;}catch(e){}}
+  return '';
+}
+function recEnd(){
+  rec=null;
+  if(recIv){clearInterval(recIv);recIv=null;}
+  const b=$('ct-rec');
+  b.classList.remove('rec');
+  b.textContent='⏺ Grabar';
+}
+function recTick(){
+  if(!rec)return;
+  $('ct-rec').textContent='⏹ '+fmtT((Date.now()-recT0)/1000);
+}
+function recStop(){if(rec){try{rec.stop();}catch(e){recEnd();}}}
+function recGo(){
+  if(rec){recStop();return;}
+  const v=$('ct-video');
+  if(!v.classList.contains('on')){msg('No hay nada reproduciendose',true);return;}
+  const mime=recMime();
+  if(!mime){msg('Este navegador no puede grabar',true);return;}
+  let st=null,secErr=false;
+  try{st=v.captureStream?v.captureStream():(v.mozCaptureStream?v.mozCaptureStream():null);}
+  catch(e){secErr=(e&&e.name==='SecurityError');}
+  if(!st||!st.getTracks().length){
+    msg(secErr?'Esta fuente no permite grabar (protegida por el servidor)':'No se puede grabar esta fuente',true);
+    return;
+  }
+  try{rec=new MediaRecorder(st,{mimeType:mime});}catch(e){rec=null;msg('No se pudo iniciar la grabacion',true);return;}
+  recCh=[];
+  recT0=Date.now();
+  rec.ondataavailable=e=>{if(e.data&&e.data.size)recCh.push(e.data);};
+  rec.onerror=()=>{msg('Error al grabar',true);recEnd();};
+  rec.onstop=()=>{
+    const b=new Blob(recCh,{type:mime});
+    recCh=[];
+    recEnd();
+    if(b.size){dlBlob(b,'grabacion-'+Date.now()+'.webm');msg('Grabacion lista');}
+    else msg('No se grabo nada',true);
+  };
+  try{rec.start(2000);}catch(e){rec=null;msg('No se pudo iniciar la grabacion',true);return;}
+  $('ct-rec').classList.add('rec');
+  recIv=setInterval(recTick,1000);
+  recTick();
+}
 const fmtT=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
 function vDiag(v){
   let buf=0;
@@ -752,13 +808,14 @@ function vShow(){
   $('ct-video').classList.add('on');
   $('ct-stop-w').classList.add('on');
   $('ct-fs').classList.remove('ct-hid');
+  if(recMime())$('ct-rec').classList.remove('ct-hid');
   stStart();
 }
 function playStream(s){
   const v=$('ct-video');
   vShow();
   v.srcObject=s;
-  v.play().catch(()=>msg('Toca el video para verlo'));
+  v.play().catch(()=>{});
 }
 function playSrc(u){
   const v=$('ct-video');
@@ -769,7 +826,7 @@ function playSrc(u){
   v.src=u;
   if(curURL&&curURL!==u)URL.revokeObjectURL(curURL);
   curURL=u.slice(0,5)==='blob:'?u:null;
-  v.play().catch(()=>msg('Toca el video para verlo'));
+  v.play().catch(()=>{});
 }
 
 function vWait(ms){
@@ -811,7 +868,7 @@ async function tryDLA(u){
   finally{clearTimeout(to);}
   if(!d||!d.url||!okURL(d.url))return false;
   if(String(d.protocol||'').indexOf('dash')>=0)return false;
-  msg('Reproduciendo'+(d.height?' '+d.height+'p':''));
+  msg('Cargando enlace...');
   if(await tryNat(d.url))return true;
   return await tryHLS(d.url);
 }
@@ -853,7 +910,7 @@ async function tryHLS(u){
   let fin;
   const bad=new Promise(r=>{fin=r;});
   hls.on(H.Events.ERROR,(_,d)=>{if(d&&d.fatal)fin(false);});
-  hls.on(H.Events.MANIFEST_PARSED,()=>v.play().catch(()=>msg('Toca el video para verlo')));
+  hls.on(H.Events.MANIFEST_PARSED,()=>v.play().catch(()=>{}));
   hls.loadSource(u);
   hls.attachMedia(v);
   const ok=await Promise.race([vWait(15000),bad]);
@@ -953,7 +1010,7 @@ async function torStream(f,sub){
   if(!ok)return false;
   if(sub)await addSub(sub);
   subEs();
-  v.play().catch(()=>msg('Toca el video para verlo'));
+  v.play().catch(()=>{});
   return true;
 }
 async function recvFile(d){
@@ -1043,6 +1100,8 @@ function stopAll(local){
   if(scrStream){scrStream.getTracks().forEach(t=>t.stop());scrStream=null;}
   if(curCall){try{curCall.close();}catch(e){}curCall=null;}
   if(curTorrent){try{curTorrent.destroy({destroyStore:true});}catch(e){}curTorrent=null;}
+  recStop();
+  $('ct-rec').classList.add('ct-hid');
   killHLS();killDASH();
   clrSubs();
   clrPoster();
@@ -1082,6 +1141,7 @@ function onData(d,from){
 }
 
 $('ct-fs').onclick=()=>{fsReq().catch(()=>{});};
+$('ct-rec').onclick=recGo;
 $('ct-video').addEventListener('play',stSend);
 $('ct-video').addEventListener('pause',stSend);
 $('ct-video').addEventListener('seeked',stSend);
