@@ -1,6 +1,4 @@
-## Codecs del navegador
 
-Los videos estan dentro de esta pagina y se decodifican de verdad. Si el patron se mueve, ese codec funciona aca.
 
 <style>
 #cvw{display:flex;flex-direction:column;gap:14px}
@@ -51,7 +49,7 @@ Los videos estan dentro de esta pagina y se decodifican de verdad. Si el patron 
 <div class="cv-r"><span>canPlayType</span><b id="cv-hc">-</b></div>
 </div>
 </div>
-<div style="font-size:.83rem;color:rgba(255,255,255,.65)">Decide si YouTube se ve sin hls.js. El video nativo no pasa por CORS, asi que en streams sin cabeceras es el unico camino. Chrome y Edge de escritorio lo tienen desde la 142.</div>
+<div style="font-size:.83rem;color:rgba(255,255,255,.65)"></div>
 </div>
 <div class="cv-sec">
 <h4>Que significa para el reproductor</h4>
@@ -104,17 +102,17 @@ async function CV_HW1(m,c){
 function CV_S1(){
  const v=Object.values(CV_R),n=k=>v.filter(x=>x.st===k).length;
  $('cv-sum').innerHTML=
-  '<div class="cv-st"><b style="color:#4ade80">'+n('si')+'</b><span>Reproduce</span></div>'+
-  '<div class="cv-st"><b style="color:#fca5a5">'+n('no')+'</b><span>No reproduce</span></div>'+
-  '<div class="cv-st"><b>'+v.filter(x=>x.hw==='hardware').length+'</b><span>Por hardware</span></div>'+
+  '<div class="cv-st"><b style="color:#4ade80">'+n('si')+'</b><span>Si</span></div>'+
+  '<div class="cv-st"><b style="color:#fca5a5">'+n('no')+'</b><span>No</span></div>'+
+  '<div class="cv-st"><b>'+v.filter(x=>x.hw==='hardware').length+'</b><span>hardware</span></div>'+
   '<div class="cv-st"><b>'+v.filter(x=>x.st).length+'/5</b><span>Probados</span></div>';
 }
 function CV_I1(){
  const g=k=>CV_R[k]&&CV_R[k].st==='si',L=[];
- L.push(['H.264',g('H264')?'Todo el catalogo base se ve. Es el codec que prioriza el backend.':'Algo anda mal, ningun navegador actual falla aca.']);
- L.push(['HEVC',g('HEVC')?'TikTok se ve, este navegador decodifica lo que devuelve ese extractor.':'TikTok no se vera, devuelve h265 y aca no se decodifica.']);
- L.push(['HLS',g('HLS')?'YouTube se ve sin ayuda, el manifest se reproduce directo.':'YouTube depende de hls.js, y como no manda CORS ahi no hay salida.']);
- L.push(['Grabar',g('H264')?'Se pueden grabar torrents y fuentes con CORS. IPTV y YouTube quedan afuera por el origen, no por el codec.':'Sin decodificacion no hay captura.']);
+ L.push(['H.264',g('H264')?'T.':'Algo anda mal, ningun navegador actual falla aca.']);
+ L.push(['HEVC',g('HEVC')?'TikTok se ve.':'TikTok no , devuelve h265.']);
+ L.push(['HLS',g('HLS')?'YouTube se ve sin ayuda, el manifest se reproduce directo.':'YouTube depende de hls.js.']);
+ L.push(['Grabar',g('H264')?'.']);
  $('cv-imp').innerHTML=L.map(x=>'<li><i>'+x[0]+'</i><span>'+x[1]+'</span></li>').join('');
 }
 const pr=document.createElement('video');
