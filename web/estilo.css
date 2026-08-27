@@ -5,6 +5,12 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: 'Fluent Emoji Color';
+    src: url('otros/Archivos/Fuentes/Emojis/FluentEmojiColor.woff2') format('woff2') tech(color-COLRv1);
+    font-display: swap;
+}
+
 :root {
     --font: 'Comfortaa', 'Fluent Emoji Color', sans-serif;
     --font-h: 'Comfortaa', 'Fluent Emoji Color', sans-serif;

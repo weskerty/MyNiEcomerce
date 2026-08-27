@@ -1,4 +1,4 @@
-const V='v123';
+const V='v124';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -30,6 +30,7 @@ const PRE_PERM=[
 'web/favicon.ico',
 'web/otros/Archivos/Imagenes/wallpaper.avif',
 'web/otros/Archivos/Fuentes/Comfortaa/font.woff2',
+'web/otros/Archivos/Fuentes/Emojis/FluentEmojiColor.woff2',
 'web/otros/Archivos/Imagenes/Permanente/404.avif',
 'web/otros/Archivos/Imagenes/Permanente/wait.avif',
 'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/first_quarter_moon_face_animated.avif',
@@ -47,7 +48,6 @@ N_BANNER
 
 const TEMP_ROUTES=[{match:'/api/chat/',ttl:14000},{match:'/api/',ttl:18000000}];
 const EXT_CACHE=[
-  {origin:'tetunori.github.io',ttl:0},
   {origin:'esm.unpkg.com',ttl:0},
   {origin:'unpkg.com',ttl:0}
 ];
