@@ -54,10 +54,25 @@ body.low-perf .HT6{transition:none}
 <div class="HT2"><div class="HT3">TRANSFERIDO</div><div class="HT4" id="ht-tot">--</div></div>
 <div class="HT2"><div class="HT3">DESDE CACHE</div><div class="HT4" id="ht-cch">--</div></div>
 <div class="HT2"><div class="HT3">CONEXION</div><div class="HT4" id="ht-cnx">--</div></div>
-<div class="HT2"><div class="HT3">LATENCIA</div><div class="HT4" id="ht-rtt">--</div></div>
+<div class="HT2"><div class="HT3">LATENCIA ESTIMADA</div><div class="HT4" id="ht-rtt">--</div></div>
 <div class="HT2"><div class="HT3">AHORRO DE DATOS</div><div class="HT4" id="ht-sav">--</div></div>
 </div>
 <p class="HT7">Un recurso de otro dominio sin Timing-Allow-Origin informa 0 bytes transferidos aunque haya bajado.</p>
+</section>
+</details>
+
+<details open>
+<summary>⚡ Velocidad</summary>
+<section>
+<div class="HT1">
+<div class="HT2"><div class="HT3">BAJADA</div><div class="HT4" id="ht-dn">--</div><div class="HT5"><div class="HT6" id="ht-dnb"></div></div></div>
+<div class="HT2"><div class="HT3">SUBIDA</div><div class="HT4" id="ht-up">--</div><div class="HT5"><div class="HT6" id="ht-upb"></div></div></div>
+<div class="HT2"><div class="HT3">LATENCIA MEDIDA</div><div class="HT4" id="ht-lt">--</div><div class="HT5"><div class="HT6" id="ht-ltb"></div></div></div>
+<div class="HT2"><div class="HT3">VARIACION</div><div class="HT4" id="ht-jt">--</div></div>
+<div class="HT2"><div class="HT3">IP PUBLICA</div><div class="HT4 HT9" id="ht-ip">--</div></div>
+</div>
+<div class="HT8"><button id="ht-spb">🔄 Repetir</button><button id="ht-spl">📈 Prueba larga</button></div>
+<p class="HT7">Se mide contra speed.cloudflare.com, que es de otro dominio y por eso el service worker no lo toca. La rapida sale sola al entrar y corta a 1,5 segundos o 5 MB, lo que pase primero, asi que en una conexion lenta gasta poco. Un valor con ~ adelante quedo medido en una ventana muy corta y es aproximado: para un numero firme esta la prueba larga. Con ahorro de datos activado no arranca sola.</p>
 </section>
 </details>
 
@@ -228,6 +243,77 @@ body.low-perf .HT6{transition:none}
     bt.disabled=false;bt.textContent='🔍 Analizar';
   }
 
+  const SPD='https://speed.cloudflare.com/__down?bytes=',SPU='https://speed.cloudflare.com/__up';
+  let spb=false;
+  const MB=(b,s)=>b*8/s/1e6;
+  const DC=m=>m>25?'var(--ok)':m>5?'var(--warn)':'var(--err)';
+  const UC=m=>m>10?'var(--ok)':m>2?'var(--warn)':'var(--err)';
+
+  async function SP1(){
+    const t=[];
+    for(let k=0;k<6;k++){
+      const a=performance.now();
+      try{
+        const r=await fetch(SPD+'1&r='+Math.random(),{cache:'no-store'});
+        const ip=r.headers.get('cf-meta-ip');
+        if(ip)$('ht-ip').textContent=ip;
+        await r.arrayBuffer();
+        t.push(performance.now()-a);
+      }catch(e){}
+    }
+    if(!t.length){S('ht-lt','Error',0);return}
+    t.sort((a,b)=>a-b);
+    const mn=t[0];
+    S('ht-lt',Math.round(mn)+' ms',Math.min(100,mn/3),mn<80?'var(--ok)':mn<200?'var(--warn)':'var(--err)');
+    $('ht-jt').textContent=Math.round(t[t.length-1]-mn)+' ms';
+  }
+
+  async function SP2(ms,cap){
+    try{
+      const t0=performance.now();
+      const r=await fetch(SPD+cap+'&r='+Math.random(),{cache:'no-store'});
+      const rd=r.body.getReader();
+      let got=0,tm=0,bm=0,nx=0,el=0;
+      for(;;){
+        const c=await rd.read();
+        if(c.done)break;
+        got+=c.value.length;
+        el=performance.now()-t0;
+        if(!tm&&el>250){tm=el;bm=got}
+        if(tm&&el>nx){nx=el+250;const m=MB(got-bm,(el-tm)/1000);if(isFinite(m)&&m>0)S('ht-dn',m.toFixed(1)+' Mb/s',Math.min(100,m),DC(m))}
+        if(el>ms){try{await rd.cancel()}catch(e){}break}
+      }
+      const w=tm?(el-tm)/1000:el/1000,b=tm?got-bm:got,m=MB(b,w);
+      S('ht-dn',(w<.3?'~':'')+(isFinite(m)?m.toFixed(1):'--')+' Mb/s',Math.min(100,m),DC(m));
+    }catch(e){S('ht-dn','Error',0)}
+  }
+
+  async function SP3(n){
+    try{
+      const bl=new Uint8Array(65536);
+      crypto.getRandomValues(bl);
+      const k=Math.ceil(n/65536),parts=[];
+      for(let i=0;i<k;i++)parts.push(bl);
+      const t0=performance.now();
+      await fetch(SPU,{method:'POST',body:new Blob(parts),cache:'no-store'});
+      const sc=(performance.now()-t0)/1000,m=MB(k*65536,sc);
+      S('ht-up',(sc<.3?'~':'')+m.toFixed(1)+' Mb/s',Math.min(100,m),UC(m));
+    }catch(e){S('ht-up','Error',0)}
+  }
+
+  async function SPR(big){
+    if(spb)return;
+    spb=true;
+    const b1=$('ht-spb'),b2=$('ht-spl');
+    b1.disabled=b2.disabled=true;
+    S('ht-dn','Midiendo',0);S('ht-up','Midiendo',0);S('ht-lt','Midiendo',0);
+    await SP1();
+    await SP2(big?8000:1500,big?60e6:5e6);
+    await SP3(big?10e6:1e6);
+    b1.disabled=b2.disabled=false;
+    spb=false;
+  }
+
   function lpu(){
     const v=localStorage.getItem('perf');
     $('ht-lp').textContent=(document.body.classList.contains('low-perf')?'Bajo':'Alto')+(v?' (guardado: '+v+')':' (sin medir)');
@@ -242,6 +328,8 @@ body.low-perf .HT6{transition:none}
   $('ht-lpl').onclick=()=>lps('low');
   $('ht-lph').onclick=()=>lps('high');
   $('ht-lpr').onclick=()=>lps(null);
+  $('ht-spb').onclick=()=>SPR(false);
+  $('ht-spl').onclick=()=>SPR(true);
   $('ht-anb').onclick=scan;
   $('ht-rtb').onclick=res;
   $('ht-cp').onclick=()=>{
@@ -258,10 +346,14 @@ body.low-perf .HT6{transition:none}
 
   upd();res();
   const iv=setInterval(upd,1000);
+  let spt=0;
+  if(nc&&nc.saveData){$('ht-dn').textContent='Ahorro de datos';$('ht-up').textContent='Ahorro de datos'}
+  else spt=setTimeout(()=>SPR(false),1500);
 
   const cu=$('content');
   if(cu)cu.addEventListener('contentUnload',()=>{
     clearInterval(iv);
+    clearTimeout(spt);
     cancelAnimationFrame(rid);
     try{if(po)po.disconnect()}catch(e){}
     try{if(lo)lo.disconnect()}catch(e){}
