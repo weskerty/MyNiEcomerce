@@ -94,8 +94,8 @@ const ovEl=document.getElementById("gsiStOv"),ovImg=document.getElementById("gsi
 function ovShow1(t){const wa=window.__CFG?.waitAnim;if(wa)ovImg.src=wa;ovTxt.textContent=t||"Cargando...";ovEl.style.display="flex"}
 function ovHide1(){ovEl.style.display="none"}
 ovShow1("Iniciando...");
-const { FastbootDevice } = await import("https://esm.unpkg.com/android-fastboot@1.1.3?bundle&target=esnext");
-const { ZipReader, BlobReader, BlobWriter } = await import("https://esm.unpkg.com/@zip.js/zip.js@2.8.36?bundle&target=esnext");
+const { FastbootDevice } = await import("https://cdn.jsdelivr.net/npm/android-fastboot@1.1.3/+esm");
+const { ZipReader, BlobReader, BlobWriter } = await import("https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.8.36/+esm");
 
 const VPARTS1=["vbmeta","vbmeta_system","vbmeta_vendor","vbmeta_boot"];
 const OPARTS1=["boot","vendor_boot","recovery"];

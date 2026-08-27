@@ -48,7 +48,7 @@ body.low-perf .tdl-card{backdrop-filter:none!important}
 
 <script>
 !function(){
-const CDN="https://esm.sh/webtorrent@3.0.16/dist/webtorrent.min.js";
+const CDN="https://cdn.jsdelivr.net/npm/webtorrent@3.0.16/dist/webtorrent.min.js";
 const FSA="showDirectoryPicker" in window;
 const HASWL="wakeLock" in navigator;
 const root=document.getElementById("content");

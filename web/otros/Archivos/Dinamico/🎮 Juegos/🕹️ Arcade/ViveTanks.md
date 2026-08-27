@@ -1798,7 +1798,7 @@ function onVisChange(){
 }
 
 let trysteroP=null;
-function loadTrystero(){ if(!trysteroP) trysteroP=import('https://esm.sh/trystero@0.25.3'); return trysteroP; }
+function loadTrystero(){ if(!trysteroP) trysteroP=import('https://cdn.jsdelivr.net/npm/trystero@0.25.3/+esm'); return trysteroP; }
 const NET_APP='cheagana-vivetanks', NET_ROOM='arena';
 let room=null, selfId=null, tsAction=null, hitAction=null, spawnAction=null, isHost=true, netInterval=null;
 

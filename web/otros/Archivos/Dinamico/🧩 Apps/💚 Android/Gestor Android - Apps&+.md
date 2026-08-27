@@ -133,12 +133,12 @@ const[
 {AdbScrcpyClient,AdbScrcpyOptions2_1},
 {WebCodecsVideoDecoder,WebGLVideoFrameRenderer,BitmapVideoFrameRenderer}
 ]=await Promise.all([
-import("https://esm.unpkg.com/@yume-chan/adb@2.6.0?bundle&target=esnext"),
-import("https://esm.unpkg.com/@yume-chan/adb-daemon-webusb@2.1.0?bundle&target=esnext"),
-import("https://esm.unpkg.com/@yume-chan/adb-credential-web@2.0.1?bundle&target=esnext"),
-import("https://esm.unpkg.com/@yume-chan/scrcpy@2.2.0?bundle&target=esnext"),
-import("https://esm.unpkg.com/@yume-chan/adb-scrcpy@2.3.2?bundle&target=esnext"),
-import("https://esm.unpkg.com/@yume-chan/scrcpy-decoder-webcodecs?bundle&target=esnext")
+import("https://cdn.jsdelivr.net/npm/@yume-chan/adb@2.6.0/+esm"),
+import("https://cdn.jsdelivr.net/npm/@yume-chan/adb-daemon-webusb@2.1.0/+esm"),
+import("https://cdn.jsdelivr.net/npm/@yume-chan/adb-credential-web@2.0.1/+esm"),
+import("https://cdn.jsdelivr.net/npm/@yume-chan/scrcpy@2.2.0/+esm"),
+import("https://cdn.jsdelivr.net/npm/@yume-chan/adb-scrcpy@2.3.2/+esm"),
+import("https://cdn.jsdelivr.net/npm/@yume-chan/scrcpy-decoder-webcodecs@2.5.3/+esm")
 ]);
 
 const U1="https://raw.githubusercontent.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation/main/resources/assets/uad_lists.json";

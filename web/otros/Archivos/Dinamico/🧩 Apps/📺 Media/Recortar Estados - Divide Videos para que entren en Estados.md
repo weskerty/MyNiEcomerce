@@ -59,9 +59,9 @@ const G=document.getElementById('vc-lbl');
 const H=document.getElementById('vc-reset');
 const I=document.getElementById('vc-toast');
 
-const FF_BASE='https://unpkg.com/@ffmpeg/ffmpeg@0.12.15/dist/umd';
+const FF_BASE='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd';
 const FF_JS=FF_BASE+'/ffmpeg.js';
-const FF_CORE_BASE='https://unpkg.com/@ffmpeg/core@0.12.10/dist/umd';
+const FF_CORE_BASE='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd';
 
 let J=null,K=0,L=[],M=false,N=null,U=null;
 

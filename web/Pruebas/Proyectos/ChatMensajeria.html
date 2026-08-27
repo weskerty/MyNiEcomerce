@@ -1,4 +1,4 @@
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
 #chatw{--cw-r-lg:var(--r-lg,24px);--cw-r-md:var(--r-md,16px);--cw-r-sm:var(--r-sm,12px);display:flex;flex-direction:column;gap:10px}
 #chatw *{box-sizing:border-box}
@@ -697,7 +697,7 @@ async function enterIrc(cfg){
     // SockJS: la libreria maneja framing/heartbeats/reconexion, nosotros solo el prefijo
     // ":1 " del multiplexor de webircgateway (verificado en vivo contra web.libera.chat)
     try{
-      const{default:SockJS}=await import('https://esm.sh/sockjs-client@1.6.1');
+      const{default:SockJS}=await import('https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/+esm');
       ircSocket=new SockJS(cfg.gatewayUrl);
     }catch(e){addSys('No se pudo conectar: '+e.message);return goBack();}
     ircSocket.onopen=()=>{
@@ -947,7 +947,7 @@ $('cw-emj').addEventListener('emoji-click',e=>{$('cw-mi').value+=(e.detail.unico
 // ---------- archivos: WebTorrent, swarm real entre los que ya lo tienen ----------
 async function getTorrentClient(){
   if(torrentClient)return torrentClient;
-  const{default:WebTorrent}=await import('https://esm.sh/webtorrent@3.0.16/dist/webtorrent.min.js');
+  const{default:WebTorrent}=await import('https://cdn.jsdelivr.net/npm/webtorrent@3.0.16/dist/webtorrent.min.js');
   torrentClient=new WebTorrent();
   torrentClient.on('error',e=>console.error('[webtorrent]',e.message));
   return torrentClient;

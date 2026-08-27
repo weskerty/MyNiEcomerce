@@ -30,6 +30,10 @@
 <div id="si-lobby">
 <div class="SI1" id="si-badge"><s></s><span id="si-badge-t">Comprobando IA local...</span></div>
 
+<div class="SI2">
+<input type="text" id="si-nick" placeholder="Tu nombre" maxlength="24" autocomplete="off" style="text-transform:none;letter-spacing:normal">
+</div>
+
 <div class="SI9">
 <button id="si-new">➕ Crear sala</button>
 <button id="si-dl" class="hide">⬇️ Bajar el modelo</button>
@@ -79,15 +83,15 @@
   const $=i=>document.getElementById(i);
   if(!$('si-app'))return;
 
-  const M_PEER='https://esm.unpkg.com/peerjs@1.5.5?bundle&target=esnext';
-  const M_QR='https://esm.unpkg.com/qr-creator@1.0.0?bundle&target=esnext';
+  const M_PEER='https://cdn.jsdelivr.net/npm/peerjs@1.5.5/+esm';
+  const M_QR='https://cdn.jsdelivr.net/npm/qr-creator@1.0.0/+esm';
   const PFX='cheia-';
   const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
   const RE=/^IA[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{6}$/;
   const MAX=2000,HIST=120,QMAX=8;
 
-  let Peer=null,peer=null,pid='',host=false,code='',conns={},nick='',sess=null,old=false,busy=false,q=[],ac=0,left=false;
-  const cfg={sys:'Sos un asistente breve y claro. Respondes en español.',temp:.8,topk:3};
+  let Peer=null,peer=null,pid='',host=false,code='',conns={},nick='',sess=null,nosys=false,deg=[],busy=false,q=[],ac=0,left=false;
+  const cfg={sys:'Sos un asistente breve y claro. Responde siempre en espanol.',temp:.8,topk:3};
 
   const cut=v=>String(v==null?'':v).slice(0,MAX);
   const st=t=>{$('si-st').textContent=t};
@@ -105,6 +109,7 @@
     if(j){cfg.sys=String(j.sys||cfg.sys).slice(0,MAX);cfg.temp=+j.temp||cfg.temp;cfg.topk=+j.topk||cfg.topk}
   }catch(e){}
   nick=(localStorage.getItem('si_nick')||'').slice(0,24);
+  $('si-nick').value=nick;
 
   function LM(){
     if(self.LanguageModel)return self.LanguageModel;
@@ -113,17 +118,20 @@
     return null;
   }
 
+  const OK1={available:1,readily:1};
+  const DL1={downloadable:1,downloading:1,'after-download':1};
+
   async function avail(){
     const m=LM();
-    if(!m)return 'unavailable';
+    if(!m)return 'no';
+    let v='';
     try{
-      if(m.availability)return await m.availability();
-      if(m.capabilities){
-        const c=await m.capabilities();
-        return c.available==='readily'?'available':(c.available==='after-download'?'downloadable':'unavailable');
-      }
+      if(m.availability)v=await m.availability();
+      else if(m.capabilities)v=(await m.capabilities()).available;
     }catch(e){}
-    return 'unavailable';
+    if(OK1[v])return 'ok';
+    if(DL1[v])return 'dl';
+    return 'no';
   }
 
   function badge(cls,txt){
@@ -134,8 +142,8 @@
 
   async function chk(){
     const a=await avail();
-    if(a==='available'){badge('ok','IA local lista');$('si-new').disabled=false;$('si-dl').classList.add('hide')}
-    else if(a==='downloadable'||a==='downloading'){badge('','Falta bajar el modelo');$('si-new').disabled=true;$('si-dl').classList.remove('hide')}
+    if(a==='ok'){badge('ok','IA local lista');$('si-new').disabled=false;$('si-dl').classList.add('hide')}
+    else if(a==='dl'){badge('','Falta bajar el modelo');$('si-new').disabled=true;$('si-dl').classList.remove('hide')}
     else{
       badge('no','Sin IA local en este equipo');
       $('si-new').disabled=true;
@@ -148,27 +156,48 @@
   async function mkSess(){
     const m=LM();
     if(!m)throw new Error('sin IA');
-    const o={temperature:cfg.temp,topK:cfg.topk};
-    o.monitor=x=>{x.addEventListener('downloadprogress',e=>{
+    const mon=x=>{x.addEventListener('downloadprogress',e=>{
       const p=Math.round((e.loaded||0)*100);
       badge('','Bajando el modelo '+p+'%');
       st('Bajando el modelo '+p+'%');
     })};
-    if(m.create){
-      try{
-        return await m.create(Object.assign({initialPrompts:[{role:'system',content:cfg.sys}]},o));
-      }catch(e){
-        return await m.create(o);
-      }
+    if(!m.create){
+      nosys=true;
+      deg=['ajustes'];
+      return await m.createTextSession({temperature:cfg.temp,topK:cfg.topk});
     }
-    old=true;
-    return await m.createTextSession(o);
+    const ip=[{role:'system',content:cfg.sys}];
+    const sp={temperature:cfg.temp,topK:cfg.topk};
+    const sets=[
+      Object.assign({initialPrompts:ip,expectedInputs:[{type:'text',languages:['es']}]},sp),
+      Object.assign({initialPrompts:ip},sp),
+      {initialPrompts:ip},
+      {}
+    ];
+    let last=null;
+    for(let i=0;i<sets.length;i++){
+      try{
+        const x=await m.create(Object.assign({monitor:mon},sets[i]));
+        nosys=i===3;
+        deg=[];
+        if(i>=2)deg.push('temperatura y Top K');
+        if(i>=3)deg.push('instrucciones del sistema como mensaje aparte');
+        return x;
+      }catch(e){last=e}
+    }
+    throw last||new Error('sin IA');
   }
 
   async function resetSess(){
     try{if(sess&&sess.destroy)sess.destroy()}catch(e){}
-    sess=null;old=false;
+    sess=null;nosys=false;deg=[];
     sess=await mkSess();
+    try{
+      if(sess.addEventListener)sess.addEventListener('contextoverflow',()=>{
+        bcast({t:'sys',m:'La IA se quedo sin memoria y olvido lo mas viejo'});
+      });
+    }catch(e){}
+    if(deg.length)add('sys','','Este navegador no acepto: '+deg.join(', '));
   }
 
   function add(kind,who,txt){
@@ -221,28 +250,38 @@
     try{c.send(m);return true}catch(e){return false}
   }
 
+  async function once(id,p){
+    let got=false;
+    if(sess.promptStreaming){
+      try{
+        let acc='';
+        const s=sess.promptStreaming(p);
+        for await(const c of s){
+          let d=c;
+          if(typeof c==='string'&&c.length>=acc.length&&c.indexOf(acc)===0){d=c.slice(acc.length);acc=c}
+          else acc+=c;
+          if(d){got=true;bcast({t:'ch',id,d:cut(d)})}
+        }
+      }catch(e){if(got||(e&&e.name==='QuotaExceededError'))throw e}
+    }
+    if(!got){
+      const r=await sess.prompt(p);
+      bcast({t:'ch',id,d:cut(r)});
+    }
+  }
+
   async function run(nk,txt){
     const id=++ac;
     bcast({t:'a0',id});
     try{
       if(!sess)await resetSess();
-      const p=(old?cfg.sys+'\n\n':'')+nk+': '+txt;
-      let got=false;
-      if(sess.promptStreaming){
-        try{
-          let acc='';
-          const s=sess.promptStreaming(p);
-          for await(const c of s){
-            let d=c;
-            if(typeof c==='string'&&c.length>=acc.length&&c.indexOf(acc)===0){d=c.slice(acc.length);acc=c}
-            else acc+=c;
-            if(d){got=true;bcast({t:'ch',id,d:cut(d)})}
-          }
-        }catch(e){if(got)throw e}
-      }
-      if(!got){
-        const r=await sess.prompt(p);
-        bcast({t:'ch',id,d:cut(r)});
+      const p=(nosys?cfg.sys+'\n\n':'')+nk+': '+txt;
+      try{await once(id,p)}
+      catch(e){
+        if(!e||e.name!=='QuotaExceededError')throw e;
+        bcast({t:'sys',m:'La IA se quedo sin memoria, arranca de cero'});
+        await resetSess();
+        await once(id,(nosys?cfg.sys+'\n\n':'')+nk+': '+txt);
       }
       bcast({t:'end',id});
     }catch(e){
@@ -361,10 +400,7 @@
   }
 
   function askNick(){
-    if(nick)return true;
-    const n=prompt('Como te llamas?','');
-    if(n===null)return false;
-    nick=cut(n).trim().slice(0,24)||'Alguien';
+    nick=$('si-nick').value.trim().slice(0,24)||'Alguien';
     try{localStorage.setItem('si_nick',nick)}catch(e){}
     return true;
   }

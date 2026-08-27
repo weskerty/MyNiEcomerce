@@ -490,7 +490,7 @@ async function initVoice(){
 
 async function initNet(){
   try{
-    const mod=await import('https://esm.run/trystero@0.22.0');
+    const mod=await import('https://cdn.jsdelivr.net/npm/trystero@0.22.0/+esm');
     const {joinRoom}=mod;
     room=joinRoom(CFG.appId,CFG.lobbyId);
     FB.net.textContent='...';

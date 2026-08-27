@@ -347,7 +347,7 @@ let gameActive=false;
 async function initLobby(){
   EL.status.textContent='Conectando...';
   try{
-    const{joinRoom}=await import('https://esm.run/trystero@0.22.0');
+    const{joinRoom}=await import('https://cdn.jsdelivr.net/npm/trystero@0.22.0/+esm');
     lobbyRoom=joinRoom(APP_ID,LOBBY_ROOM);
 
     let[sendAnn,getAnn]=lobbyRoom.makeAction('ann');
@@ -426,7 +426,7 @@ async function joinRoom(rid,rname){
 async function joinGameRoom(){
   const voicePromise=initVoice();
   try{
-    const{joinRoom:jr}=await import('https://esm.run/trystero@0.22.0');
+    const{joinRoom:jr}=await import('https://cdn.jsdelivr.net/npm/trystero@0.22.0/+esm');
     gameRoom=jr(APP_ID,roomId);
 
     let[sendJoin,getJoin]=gameRoom.makeAction('join');

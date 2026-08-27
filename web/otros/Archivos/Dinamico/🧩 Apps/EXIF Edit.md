@@ -82,8 +82,8 @@
   if(!$('ex-drop'))return;
 
   const LIB={
-    exifr:['https://unpkg.com/exifr@7.1.3/dist/full.umd.js',()=>window.exifr],
-    piexif:['https://unpkg.com/piexifjs@1.0.6/piexif.js',()=>window.piexif]
+    exifr:['https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js',()=>window.exifr],
+    piexif:['https://cdn.jsdelivr.net/npm/piexifjs@1.0.6/piexif.js',()=>window.piexif]
   };
   function LD(k){
     const l=LIB[k];

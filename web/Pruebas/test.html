@@ -260,7 +260,7 @@ let nick=ckGet('cw_nick')||'';
 function saveNick(n){nick=n;ckSet('cw_nick',n);}
 
 let peerP=null;
-function loadPeerJS(){if(!peerP)peerP=import('https://esm.sh/peerjs@1.5.5').then(m=>m.Peer);return peerP;}
+function loadPeerJS(){if(!peerP)peerP=import('https://cdn.jsdelivr.net/npm/peerjs@1.5.5/+esm').then(m=>m.Peer);return peerP;}
 
 const API='/api/chat',PING=10000;
 async function api(method,path,body){
@@ -727,7 +727,7 @@ async function enterIrc(cfg){
 
   if(ircTransport==='sockjs'){
     try{
-      const{default:SockJS}=await import('https://esm.sh/sockjs-client@1.6.1');
+      const{default:SockJS}=await import('https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/+esm');
       ircSocket=new SockJS(cfg.gatewayUrl);
     }catch(e){addSys('No se pudo conectar: '+e.message);return goBack();}
     ircSocket.onopen=()=>{
@@ -1146,7 +1146,7 @@ async function addOwnStickerMsg(fname,dd){
 
 async function getTorrentClient(){
   if(torrentClient)return torrentClient;
-  const{default:WebTorrent}=await import('https://esm.sh/webtorrent@3.0.16/dist/webtorrent.min.js');
+  const{default:WebTorrent}=await import('https://cdn.jsdelivr.net/npm/webtorrent@3.0.16/dist/webtorrent.min.js');
   torrentClient=new WebTorrent();
   torrentClient.on('error',e=>console.error('[webtorrent]',e.message));
   return torrentClient;

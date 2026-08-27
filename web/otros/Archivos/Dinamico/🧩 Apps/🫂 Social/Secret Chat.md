@@ -278,7 +278,7 @@ function saveNick(n){
 }
 
 let peerP=null;
-function loadPeerJS(){if(!peerP)peerP=import('https://esm.unpkg.com/peerjs@1.5.5?bundle&target=esnext').then(m=>m.Peer||m.default);return peerP;}
+function loadPeerJS(){if(!peerP)peerP=import('https://cdn.jsdelivr.net/npm/peerjs@1.5.5/+esm').then(m=>m.Peer||m.default);return peerP;}
 
 const API='/api/chat',PING=10000;
 async function api(method,path,body){
@@ -1013,7 +1013,7 @@ async function enterIrc(cfg){
 
   if(ircTransport==='sockjs'){
     try{
-      const{default:SockJS}=await import('https://esm.sh/sockjs-client@1.6.1');
+      const{default:SockJS}=await import('https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/+esm');
       ircSocket=new SockJS(cfg.gatewayUrl);
     }catch(e){showToast('No se pudo conectar');return goBack();}
     ircSocket.onopen=()=>{
@@ -1467,8 +1467,8 @@ async function cwDlClear(){
 async function getTorrentClient(){
   if(torrentClient)return torrentClient;
   const[wt,hcs]=await Promise.all([
-    import('https://esm.sh/webtorrent@3.0.16/dist/webtorrent.min.js'),
-    import('https://esm.sh/hybrid-chunk-store@1.2.6')
+    import('https://cdn.jsdelivr.net/npm/webtorrent@3.0.16/dist/webtorrent.min.js'),
+    import('https://cdn.jsdelivr.net/npm/hybrid-chunk-store@1.2.6/+esm')
   ]);
   torrentStore=hcs.default||hcs;
   torrentClient=new(wt.default||wt)();

@@ -84,9 +84,9 @@
 
 <script>
 (function(){
-  const H5Q='https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
-  const CJS='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js';
-  const CCS='https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css';
+  const H5Q='https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js';
+  const CJS='https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js';
+  const CCS='https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css';
 
   let _cam=null,_cp=null,_pf=null,_res='',_det=false,_tt=null,_blobUrl=null;
 
