@@ -108,3 +108,11 @@ El fondo de video de cfg.bg sale de github.com/user-attachments y en diciembre p
 Agregarlo a PRE_PERM no sirve, por tres motivos: el fetch del install es cors y esa URL no manda access-control-allow-origin, con no-cors la respuesta seria opaca y el if(r.ok) la descarta, y aunque quedara guardada el fetch handler devuelve antes por el chequeo de origen. Lo unico que funciona con la maquinaria actual es alojar el video local y ahi si sumarlo a PRE_PERM. Antes de meter 6 MB al repo conviene re-encodear el de diciembre, que para un fondo en loop deberia bajar de 1 MB.
 
 Aparte, a() no escucha error en el video de fondo: si falla, rF() solo se dispara por el timeout de videoTimeout (5000 ms) y la pantalla de carga se queda esos 5 segundos.
+
+Los bloques de codigo (`code`, que va display:block) ahora llevan user-select:all, mas un override `body.mob code` porque `body.mob` pone user-select:none y ese ganaba por especificidad. Con eso un solo click o toque selecciona el bloque entero y lo copio con Ctrl+C o con el menu nativo. Verificado en navegador: computed all en escritorio y con body.mob puesta, y el resto del texto queda igual que antes (auto en escritorio, none en mobile).
+
+Antes de esto, en el celular un bloque de codigo no se podia ni seleccionar. Aparte body.mob pone -webkit-touch-callout:none, que en iOS mata el menu de mantener presionado; le puse -webkit-touch-callout:default a code pero no lo pude verificar, Chromium no implementa esa propiedad.
+
+Si algun dia quiero el boton de copiar de verdad, va con JS si o si: no existe atributo HTML ni propiedad CSS que escriba al portapapeles, solo navigator.clipboard.writeText() o el viejo document.execCommand('copy'), los dos pidiendo gesto del usuario. Serian unas 15 lineas como plugin nuevo en cfg.plugins, con un listener delegado en document para que sobreviva a los cambios de pagina sin recablear nada en cada contentLoaded.
+
+Dos trampas para ese boton. navigator.clipboard solo existe en contexto seguro, asi que en http://192.168.x.x:8000 es undefined y el boton falla en silencio justo donde pruebo (localhost si cuenta como seguro, la IP de la LAN no). Y code es display:block con overflow-x:auto, asi que un boton posicionado adentro se mueve con el scroll horizontal del bloque: hay que envolverlo en un contenedor o usar position:sticky.

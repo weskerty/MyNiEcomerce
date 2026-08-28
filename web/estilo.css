@@ -133,7 +133,10 @@ code {
     display: block;
     padding: 10px;
     overflow-x: auto;
+    user-select: all;
+    -webkit-user-select: all;
 }
+body.mob code{user-select:all;-webkit-user-select:all;-webkit-touch-callout:default}
 
 blockquote {
     margin: 8px 0;

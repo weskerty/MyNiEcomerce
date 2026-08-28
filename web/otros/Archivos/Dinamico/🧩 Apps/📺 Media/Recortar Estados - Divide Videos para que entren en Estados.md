@@ -177,6 +177,8 @@ async function V(){
       if(!r.ok) throw new Error('ffmpeg.js HTTP '+r.status);
       ffText=await r.text();
       lg('V ffjs len',ffText.length);
+      if(!ffText.includes('{type:"module"}')) throw new Error('worker type patch fail');
+      ffText=ffText.replace('{type:"module"}','{type:void 0}');
     }catch(err){
       le('V ffjs fetch fail',err);
       throw err;
@@ -278,7 +280,7 @@ async function V(){
 }
 
 async function W(a,b,c){
-  lg('W start ss',b,'to',c,'file',a?.name,'size',a?.size);
+  lg('W start ss',b,'to',c,'in',a);
   let d;
   try{
     d=await V();
@@ -288,30 +290,9 @@ async function W(a,b,c){
     throw err;
   }
 
-  const ts=Date.now();
-  const e='i_'+ts+'.mp4';
-  const f='o_'+ts+'.mp4';
+  const f='o_'+Date.now()+'.mp4';
 
-  lg('W arrayBuffer start');
-  let ab;
-  try{
-    ab=await a.arrayBuffer();
-    lg('W arrayBuffer ok byteLen',ab.byteLength);
-  }catch(err){
-    le('W arrayBuffer fail',err);
-    throw err;
-  }
-
-  lg('W writeFile',e);
-  try{
-    await d.writeFile(e,new Uint8Array(ab));
-    lg('W writeFile ok');
-  }catch(err){
-    le('W writeFile fail',err);
-    throw err;
-  }
-
-  const cmd=['-ss',String(b),'-to',String(c),'-i',e,'-c','copy','-avoid_negative_ts','make_zero',f];
+  const cmd=['-ss',String(b),'-to',String(c),'-i',a,'-c','copy','-avoid_negative_ts','make_zero',f];
   lg('W exec cmd',cmd.join(' '));
   let ret;
   try{
@@ -343,11 +324,10 @@ async function W(a,b,c){
   }
 
   try{
-    await d.deleteFile(e);
     await d.deleteFile(f);
-    lg('W deleteFiles ok');
+    lg('W deleteFile ok');
   }catch(err){
-    le('W deleteFiles fail (no critico)',err);
+    le('W deleteFile fail (no critico)',err);
   }
 
   const ua=g instanceof Uint8Array?g:new Uint8Array(g.buffer);
@@ -365,7 +345,13 @@ async function X(a){
   M=true;
   R();
   E.style.display='';
+  let VC_D1=null,VC_P1=null;
   try{
+    VC_D1=await V();
+    try{await VC_D1.createDir('/vc');}catch(err){}
+    await VC_D1.mount(window.FFmpegWASM.FFFSType.WORKERFS,{files:[J]},'/vc');
+    VC_P1='/vc/'+J.name;
+    lg('X mount ok',VC_P1);
     const b=Math.ceil(K/a);
     lg('X total parts',b);
     for(let c=0;c<b;c++){
@@ -375,7 +361,7 @@ async function X(a){
       P(Math.round((c/b)*100),'part '+(c+1)+'/'+b);
       let f;
       try{
-        f=await W(J,d,e);
+        f=await W(VC_P1,d,e);
       }catch(err){
         le('X W fail part',c+1,err);
         throw err;
@@ -405,6 +391,10 @@ async function X(a){
     E.style.display='none';
     P(0,'');
     U=null;
+  }
+  if(VC_P1){
+    try{await VC_D1.unmount('/vc');lg('X unmount ok');}
+    catch(err){le('X unmount fail',err);}
   }
   M=false;
 }
