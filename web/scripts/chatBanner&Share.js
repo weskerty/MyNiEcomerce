@@ -366,17 +366,18 @@ function toggleModal(){
   if(open)renderCart();
 }
 
-let _sRaf=null;
-function onScroll(){
-  if(!st.r)return;
+let _dcO1=null;
+function dcW1(){
+  if(_dcO1)return;
   const dc=document.getElementById("disqus-container");
   if(!dc)return;
-  const dcTop=dc.offsetTop,scrollBot=window.pageYOffset+window.innerHeight;
-  const wasAsk=_scrollAsk;
-  _scrollAsk=scrollBot>=dcTop-100;
-  if(_scrollAsk!==wasAsk)syncNB();
+  _dcO1=new IntersectionObserver(([e])=>{
+    const w=_scrollAsk;
+    _scrollAsk=e.isIntersecting;
+    if(_scrollAsk!==w)syncNB();
+  },{rootMargin:"0px 0px 100px 0px"});
+  _dcO1.observe(dc);
 }
-function _onScrollThrottled(){if(!_sRaf)_sRaf=requestAnimationFrame(()=>{_sRaf=null;onScroll()})}
 
 modal.className="cb-modal";
 modal.innerHTML='<div class="cb-mc"><div class="cb-mh"><div class="cb-mhl"><span>🛒 Carrito</span><span class="cb-mhT"></span></div><span class="cb-mx">✕</span></div><div class="cb-mb"></div></div>';
@@ -613,11 +614,9 @@ function initShare(){
 function initPage(){initProduct();initShare();syncNB();}
 
 window.addEventListener("cartAdd",ev=>{const{type:tp,num,id,q,pc,nb}=ev.detail;addItem(tp,num,id,q,pc,nb)});
-window.addEventListener("scroll",_onScrollThrottled);
-window.addEventListener("resize",_onScrollThrottled);
 
 const content=document.getElementById("content");
-st.r=!0;onScroll();requestAnimationFrame(initPage);
-if(content)content.addEventListener("contentLoaded",()=>{st.r=!0;syncNB();setTimeout(()=>{onScroll();requestAnimationFrame(initPage)},100)});
+st.r=!0;dcW1();requestAnimationFrame(initPage);
+if(content)content.addEventListener("contentLoaded",()=>{st.r=!0;syncNB();setTimeout(()=>{dcW1();requestAnimationFrame(initPage)},100)});
 window.addEventListener("hashchange",syncNB);
 }();

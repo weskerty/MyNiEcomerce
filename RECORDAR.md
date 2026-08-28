@@ -102,3 +102,9 @@ Television Online: el modo enlace ya reproduce HLS (nativo primero, hls.js de re
 Television Online: los dos canales de la galeria (SNT y La Tele) son un `<meta refresh>` a la web del canal, o sea que la seccion es un directorio de links y te saca del sitio. Ahora que la pagina reproduce HLS, si consigo los m3u8 se podrian ver adentro y castear a la TV.
 
 Secret Chat y Television Online: webtorrent, hybrid-chunk-store y sockjs-client siguen saliendo de esm.sh, que no esta en EXT_CACHE, asi que se rebajan en cada visita. Agregar ese origen los dejaria cacheados de una sola vez. peerjs y html5-qrcode ya estan resueltos por unpkg.
+
+El fondo de video de cfg.bg sale de github.com/user-attachments y en diciembre pesa 5,99 MB (el de septiembre 0,19 MB). Se baja entero en cada carga de pagina: sw.js corta los origenes externos que no estan en EXT_CACHE, y el 302 de github viene con cache-control no-cache hacia una URL firmada de S3 distinta cada vez, asi que el cache del navegador tampoco lo reusa.
+
+Agregarlo a PRE_PERM no sirve, por tres motivos: el fetch del install es cors y esa URL no manda access-control-allow-origin, con no-cors la respuesta seria opaca y el if(r.ok) la descarta, y aunque quedara guardada el fetch handler devuelve antes por el chequeo de origen. Lo unico que funciona con la maquinaria actual es alojar el video local y ahi si sumarlo a PRE_PERM. Antes de meter 6 MB al repo conviene re-encodear el de diciembre, que para un fondo en loop deberia bajar de 1 MB.
+
+Aparte, a() no escucha error en el video de fondo: si falla, rF() solo se dispara por el timeout de videoTimeout (5000 ms) y la pantalla de carga se queda esos 5 segundos.

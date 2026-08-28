@@ -27,7 +27,6 @@ function bindPI(){
   function show(){if(window._PWA)b.style.display='';}
   show();
   navigator.serviceWorker.ready.then(show);
-  window.addEventListener('beforeinstallprompt',show);
   b.onclick=()=>{
     const pi=document.querySelector('pwa-install');
     if(pi&&customElements.get('pwa-install')){pi.showDialog(true);return;}

@@ -319,7 +319,6 @@ tr > *:first-child {
     text-decoration: none;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color .18s ease;
     box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,.12), inset 0 -1px 0 rgba(0,0,0,.2);
-    will-change: transform;
 }
  
 .view-all-button::before,
@@ -382,7 +381,6 @@ button:not([class]) {
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color .18s ease, background .2s ease;
     box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,.1), inset 0 -1px 0 rgba(0,0,0,.2);
-    will-change: transform;
 }
 
 button:not([class])::before {
