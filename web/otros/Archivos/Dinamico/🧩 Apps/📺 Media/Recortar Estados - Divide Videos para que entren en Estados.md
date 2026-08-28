@@ -8,10 +8,7 @@
 .vc-sb{padding:10px 22px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:white;cursor:pointer;font-size:.95em;transition:background .2s}
 .vc-sb:hover:not(:disabled){background:rgba(255,255,255,.2)}
 .vc-sb:disabled{opacity:.35;cursor:not-allowed}
-.vc-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
-.vc-it{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:10px 14px}
-.vc-it span{flex:1;color:rgba(255,255,255,.8);font-size:.88em;text-align:left}
-.vc-dl{padding:7px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(56,189,248,.18);color:white;cursor:pointer;font-size:.85em;text-decoration:none;white-space:nowrap}
+.vc-list{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:14px}
 .vc-prog-w{width:100%;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;margin-bottom:4px;display:none}
 .vc-prog{height:100%;background:#38bdf8;width:0%;transition:width .2s}
 .vc-lbl{color:rgba(255,255,255,.6);font-size:.83em;text-align:center;min-height:1.2em;margin-bottom:10px}
@@ -38,6 +35,7 @@
       <div class="vc-prog" id="vc-prog"></div>
     </div>
     <div class="vc-lbl" id="vc-lbl"></div>
+    <button class="vc-reset" id="vc-dla">⬇️ Descargar todo</button>
     <button class="vc-reset" id="vc-reset">🗑 Nuevo video</button>
   </div>
 
@@ -58,6 +56,7 @@ const F=document.getElementById('vc-prog');
 const G=document.getElementById('vc-lbl');
 const H=document.getElementById('vc-reset');
 const I=document.getElementById('vc-toast');
+const VC_B1=document.getElementById('vc-dla');
 
 const FF_BASE='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd';
 const FF_JS=FF_BASE+'/ffmpeg.js';
@@ -93,6 +92,24 @@ function R(){
   L.forEach(a=>URL.revokeObjectURL(a));
   L=[];
   D.innerHTML='';
+  VC_B1.style.display='none';
+}
+
+function VC_DL1(a,b){
+  const c=document.createElement('a');
+  c.href=a;c.download=b;
+  document.body.appendChild(c);
+  c.click();
+  c.remove();
+}
+
+async function VC_DA1(){
+  const a=[...D.querySelectorAll('button')];
+  lg('VC_DA1 descargas',a.length);
+  for(const b of a){
+    b.click();
+    await new Promise(c=>setTimeout(c,400));
+  }
 }
 
 function S(){
@@ -124,6 +141,7 @@ B.onchange=a=>{
   if(b)T(b);
 };
 H.onclick=S;
+VC_B1.onclick=VC_DA1;
 
 function T(a){
   lg('T file',a?.name,a?.type,a?.size);
@@ -374,17 +392,17 @@ async function X(a){
       const g=URL.createObjectURL(f);
       L.push(g);
       const h=J.name.replace(/\.[^.]+$/,'')+'_p'+(c+1)+'.mp4';
-      const i=document.createElement('div');
-      i.className='vc-it';
-      const j=document.createElement('span');
-      j.textContent='p'+(c+1)+' '+Q(d)+'-'+Q(e);
-      const k=document.createElement('a');
-      k.className='vc-dl';k.href=g;k.download=h;k.textContent='dl';
-      i.appendChild(j);i.appendChild(k);D.appendChild(i);
+      const i=document.createElement('button');
+      i.textContent='⬇️ '+(c+1);
+      i.title=Q(d)+'-'+Q(e);
+      i.onclick=()=>VC_DL1(g,h);
+      D.appendChild(i);
       lg('X part',c+1,'done url',g);
     }
     P(100,'listo');
     lg('X all done');
+    VC_B1.style.display='inline-block';
+    await VC_DA1();
   }catch(err){
     le('X fatal',err);
     O('Error: '+err.message);
@@ -405,6 +423,15 @@ C.querySelectorAll('.vc-sb').forEach(a=>{
     X(parseInt(a.dataset.s));
   };
 });
+
+function VC_TD1(){
+  lg('VC_TD1 teardown urls',L.length);
+  clearTimeout(N);
+  L.forEach(a=>URL.revokeObjectURL(a));
+  L=[];
+  if(U){U.then(a=>a.terminate()).catch(()=>{});U=null;}
+}
+document.addEventListener('contentUnload',VC_TD1,{once:true});
 
 lg('init ok');
 
