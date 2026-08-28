@@ -42,7 +42,7 @@ body.low-perf .HT6{transition:none}
 <div class="HT2"><div class="HT3">RAM DEL EQUIPO</div><div class="HT4" id="ht-ram">--</div></div>
 <div class="HT2"><div class="HT3">BATERIA</div><div class="HT4" id="ht-bat">--</div><div class="HT5"><div class="HT6" id="ht-batb"></div></div></div>
 </div>
-<p class="HT7">Solo se ve la memoria de esta pestana, no la del sistema. La RAM del equipo llega redondeada y con tope de 8 GB.</p>
+<p class="HT7">Solo se ve la memoria de esta pestana, no la del sistema.</p>
 </section>
 </details>
 
@@ -57,7 +57,7 @@ body.low-perf .HT6{transition:none}
 <div class="HT2"><div class="HT3">LATENCIA ESTIMADA</div><div class="HT4" id="ht-rtt">--</div></div>
 <div class="HT2"><div class="HT3">AHORRO DE DATOS</div><div class="HT4" id="ht-sav">--</div></div>
 </div>
-<p class="HT7">Un recurso de otro dominio sin Timing-Allow-Origin informa 0 bytes transferidos aunque haya bajado.</p>
+<p class="HT7">U</p>
 </section>
 </details>
 
@@ -72,7 +72,7 @@ body.low-perf .HT6{transition:none}
 <div class="HT2"><div class="HT3">IP PUBLICA</div><div class="HT4 HT9" id="ht-ip">--</div></div>
 </div>
 <div class="HT8"><button id="ht-spb">🔄 Repetir</button><button id="ht-spl">📈 Prueba larga</button></div>
-<p class="HT7">Se mide contra speed.cloudflare.com, que es de otro dominio y por eso el service worker no lo toca. La rapida sale sola al entrar y corta a 1,5 segundos o 5 MB, lo que pase primero, asi que en una conexion lenta gasta poco. Un valor con ~ adelante quedo medido en una ventana muy corta y es aproximado: para un numero firme esta la prueba larga. Con ahorro de datos activado no arranca sola.</p>
+<p class="HT7">Se mide contra speed.cloudflare.com.</p>
 </section>
 </details>
 

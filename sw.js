@@ -1,4 +1,4 @@
-const V='v124';
+const V='v125';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -304,6 +304,8 @@ self.addEventListener('fetch',e=>{
   }
 
   if(e.request.method!=='GET')return;
+
+  if(e.request.headers.get('range'))return;
 
   const extEntry=EXT_CACHE.find(x=>url.hostname===x.origin);
   if(extEntry){

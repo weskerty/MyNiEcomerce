@@ -26,7 +26,7 @@ Las empresas que quieren entrar son varias. Una es [Primo Cano Martinez SA](http
 
 ### Contexto Territorial
 Desde el año 2000 hasta 2026 se han perdido millones de hectáreas de bosque. Los departamentos de Boquerón y Alto Paraguay registran una de las mayores tasas de deforestación *DEL MUNDO*
-<video controls src="web/otros/Archivos/Imagenes/!DañoAmbientalActual/GuillermoCabreraDesdeelano2000hastalaactualidadsehmtcst4au.mp4"></video>
+<video controls src="web/otros/Archivos/Imagenes/!DañoAmbientalActual/GuillermoCabreraDesdeelano2000hastalaactualidadsehmtcst4au.mp4" preload="none"></video>
 
 [Fuente Estadistica ↗️](https://gillopy.github.io/Deforestation_Paraguay/)
 

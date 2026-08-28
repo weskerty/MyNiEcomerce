@@ -258,9 +258,6 @@ tr > *:first-child {
 
 /* contenedor de contenido contenidoso */
 .content {
-    background: rgba(20,20,20,0.35);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
     border-radius: var(--r-md);
     border: 1px solid rgba(255,255,255,0.15);
     padding: 20px;
@@ -271,7 +268,17 @@ tr > *:first-child {
     z-index: 1;
     overflow-wrap: break-word;
 }
-/* view-transition-name interfiere con backdrop-filter blur hijos, invalidaba blur en chrome para central page. solucione con view-transition-name:none exclusivo para centralpage, no en css principal. */
+.content::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: rgba(20,20,20,0.35);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    pointer-events: none;
+}
 
 
 .content * { max-width: 100%; box-sizing: border-box }
@@ -616,7 +623,7 @@ section hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:14px 0;
 @media (prefers-reduced-motion: reduce) {
 
     #disqus-container,
-    .content {
+    .content::before {
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
         background: var(--rdm-bg) !important;
@@ -632,7 +639,7 @@ section hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:14px 0;
 }
 
 body.low-perf #disqus-container,
-body.low-perf .content {
+body.low-perf .content::before {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     background: var(--rdm-bg) !important;
@@ -646,16 +653,10 @@ body.low-perf .view-all-button:hover,
 body.low-perf .back-button:hover,
 body.low-perf blockquote:hover { transform: none !important }
 
-/* View Transition swp */
-#content{view-transition-name:content-swap}
-::view-transition-old(content-swap){animation-duration:.2s}
-::view-transition-new(content-swap){animation-duration:.2s}
-@media (prefers-reduced-motion: reduce){
-    ::view-transition-old(content-swap),
-    ::view-transition-new(content-swap){animation:none}
-}
-body.low-perf ::view-transition-old(content-swap),
-body.low-perf ::view-transition-new(content-swap){animation:none}
+@keyframes FI1{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+#content>*{animation:FI1 .2s ease-out}
+@media (prefers-reduced-motion: reduce){#content>*{animation:none}}
+body.low-perf #content>*{animation:none}
 
 /* modal generico dialog */
 dialog{
