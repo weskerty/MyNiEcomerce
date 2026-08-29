@@ -302,7 +302,10 @@
   };
 
   cb.onclick=QS_SC;
-  fb.onclick=()=>inEl.click();
+  fb.onclick=()=>{
+    if(QG_PD){const f=QG_PD;QG_PD=null;QS_HF(f);return;}
+    inEl.click();
+  };
   inEl.onchange=e=>{if(e.target.files[0])QS_HF(e.target.files[0]);inEl.value='';};
 
   $('qr-cp').onclick=async()=>{
@@ -321,7 +324,8 @@
 
   const QG_LIB='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';
   const qg=$('qg'),qgc=$('qg-cv');
-  let QG_I=null,QG_IU=null,QG_TO=null,QG_Q=null;
+  const QG_HOME='https://cheagana.com';
+  let QG_I=null,QG_IU=null,QG_TO=null,QG_Q=null,QG_PD=null;
 
   function QG_PR(){
     return{ver:+$('qg-v').value,ecc:$('qg-e').value,sh:$('qg-sh').value,
@@ -497,6 +501,16 @@
     setTimeout(()=>URL.revokeObjectURL(u),15000);
   }
 
+  function QG_IM1(f){
+    if(!f||!f.type.startsWith('image/')){QS_T('Solo imagenes');return;}
+    if(QG_IU)URL.revokeObjectURL(QG_IU);
+    QG_IU=URL.createObjectURL(f);
+    const im=new Image();
+    im.onload=()=>{QG_I=im;$('qg-rb').style.display='';QG_U1();};
+    im.onerror=()=>{QS_T('Imagen invalida');};
+    im.src=QG_IU;
+  }
+
   async function QG_ON(){
     QS_KK();
     QS_ST('Cargando...','act');
@@ -505,7 +519,37 @@
     idle.style.display='none';sa.style.display='none';ra.style.display='none';
     qg.style.display='';
     QS_ST('Crear QR');
+    if(QG_PD){const f=QG_PD;QG_PD=null;if(!$('qg-t').value.trim())$('qg-t').value=QG_HOME;QG_IM1(f);}
     QG_U1();
+  }
+
+  async function QG_SH(blob,name,type){
+    if(!navigator.canShare)return false;
+    try{
+      const f=new File([blob],name,{type});
+      if(!navigator.canShare({files:[f]}))return false;
+      await navigator.share({files:[f]});
+      return true;
+    }catch(e){return e&&e.name==='AbortError';}
+  }
+
+  async function QG_OUT(blob,name,type){
+    if(await QG_SH(blob,name,type))return;
+    QG_DL(blob,name);
+  }
+
+  function QG_PV(e){
+    const its=e.clipboardData&&e.clipboardData.items;
+    if(!its)return;
+    for(let i=0;i<its.length;i++){
+      if(!its[i].type||!its[i].type.startsWith('image/'))continue;
+      const f=its[i].getAsFile();
+      if(!f)continue;
+      e.preventDefault();
+      if(qg.style.display!=='none')QG_IM1(f);
+      else{QG_PD=null;QS_HF(f);}
+      return;
+    }
   }
 
   function QG_OFF(){
@@ -521,16 +565,7 @@
     $(id).addEventListener('input',QG_U1);
   });
   $('qg-ib').onclick=()=>$('qg-if').click();
-  $('qg-if').onchange=e=>{
-    const f=e.target.files[0];e.target.value='';
-    if(!f||!f.type.startsWith('image/')){QS_T('Solo imagenes');return;}
-    if(QG_IU)URL.revokeObjectURL(QG_IU);
-    QG_IU=URL.createObjectURL(f);
-    const im=new Image();
-    im.onload=()=>{QG_I=im;$('qg-rb').style.display='';QG_U1();};
-    im.onerror=()=>{QS_T('Imagen invalida');};
-    im.src=QG_IU;
-  };
+  $('qg-if').onchange=e=>{const f=e.target.files[0];e.target.value='';QG_IM1(f);};
   $('qg-rb').onclick=()=>{
     QG_I=null;
     if(QG_IU){URL.revokeObjectURL(QG_IU);QG_IU=null;}
@@ -538,20 +573,23 @@
   };
   $('qg-pn').onclick=()=>{
     if(!QG_Q){QS_T('Escribi algo primero');return;}
-    qgc.toBlob(b=>{if(b)QG_DL(b,'qr.png');},'image/png');
+    qgc.toBlob(b=>{if(b)QG_OUT(b,'qr.png','image/png');},'image/png');
   };
   $('qg-sv').onclick=()=>{
     if(!QG_Q){QS_T('Escribi algo primero');return;}
-    QG_DL(new Blob([QG_SV1()],{type:'image/svg+xml'}),'qr.svg');
+    QG_OUT(new Blob([QG_SV1()],{type:'image/svg+xml'}),'qr.svg','image/svg+xml');
   };
   $('qg-tb').onclick=()=>{
     if(!QG_Q){QS_T('Escribi algo primero');return;}
     qgc.toBlob(b=>{if(!b)return;qg.style.display='none';QS_SB(b);},'image/png');
   };
 
+  document.addEventListener('paste',QG_PV);
+
   const cont=document.getElementById('content');
   if(cont)cont.addEventListener('contentUnload',()=>{
     QS_KK();
+    document.removeEventListener('paste',QG_PV);
     if(_cp){_cp.destroy();_cp=null;}
     if(_blobUrl){URL.revokeObjectURL(_blobUrl);_blobUrl=null;}
     if(QG_IU){URL.revokeObjectURL(QG_IU);QG_IU=null;}
@@ -562,12 +600,20 @@
   (async()=>{
     try{
       const d=await fetch('/_share_pending').then(r=>r.json());
-      if(!d?.blobs?.length)return;
-      await fetch('/_share_clear',{method:'POST'});
-      const b=d.blobs[0];
-      if(b?.type?.startsWith('image/')){
-        QS_HF(new File([new Uint8Array(b.data)],b.name,{type:b.type}));
+      if(!d)return;
+      const b=d.blobs&&d.blobs[0];
+      if(b&&b.type&&b.type.startsWith('image/')){
+        await fetch('/_share_clear',{method:'POST'});
+        QG_PD=new File([new Uint8Array(b.data)],b.name||'imagen.png',{type:b.type});
+        QS_ST('Imagen recibida: leer o crear','act');
+        return;
       }
+      const t=((d.url||'')+' '+(d.text||'')).trim();
+      if(!t)return;
+      await fetch('/_share_clear',{method:'POST'});
+      await QG_ON();
+      $('qg-t').value=t;
+      QG_U1();
     }catch{}
   })();
 })();

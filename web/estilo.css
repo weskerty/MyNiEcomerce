@@ -694,6 +694,8 @@ color:#fff;
 padding:8px 12px;
 }
 input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(var(--accent-rgb),.6)}
+option,optgroup{background:var(--rdm-bg);color:#fff}
+optgroup{font-family:var(--font)}
 
 /* Ad */
 #ad-slot{min-height:0;transition:min-height .2s}
