@@ -26,6 +26,16 @@
 .qr-cw img{display:block;max-width:100%;max-height:60vh}
 #qr-reader video{width:100%!important;border-radius:0}
 #qr-reader img{display:none!important}
+.qg-cv{display:block;margin:0 auto;max-width:min(320px,86vw);width:100%;height:auto;border-radius:14px;background:#fff}
+.qg-in{width:100%;box-sizing:border-box;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 14px;color:white;font-size:.9em;font-family:inherit;outline:none;margin-bottom:10px}
+.qg-in:focus{border-color:rgba(56,189,248,.4)}
+.qg-row{display:flex;align-items:center;gap:10px;margin:6px 0}
+.qg-row label{flex:0 0 92px;text-align:left;color:rgba(255,255,255,.6);font-size:.8em}
+.qg-row input[type=range]{flex:1;accent-color:#38bdf8}
+.qg-row select{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:10px;color:white;padding:6px 8px;font-family:inherit;font-size:.85em}
+.qg-row span{flex:0 0 42px;color:rgba(255,255,255,.5);font-size:.78em;text-align:right}
+.qg-adv{margin:10px 0;text-align:left}
+.qg-adv summary{cursor:pointer;color:rgba(255,255,255,.6);font-size:.85em;text-align:center}
 </style>
 
 <div style="font-size:2.8rem;margin:0 auto 4px;line-height:1.2">🔍</div>
@@ -50,8 +60,44 @@
     </div>
   </button>
 
+  <button class="BOTON-M2" id="qg-ab" title="Crear">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">✨</div>
+      <p class="BOTON-M5">Crear</p>
+    </div>
+  </button>
+
 </div>
     <input type="file" id="qr-in" accept="image/*" style="display:none">
+  </div>
+
+  <div id="qg" style="display:none;padding:4px 0 12px">
+    <input class="qg-in" id="qg-t" type="text" placeholder="Texto o enlace para el QR">
+    <canvas class="qg-cv" id="qg-cv" width="320" height="320"></canvas>
+    <div class="qr-ac" style="margin:12px 0">
+      <button class="qr-btn" id="qg-ib">🖼 Imagen</button>
+      <button class="qr-btn" id="qg-rb" style="display:none">🗑 Quitar</button>
+      <button class="qr-btn" id="qg-tb">🔍 Probar escaneo</button>
+    </div>
+    <input type="file" id="qg-if" accept="image/*" style="display:none">
+    <details class="qg-adv">
+      <summary>Ajuste fino</summary>
+      <div class="qg-row"><label>Densidad</label><select id="qg-v"><option value="0">Automatica</option><option value="5">v5 chico</option><option value="7">v7</option><option value="10">v10</option><option value="14">v14</option><option value="18">v18 denso</option></select></div>
+      <div class="qg-row"><label>Correccion</label><select id="qg-e"><option value="H">Alta (30%)</option><option value="Q">Media (25%)</option><option value="M">Baja (15%)</option><option value="L">Minima (7%)</option></select></div>
+      <div class="qg-row"><label>Forma</label><select id="qg-sh"><option value="ci">Circulo</option><option value="rd">Redondeado</option><option value="sq">Cuadrado</option></select></div>
+      <div class="qg-row"><label>Punto min</label><input type="range" id="qg-mn" min="10" max="80" value="35"><span id="qg-mn-l">35%</span></div>
+      <div class="qg-row"><label>Punto max</label><input type="range" id="qg-mx" min="60" max="110" value="100"><span id="qg-mx-l">100%</span></div>
+      <div class="qg-row"><label>Fantasma</label><input type="range" id="qg-gh" min="0" max="100" value="70"><span id="qg-gh-l">70%</span></div>
+      <div class="qg-row"><label>Umbral</label><input type="range" id="qg-th" min="0" max="90" value="15"><span id="qg-th-l">15%</span></div>
+      <div class="qg-row"><label>Saturacion</label><input type="range" id="qg-sa" min="0" max="100" value="40"><span id="qg-sa-l">40%</span></div>
+      <div class="qg-row"><label>Color</label><select id="qg-co"><option value="1">De la imagen</option><option value="0">Monocromo</option></select></div>
+      <div class="qg-row"><label>Salida</label><select id="qg-px"><option value="512">512 px</option><option value="1024" selected>1024 px</option><option value="2048">2048 px</option></select></div>
+    </details>
+    <div class="qr-ac">
+      <button class="qr-btn" id="qg-pn">⬇️ PNG</button>
+      <button class="qr-btn" id="qg-sv">⬇️ SVG</button>
+      <button class="qr-btn" id="qg-bk">↩ Volver</button>
+    </div>
   </div>
 
   <div class="qr-area" id="qr-sa" style="display:none">
@@ -273,13 +319,228 @@
     QS_ST('Lector QR');cb.disabled=false;fb.disabled=false;
   };
 
+  const QG_LIB='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';
+  const qg=$('qg'),qgc=$('qg-cv');
+  let QG_I=null,QG_IU=null,QG_TO=null,QG_Q=null;
+
+  function QG_PR(){
+    return{ver:+$('qg-v').value,ecc:$('qg-e').value,sh:$('qg-sh').value,
+      mn:+$('qg-mn').value/100,mx:+$('qg-mx').value/100,gh:+$('qg-gh').value/100,
+      th:+$('qg-th').value/100,sat:+$('qg-sa').value/100,
+      col:$('qg-co').value==='1',px:+$('qg-px').value};
+  }
+
+  function QG_M1(txt,ver,ecc){
+    try{const q=qrcode(ver,ecc);q.addData(txt);q.make();return q;}
+    catch{try{const q=qrcode(0,ecc);q.addData(txt);q.make();return q;}catch{return null;}}
+  }
+
+  function QG_G1(img,sz){
+    const c=document.createElement('canvas');c.width=c.height=sz;
+    const x=c.getContext('2d',{willReadFrequently:true});
+    const iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height;
+    const s=Math.max(sz/iw,sz/ih);
+    x.drawImage(img,(sz-iw*s)/2,(sz-ih*s)/2,iw*s,ih*s);
+    return x.getImageData(0,0,sz,sz);
+  }
+
+  function QG_C1(g){
+    const bk={};
+    for(let i=0;i<g.data.length;i+=4){
+      if(g.data[i+3]<128)continue;
+      const k=(g.data[i]>>5<<5)+','+(g.data[i+1]>>5<<5)+','+(g.data[i+2]>>5<<5);
+      bk[k]=(bk[k]||0)+1;
+    }
+    const top=Object.keys(bk).sort((a,b)=>bk[b]-bk[a])[0];
+    if(!top)return{r:20,g:20,b:20};
+    const v=top.split(',').map(Number);
+    return{r:v[0],g:v[1],b:v[2]};
+  }
+
+  function QG_P1(g,c,r){
+    const i=(r*g.width+c)*4;
+    return{r:g.data[i],g:g.data[i+1],b:g.data[i+2],a:g.data[i+3]};
+  }
+
+  function QG_B1(p,amt){
+    const mx=Math.max(p.r,p.g,p.b),mn=Math.min(p.r,p.g,p.b);
+    if(mx===mn)return p;
+    const f=1+amt;
+    const md=(mx+mn)/2;
+    const cl=v=>Math.max(0,Math.min(255,Math.round(md+(v-md)*f)));
+    return{r:cl(p.r),g:cl(p.g),b:cl(p.b)};
+  }
+
+  function QG_K1(r,c,n){
+    if(r<8&&c<8)return true;
+    if(r<8&&c>=n-8)return true;
+    if(r>=n-8&&c<8)return true;
+    return r===6||c===6;
+  }
+
+  function QG_D1(x,cx,cy,rad,sh,col){
+    if(rad<=0)return;
+    x.fillStyle=col;
+    if(sh==='sq'){x.fillRect(cx-rad,cy-rad,rad*2,rad*2);return;}
+    if(sh==='rd'&&x.roundRect){x.beginPath();x.roundRect(cx-rad,cy-rad,rad*2,rad*2,rad*.5);x.fill();return;}
+    x.beginPath();x.arc(cx,cy,rad,0,6.2832);x.fill();
+  }
+
+  function QG_MD(p,L,dom,P){
+    if(!P.col)return{r:17,g:17,b:17};
+    const b=QG_B1(p,P.sat);
+    if(L>.72){const m=(L-.72)/.28*.8;return{r:Math.round(b.r*(1-m)),g:Math.round(b.g*(1-m)),b:Math.round(b.b*(1-m))};}
+    return b;
+  }
+
+  function QG_R1(){
+    if(!QG_Q)return null;
+    const P=QG_PR(),n=QG_Q.getModuleCount(),q=4,tot=n+q*2;
+    const px=P.px,cell=px/tot,maxR=cell/2;
+    qgc.width=qgc.height=px;
+    const x=qgc.getContext('2d');
+    x.fillStyle='#fff';x.fillRect(0,0,px,px);
+    const grid=QG_I?QG_G1(QG_I,n):null;
+    const dom=grid?QG_C1(grid):{r:17,g:17,b:17};
+    const fdr=P.col&&grid?'rgb('+Math.round(dom.r*.72)+','+Math.round(dom.g*.72)+','+Math.round(dom.b*.72)+')':'#111';
+    for(let r=0;r<n;r++)for(let c=0;c<n;c++){
+      const cx=(c+q+.5)*cell,cy=(r+q+.5)*cell;
+      const crit=QG_K1(r,c,n),dark=QG_Q.isDark(r,c);
+      const p=grid?QG_P1(grid,c,r):null;
+      const has=!!p&&p.a>60;
+      const L=has?(.299*p.r+.587*p.g+.114*p.b)/255:0;
+      if(dark){
+        if(crit){x.fillStyle=fdr;x.fillRect(cx-cell/2,cy-cell/2,cell+.5,cell+.5);continue;}
+        const rad=maxR*(has?Math.min(1.02,P.mn+(P.mx-P.mn)*(1-L)):.98);
+        const cc=has?QG_MD(p,L,dom,P):{r:17,g:17,b:17};
+        QG_D1(x,cx,cy,rad,P.sh,'rgb('+cc.r+','+cc.g+','+cc.b+')');
+      }else if(has&&!crit&&P.gh>0){
+        const d=1-L;
+        if(d<=P.th)continue;
+        const k=(d-P.th)/(1-P.th);
+        const cc=P.col?QG_B1(p,P.sat):{r:17,g:17,b:17};
+        QG_D1(x,cx,cy,maxR*Math.min(.35,.05+.35*P.gh*Math.pow(k,.55)),P.sh,'rgb('+cc.r+','+cc.g+','+cc.b+')');
+      }
+    }
+    return P;
+  }
+
+  function QG_SV1(){
+    if(!QG_Q)return '';
+    const P=QG_PR(),n=QG_Q.getModuleCount(),q=4,tot=n+q*2,px=P.px,cell=px/tot,maxR=cell/2;
+    const grid=QG_I?QG_G1(QG_I,n):null;
+    const dom=grid?QG_C1(grid):{r:17,g:17,b:17};
+    const fdr=P.col&&grid?'rgb('+Math.round(dom.r*.72)+','+Math.round(dom.g*.72)+','+Math.round(dom.b*.72)+')':'#111';
+    const o=['<svg xmlns="http://www.w3.org/2000/svg" width="'+px+'" height="'+px+'" viewBox="0 0 '+px+' '+px+'"><rect width="'+px+'" height="'+px+'" fill="#fff"/>'];
+    const sp=(cx,cy,rad,col,al)=>{
+      const a=al<1?' opacity="'+al.toFixed(2)+'"':'';
+      if(P.sh==='ci')o.push('<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rad.toFixed(1)+'" fill="'+col+'"'+a+'/>');
+      else o.push('<rect x="'+(cx-rad).toFixed(1)+'" y="'+(cy-rad).toFixed(1)+'" width="'+(rad*2).toFixed(1)+'" height="'+(rad*2).toFixed(1)+'"'+(P.sh==='rd'?' rx="'+(rad*.5).toFixed(1)+'"':'')+' fill="'+col+'"'+a+'/>');
+    };
+    for(let r=0;r<n;r++)for(let c=0;c<n;c++){
+      const cx=(c+q+.5)*cell,cy=(r+q+.5)*cell;
+      const crit=QG_K1(r,c,n),dark=QG_Q.isDark(r,c);
+      const p=grid?QG_P1(grid,c,r):null;
+      const has=!!p&&p.a>60;
+      const L=has?(.299*p.r+.587*p.g+.114*p.b)/255:0;
+      if(dark){
+        if(crit){o.push('<rect x="'+(cx-cell/2).toFixed(1)+'" y="'+(cy-cell/2).toFixed(1)+'" width="'+(cell+.5).toFixed(1)+'" height="'+(cell+.5).toFixed(1)+'" fill="'+fdr+'"/>');continue;}
+        const cc=has?QG_MD(p,L,dom,P):{r:17,g:17,b:17};
+        sp(cx,cy,maxR*(has?Math.min(1.02,P.mn+(P.mx-P.mn)*(1-L)):.98),'rgb('+cc.r+','+cc.g+','+cc.b+')',1);
+      }else if(has&&!crit&&P.gh>0){
+        const d=1-L;
+        if(d<=P.th)continue;
+        const k=(d-P.th)/(1-P.th);
+        const cc=P.col?QG_B1(p,P.sat):{r:17,g:17,b:17};
+        sp(cx,cy,maxR*Math.min(.35,.05+.35*P.gh*Math.pow(k,.55)),'rgb('+cc.r+','+cc.g+','+cc.b+')',1);
+      }
+    }
+    o.push('</svg>');
+    return o.join('');
+  }
+
+  function QG_U1(){
+    clearTimeout(QG_TO);
+    QG_TO=setTimeout(()=>{
+      const t=$('qg-t').value.trim();
+      ['mn','mx','gh','th','sa'].forEach(k=>{$('qg-'+k+'-l').textContent=$('qg-'+k).value+'%';});
+      if(!t){QG_Q=null;const x=qgc.getContext('2d');qgc.width=qgc.height=320;x.clearRect(0,0,320,320);QS_ST('Crear QR');return;}
+      const P=QG_PR();
+      QG_Q=QG_M1(t,P.ver,P.ecc);
+      if(!QG_Q){QS_ST('Texto muy largo','');QT_ERR();return;}
+      QG_R1();
+      QS_ST('Crear QR','ok');
+    },90);
+  }
+
+  function QT_ERR(){QS_T('No entra en ese tamano, subi la densidad');}
+
+  function QG_DL(blob,name){
+    const u=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(u),15000);
+  }
+
+  async function QG_ON(){
+    QS_KK();
+    QS_ST('Cargando...','act');
+    try{if(!window.qrcode)await QS_LS(QG_LIB);}
+    catch{QS_T('No se pudo cargar el generador');QS_ST('Lector QR');return;}
+    idle.style.display='none';sa.style.display='none';ra.style.display='none';
+    qg.style.display='';
+    QS_ST('Crear QR');
+    QG_U1();
+  }
+
+  function QG_OFF(){
+    qg.style.display='none';idle.style.display='';
+    QS_ST('Lector QR');
+    cb.disabled=false;fb.disabled=false;
+  }
+
+  $('qg-ab').onclick=QG_ON;
+  $('qg-bk').onclick=QG_OFF;
+  $('qg-t').addEventListener('input',QG_U1);
+  ['qg-v','qg-e','qg-sh','qg-mn','qg-mx','qg-gh','qg-th','qg-sa','qg-co','qg-px'].forEach(id=>{
+    $(id).addEventListener('input',QG_U1);
+  });
+  $('qg-ib').onclick=()=>$('qg-if').click();
+  $('qg-if').onchange=e=>{
+    const f=e.target.files[0];e.target.value='';
+    if(!f||!f.type.startsWith('image/')){QS_T('Solo imagenes');return;}
+    if(QG_IU)URL.revokeObjectURL(QG_IU);
+    QG_IU=URL.createObjectURL(f);
+    const im=new Image();
+    im.onload=()=>{QG_I=im;$('qg-rb').style.display='';QG_U1();};
+    im.onerror=()=>{QS_T('Imagen invalida');};
+    im.src=QG_IU;
+  };
+  $('qg-rb').onclick=()=>{
+    QG_I=null;
+    if(QG_IU){URL.revokeObjectURL(QG_IU);QG_IU=null;}
+    $('qg-rb').style.display='none';QG_U1();
+  };
+  $('qg-pn').onclick=()=>{
+    if(!QG_Q){QS_T('Escribi algo primero');return;}
+    qgc.toBlob(b=>{if(b)QG_DL(b,'qr.png');},'image/png');
+  };
+  $('qg-sv').onclick=()=>{
+    if(!QG_Q){QS_T('Escribi algo primero');return;}
+    QG_DL(new Blob([QG_SV1()],{type:'image/svg+xml'}),'qr.svg');
+  };
+  $('qg-tb').onclick=()=>{
+    if(!QG_Q){QS_T('Escribi algo primero');return;}
+    qgc.toBlob(b=>{if(!b)return;qg.style.display='none';QS_SB(b);},'image/png');
+  };
+
   const cont=document.getElementById('content');
   if(cont)cont.addEventListener('contentUnload',()=>{
     QS_KK();
     if(_cp){_cp.destroy();_cp=null;}
     if(_blobUrl){URL.revokeObjectURL(_blobUrl);_blobUrl=null;}
+    if(QG_IU){URL.revokeObjectURL(QG_IU);QG_IU=null;}
     if(cm.classList.contains('open')){cm.classList.remove('open');document.body.style.overflow='';QS_CE(false);}
-    clearTimeout(_tt);
+    clearTimeout(_tt);clearTimeout(QG_TO);
   },{once:true});
 
   (async()=>{
