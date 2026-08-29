@@ -371,11 +371,27 @@
     return{r:cl(p.r),g:cl(p.g),b:cl(p.b)};
   }
 
-  function QG_K1(r,c,n){
+  function QG_A1(n){
+    const v=(n-17)/4;
+    if(v<2)return[];
+    const k=Math.floor(v/7)+2,last=v*4+10;
+    if(k===2)return[6,last];
+    const st=Math.ceil((last-6)/(k-1)/2)*2,o=[6];
+    for(let i=1;i<k;i++)o.push(last-(k-1-i)*st);
+    return o;
+  }
+
+  function QG_K1(r,c,n,al){
     if(r<8&&c<8)return true;
     if(r<8&&c>=n-8)return true;
     if(r>=n-8&&c<8)return true;
-    return r===6||c===6;
+    if(r===6||c===6)return true;
+    for(let i=0;i<al.length;i++)for(let j=0;j<al.length;j++){
+      const ar=al[i],ac=al[j];
+      if((ar<8&&ac<8)||(ar<8&&ac>n-9)||(ar>n-9&&ac<8))continue;
+      if(Math.abs(r-ar)<=2&&Math.abs(c-ac)<=2)return true;
+    }
+    return false;
   }
 
   function QG_D1(x,cx,cy,rad,sh,col){
@@ -400,12 +416,12 @@
     qgc.width=qgc.height=px;
     const x=qgc.getContext('2d');
     x.fillStyle='#fff';x.fillRect(0,0,px,px);
-    const grid=QG_I?QG_G1(QG_I,n):null;
+    const grid=QG_I?QG_G1(QG_I,n):null,al=QG_A1(n);
     const dom=grid?QG_C1(grid):{r:17,g:17,b:17};
     const fdr=P.col&&grid?'rgb('+Math.round(dom.r*.72)+','+Math.round(dom.g*.72)+','+Math.round(dom.b*.72)+')':'#111';
     for(let r=0;r<n;r++)for(let c=0;c<n;c++){
       const cx=(c+q+.5)*cell,cy=(r+q+.5)*cell;
-      const crit=QG_K1(r,c,n),dark=QG_Q.isDark(r,c);
+      const crit=QG_K1(r,c,n,al),dark=QG_Q.isDark(r,c);
       const p=grid?QG_P1(grid,c,r):null;
       const has=!!p&&p.a>60;
       const L=has?(.299*p.r+.587*p.g+.114*p.b)/255:0;
@@ -419,7 +435,7 @@
         if(d<=P.th)continue;
         const k=(d-P.th)/(1-P.th);
         const cc=P.col?QG_B1(p,P.sat):{r:17,g:17,b:17};
-        QG_D1(x,cx,cy,maxR*Math.min(.35,.05+.35*P.gh*Math.pow(k,.55)),P.sh,'rgb('+cc.r+','+cc.g+','+cc.b+')');
+        QG_D1(x,cx+maxR,cy+maxR,maxR*Math.min(.42,.06+.42*P.gh*Math.pow(k,.55)),P.sh,'rgb('+cc.r+','+cc.g+','+cc.b+')');
       }
     }
     return P;
@@ -428,7 +444,7 @@
   function QG_SV1(){
     if(!QG_Q)return '';
     const P=QG_PR(),n=QG_Q.getModuleCount(),q=4,tot=n+q*2,px=P.px,cell=px/tot,maxR=cell/2;
-    const grid=QG_I?QG_G1(QG_I,n):null;
+    const grid=QG_I?QG_G1(QG_I,n):null,al=QG_A1(n);
     const dom=grid?QG_C1(grid):{r:17,g:17,b:17};
     const fdr=P.col&&grid?'rgb('+Math.round(dom.r*.72)+','+Math.round(dom.g*.72)+','+Math.round(dom.b*.72)+')':'#111';
     const o=['<svg xmlns="http://www.w3.org/2000/svg" width="'+px+'" height="'+px+'" viewBox="0 0 '+px+' '+px+'"><rect width="'+px+'" height="'+px+'" fill="#fff"/>'];
@@ -439,7 +455,7 @@
     };
     for(let r=0;r<n;r++)for(let c=0;c<n;c++){
       const cx=(c+q+.5)*cell,cy=(r+q+.5)*cell;
-      const crit=QG_K1(r,c,n),dark=QG_Q.isDark(r,c);
+      const crit=QG_K1(r,c,n,al),dark=QG_Q.isDark(r,c);
       const p=grid?QG_P1(grid,c,r):null;
       const has=!!p&&p.a>60;
       const L=has?(.299*p.r+.587*p.g+.114*p.b)/255:0;
@@ -452,7 +468,7 @@
         if(d<=P.th)continue;
         const k=(d-P.th)/(1-P.th);
         const cc=P.col?QG_B1(p,P.sat):{r:17,g:17,b:17};
-        sp(cx,cy,maxR*Math.min(.35,.05+.35*P.gh*Math.pow(k,.55)),'rgb('+cc.r+','+cc.g+','+cc.b+')',1);
+        sp(cx+maxR,cy+maxR,maxR*Math.min(.42,.06+.42*P.gh*Math.pow(k,.55)),'rgb('+cc.r+','+cc.g+','+cc.b+')',1);
       }
     }
     o.push('</svg>');
