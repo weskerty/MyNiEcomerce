@@ -13,7 +13,7 @@
   <meta property="og:title" content="Che Agana | Tienda Facil">
   <meta property="og:description" content="Tienda donde encontrarás de todo y más. Compra facil y seguro en Paraguay.">
   <meta property="og:url" content="https://cheagana.com">
-  <meta property="og:image" content="https://i.ibb.co/tpYftkJf/ezgif-131e4307e63b2394.png">
+  <meta property="og:image" content="https://cheagana.com/web/otros/Archivos/Imagenes/Permanente/ICONS/ICON-APP.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:type" content="website">
@@ -32,19 +32,6 @@
 
   <link rel="stylesheet" href="web/estilo.css">
 
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1352368083950482"
-     crossorigin="anonymous"></script>
-
-  <script>
-var DW1_EN=true;
-if(DW1_EN){
-  setInterval(function(){
-    console.log('%c Te van a Robar ','background:#FFEB3B;color:#D32F2F;font-size:30px;font-weight:bold;padding:10px 20px;border-radius:6px;');
-    console.log('%cSi te pidieron que pegues algo aca No lo Hagas, TE VAN A ROBAR. ','color:#D32F2F;font-size:18px;font-weight:bold;');
-    console.log('Lee que es Self-XSS Primero.');
-  },10000);
-}
-  </script>
 </head>
 
 <body>
@@ -116,25 +103,35 @@ if(DW1_EN){
 
 
   <script>
-    (function(){
-      var _AT=0;
-      document.getElementById('content').addEventListener('contentLoaded',function(){
-        var n=Date.now();
-        if(n-_AT<5000)return;
-        _AT=n;
-        var s=document.getElementById('ad-slot');
-        s.innerHTML='';
-        var ins=document.createElement('ins');
-        ins.className='adsbygoogle';
-        ins.style.display='block';
-        ins.dataset.adClient='ca-pub-1352368083950482';
-        ins.dataset.adSlot='5731533932'; // 803221090
-        ins.dataset.adFormat='auto';
-        ins.dataset.fullWidthResponsive='true';
-        s.appendChild(ins);
-        (window.adsbygoogle=window.adsbygoogle||[]).push({});
-      });
-    })();
+var DW1_EN=true;
+if(DW1_EN)(function(){
+  var DW1_P1='ca-pub-1352368083950482',DW1_S1=document.createElement('script'),_AT=0;
+  setInterval(function(){
+    console.log('%c Te van a Robar ','background:#FFEB3B;color:#D32F2F;font-size:30px;font-weight:bold;padding:10px 20px;border-radius:6px;');
+    console.log('%cSi te pidieron que pegues algo aca No lo Hagas, TE VAN A ROBAR. ','color:#D32F2F;font-size:18px;font-weight:bold;');
+    console.log('Lee que es Self-XSS Primero.');
+  },10000);
+  DW1_S1.async=true;
+  DW1_S1.crossOrigin='anonymous';
+  DW1_S1.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+DW1_P1;
+  document.head.appendChild(DW1_S1);
+  document.getElementById('content').addEventListener('contentLoaded',function(){
+    var n=Date.now();
+    if(n-_AT<5000)return;
+    _AT=n;
+    var s=document.getElementById('ad-slot');
+    s.innerHTML='';
+    var ins=document.createElement('ins');
+    ins.className='adsbygoogle';
+    ins.style.display='block';
+    ins.dataset.adClient=DW1_P1;
+    ins.dataset.adSlot='5731533932'; // 803221090
+    ins.dataset.adFormat='auto';
+    ins.dataset.fullWidthResponsive='true';
+    s.appendChild(ins);
+    (window.adsbygoogle=window.adsbygoogle||[]).push({});
+  });
+})();
   </script>
 
 
