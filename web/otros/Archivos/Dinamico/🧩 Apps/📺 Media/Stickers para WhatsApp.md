@@ -312,16 +312,53 @@
     startCD();doFetch(q);
   }
 
+  async function KL_1(u,onp){
+    const b=await fetch(u).then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.blob();});
+    let w=0,h=0;
+    try{const bm=await createImageBitmap(b);w=bm.width;h=bm.height;bm.close();}catch{}
+    const ty=await AN_T1(b);
+    const sq=w&&h&&w/h>=.8&&w/h<=1.25;
+    if(ty!=='gif'&&sq&&b.size<TARGET)return b;
+    if(ty){
+      const an=await AN_D1(b,ty);
+      if(an){try{return await WB_E1({},an,[],an.fps,onp);}finally{AN_F1(an);}}
+    }
+    return toWebp(b,[]);
+  }
+
   async function confirmSearch(){
+    const urls=[...S];
     cfEl.disabled=true;ckStart(cfEl);
     try{
-      const res=await fetch('/api/stickers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({urls:[...S]})});
-      const {sid}=await res.json();
+      let sid;
+      if(typeof ImageDecoder==='undefined'){
+        const res=await fetch('/api/stickers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({urls})});
+        sid=(await res.json()).sid;
+      }else{
+        progM.classList.add('open');document.body.style.overflow='hidden';
+        setProg(0,'Procesando...');
+        const form=new FormData();
+        for(let i=0;i<urls.length;i++){
+          const b0=Math.round(i/urls.length*80),b1=Math.round((i+1)/urls.length*80);
+          setProg(b0,'Procesando '+(i+1)+'/'+urls.length);
+          const out=await KL_1(urls[i],p=>setProg(Math.round(b0+(b1-b0)*p)));
+          form.append('files',out,String(i+1).padStart(3,'0')+'.webp');
+        }
+        setProg(85,'Subiendo...');
+        const res=await fetch('/api/stickers',{method:'POST',body:form});
+        if(!res.ok)throw new Error('HTTP '+res.status);
+        sid=(await res.json()).sid;
+        progM.classList.remove('open');document.body.style.overflow='';
+      }
       ckStop();cfEl.style.display='none';
       waBtn.href='https://wa.me/595973254371?text=CALS='+sid;
       waBtn.style.display='';
       waBtn.onclick=(e)=>{e.preventDefault();window.open(waBtn.href,'_blank');resetWaState();};
-    }catch(e){ckStop();cfEl.innerHTML='👉 Confirmar ✅ (<span id="sk-n">'+S.size+'</span>) 👈';cfEl.disabled=false;}
+    }catch(e){
+      ckStop();progM.classList.remove('open');document.body.style.overflow='';
+      toast('Error: '+e.message);
+      cfEl.innerHTML='👉 Confirmar ✅ (<span id="sk-n">'+S.size+'</span>) 👈';cfEl.disabled=false;
+    }
   }
 
   function renderFrames(){
