@@ -1,4 +1,4 @@
-blog edicion por numeracion para nuevo post primero... gg
+core.js no carga contenido/bug si hay un <video> cuando hay estilizacion blur... la animacion css parece romperlo.
 
 Pendiente: galerias imagen fallback si avif no funciona.
 
