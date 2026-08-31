@@ -81,10 +81,10 @@
 (function(){
 const DJ='web/otros/Archivos/Dinamico/Blogs/data.json';
 const TJ='web/otros/Archivos/Dinamico/Blogs/time.json';
-let BN_T1=null;
+let BN_T1=window.__BNT1||null;
 async function BN_FT1(){
   if(BN_T1)return BN_T1;
-  try{BN_T1=await(await fetch(TJ)).json();}catch(e){BN_T1={};}
+  try{BN_T1=window.__BNT1=await(await fetch(TJ)).json();}catch(e){BN_T1={};}
   return BN_T1;
 }
 const RSS=window.__CFG?.rss||[];
@@ -132,6 +132,7 @@ function BN_P1(txt){
 
 async function BN_FR(){
   if(!RSS.length)return[];
+  if(window.__BNR1)return window.__BNR1;
   if(rssAC)rssAC.abort();
   rssAC=new AbortController();
   const sig=rssAC.signal;
@@ -141,7 +142,9 @@ async function BN_FR(){
       .then(t=>t?BN_P1(t):[])
       .catch(()=>[])
   ));
-  return all.flat();
+  const out=all.flat();
+  if(out.length)window.__BNR1=out;
+  return out;
 }
 
 function BN_CF(){
