@@ -282,7 +282,7 @@ Podes Pedir para ir a Ayudarte a Instalar Linux en tu PC. Cualquier cosa, puedes
 
 
 ### Televisores:
-Hay un Blog diferente que explica como Reutilizar, pasa a Leer [Aqui >](#web/Dinamico/Blogs/Ambiente/Reutilizar%20Viejas%20TV.md)
+Hay un Blog diferente que explica como Reutilizar, pasa a Leer [Aqui >](#web/otros/Archivos/Dinamico/Blogs/Ambiente/Reutilizar%20Televisores%20Antiguos.md)
 
 
 ---

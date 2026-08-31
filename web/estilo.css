@@ -86,7 +86,7 @@ body::before{content:"";position:fixed;inset:0;height:110vh;z-index:-1;backgroun
 
 #bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center}
 
-.hide, #loading-screen.hide { display: none }
+.hide { display: none }
 
 video#bg-video {
     position: fixed;
@@ -235,28 +235,16 @@ tr > *:first-child {
 
 
 /* pantalla carga */
-.loading-screen {
+#WA1 {
     position: fixed;
     inset: 0;
-    display: flex;
+    z-index: 1000;
+    display: none;
     justify-content: center;
     align-items: center;
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    z-index: 1000;
-}
-
-.loading-screen p {
-    font-size: 2em;
-    font-family: var(--font);
-    animation: _LS1 1.4s ease-in-out infinite;
-    will-change: transform, opacity;
-}
-
-@keyframes _LS1 {
-    0%,100% { transform: translateY(0) scale(1); opacity: 1 }
-    50% { transform: translateY(-8px) scale(1.06); opacity: 0.6 }
+    background: rgba(0,0,0,.25);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 /* contenedor de contenido contenidoso */
@@ -286,16 +274,13 @@ tr > *:first-child {
 
 .content * { max-width: 100%; box-sizing: border-box }
 
-.content:has(.wait-anim) {
-    min-height: 60vh;
-}
-
 .wait-anim {
     display: block;
     width: 64px;
     height: 64px;
-    margin: 40px auto;
 }
+
+#WA1.on { display: flex }
 
 #disqus-container {
     background-color: rgba(0,0,0,0.6);

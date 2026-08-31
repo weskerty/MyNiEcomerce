@@ -89,7 +89,7 @@ async function BN_FT1(){
 }
 const RSS=window.__CFG?.rss||[];
 const RU=p=>'/api/rss?url='+encodeURIComponent(p);
-const PAGE=30;
+let PAGE=20;
 let curList=[],curPg=0,imgIO=null,fetchAC=null,rssAC=null,_ini=false,_lst=[],_cat=null;
 
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
@@ -142,6 +142,12 @@ async function BN_FR(){
       .catch(()=>[])
   ));
   return all.flat();
+}
+
+async function BP_1(gr){
+  if(document.body.classList.contains('low-perf'))return PAGE;
+  if(!window.GridFit)await new Promise(r=>{const s=document.createElement('script');s.src='web/scripts/Otros/GridFit.js';s.onload=r;s.onerror=r;document.head.appendChild(s)});
+  return window.GridFit?window.GridFit.itemsPerPage(gr,280,200,16,60):PAGE;
 }
 
 function BN_CF(){
@@ -293,6 +299,7 @@ async function init(){
   const[galleries,nw]=await Promise.all([fetchData(),BN_FR(),BN_FT1()]);
   if(ld)ld.style.display='none';
   gr.style.display='';
+  PAGE=await BP_1(gr);
   const bl=galleries?parseBlogs(galleries):[];
   const items=BN_MIX(bl,nw);
   _lst=items;curList=items;curPg=0;_cat=null;
