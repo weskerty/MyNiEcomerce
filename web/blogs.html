@@ -300,33 +300,7 @@ async function init(){
   renderPage(gr,items,0,false);
 }
 
-function onCL(){
-  if(!document.getElementById('bl-gr'))return;
-  curList=[];curPg=0;
-  document.addEventListener('contentUnload',onCU,{once:true});
-  init();
-}
-function onCU(){
-  if(fetchAC)fetchAC.abort();
-  if(rssAC)rssAC.abort();
-  if(imgIO){imgIO.disconnect();imgIO=null;}
-  const g=document.getElementById('bl-gr');
-  if(g&&g.children.length)window.__BV1=g.parentElement;
-  document.removeEventListener('contentLoaded',onCL);
-  document.removeEventListener('contentLoaded',BN_ON);
-}
-document.addEventListener('contentLoaded',onCL);
-document.addEventListener('contentUnload',onCU,{once:true});
-
-function BV_R1(){
-  const st=window.__BV1,gr=document.getElementById('bl-gr');
-  if(!st||!gr)return false;
-  gr.parentElement.replaceWith(st);
-  setupImgIO();
-  st.querySelectorAll('[data-bg]').forEach(b=>imgIO.observe(b));
-  return true;
-}
-if(BV_R1())_ini=true;
+window.__KP1?.();
 
 init();
 function BN_ON(){
@@ -384,7 +358,7 @@ async function regPeriodicSync(){
 wOPFS();
 regPeriodicSync();
 }
-document.addEventListener('contentLoaded',BN_ON);
+if(!window.__BN0){window.__BN0=1;document.addEventListener('contentLoaded',BN_ON);}
 })();
 
 (function(){
@@ -394,8 +368,7 @@ const SW_TO=3000;
 if(!('serviceWorker' in navigator)||!('PushManager' in window))return;
 if(Notification.permission==='denied')return;
 const btn=document.getElementById('nt-btn');
-if(!btn||btn.dataset.bv)return;
-btn.dataset.bv='1';
+if(!btn)return;
 function u8(s){
 const p=atob(s.replace(/-/g,'+').replace(/_/g,'/'));
 return Uint8Array.from(p,c=>c.charCodeAt(0));
