@@ -127,7 +127,12 @@ function BN_P1(txt){
     const img=im?im.src:null;
     d.querySelectorAll('img,video,audio').forEach(t=>t.remove());
     return{t:'n',link:BN_GT(it,'link'),name:BN_GT(it,'title'),img,desc:(d.body.textContent||'').trim()};
-  });
+  }).filter(BN_OK1);
+}
+
+function BN_OK1(x){
+  if(x.desc||x.img)return true;
+  return !!x.name&&isNaN(Date.parse(x.name));
 }
 
 async function BN_FR(){
