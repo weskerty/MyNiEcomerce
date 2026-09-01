@@ -164,7 +164,8 @@ let peer=null,pid=null,room=null,token=null,pingIv=null,wl=null,dead=false;
 let conns={},fast={},cSince={},miss={},hbIv=null,myCode='',isHost=true,joinTo=null;
 let devs={},bind={},live={},paused=false,ws=null,wsTo=null,qrCam=null,edSel='';
 let cfg={port:8787,slots:{}};
-let myRole='',myCtrls=[],mySm=.5,sen=null,evtOn=false,qRaw=null,qZero=null,txIv=null;
+let myRole='',myCtrls=[],mySm=.5,sen=null,evtOn=false,qRaw=null,txIv=null;
+let calA=null,aAx=null,fwR=null,rgt=null,myTrim=0;
 let joyV={},btnS=[],oef=null,ac=null;
 const HP=location.hash.replace(/^#/,'').split('#');
 const PRE=(HP[1]||'').trim().toUpperCase();
@@ -220,6 +221,57 @@ function e2q(a,b,g){
     cX*cY*cZ-sX*sY*sZ
   ];
 }
+function arc(u,v){
+  const d=u[0]*v[0]+u[1]*v[1]+u[2]*v[2];
+  if(d>.999999)return [0,0,0,1];
+  if(d<-.999999){
+    const p=Math.abs(u[0])<.9?[1,0,0]:[0,1,0];
+    const c=[u[1]*p[2]-u[2]*p[1],u[2]*p[0]-u[0]*p[2],u[0]*p[1]-u[1]*p[0]];
+    const n=Math.hypot(c[0],c[1],c[2])||1;
+    return [c[0]/n,c[1]/n,c[2]/n,0];
+  }
+  const c=[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];
+  const w=1+d;
+  const n=Math.hypot(c[0],c[1],c[2],w)||1;
+  return [c[0]/n,c[1]/n,c[2]/n,w/n];
+}
+function qax(a,ang){
+  const h=ang/2,si=Math.sin(h);
+  return [a[0]*si,a[1]*si,a[2]*si,Math.cos(h)];
+}
+function twAng(q,a){
+  return 2*Math.atan2(q[0]*a[0]+q[1]*a[1]+q[2]*a[2],q[3]);
+}
+function calPA(){
+  if(!qRaw)return false;
+  calA=qRaw.slice();
+  aAx=qv(qcj(calA),[0,-1,0]);
+  fwR=null;rgt=null;
+  return true;
+}
+function calPB(){
+  if(!qRaw||!aAx)return false;
+  const f=qv(qRaw,aAx);
+  const n=Math.hypot(f[0],f[2]);
+  if(n<1e-4)return false;
+  fwR=[f[0]/n,0,f[2]/n];
+  rgt=[-fwR[2],0,fwR[0]];
+  return true;
+}
+function mapQ(q){
+  if(!aAx||!fwR)return q;
+  let d=qv(q,aAx);
+  if(myTrim){
+    const c=Math.cos(myTrim),si=Math.sin(myTrim);
+    d=[d[0]*c+d[2]*si,d[1],-d[0]*si+d[2]*c];
+  }
+  const dm=[d[0]*rgt[0]+d[2]*rgt[2],d[1],d[0]*fwR[0]+d[2]*fwR[2]];
+  const n=Math.hypot(dm[0],dm[1],dm[2])||1;
+  dm[0]/=n;dm[1]/=n;dm[2]/=n;
+  const sw=arc([0,-1,0],dm);
+  const tw=twAng(qm(q,qcj(calA)),aAx);
+  return qm(qax(dm,tw),sw);
+}
 function mkOE(){
   let p=null,dp=[0,0,0,0],tp=0;
   return function(q,t,mn,be){
@@ -251,7 +303,8 @@ function cfgLoad(){
     const r=JSON.parse(localStorage.getItem(LSK)||'null');
     if(r&&typeof r==='object')cfg=Object.assign({port:8787,slots:{}},r);
   }catch(e){}
-  SK.forEach(k=>{if(!cfg.slots[k])cfg.slots[k]={ctrls:[],sm:.5};});
+  SK.forEach(k=>{if(!cfg.slots[k])cfg.slots[k]={ctrls:[],sm:.5,tr:0};
+    else if(typeof cfg.slots[k].tr!=='number')cfg.slots[k].tr=0;});
   $('mc-port').value=cfg.port||8787;
 }
 function cfgSave(){
@@ -501,7 +554,7 @@ function slotOf(p){return SK.find(k=>bind[k]===p)||'';}
 function pushCfg(p){
   const k=slotOf(p);
   const s=k?cfg.slots[k]:null;
-  sendTo(p,{t:'cfg',role:k,name:k?SLOTS[k].n:'',col:k?SLOTS[k].c:'#888',ctrls:s?s.ctrls:[],sm:s?s.sm:.5});
+  sendTo(p,{t:'cfg',role:k,name:k?SLOTS[k].n:'',col:k?SLOTS[k].c:'#888',ctrls:s?s.ctrls:[],sm:s?s.sm:.5,tr:s?s.tr:0});
 }
 function pushAll(){Object.keys(devs).forEach(p=>{if(devs[p].ok)pushCfg(p);});}
 function devDraw(){
@@ -546,6 +599,21 @@ function devDraw(){
       };
       sl.appendChild(lb);sl.appendChild(inp);
       el.appendChild(sl);
+      const s2=mkEl('div','mc-sl');
+      const lb2=mkEl('span');
+      const val=()=>Math.round(cfg.slots[k].tr)+'\u00b0';
+      lb2.textContent='Giro '+val();
+      const in2=mkEl('input');
+      in2.type='range';in2.min='-180';in2.max='180';in2.step='5';
+      in2.value=String(cfg.slots[k].tr||0);
+      in2.oninput=()=>{
+        cfg.slots[k].tr=Number(in2.value);
+        lb2.textContent='Giro '+val();
+        cfgSave();
+        pushCfg(p);
+      };
+      s2.appendChild(lb2);s2.appendChild(in2);
+      el.appendChild(s2);
     }
     box.appendChild(el);
   });
@@ -642,6 +710,7 @@ function onData(d,from){
     myRole=d.role||'';
     myCtrls=d.ctrls||[];
     mySm=typeof d.sm==='number'?d.sm:.5;
+    myTrim=(typeof d.tr==='number'?d.tr:0)*Math.PI/180;
     $('mc-crole').textContent=d.name||'Sin rol asignado';
     $('mc-sr').textContent=d.name||'Sin rol';
     document.documentElement.style.setProperty('--mc-col',d.col||'#888');
@@ -651,7 +720,8 @@ function onData(d,from){
   }
   if(d.t==='id'){identify();return;}
   if(d.t==='cnt'){beep(660,90);vib(60);return;}
-  if(d.t==='cal'){beep(990,220);vib([40,60,40]);qZero=qRaw?qcj(qRaw):null;oef=mkOE();return;}
+  if(d.t==='calA'){beep(880,180);vib([40,60,40]);calPA();oef=mkOE();return;}
+  if(d.t==='calB'){beep(1180,260);vib([40,60,40,60,40]);calPB();oef=mkOE();return;}
 }
 function onFast(d,from){
   if(!isHost||!d)return;
@@ -685,19 +755,31 @@ function setPause(v){
   $('mc-pause').classList.toggle('on',paused);
 }
 let calBusy=false;
-async function calAll(){
-  if(calBusy)return;
-  calBusy=true;
-  const ps=Object.keys(devs).filter(p=>devs[p].ok);
+async function calStep(ps,txt,tag){
   for(let n=3;n>0;n--){
-    msg('Calibrando en '+n+'... brazos abajo');
+    msg(txt+' en '+n);
     ps.forEach(p=>sendTo(p,{t:'cnt',n}));
     await new Promise(r=>setTimeout(r,1000));
   }
-  ps.forEach(p=>sendTo(p,{t:'cal'}));
+  ps.forEach(p=>sendTo(p,{t:tag}));
+  await new Promise(r=>setTimeout(r,400));
+}
+async function calAll(){
+  if(calBusy)return;
+  calBusy=true;
+  $('mc-cal').disabled=true;
+  const ps=Object.keys(devs).filter(p=>devs[p].ok);
+  if(!ps.length){
+    msg('No hay dispositivos conectados',true);
+    calBusy=false;$('mc-cal').disabled=false;
+    return;
+  }
+  await calStep(ps,'Brazos abajo, pegados al cuerpo','calA');
+  await calStep(ps,'Brazos al frente, apuntando al monitor','calB');
   msg('Calibrado');
-  setTimeout(()=>msg(''),1500);
+  setTimeout(()=>msg(''),1800);
   calBusy=false;
+  $('mc-cal').disabled=false;
 }
 
 function prevInit(){
@@ -881,7 +963,7 @@ function tx(){
   let q=qRaw||[0,0,0,1];
   if(!oef)oef=mkOE();
   q=oef(q,performance.now(),.02+(1-mySm)*1.4,.6);
-  if(qZero)q=qm(qZero,q);
+  q=mapQ(q);
   const j={},b={};
   myCtrls.forEach((x,i)=>{
     if(x.k==='joy')j[i]=joyV[i]||[0,0];
