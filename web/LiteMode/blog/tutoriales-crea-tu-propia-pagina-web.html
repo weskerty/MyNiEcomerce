@@ -37,10 +37,72 @@
 <p>El dominio es el <a href="http://www.PalabraQueMeGuste.com">www.PalabraQueMeGuste.com</a><br>
 Para poner el que gustes se debe comprar un Dominio. Puedes comprar uno <a href="https://clientes.maxdominios.com/aff.php?aff=1138">Desde Aqui ↗️</a></p>
 <p>Esa pagina permite comprar incluso tu propio servidor para hostear manualmente tu pagina asi no depender de github ni sus limtes… Pero ahora solo nos interesa el dominio, podes buscar al comprar el plan “solo registrar dominio”. Se paga al registrar y al año para renovacion.</p>
-<p>Configurar en Github</p>
+<h3>Configurar el Dominio en GitHub</h3>
+<p>Ya con el dominio comprado son dos pasos y una espera: apuntar el dominio a GitHub, avisarle a GitHub cual es el tuyo, y esperar a que se acomode.</p>
+<p><strong>1. Apuntar el dominio</strong></p>
+<p>Esto NO se hace en GitHub, se hace del lado de donde compraste el dominio.</p>
+<p>Si compraste solo el dominio en MaxDominios, vos no tocas nada: se genera un ticket de soporte y les pedis a que direcciones queres que apunte tu dominio, pasandoles los datos de aca abajo. Ellos cargan los apuntadores. Si en cambio compraste el dominio junto con un hosting, entras a tu panel y los cargas vos mismo.</p>
+<p>En cualquiera de los dos casos los datos son los mismos.</p>
+<p>Para que ande el dominio pelado (el que va sin www) cargas 4 registros de tipo A, los cuatro con el nombre @ y estas direcciones:</p>
+<pre><code>185.199.108.153
+185.199.109.153
+185.199.110.153
+185.199.111.153
+</code></pre>
+<p>Si tu proveedor te deja cargar IPv6, sumas los mismos cuatro pero de tipo AAAA:</p>
+<pre><code>2606:50c0:8000::153
+2606:50c0:8001::153
+2606:50c0:8002::153
+2606:50c0:8003::153
+</code></pre>
+<p>Para el www va UN solo registro, de tipo CNAME, con el nombre www apuntando a:</p>
+<pre><code>TU-Usuario.github.io
+</code></pre>
+<p>Aca esta el error mas comun de todos: apunta a esa direccion de arriba a secas, SIN el nombre del repositorio. Aunque entres a tu pagina por una direccion que incluye el nombre del repositorio, en el DNS va solo la parte de tu usuario.</p>
+<p><strong>2. Cargarlo en GitHub</strong></p>
+<p>Esto va unicamente desde los ajustes, no se crea ningun archivo a mano.</p>
+<p>En tu repositorio: Settings, despues Pages en la barra de la izquierda, y abajo donde dice Custom domain escribis tu dominio y le das Save.</p>
+<p>Con eso GitHub crea solo un archivo llamado CNAME en la raiz de tu repositorio, con tu dominio adentro. Ese archivo es el que hace que tu pagina responda en tu dominio: si se borra, tu pagina vuelve a la direccion vieja que te dio GitHub. Por eso, si lo ves aparecer en el repositorio, dejalo tranquilo.</p>
+<p>Dos cosas que aclara la documentacion y conviene saber:</p>
+<ul>
+<li>Un mismo dominio no puede estar usado por dos paginas de GitHub Pages a la vez.</li>
+<li>Si usas algun programa que sube la pagina pisando todo el repositorio, te puede borrar ese archivo sin avisar y la pagina se cae del dominio.</li>
+</ul>
+<p><strong>3. Esperar el tilde verde y prender el candado</strong></p>
+<p>GitHub revisa el DNS y te pone un tilde verde cuando ya ve los registros cargados.</p>
+<p>Esto no es inmediato y no hay nada que apurar: dale un dia. Si en el momento te dice que el dominio no resuelve, no es que este mal, es que todavia no se termino de repartir el cambio por internet. Cerras, esperas, y al otro dia entras de nuevo.</p>
+<p>Cuando aparece el tilde verde se destraba la casilla Enforce HTTPS. Marcala. Eso obliga a que todos entren con https y el candadito. Es gratis, el certificado lo saca GitHub solo.</p>
+<p>Un detalle: si en vez de publicar desde una rama publicas con un flujo propio de GitHub Actions, el archivo CNAME no se crea ni se lee, y el dominio se configura unicamente desde Settings, Pages.</p>
 <p><a href="https://docs.github.com/pages/configuring-a-custom-domain-for-your-github-pages-site">Documentacion GitHub de Dominio Personalizado ↗️</a></p>
-<p>Pero GitHub no permite usar la Web para cosas pesadas, ilegalidades, etc. Ademas tiene limite al llegar a $Visitas.</p>
-<p>Lo mejor es Vincular a Cloudflare</p>
+<h3>Los limites de GitHub Pages</h3>
+<p>Antes de casarte con GitHub, los numeros que publican ellos mismos:</p>
+<ul>
+<li>El repositorio no deberia pasar 1 GB.</li>
+<li>La pagina publicada no puede pasar 1 GB.</li>
+<li>100 GB de trafico por mes. Es un limite blando: te avisan antes de cortarte.</li>
+<li>10 compilaciones por hora, tambien blando.</li>
+</ul>
+<p>Y lo que NO se puede hostear ahi segun sus condiciones: negocios online, tiendas, servicios pagos, y nada que maneje contrasenas o tarjetas de credito. Para un blog, un portfolio o una pagina informativa va perfecto. Para vender, no.</p>
+<h3>Vincular a Cloudflare</h3>
+<p>Cloudflare se pone adelante de GitHub: el mismo dominio y la misma pagina, pero las visitas pasan primero por su red. Te da cache, estadisticas, proteccion contra ataques, y de paso resuelve el limite de trafico, porque la mayoria de las visitas las contesta Cloudflare sin molestar a GitHub. Es gratis.</p>
+<p>El ORDEN de los pasos importa, y es donde se traba todo el mundo:</p>
+<ol>
+<li>Te creas cuenta en <a href="https://dash.cloudflare.com/sign-up">Cloudflare ↗️</a> y agregas tu dominio. Te va a dar dos nameservers.</li>
+<li>Esos dos nameservers hay que cargarlos del lado del dominio. Igual que antes: en MaxDominios se pide por ticket que los cambien por los de Cloudflare, y si tenes hosting propio los cambias vos. Tambien tarda, dale su tiempo.</li>
+<li>En Cloudflare, en la seccion DNS, cargas los mismos registros de antes (las 4 de tipo A y el CNAME del www), pero los dejas con la nube GRIS, que dice DNS only.</li>
+<li>Volves a GitHub, esperas el tilde verde y prendes Enforce HTTPS.</li>
+<li>Recien ahora volves a Cloudflare y pasas las nubes a NARANJA, que dice Proxied.</li>
+<li>En Cloudflare, en SSL/TLS, poner el modo en Full (strict).</li>
+</ol>
+<p>Los dos errores que rompen todo:</p>
+<ul>
+<li>Prender la nube naranja antes de tiempo. GitHub necesita ver tu dominio directo para validarlo y sacar el certificado; con el proxy puesto no puede, y la casilla Enforce HTTPS te queda gris para siempre.</li>
+<li>Dejar el SSL en Flexible. Cloudflare le habla en http a GitHub, GitHub le contesta andate a https, Cloudflare vuelve a pedir en http, y asi para siempre: el navegador termina tirando ERR_TOO_MANY_REDIRECTS. Siempre Full o Full (strict).</li>
+</ul>
+<p>Si despues de tocar todo esto algo se ve raro o desactualizado, en Cloudflare hay un boton para purgar el cache. Nueve de cada diez veces es eso.</p>
+<h3>El paso siguiente</h3>
+<p>Si ya estas en Cloudflare, podes saltear GitHub del todo y publicar directo con Cloudflare Pages: le das acceso a tu repositorio y cada vez que subas un cambio la pagina se actualiza sola. Sin el limite de trafico y sin la prohibicion de vender. Esta misma pagina que estas leyendo funciona asi.</p>
+<!--FE=2026-09-02T10:48:45.324Z-->
 </div>
 <div class="FT1" data-nosnippet="">Version Simplificada. <a href="/#web/es.html">Ir a la Web Completa</a></div>
 </div></body></html>
