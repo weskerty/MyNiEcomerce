@@ -13,11 +13,19 @@
 .mc-thumb{width:48px;height:48px;border-radius:10px;object-fit:cover;flex-shrink:0}
 .mc-name{font-size:1.05em;font-weight:700;color:#fff;margin:0 0 4px}
 .mc-desc{font-size:.85em;color:rgba(255,255,255,.5);margin:0 0 10px;line-height:1.45}
-.mc-addr{
-  font-size:.78em;color:rgba(255,255,255,.35);
-  font-family:monospace;background:rgba(255,255,255,.05);
-  display:inline-block;padding:3px 8px;border-radius:7px;margin-bottom:12px;
+.MC_R1{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.MC_B1{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;border-radius:12px;
+  font-family:monospace,monospace;color:rgba(255,255,255,.75);
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);
+  cursor:pointer;user-select:none;
+  transition:background .18s,border-color .18s,transform .15s;
 }
+.MC_B1:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18)}
+.MC_B1:active{transform:scale(.97)}
+.MC_T1{word-break:break-all}
 .mc-acts{display:flex;gap:6px;flex-wrap:wrap}
 .mc-bbtn{
   display:inline-flex;align-items:center;gap:6px;
@@ -124,6 +132,25 @@ function sanitizeURI(s){
   return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'%20');
 }
 
+function MC_FB1(t,ok){
+  const a=document.createElement('textarea');
+  a.value=t;a.style.position='fixed';a.style.opacity=0;
+  document.body.appendChild(a);a.select();
+  try{document.execCommand('copy');ok();}catch(e){}
+  a.remove();
+}
+function MC_CP1(b){
+  const t=b.querySelector('.MC_T1').textContent;
+  const i=b.querySelector('.MC_I1');
+  const ok=()=>{i.textContent='✅';setTimeout(()=>{i.textContent='📄';},1200);};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(ok,()=>MC_FB1(t,ok));
+  else MC_FB1(t,ok);
+}
+WRAP.addEventListener('click',e=>{
+  const b=e.target.closest('.MC_B1');
+  if(b)MC_CP1(b);
+});
+
 function mkCard(s){
   const isB=s.type==='B'||s.type==='B+J';
   const div=document.createElement('div');
@@ -138,7 +165,10 @@ function mkCard(s){
     <div class="mc-hinfo">
       <div class="mc-name">${esc(s.name)}</div>
       ${s.desc?`<div class="mc-desc">${esc(s.desc)}</div>`:''}
-      <div class="mc-addr">${esc(s.url)}:${esc(s.port)}</div>
+      <div class="MC_R1">
+        <div class="MC_B1" title="Copiar IP"><span class="MC_T1">${esc(s.url)}</span><span class="MC_I1">📄</span></div>
+        ${s.port?`<div class="MC_B1" title="Copiar puerto"><span class="MC_T1">${esc(s.port)}</span><span class="MC_I1">📄</span></div>`:''}
+      </div>
       ${acts?`<div class="mc-acts">${acts}</div>`:''}
     </div>
   </div>`;
