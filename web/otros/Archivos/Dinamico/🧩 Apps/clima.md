@@ -54,7 +54,7 @@
 .wt-sug-it:hover{background:rgba(255,255,255,.1)}
 </style>
 
-<img class="_ic" src="web/otros/Archivos/Imagenes/Permanente/ICON.avif" width="90px">
+
 
 <div class="sk-bar" id="wt-bar">
   <a class="sk-home" href="web/es.html">🏠</a>

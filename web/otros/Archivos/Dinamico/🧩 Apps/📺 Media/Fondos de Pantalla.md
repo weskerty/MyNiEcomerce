@@ -45,7 +45,6 @@
 .wp-cat.wp-ca{background:rgba(56,189,248,.22);border-color:rgba(56,189,248,.45)}
 </style>
 
-<img class="_ic" src="web/otros/Archivos/Imagenes/Permanente/ICON.avif" width="90px">
 
 <div class="sk-wrap" id="wp-wrap">
   <div class="sk-bar" id="wp-bar">
