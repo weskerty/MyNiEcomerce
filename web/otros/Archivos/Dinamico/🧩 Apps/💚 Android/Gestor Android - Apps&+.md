@@ -533,7 +533,7 @@ abi1=(await runSh("getprop ro.product.cpu.abi")).trim();
 enable(btnIns);enable(btnUn);enable(btnCmd);enable(btnScr);
 howTo.style.display="none";
 setSt("Listo. Conectado: "+(A1.banner?.model||dv.serial)+" ("+abi1+")");
-if(!searchInp.value.trim()){searchInp.value="music";doStoreSearch()}
+if(!searchInp.value.trim()){searchInp.value="document";doStoreSearch()}
 }catch(e){
 setSt("Error: "+e.message);
 console.error(e);

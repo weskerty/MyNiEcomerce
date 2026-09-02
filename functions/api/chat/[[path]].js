@@ -16,7 +16,7 @@ export async function onRequest(context){
   }
 
   const ip=request.headers.get('cf-connecting-ip')||'';
-  const init={method:request.method,headers:{'x-bridge-key':env.BRIDGE_KEY,'x-real-ip':ip,'Content-Type':'application/json'}};
+  const init={method:request.method,headers:{'x-bridge-key':env.BRIDGE_KEY,'x-fwip':ip,'Content-Type':'application/json'}};
   if(request.method!=='GET')init.body=await request.text();
   const res=await fetch(`${env.SERVER_URL}/chat${sub}${u.search}`,init);
 

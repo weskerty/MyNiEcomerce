@@ -21,7 +21,7 @@ export async function onRequestGet(context) {
     : `${env.SERVER_URL}/secret/posts?off=${encodeURIComponent(u.searchParams.get('off') || '0')}`;
 
   try {
-    const res = await fetch(target, { headers: { 'x-bridge-key': env.BRIDGE_KEY, 'x-real-ip': SB_IP(request) } });
+    const res = await fetch(target, { headers: { 'x-bridge-key': env.BRIDGE_KEY, 'x-fwip': SB_IP(request) } });
     const out = new Response(res.body, { status: res.status, headers: { ...SB_H, 'cache-control': `public, max-age=${SB_CACHE_TTL}` } });
     if (res.status === 200) context.waitUntil(cache.put(cacheKey, out.clone()));
     return out;
@@ -41,7 +41,7 @@ export async function onRequestPost(context) {
   const target = `${env.SERVER_URL}/secret/${isC ? 'comment' : 'post'}`;
   const res = await fetch(target, {
     method: 'POST',
-    headers: { 'x-bridge-key': env.BRIDGE_KEY, 'x-real-ip': SB_IP(request), 'content-type': 'application/json' },
+    headers: { 'x-bridge-key': env.BRIDGE_KEY, 'x-fwip': SB_IP(request), 'content-type': 'application/json' },
     body: JSON.stringify(j)
   });
 
