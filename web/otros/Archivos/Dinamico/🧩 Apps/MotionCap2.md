@@ -304,10 +304,12 @@ function pose(W){
   const loc=v=>[dot(v,rt),dot(v,up),dot(v,fw)];
   const out={};
   const arm=(sh,el,wr,key)=>{
-    const u=nrm(sub(W[el],W[sh]));
-    const f=nrm(sub(W[wr],W[el]));
-    const d=nrm(loc(u));
-    const ang=Math.acos(Math.max(-1,Math.min(1,dot(u,f))));
+    const ua=nrm(sub(W[el],W[sh]));
+    const fa=nrm(sub(W[wr],W[el]));
+    const hs=sub(W[wr],W[sh]);
+    const hl=Math.hypot(hs[0],hs[1],hs[2]);
+    const d=nrm(loc(hl>.08?nrm(hs):ua));
+    const ang=Math.acos(Math.max(-1,Math.min(1,dot(ua,fa))));
     out[key]={q:smooth(key,arc([0,-1,0],d)),bd:ang*cfg.bend};
   };
   arm(LM.shR,LM.elR,LM.wrR,'R');
@@ -577,18 +579,21 @@ function wsGo(){
   wsSt('Conectando...');
   try{ws=new WebSocket('ws://127.0.0.1:'+cfg.port);}
   catch(e){wsSt('Bloqueado por el navegador');return;}
-  ws.onopen=()=>wsSt('Conectado');
+  ws.onopen=()=>{
+    wsSt('Conectado');
+    try{ws.send(JSON.stringify({t:'getkeys'}));}catch(e){}
+  };
   ws.onmessage=ev=>{
     try{
       const d=JSON.parse(ev.data);
       if(d&&d.t==='keys'&&Array.isArray(d.v)){
         keyL=d.v;
-        $('m2-keyn').textContent=keyL.length+' teclas detectadas en el juego';
+        keyN();
         edDraw();
       }
     }catch(e){}
   };
-  ws.onclose=()=>{ws=null;wsSt('Desconectado');};
+  ws.onclose=()=>{ws=null;wsSt('Desconectado');keyL=[];keyN();};
   ws.onerror=()=>wsSt('Sin respuesta, revisa el mod');
 }
 function fwd(f){
@@ -790,6 +795,13 @@ function devDraw(){
     b.appendChild(el);
   });
 }
+function keyN(){
+  const e=$('m2-keyn');
+  if(!e)return;
+  e.textContent=keyL.length
+    ? (keyL.length+' teclas del juego disponibles. Elegi la accion "Tecla de un mod" en un boton para usarlas.')
+    : 'Sin teclas todavia. Conecta el mod arriba y se cargan solas.';
+}
 function edDraw(){
   const box=$('m2-ctrls');
   if(!box)return;
@@ -814,16 +826,17 @@ function edDraw(){
       row.appendChild(t);
     }
     if(c.a==='key'){
-      if(keyL.length){
-        const ks=mkEl('select');
-        const blank=mkEl('option');blank.value='';blank.textContent='(elegir tecla)';ks.appendChild(blank);
-        keyL.forEach(k=>{
-          const o=mkEl('option');o.value=k.n;o.textContent=k.n;ks.appendChild(o);
-        });
-        ks.value=c.v||'';
-        ks.onchange=()=>{c.v=ks.value;cfgSave();pushAll();};
-        row.appendChild(ks);
-      }
+      const ks=mkEl('select');
+      const blank=mkEl('option');
+      blank.value='';
+      blank.textContent=keyL.length?'(elegir tecla)':'(conecta el mod)';
+      ks.appendChild(blank);
+      keyL.forEach(k=>{
+        const o=mkEl('option');o.value=k.n;o.textContent=k.n;ks.appendChild(o);
+      });
+      ks.value=c.v||'';
+      ks.onchange=()=>{c.v=ks.value;cfgSave();edDraw();pushAll();};
+      row.appendChild(ks);
       const t=mkEl('input');
       t.placeholder='key.emotecraft.menu';
       t.value=c.v||'';
@@ -1018,6 +1031,7 @@ if(cEl)cEl.addEventListener('contentUnload',teardown,{once:true});
 (async function(){
   cfgLoad();
   mdlFill();
+  keyN();
   edDraw();
   try{await initPeer();}
   catch(e){msg('Error Conexion, no se pudo iniciar',true);return;}
