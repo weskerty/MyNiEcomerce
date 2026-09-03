@@ -1,6 +1,6 @@
 # Licencias de las imagenes
 
-Las imagenes de esta carpeta salen de Wikimedia Commons y de iNaturalist, todas bajo licencias que permiten el uso comercial. Se recortaron al centro y se reescalaron a 256x256 en webp; no se hizo ninguna otra modificacion.
+Las imagenes de esta carpeta salen de Wikimedia Commons y de iNaturalist, Se recortaron al centro y se reescalaron a 256x256 en webp; no se hizo ninguna otra modificacion.
 
 Estan agrupadas por licencia. Cada linea lleva el archivo, la especie, el autor y el enlace al original.
 

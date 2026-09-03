@@ -5,7 +5,8 @@ Tenemos que cuidar el ambiente para que este cuide de nosotros.</p>
 
 <p>Aqui una pequeña lista de los que estan en peligro y ya Extintos 😢</p>
 
-<div class="contenedor-imagenes-animado" data-title="😔 Extintos" data-gallery-key="Extintos" data-json-path="web/otros/Archivos/Imagenes/Ambiente/Extintos/data.json"></div>
+<div class="contenedor-imagenes-animado" data-title="😔 Adios Vidas" data-gallery-key="Extintos" data-json-path="web/otros/Archivos/Imagenes/Ambiente/Extintos/data.json" data-href="web/otros/Archivos/Imagenes/Ambiente/Extintos/ListaEntera.html"></div>
+
 
 <p>Esto son solo unos cuantos, Puedes ver la lista completa en diversas webs que se dedican a esto como esta:</p>
 <ul>
