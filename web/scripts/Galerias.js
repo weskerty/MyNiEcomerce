@@ -25,12 +25,6 @@ _S.textContent=`
 .gi-node{position:absolute;top:0;left:0;width:${ITEM}px;height:${ITEM}px}
 .gi-grid-inner{width:100%;overflow:hidden}
 .gi-grid-row{display:grid;grid-template-columns:repeat(auto-fill,150px);gap:8px;justify-content:center;margin-bottom:8px}
-.gi-pg{display:flex;justify-content:center;gap:12px;margin-top:4px}
-.gi-pg button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:white;padding:6px 18px;cursor:pointer;font-size:.85em;transition:background .2s}
-.gi-pg button:hover{background:rgba(255,255,255,.22)}
-.gi-pg button:disabled{opacity:.3;cursor:default}
-@keyframes gi-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.gi-anim{animation:gi-in .25s ease both}
 .gi-skeleton{display:flex;flex-direction:column;gap:8px;padding:8px 0}
 .gi-sk-item{height:${ITEM}px;border-radius:20px;background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 100%);background-size:200% 100%;animation:gi-shimmer 1.4s infinite}
 @keyframes gi-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -46,7 +40,6 @@ body.low-perf .gallery-item::after{display:none}
 .gi-pc{position:absolute;top:6px;right:6px;max-width:calc(100% - 12px);padding:2px 7px;border-radius:11px;background:rgba(0,0,0,.62);border:1px solid rgba(255,255,255,.16);font-size:.62rem;font-weight:600;line-height:1.55;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
 .gi-txt{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif!important}
 .gi-navtile-ico{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-bottom:22px;box-sizing:border-box;font-size:44px;line-height:1;background:rgba(255,255,255,.05)}
-.gi-navtile .mc p{font-weight:600}
 .gi-section{position:relative;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;margin-top:14px}
 .gi-section:has(.grid-gallery){padding-left:0;padding-right:0}
 .gi-section>a.gi-hd{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);padding:0 14px;margin:0;background:inherit;display:inline-block;white-space:nowrap;text-decoration:none;color:inherit}
@@ -66,15 +59,6 @@ function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1]:n}
 function mL(p){return p.replace(/\.[^.]+$/,'.md')}
 const _PC=/PC=(\d+)/;
 function fPC(n){const m=n.match(_PC);return m?m[1].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+' Gs':''}
-const NAV_NEXT='Siguiente, mostrar mas',NAV_PREV='Anterior, mostrar anteriores';
-function mkNavNode(label,emoji){
-  const a=document.createElement('div');a.className='gallery-item gi-navtile';
-  const ico=document.createElement('div');ico.className='gi-navtile-ico';ico.textContent=emoji;
-  const m=document.createElement('div');m.className='mc';
-  const pt=document.createElement('p');pt.className='gi-txt';pt.textContent=label;
-  m.appendChild(pt);a.appendChild(ico);a.appendChild(m);
-  return a;
-}
 let _GF=window.GridFit||null,_GFp=null;
 function loadGF(){
   if(_GF)return Promise.resolve(_GF);
@@ -90,17 +74,8 @@ function loadGF(){
 }
 function buildPages(imgs,ps){
   const total=imgs.length,pages=[];
-  let idx=0,p=0;
-  while(idx<total){
-    const hasPrev=p>0;
-    let slots=ps-(hasPrev?1:0);
-    const hasNext=(total-idx)>slots;
-    if(hasNext)slots--;
-    const count=Math.min(slots,total-idx);
-    pages.push({start:idx,end:idx+count,hasPrev,hasNext});
-    idx+=count;p++;
-  }
-  return pages.length?pages:[{start:0,end:0,hasPrev:false,hasNext:false}];
+  for(let i=0;i<total;i+=ps)pages.push({start:i,end:Math.min(i+ps,total)});
+  return pages.length?pages:[{start:0,end:0}];
 }
 function sPC(x,p){
   const v=fPC(fN(p));
@@ -423,30 +398,28 @@ function mkGrid(c,imgs){
       ro.observe(c);
     });
   }
-  function ensureKind(slot,kind,makeFn){
+  function cell(slot,p){
     let el=row.children[slot];
-    if(!el){el=makeFn();el.dataset.kind=kind;row.appendChild(el);return el}
-    if(el.dataset.kind!==kind){const ne=makeFn();ne.dataset.kind=kind;row.replaceChild(ne,el);return ne}
-    return el;
+    if(!el){el=mkNode(p);row.appendChild(el);return el}
+    patchNode(el,p);return el;
   }
-  function goPrev(ev){if(ev)ev.preventDefault();if(pg>0){pg--;renderPage(pg,true)}}
-  function goNext(ev){if(ev)ev.preventDefault();if(pg<pages.length-1){pg++;renderPage(pg,true)}}
-  function renderPage(p,scroll){
-    const{start,end,hasPrev,hasNext}=pages[p];
+  function goPrev(ev){if(ev)ev.preventDefault();if(pg>0){pg--;renderPage(pg,true,-1)}}
+  function goNext(ev){if(ev)ev.preventDefault();if(pg<pages.length-1){pg++;renderPage(pg,true,1)}}
+  function renderPage(p,scroll,dir){
+    const{start,end}=pages[p];
     let slot=0;
-    if(hasPrev){ensureKind(slot,'prev',()=>mkNavNode(NAV_PREV,'⬅️')).onclick=goPrev;slot++}
-    for(let i=start;i<end;i++,slot++){const el=ensureKind(slot,'img',()=>mkNode(imgs[i]));patchNode(el,imgs[i])}
-    if(hasNext){ensureKind(slot,'next',()=>mkNavNode(NAV_NEXT,'➡️')).onclick=goNext;slot++}
+    for(let i=start;i<end;i++,slot++)cell(slot,imgs[i]);
     while(row.children.length>slot)row.lastChild.remove();
     if(pages.length>1){
-      if(!nav){nav=document.createElement('div');nav.className='gi-pg';
-        const bP=document.createElement('button');bP.textContent='⬅️ Anterior';
-        const bN=document.createElement('button');bN.textContent='Siguiente ➡️';
+      if(!nav){nav=document.createElement('div');nav.className='PG1';
+        const bP=document.createElement('button');bP.textContent='Anterior';
+        const bN=document.createElement('button');bN.textContent='Siguiente';
         bP.onclick=goPrev;bN.onclick=goNext;
         nav.appendChild(bP);nav.appendChild(bN);inner.appendChild(nav)}
       nav.firstChild.disabled=p===0;nav.lastChild.disabled=p===pages.length-1;nav.style.display=''}
     else if(nav)nav.style.display='none';
-    inner.classList.remove('gi-anim');void inner.offsetWidth;inner.classList.add('gi-anim');
+    row.style.setProperty('--d',dir?(dir>0?'24px':'-24px'):'0px');
+    row.classList.remove('AN1');void row.offsetWidth;row.classList.add('AN1');
     if(scroll&&c.scrollIntoView)c.scrollIntoView({behavior:'smooth',block:'start'})}
   renderPage(0,false);
   return{setImgs(ni){imgs=ni;pg=0;pages=buildPages(imgs,pageSize);renderPage(0,false)},stop};

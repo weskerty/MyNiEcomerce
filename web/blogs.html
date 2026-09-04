@@ -38,12 +38,6 @@
 #BN_RB{display:contents}
 .BN_RL{display:inline-flex;align-items:center;text-decoration:none;border-color:rgba(255,140,0,.35);background:rgba(255,140,0,.08);color:#ffaa33}
 .BN_RL:hover{background:rgba(255,140,0,.18)}
-.bl-pg{display:flex;justify-content:center;gap:12px;margin-top:16px}
-.bl-pg button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:white;padding:6px 18px;cursor:pointer;font-size:.85em;transition:background .2s}
-.bl-pg button:hover{background:rgba(255,255,255,.22)}
-.bl-pg button:disabled{opacity:.3;cursor:default}
-@keyframes bl-in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-.bl-anim{animation:bl-in .25s ease both}
 .BN_BG{position:relative;height:170px;background-size:cover;background-position:center;filter:saturate(1.15);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
 .bl-card:hover .BN_BG{transform:scale(1.03)}
 .BN_BGN{height:auto;background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.02))}
@@ -266,7 +260,9 @@ function setupImgIO(){
   },{rootMargin:'100px'});
 }
 
-function renderPage(gr,list,p,animate){
+function BS1(g){if(g&&g.scrollIntoView)g.scrollIntoView({behavior:'smooth',block:'start'})}
+
+function renderPage(gr,list,p,animate,dir){
   gr.innerHTML='';
   const navBox=document.getElementById('bl-nav');
   if(navBox)navBox.innerHTML='';
@@ -284,14 +280,14 @@ function renderPage(gr,list,p,animate){
     if(bg)imgIO.observe(bg);
   });
   if(list.length>PAGE){
-    const nav=document.createElement('div');nav.className='bl-pg';
+    const nav=document.createElement('div');nav.className='PG1';
     const bP=document.createElement('button');bP.textContent='Anterior';bP.disabled=p===0;
     const bN=document.createElement('button');bN.textContent='Siguiente';bN.disabled=p===maxPg;
-    bP.onclick=()=>{curPg--;renderPage(gr,curList,curPg,true)};
-    bN.onclick=()=>{curPg++;renderPage(gr,curList,curPg,true)};
+    bP.onclick=()=>{curPg--;renderPage(gr,curList,curPg,true,-1);BS1(gr)};
+    bN.onclick=()=>{curPg++;renderPage(gr,curList,curPg,true,1);BS1(gr)};
     nav.appendChild(bP);nav.appendChild(bN);(navBox||gr).appendChild(nav);
   }
-  if(animate){gr.classList.remove('bl-anim');void gr.offsetWidth;gr.classList.add('bl-anim')}
+  if(animate){gr.style.setProperty('--d',dir?(dir>0?'24px':'-24px'):'0px');gr.classList.remove('AN1');void gr.offsetWidth;gr.classList.add('AN1')}
 }
 
 async function init(){

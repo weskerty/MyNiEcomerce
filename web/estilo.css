@@ -258,6 +258,7 @@ tr > *:first-child {
     position: relative;
     z-index: 1;
     overflow-wrap: break-word;
+    overflow-x: clip;
 }
 .content::before {
     content: '';
@@ -410,6 +411,10 @@ button:not([class]):disabled:hover {
     transform: none;
     border-color: rgba(255,255,255,0.2);
 }
+
+.PG1{display:flex;justify-content:center;gap:12px;margin-top:12px}
+.PG1 button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;min-width:120px;padding:0 22px;border-radius:14px;font-size:.95em}
+@media (max-width:480px){.PG1 button{flex:1;min-width:0;padding:0 10px}}
 
  
 /* botones grandes */
@@ -643,6 +648,11 @@ body.low-perf blockquote:hover { transform: none !important }
 #content>*{animation:FI1 .2s cubic-bezier(.16,1,.3,1);transform-origin:50% 0}
 @media (prefers-reduced-motion: reduce){#content>*{animation:none}}
 body.low-perf #content>*{animation:none}
+
+@keyframes AN1k{from{opacity:0;transform:translateX(var(--d,0))}to{opacity:1;transform:translateX(0)}}
+.AN1{animation:AN1k .25s ease both}
+@media (prefers-reduced-motion: reduce){.AN1{animation:none}}
+body.low-perf .AN1{animation:none}
 
 /* modal generico dialog */
 dialog{
