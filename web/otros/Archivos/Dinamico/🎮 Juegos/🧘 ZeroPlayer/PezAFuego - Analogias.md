@@ -9,9 +9,8 @@
 #AN_inicio{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
 #AN_iniciarBtn{padding:12px 24px;border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);cursor:pointer;font-size:1em}
 #AN_opciones{display:flex;flex-direction:column;gap:10px;width:100%}
-.AN_op{padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);cursor:pointer;text-align:center;transition:background .2s}
+.AN_op{padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:inherit;font:inherit;cursor:pointer;text-align:center;transition:background .2s}
 .AN_op:hover{background:rgba(255,255,255,.12)}
-.AN_op.AN_dis{pointer-events:none;opacity:.7}
 #AN_final{text-align:center;display:flex;flex-direction:column;gap:12px}
 #AN_estrellas{font-size:2em}
 #AN_reintentar{padding:10px 20px;border-radius:10px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);cursor:pointer}
@@ -33,7 +32,7 @@
 var AN_base="web/otros/Archivos/DataBase/Games/";
 var AN_TOTAL=20;
 var AN_TIME=15;
-var AN_data=[],AN_orden=[],AN_idx=0,AN_ok=0,AN_fail=0,AN_int=null,AN_seg=0,AN_activo=false;
+var AN_data=[],AN_orden=[],AN_idx=0,AN_ok=0,AN_int=null,AN_seg=0,AN_activo=false;
 
 function AN_shuffle(a){
   for(var i=a.length-1;i>0;i--){
@@ -52,13 +51,13 @@ function AN_limpiar(){
 function AN_render(){
   var q=AN_data[AN_orden[AN_idx]];
   document.getElementById("AN_contador").textContent=(AN_idx+1)+"/"+AN_orden.length;
-  document.getElementById("AN_pregunta").textContent=q.pregunta+" es a:";
+  document.getElementById("AN_pregunta").textContent=q.pregunta+" como:";
   var idxOp=AN_shuffle(q.opciones.map(function(_,i){return i}));
   var correctaPos=idxOp.indexOf(q.correct);
   var cont=document.getElementById("AN_opciones");
   cont.innerHTML="";
   idxOp.forEach(function(origI,pos){
-    var d=document.createElement("div");
+    var d=document.createElement("button");
     d.className="AN_op";
     d.textContent=q.opciones[origI];
     d.addEventListener("click",function(){AN_responder(pos,correctaPos)});
@@ -68,7 +67,8 @@ function AN_render(){
   var bar=document.getElementById("AN_timerBar");
   bar.style.transition="none";
   bar.style.width="100%";
-  requestAnimationFrame(function(){bar.style.transition="width 1s linear"});
+  void bar.offsetWidth;
+  bar.style.transition="width 1s linear";
   AN_activo=true;
   clearInterval(AN_int);
   AN_int=setInterval(function(){
@@ -85,8 +85,7 @@ function AN_responder(i,correctaPos){
   if(!AN_activo)return;
   AN_activo=false;
   clearInterval(AN_int);
-  if(i===correctaPos)AN_ok++;else AN_fail++;
-  document.querySelectorAll("#AN_opciones .AN_op").forEach(function(el){el.classList.add("AN_dis")});
+  if(i===correctaPos)AN_ok++;
   AN_idx++;
   if(AN_idx>=AN_orden.length)AN_final();
   else AN_render();
@@ -117,7 +116,7 @@ function AN_iniciar(){
   document.getElementById("AN_barra").style.display="";
   document.getElementById("AN_timer").style.display="";
   document.getElementById("AN_pregunta").style.display="";
-  AN_ok=0;AN_fail=0;AN_idx=0;
+  AN_ok=0;AN_idx=0;
   var ids=AN_data.map(function(_,i){return i});
   AN_orden=AN_shuffle(ids).slice(0,Math.min(AN_TOTAL,AN_data.length));
   AN_render();
@@ -129,8 +128,8 @@ fetch(AN_base+"analogias.json")
     AN_data=data;
     document.getElementById("AN_iniciarBtn").disabled=false;
   })
-  .catch(function(e){
-    document.getElementById("AN_wrap").textContent="Error cargando el juego "+e;
+  .catch(function(){
+    document.getElementById("AN_explica").textContent="Error Juego 1";
   });
 
 document.getElementById("AN_iniciarBtn").addEventListener("click",AN_iniciar);
@@ -138,6 +137,6 @@ document.getElementById("AN_iniciarBtn").addEventListener("click",AN_iniciar);
 document.getElementById("AN_wrap").closest("#content")?.addEventListener("contentUnload",AN_limpiar,{once:true});
 })();
 </script>
-</br>
+<br>
 
-<a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Applicaciones </a>
+<a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones </a>
