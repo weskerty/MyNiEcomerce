@@ -21,6 +21,15 @@ FRASES_HTML
 
 const PERM_C='permanent';
 const PRE_PERM=[
+'web/otros/Archivos/Dinamico/🧩 Apps/es.html',
+'web/otros/Archivos/Dinamico/🎮 Juegos/es.html',
+'web/Dinamico/🍰 Alimentos/alimentos.html',
+'web/Dinamico/🍸 Accesorios/accesorios.html',
+'web/Dinamico/📱 Dispositivos/es.html',
+'web/Dinamico/🩳 Prendas/prendas.html',
+'web/Dinamico/🪷 Plantas/Plantas.html',
+'web/Dinamico/🐕‍🦺 Animal/Animales.html',
+'web/otros/Archivos/DataBase/Libros/cuentos.json',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
 'web/scripts/Otros/MarkDownIT/markdownItAnchor.umd.min.js',
 'web/scripts/Otros/MiniSearch/index.js',
@@ -28,7 +37,7 @@ const PRE_PERM=[
 'web/scripts/Otros/Leaflet/leaflet.css',
 'web/404.html',
 'web/favicon.ico',
-'web/otros/Archivos/Imagenes/wallpaper.avif',
+'web/otros/Archivos/Imagenes/wallpaper.webp',
 'web/otros/Archivos/Fuentes/Comfortaa/font.woff2',
 'web/otros/Archivos/Fuentes/Emojis/FluentEmojiColor.woff2',
 'web/otros/Archivos/Imagenes/Permanente/404.avif',
@@ -46,7 +55,7 @@ N_ICO,
 N_BANNER
 ];
 
-const TEMP_ROUTES=[{match:'/api/chat/',ttl:14000},{match:'/api/',ttl:18000000}];
+const TEMP_ROUTES=[{match:'/api/chat/',ttl:10000},{match:'/api/',ttl:18000000}];
 const EXT_CACHE=[
   {origin:'esm.unpkg.com',ttl:0},
   {origin:'unpkg.com',ttl:0}

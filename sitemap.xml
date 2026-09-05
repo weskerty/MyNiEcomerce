@@ -101,7 +101,17 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://cheagana.com/web/LiteMode/blog/tutoriales-acelera-tu-compu-lenta</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://cheagana.com/web/LiteMode/blog/tutoriales-crea-tu-propia-pagina-web</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://cheagana.com/web/LiteMode/blog/tutoriales-leer-sin-contaminar-lectores-digitales</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
