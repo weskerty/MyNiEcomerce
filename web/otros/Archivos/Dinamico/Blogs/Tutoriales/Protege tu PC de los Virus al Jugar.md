@@ -1,0 +1,107 @@
+
+![image](web/otros/Archivos/Imagenes/ProtegetuPCdelosVirusalJugar/imagemtntx0rg.webp)
+
+
+<div style="text-align:center;">
+	 
+	  <h1>😊 Jugar Seguro, Jugar sin Virus</h1>
+        <h2>Este es un tutorial rapido de Como Instalar juegos de Manera Segura y como Ejecutar Programas Inseguros de Manera Segura</h2>
+		<h3><a href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20">💟 Añade a los Jugadores del Grupo</a></h3>
+		
+	<h1>🛂 Instalar Juegos con Hydra Launcher</h1>
+	
+	Descargamos e Instalamos <a href="https://github.com/hydralauncher/hydra">HydraLauncher</a>
+	<br>
+	<a href="https://github.com/hydralauncher/hydra/releases"><img src="https://github.com/user-attachments/assets/5e385104-eda9-4ed0-a50d-a13c42163843" alt="Descargar" width="128" height="100" /></a>
+	   <video src="https://github.com/user-attachments/assets/d87003a0-2c15-4d10-8c3d-0471fc4f7356" controls width="100%" height="auto"></video>
+
+       <p>Una vez instalado agregamos las fuentes y buscamos el Juego que Queremos, los de OFM tienen Funciones Online. Cualquier Duda en el Grupo de Juegos.</p>
+	   
+	  <br>
+	  
+<details>
+		<summary>💡 <h1>Guia para ejecutar aplicaciones inseguras en Windows sin ser Afectado por Virus</h1></summary>
+
+	   <img src="https://telegra.ph/file/54dd773168bee13517877.png" alt="Seguro" width="50%" height="auto" /></a>
+	   <br>
+	   <h1>1️⃣Windows SandBox;</h1>
+<p>Este es una Maquina Virtual Nativa de Windows para Ejecutar Aplicaciones Inseguras.
+Se debe activar desde Configuracion > Sistema >  Caracteristicas Opcionales > Mas Caracteristicas. O Buscando desde el menu inicio "activar caracter windows"
+Activamos el "Espacio Aislado de Windows" y Reiniciamos la PC.</p>
+	   <img src="https://telegra.ph/file/da9932dfcee86f1a7ff58.png" alt="Seguro" width="50%" height="auto" /></a>
+	   <p>Al volver a iniciar tendras un nuevo programa Instalado llamado "Windows SandBox" </p>
+	   <img src="https://telegra.ph/file/2507c365892d9ada1fcc0.png" alt="Seguro" width="50%" height="auto" /></a>
+	   
+	   Al iniciarlo se abrira una pestaña con un Windows Nuevo. Debes descargar el juego y demas cosas necesarias desde Aqui. 
+Nota: en Windows10 los datos se Resetean al cerrar el sandbox.
+
+<a href="https://learn.microsoft.com/es-es/windows/security/application-security/application-isolation/windows-sandbox/windows-sandbox-overview">Mas Info Sobre Windows SandBox ↗️</a>
+	   <br>
+	   
+	   
+	   <h1>2️⃣SandBoxiePlus;</h1>
+<p>Este Programa aisla los programas inseguros directamente, no es necesario descargar todo de nuevo aqui como el Metodo Anterior.</p>
+<a href="https://sandboxie-plus.com/downloads/">Descarga de Aqui ↗️</a>
+
+<p>Instala el Programa y Configuralo. </p>
+<p>Abre un Juego Inseguro desde donde lo tengas.</p>
+<img src="https://telegra.ph/file/1c5514500e8ec011db6f0.png" alt="Seguro" width="50%" height="auto" /></a>
+<p>Juegos Online Requieren que Tengas Steam en el SandBox Tambien.</p>
+
+<p>Si el juego o programa falla, puedes elegir el nivel de seguridad del SandBox (Puedes tener varios)</p>
+<img src="https://telegra.ph/file/08fea7e6aa0d99d1d0a27.png" alt="Seguro" width="50%" height="auto" /></a>
+
+<br>
+<a href="https://github.com/sandboxie-plus/Sandboxie">Mas Info Sobre SandBoxiePlus ↗️</a>
+	   <br>
+	   
+	   
+	   <h1>4️⃣Sistema Portable, Seguridad Definitiva;</h1>
+	   
+<p>Metodo para Tener un Sistema separado del Sistema que usas Habitualmente.</p>
+<p>Windows Portatil desde un Pendrive o Disco Duro Portatil para llevar a todos lados e iniciar en cualquier Computadora de Manera Segura.</p>
+
+<p>Necesitamos; </p>
+<p>Memoria USB</p>
+
+<a href="https://windowsxlite.com/Optimum10Prov5/">Estos Archivos ↗️</a>
+
+<p>Descomprimimos el Archivo Descargado y abrimos el Programa "Rufus"</p>
+
+<p>Si Rufus Solicita Actualizacion, Actualizalo. Luego Sigue con el Procedimiento</p>
+<p>Conectamos y seleccionamos nuestro USB en el primer menu y en el segundo menu el Archivo Windows.iso. En "Opciones de Imagen" ponemos "WindowsToGo" y Empezar.</p>
+<img src="https://telegra.ph/file/0206657177d7264c066da.png" alt="Seguro" width="50%" height="auto" /></a>
+
+<p>En este menu no se lee correctamente, pero es una pregunta para Deshabilitar el Antivirus "Windows Defender".</p>
+<p>Como este sera nuestro sistema de juegos inseguro, pulsamos la primera opcion para deshabilitarlo.</p>
+<img src="https://telegra.ph/file/ea1a523684ad1a2917f90.png" alt="Seguro" width="50%" height="auto" /></a>
+
+<p>En este menu no cambiamos nada, ya que ya vienen desactivados por defecto en este Windows. Puedes ajustar si prefieres que este sistema no tenga acceso a la memoria interna de la PC para mas proteccion. </p>
+<img src="https://telegra.ph/file/3efda2dbf5985e90299a2.png" alt="Seguro" width="50%" height="auto" /></a>
+
+<p>Aceptar todo e instalar. Puede que muestre un error al final, pero el USB ya sera funcional.</p>
+<p>Tambien Puedes instalarlo como una Instalacion Normal en una Particion Interna.</p>
+
+
+<h2>#️⃣Iniciar el Windows Portable;</h2>
+<p>Reiniciamos la PC con el pendrive conectado.</p>
+<p>Cuando aparezca una imagen en pantalla Presionamos F8, F9 o F12 (la tecla varia dependiendo de la marca de la pc) </p>
+<img src="https://telegra.ph/file/837f9ceae589a8c7b0c35.png" alt="Seguro" width="50%" height="auto" /></a>
+
+<p>F12 Boot Device</p>
+
+
+<p>aparecera un menu que pregunta con que sistema operativo quieres iniciar, Elegimos el nombre del pendrive, aveces puede decir Windows Boot Loader.</p>
+<img src="https://telegra.ph/file/e2dfdc6b07cd0e37026fc.jpg" alt="Seguro" width="50%" height="auto" /></a>
+
+<p>Elegir el Nombre del Pendrive o Debian que empiece con "UEFI"</p>
+<p>En caso de que no suceda nada al presionar F12 o F9 debes ajustar la bios para iniciar desde el usb. Ajustar la BIOS ↗️</p>
+
+<h1>5️⃣Jugar en Linux, Seguridad Definitiva 2;</h1>
+<p>Al igual que el metodo anterior, podemos Instalarlo desde un USB o Disco Duro portatil. En este metodo Linux no accede a los archivos de tu pc amenos de que tu montes tu disco duro de manera explicita. </p>
+
+<a href="https://weskerty.github.io/LinuxOneClick/">Mas Informacion sobre como Jugar en Linux ↗️</a>
+	   <a href="https://weskerty.github.io/LinuxOneClick/"><img src="https://telegra.ph/file/7906b5b89ddba7d1c6480.jpg" alt="Linux" width="70%" height="auto" /></a>
+<details>
+
+<!--FE=2026-09-05T03:42:36.021Z-->
