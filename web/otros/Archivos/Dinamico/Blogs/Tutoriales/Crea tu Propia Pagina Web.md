@@ -1,3 +1,5 @@
+### Modo Gratis
+
 Aqui se te explicara la manera mas facil de como tener tu Pagina Web propia, Similar a esta. 
 
 Primero nos creamos una cuenta en [GitHub ↗️](https://github.com/signup) o el repo que prefieras.
@@ -26,7 +28,7 @@ Luego todos podrian entrar desde TU-Usuario.github.io/NombreQuePusiste(si-era-la
 
 Se puede cambiar el nombre desde conf y tambien cambia esa URL, pero siempre se queda el  TU-Usuario.github.io/ Primero.
 
-### Dominio Propio
+### Dominio Propio | OPCIONAL
 El dominio es el www.PalabraQueMeGuste.com
 Para poner el que gustes se debe comprar un Dominio. Puedes comprar uno [Desde Aqui ↗️](https://clientes.maxdominios.com/aff.php?aff=1138)
 
@@ -35,7 +37,7 @@ Esa pagina permite comprar incluso tu propio servidor para hostear manualmente t
 
 
 
-### Configurar el Dominio en GitHub
+### Configurar el Dominio 
 
 Ya con el dominio comprado son dos pasos y una espera: apuntar el dominio a GitHub, avisarle a GitHub cual es el tuyo, y esperar a que se acomode.
 
@@ -98,39 +100,33 @@ Un detalle: si en vez de publicar desde una rama publicas con un flujo propio de
 
 [Documentacion GitHub de Dominio Personalizado ↗️](https://docs.github.com/pages/configuring-a-custom-domain-for-your-github-pages-site)
 
-### Los limites de GitHub Pages
+### Limites de GitHub Pages
 
-Antes de casarte con GitHub, los numeros que publican ellos mismos:
 
 - El repositorio no deberia pasar 1 GB.
 - La pagina publicada no puede pasar 1 GB.
-- 100 GB de trafico por mes. Es un limite blando: te avisan antes de cortarte.
+- 100 GB de trafico por mes. Es un limite blando: te avisan antes.
 - 10 compilaciones por hora, tambien blando.
 
-Y lo que NO se puede hostear ahi segun sus condiciones: negocios online, tiendas, servicios pagos, y nada que maneje contrasenas o tarjetas de credito. Para un blog, un portfolio o una pagina informativa va perfecto. Para vender, no.
 
-### Vincular a Cloudflare
 
-Cloudflare se pone adelante de GitHub: el mismo dominio y la misma pagina, pero las visitas pasan primero por su red. Te da cache, estadisticas, proteccion contra ataques, y de paso resuelve el limite de trafico, porque la mayoria de las visitas las contesta Cloudflare sin molestar a GitHub. Es gratis.
 
-El ORDEN de los pasos importa, y es donde se traba todo el mundo:
 
-1. Te creas cuenta en [Cloudflare ↗️](https://dash.cloudflare.com/sign-up) y agregas tu dominio. Te va a dar dos nameservers.
-2. Esos dos nameservers hay que cargarlos del lado del dominio. Igual que antes: en MaxDominios se pide por ticket que los cambien por los de Cloudflare, y si tenes hosting propio los cambias vos. Tambien tarda, dale su tiempo.
-3. En Cloudflare, en la seccion DNS, cargas los mismos registros de antes (las 4 de tipo A y el CNAME del www), pero los dejas con la nube GRIS, que dice DNS only.
-4. Volves a GitHub, esperas el tilde verde y prendes Enforce HTTPS.
-5. Recien ahora volves a Cloudflare y pasas las nubes a NARANJA, que dice Proxied.
-6. En Cloudflare, en SSL/TLS, poner el modo en Full (strict).
+### Facil y Rapido
+O tambien podes ir por lo facil y rapido 
 
-Los dos errores que rompen todo:
 
-- Prender la nube naranja antes de tiempo. GitHub necesita ver tu dominio directo para validarlo y sacar el certificado; con el proxy puesto no puede, y la casilla Enforce HTTPS te queda gris para siempre.
-- Dejar el SSL en Flexible. Cloudflare le habla en http a GitHub, GitHub le contesta andate a https, Cloudflare vuelve a pedir en http, y asi para siempre: el navegador termina tirando ERR_TOO_MANY_REDIRECTS. Siempre Full o Full (strict).
+![image](web/otros/Archivos/Imagenes/CreatuPropiaPaginaWeb/imagemto8yye1.webp)
 
-Si despues de tocar todo esto algo se ve raro o desactualizado, en Cloudflare hay un boton para purgar el cache. Nueve de cada diez veces es eso.
+Simplemente Solicitas [Desde Aqui ↗️](https://clientes.maxdominios.com/aff.php?aff=1138) y pide que se te arme como quieras. Facil Rapido y Sencillo.
 
-### El paso siguiente
 
-Si ya estas en Cloudflare, podes saltear GitHub del todo y publicar directo con Cloudflare Pages: le das acceso a tu repositorio y cada vez que subas un cambio la pagina se actualiza sola. Sin el limite de trafico y sin la prohibicion de vender. Esta misma pagina que estas leyendo funciona asi.
+
+
+
+
+
+
+
 
 <!--FE=2026-09-02T10:48:45.324Z-->
