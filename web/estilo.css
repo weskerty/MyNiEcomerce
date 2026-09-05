@@ -412,7 +412,8 @@ button:not([class]):disabled:hover {
     border-color: rgba(255,255,255,0.2);
 }
 
-.PG1{display:flex;justify-content:center;gap:12px;margin-top:12px}
+.PG1{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:12px}
+.PG1 span{color:rgba(255,255,255,.55);font-size:.82em;font-variant-numeric:tabular-nums}
 .PG1 button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;min-width:120px;padding:0 22px;border-radius:14px;font-size:.95em}
 @media (max-width:480px){.PG1 button{flex:1;min-width:0;padding:0 10px}}
 

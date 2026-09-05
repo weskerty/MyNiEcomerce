@@ -28,9 +28,6 @@
 .SB_DT:nth-child(2){animation-delay:.15s}
 .SB_DT:nth-child(3){animation-delay:.3s}
 @keyframes SB_P{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
-.SB_PG{display:flex;justify-content:center;margin-top:16px}
-.SB_PG button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;padding:6px 18px;cursor:pointer}
-.SB_PG button:disabled{opacity:.3;cursor:default}
 .SB_MO{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.5);backdrop-filter:blur(4px)}
 .SB_MO.SB_MOP{display:flex}
 .SB_MB{width:100%;max-width:560px;max-height:82vh;display:flex;flex-direction:column;background:rgba(24,24,28,.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.15);border-radius:22px 22px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.4)}
@@ -128,11 +125,11 @@ async function SB_render(off){
   SB_posts=posts;
   if(!posts.length&&off===0){gd.innerHTML='<div class="SB_EMP">🕳️ Sin publicaciones aun</div>';return;}
   posts.forEach(p=>gd.appendChild(SB_mkItem(p)));
-  const nav=document.createElement('div');nav.className='SB_PG';
+  const nav=document.createElement('div');nav.className='PG1';
   const bP=document.createElement('button');bP.textContent='Anterior';bP.disabled=off===0;
   const bN=document.createElement('button');bN.textContent='Siguiente';bN.disabled=posts.length<SB_PG;
-  bP.onclick=()=>{SB_off=Math.max(0,off-SB_PG);SB_render(SB_off);};
-  bN.onclick=()=>{SB_off=off+SB_PG;SB_render(SB_off);};
+  bP.onclick=()=>{SB_off=Math.max(0,off-SB_PG);SB_render(SB_off);gd.scrollIntoView({behavior:'smooth',block:'start'});};
+  bN.onclick=()=>{SB_off=off+SB_PG;SB_render(SB_off);gd.scrollIntoView({behavior:'smooth',block:'start'});};
   nav.appendChild(bP);nav.appendChild(bN);gd.appendChild(nav);
 }
 

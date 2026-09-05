@@ -1,9 +1,4 @@
 <style>
-#adbStorePg{display:flex;justify-content:center;gap:12px;margin-top:12px}
-#adbStorePg button{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);border-radius:10px;color:#fff;padding:6px 18px;cursor:pointer;font-size:.85em;font-family:inherit;transition:background .2s}
-#adbStorePg button:hover{background:rgba(255,255,255,.18)}
-#adbStorePg button:disabled{opacity:.3;cursor:default}
-#adbStorePg button:disabled{opacity:.3;cursor:default}
 .adb-wrap{position:relative}
 #adbStOv{position:absolute;inset:0;z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:rgba(0,0,0,.25);border-radius:12px}
 #adbStOv img{width:56px;height:56px}
@@ -49,7 +44,7 @@ VideoFuturo
 <input id="adbSearchInp" type="search" placeholder="Buscar Nuevas Apps..." autocomplete="off" style="flex:1;background:none;border:none;outline:none;color:#fff;font-size:1rem;font-family:inherit">
 </div>
 <div id="adbStoreGrid"></div>
-<div id="adbStorePg" style="display:none">
+<div id="adbStorePg" class="PG1" style="display:none">
 <button id="adbStorePrev">Anterior</button>
 <button id="adbStoreNext">Siguiente</button>
 </div>
@@ -333,7 +328,7 @@ setTimeout(()=>p.textContent=app.summary||"",2000);
 return a;
 }
 
-function renderStorePage(){
+function renderStorePage(dir){
 gridEl.innerHTML="";
 const s=stPg*20,slice=stCur.slice(s,s+20);
 slice.forEach(app=>gridEl.appendChild(mkStoreCard(app)));
@@ -342,10 +337,12 @@ if(stCur.length>20){
 pgEl.style.display="";
 pgPrev.disabled=stPg===0;pgNext.disabled=stPg>=maxPg;
 }else pgEl.style.display="none";
+gridEl.style.setProperty("--d",dir?(dir>0?"24px":"-24px"):"0px");
+gridEl.classList.remove("AN1");void gridEl.offsetWidth;gridEl.classList.add("AN1");
 }
 
-pgPrev.addEventListener("click",()=>{stPg--;renderStorePage()});
-pgNext.addEventListener("click",()=>{stPg++;renderStorePage()});
+pgPrev.addEventListener("click",()=>{stPg--;renderStorePage(-1);gridEl.scrollIntoView({behavior:"smooth",block:"start"})});
+pgNext.addEventListener("click",()=>{stPg++;renderStorePage(1);gridEl.scrollIntoView({behavior:"smooth",block:"start"})});
 
 async function doStoreSearch(){
 const q=searchInp.value.trim();

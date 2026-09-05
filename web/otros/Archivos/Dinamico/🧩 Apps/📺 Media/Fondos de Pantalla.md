@@ -12,11 +12,6 @@
 .sk-ib:hover{opacity:1;transform:scale(1.1)}
 .sk-ib:disabled{opacity:.3;cursor:not-allowed;transform:none}
 .sk-bar.sk-cd::after{content:'';position:absolute;left:0;top:0;height:100%;width:var(--sk-cd-p,0%);background:rgba(56,189,248,.13);transition:width .1s linear;pointer-events:none;z-index:0}
-.gi-pg{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:4px}
-.gi-pg button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:white;padding:6px 18px;cursor:pointer;font-size:.85em;transition:background .2s}
-.gi-pg button:hover{background:rgba(255,255,255,.22)}
-.gi-pg button:disabled{opacity:.3;cursor:default}
-.gi-pg span{color:rgba(255,255,255,.55);font-size:.82em}
 .sk-msg{text-align:center;color:rgba(255,255,255,.55);font-size:.9em;padding:20px 0;margin:0}
 .sk-searching{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 0;gap:8px;width:100%;grid-column:1/-1}
 .sk-searching img{width:56px;height:56px}
@@ -65,7 +60,7 @@
     <button class="wp-cat" data-q="galaxy">🌌 Galaxy</button>
   </div>
   <div id="wp-grid" class="wp-grid"></div>
-  <div id="wp-pg" class="gi-pg"></div>
+  <div id="wp-pg" class="PG1"></div>
   <p id="wp-st" class="sk-msg"></p>
 </div>
 

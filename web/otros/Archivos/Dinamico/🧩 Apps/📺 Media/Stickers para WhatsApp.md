@@ -22,11 +22,6 @@
 .sk-it.sk-max{opacity:.45;cursor:not-allowed}
 .sk-it.sk-max:hover{transform:none}
 .sk-ad{grid-column:1/-1;display:flex;justify-content:center;overflow:hidden}
-.gi-pg{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:4px}
-.gi-pg button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:10px;color:white;padding:6px 18px;cursor:pointer;font-size:.85em;transition:background .2s}
-.gi-pg button:hover{background:rgba(255,255,255,.22)}
-.gi-pg button:disabled{opacity:.3;cursor:default}
-.gi-pg span{color:rgba(255,255,255,.55);font-size:.82em}
 .sk-foot{display:flex;justify-content:center;gap:10px;margin-top:14px}
 .sk-cf{padding:14px 36px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.14);color:white;cursor:pointer;font-size:1.1em;transition:background .2s}
 .sk-cf:hover:not(:disabled){background:rgba(255,255,255,.24)}
@@ -86,7 +81,7 @@
     <input type="file" id="sc-in" accept="image/*,video/mp4" multiple style="display:none">
   </div>
   <div id="sk-grid" class="sk-grid"></div>
-  <div id="sk-pg" class="gi-pg"></div>
+  <div id="sk-pg" class="PG1"></div>
   <div class="sk-foot">
     <button id="sk-cf" class="sk-cf" disabled>👉 Confirmar ✅ (<span id="sk-n">0</span>) 👈</button>
     <a id="wa-btn" class="sk-wa" style="display:none" href="#" target="_blank">Agregar a WhatsApp</a>
@@ -238,6 +233,7 @@
   }
 
   function renderPage(p){
+    const dir=p>pg?1:p<pg?-1:0;
     pg=p;const sl=p*PG,chunk=R.slice(sl,sl+PG);gEl.innerHTML='';
     chunk.forEach(item=>{
       if(item.type==='ad'){
@@ -260,6 +256,8 @@
       gEl.appendChild(d);
     });
     renderPg();
+    gEl.style.setProperty('--d',dir?(dir>0?'24px':'-24px'):'0px');
+    gEl.classList.remove('AN1');void gEl.offsetWidth;gEl.classList.add('AN1');
     document.getElementById('sk-search').scrollIntoView({behavior:'smooth',block:'start'});
   }
 
