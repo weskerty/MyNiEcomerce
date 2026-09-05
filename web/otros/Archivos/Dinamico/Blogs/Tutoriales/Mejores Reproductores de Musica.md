@@ -4,4 +4,22 @@ Hoy en dia muchas personas utilizan aplicaciones de stram para sus musicas, esta
 
 ![SpotifyNoP](web/otros/Archivos/Imagenes/MejoresReproductoresdeMusica/SpotifyNoP.avif)
 
+
+Extraño cuando la gente armaba cosas para internet sin convertir todo en una suscripción, Extraño el internet de antes, donde la gente compartia por gusto y no con la intencion de robarte tu billetera. 
+![image](web/otros/Archivos/Imagenes/MejoresReproductoresdeMusica/imagemtoce9ur.webp)
+
+### Aun hay apps Buenas... Pero no en la PlayStore.
+![image](web/otros/Archivos/Imagenes/MejoresReproductoresdeMusica/imagemtockeh7.webp)
+
+
+
+
+
+
+
+
+
+
+
+
 <!--FE=2026-07-06T13:01:19.000Z-->

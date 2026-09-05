@@ -89,7 +89,7 @@
 </style>
 
 <h1 style="margin:0 0 6px;font-size:1.4em;font-weight:700;color:#fff">⛏️ Servidores Minecraft Paraguay</h1>
-<p style="margin:0 0 14px;font-size:.88em;color:rgba(255,255,255,.45)">Si ya tenes Minecraft instalado, presiona Añadir en Bedrock o copia la IP.</p>
+<p style="margin:0 0 14px;font-size:.88em;color:rgba(255,255,255,.45)">Copia la IP y Unete a los Mundos.</p>
 
 <div id="mc-wrap" class="mc-wrap">
   <div style="height:80px;border-radius:16px;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:200%;animation:mc-sk 1.4s infinite"></div>
@@ -184,9 +184,6 @@ fetch(JSON_URL)
 })();
 </script>
 
-
+<a href="web/otros/Archivos/HTML/AgregarPublico.html" class="back-button"> Subir Peticion ➡️</a>
 <a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a>
-</div>
-
-
 
