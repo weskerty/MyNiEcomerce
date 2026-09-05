@@ -1,6 +1,6 @@
 <div style="text-align:center;position:relative;padding-top:0;margin-top:0">
 <style>
-.vc-wrap{padding:12px;max-width:100%}
+.vc-wrap{padding:12px;max-width:100%;position:relative}
 .vc-drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:160px;border:2px dashed rgba(255,255,255,.2);border-radius:20px;background:rgba(255,255,255,.05);cursor:pointer;transition:border-color .2s,background .2s;padding:24px 16px;margin-bottom:14px}
 .vc-drop:hover,.vc-drop.vc-over{border-color:rgba(56,189,248,.5);background:rgba(56,189,248,.07)}
 .vc-drop span{color:rgba(255,255,255,.5);font-size:.9em}
@@ -29,6 +29,10 @@
 .VS5::-moz-range-track{height:6px;background:none}
 .VS6{color:rgba(255,255,255,.7);font-size:.85em;margin:2px 0 10px;font-variant-numeric:tabular-nums}
 .VS7{color:rgba(255,255,255,.5);font-size:.8em;margin:0 0 8px}
+.VS8{display:none;position:absolute;inset:0;z-index:50;background:rgba(12,12,14,.72);flex-direction:column;align-items:center;justify-content:center;gap:12px;border-radius:20px;text-align:center;padding:16px}
+.VS8.on{display:flex}
+.VS9{font-size:.85rem;color:rgba(255,255,255,.85);max-width:80%;min-height:1.2em}
+.VS8 .vc-prog-w{max-width:220px}
 </style>
 
 <div class="vc-wrap">
@@ -68,15 +72,20 @@
   </div>
 
   <div style="text-align:center;margin-bottom:10px">
-    <div class="vc-prog-w" id="vc-prog-w">
-      <div class="vc-prog" id="vc-prog"></div>
-    </div>
     <div class="vc-lbl" id="vc-lbl"></div>
     <button class="vc-reset" id="vc-dla">⬇️ Descargar todo</button>
     <button class="vc-reset" id="vc-reset">🗑 Nuevo archivo</button>
   </div>
 
   <div class="vc-list" id="vc-list"></div>
+
+  <div class="VS8" id="vc-wt">
+    <img class="wait-anim" alt="">
+    <div class="VS9" id="vc-wt-t"></div>
+    <div class="vc-prog-w" id="vc-prog-w">
+      <div class="vc-prog" id="vc-prog"></div>
+    </div>
+  </div>
 </div>
 
 <div class="vc-toast" id="vc-toast"></div>
@@ -103,6 +112,8 @@ const VS_HL=document.getElementById('vc-hl');
 const VS_RT=document.getElementById('vc-rt');
 const VS_RES=document.getElementById('vc-res');
 const VS_RTX=document.getElementById('vc-rest');
+const VS_WT=document.getElementById('vc-wt');
+const VS_WTT=document.getElementById('vc-wt-t');
 
 const FF_BASE='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd';
 const FF_JS=FF_BASE+'/ffmpeg.js';
@@ -125,7 +136,17 @@ function O(a){
 function P(a,b){
   lg('prog',a+'%',b||'');
   F.style.width=a+'%';
-  G.textContent=b||'';
+  VS_WTT.textContent=b||'';
+  G.textContent=VS_WT.classList.contains('on')?'':(b||'');
+}
+
+function VS_W1(a){
+  if(a){
+    const b=VS_WT.querySelector('img');
+    if(!b.getAttribute('src'))b.src=(window.__CFG&&window.__CFG.waitAnim)||'';
+  }
+  VS_WT.classList.toggle('on',!!a);
+  if(!a)G.textContent=VS_WTT.textContent;
 }
 
 function Q(a){
@@ -219,6 +240,14 @@ function VS_P1(){
   },80);
 }
 
+function VS_FR1(){
+  VS_P2();
+  if(!VS_MD)return;
+  VS_MD.pause();
+  VS_MD.removeAttribute('src');
+  VS_MD.load();
+}
+
 function VS_B1(){
   VS_P2();
   VS_RES.style.display='none';
@@ -247,11 +276,11 @@ async function VS_C1(){
   const [a,b]=VS_V1();
   if(b-a<0.2){O('Tramo muy corto');return;}
   M=true;
-  VS_P2();
-  if(VS_MD)VS_MD.pause();
+  VS_FR1();
   R();
+  VS_W1(true);
   E.style.display='';
-  P(10,'cortando...');
+  P(10,'preparando...');
   try{
     const c=await VS_M1((d,e)=>W(e,a,b));
     lg('VS_C1 blob',c.size);
@@ -277,8 +306,11 @@ async function VS_C1(){
     E.style.display='none';
     P(0,'');
     U=null;
+    VS_B1();
+  }finally{
+    M=false;
+    VS_W1(false);
   }
-  M=false;
 }
 
 function VC_DL1(a,b){
@@ -398,7 +430,7 @@ async function V(){
     const FF_W=FF_BASE+'/'+wm[1]+'.ffmpeg.js';
     lg('V worker url',FF_W);
 
-    P(20,'assets...');
+    P(20,'bajando FFmpeg 32 MB, la primera vez tarda...');
     lg('V fetch assets: worker + core + wasm');
     let wBuf,cBuf,waBuf;
     try{
@@ -465,13 +497,14 @@ async function V(){
     d.on('log',({type,message})=>lg('ff-log',type,message));
     d.on('progress',({progress,time})=>lg('ff-progress',Math.round(progress*100)+'%','t',time));
 
-    P(90,'core load...');
+    P(90,'iniciando FFmpeg...');
     lg('V d.load start');
     try{
       await d.load({classWorkerURL:wURL,coreURL:cURL,wasmURL:waURL});
       lg('V d.load ok');
     }catch(err){
       le('V d.load fail',err);
+      try{d.terminate();}catch(e2){}
       throw err;
     }
 
@@ -552,8 +585,11 @@ async function X(a){
   if(!J){le('X J null');return;}
   M=true;
   VS_B1();
+  VS_FR1();
   R();
+  VS_W1(true);
   E.style.display='';
+  P(10,'preparando...');
   try{
     await VS_M1(async(VC_D1,VC_P1)=>{
       const b=Math.ceil(K/a);
@@ -596,8 +632,11 @@ async function X(a){
     E.style.display='none';
     P(0,'');
     U=null;
+  }finally{
+    M=false;
+    VS_W1(false);
+    VS_B1();
   }
-  M=false;
 }
 
 C.querySelectorAll('.vc-sb').forEach(a=>{
@@ -617,6 +656,7 @@ document.getElementById('vc-rbk').onclick=VS_B1;
 function VC_TD1(){
   lg('VC_TD1 teardown urls',L.length);
   clearTimeout(N);
+  VS_W1(false);
   VS_P2();
   [VS_PV,VS_PA].forEach(a=>{a.pause();a.removeAttribute('src');});
   if(VS_OU){URL.revokeObjectURL(VS_OU);VS_OU=null;}
