@@ -6,7 +6,8 @@
 
 <p>Ejemplo votaste por alguien que prometio combatir la corrupcion, mejorar la educacion etc. Pero suben y hacen cosas como:</p>
 
-<div class="grid-gallery" id="Ejemplos de Corrupcion-grid" data-json-path="web/otros/Archivos/Dinamico/DemoDire/Ejemplos de Corrupcion/data.json"></div>
+
+<div class="contenedor-imagenes-animado" data-title="Ejemplos de Corrupcion" data-gallery-key="Ejemplos de Corrupcion" data-json-path="web/otros/Archivos/Dinamico/DemoDire/Ejemplos de Corrupcion/data.json" data-href="web/otros/Archivos/Dinamico/DemoDire/Ejemplos de Corrupcion/ListaEntera.html"></div>
 
 <p>Esos son solo unos cuantos ejemplos...</p>
 

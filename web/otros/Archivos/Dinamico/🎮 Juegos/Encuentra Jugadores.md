@@ -13,11 +13,14 @@
 </style>
 
 <h1 style="margin:0 0 6px;font-size:1.4em;font-weight:700;color:#fff">🎮 Encuentra Jugadores</h1>
-<p style="margin:0 0 14px;font-size:.88em;color:rgba(255,255,255,.45)">Gente buscando con quien jugar, agrupada por juego. Escribi por el canal que dejaron.</p>
+<p style="margin:0 0 14px;font-size:.88em;color:rgba(255,255,255,.45)">Gente buscando con quien jugar.</p>
 
 <div id="EJ_W1" class="EJ1"><p class="EJ0">Cargando...</p></div>
 
+<a href="web/otros/Archivos/HTML/AgregarPublico.html" class="back-button"> Subir Peticion ➡️</a>
 <a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a>
+
+
 
 <script>
 (function(){

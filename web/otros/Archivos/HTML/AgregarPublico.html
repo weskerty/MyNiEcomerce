@@ -231,6 +231,7 @@ const PB_PUBLICO_BASE=(()=>{
   return base||'/web/otros/Archivos/Dinamico/Publico';
 })();
 const PB_MAX_SIZE=200*1024;
+const PB_NB_MAX=100;
 const PB_PW_SYMBOLS=/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~`]/;
 const PB_CATS=['minecraft','localizador','jugadores'];
 const PB_CAT_LABEL={minecraft:'Servidor Minecraft',localizador:'Lugar',jugadores:'Encuentra Jugadores'};
@@ -460,6 +461,7 @@ window.PB_enviar=async function(){
   const cat=document.getElementById('pb-cat').value;
   const packed=PB_buildNB(cat);
   if(!packed)return PB_toast('Completa los campos requeridos','warn');
+  if(packed.NB.length>PB_NB_MAX)return PB_toast('Muy Largo','warn');
   const imgEl=document.getElementById('pb-img');
   const imgBlob=imgEl._blob;
   const imgExt=imgEl._ext||'.webp';
