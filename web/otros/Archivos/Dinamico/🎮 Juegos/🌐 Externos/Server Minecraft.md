@@ -100,12 +100,6 @@
   Descargar skins: <a href="https://es.namemc.com/minecraft-skins/random" target="_blank" rel="noopener noreferrer">namemc.com ↗️</a>
 </div>
 
-<!-- Chat de Voz
-<div style="margin-top:16px">
-  <h2 style="font-size:1em;margin:0 0 8px;color:rgba(255,255,255,.7)">Chat de Voz</h2>
-  <a href="" style="...">Crear Sala ↗️</a>
-</div>
--->
 
 <style>
 @keyframes mc-sk{0%{background-position:200%}100%{background-position:-200%}}
@@ -189,3 +183,10 @@ fetch(JSON_URL)
   .catch(()=>{WRAP.innerHTML='<p style="color:rgba(255,100,100,.6);font-size:.9em">Error al cargar servidores.</p>';});
 })();
 </script>
+
+
+<a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a>
+</div>
+
+
+

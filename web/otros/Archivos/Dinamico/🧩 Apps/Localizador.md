@@ -318,3 +318,6 @@ fetch(JSON_URL)
 <br>
 
 <h2> Faltan Mas Lugares? </h2> <a href="web/otros/Archivos/MarkDowns/SerParte.md" > <h5> Se parte ↗️ </h5> </a>
+
+<a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a>
+</div>
