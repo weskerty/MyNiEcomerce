@@ -7,6 +7,7 @@ Tenemos que cuidar el ambiente para que este cuide de nosotros.</p>
 
 <div class="contenedor-imagenes-animado" data-title="😔 Adios Vidas" data-gallery-key="Extintos" data-json-path="web/otros/Archivos/Imagenes/Ambiente/Extintos/data.json" data-href="web/otros/Archivos/Imagenes/Ambiente/Extintos/ListaEntera.html"></div>
 
+<video controls preload="none" src="web/otros/Archivos/Imagenes/AnimalesExtintos/SigneSolThesymbolofthedeadsoulofhumanity1727640147mto7dnoq.mp4"></video>
 
 <p>Esto son solo unos cuantos, Puedes ver la lista completa en diversas webs que se dedican a esto como esta:</p>
 <ul>
