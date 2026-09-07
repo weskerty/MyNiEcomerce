@@ -4,10 +4,10 @@
 
 <p>Hoy vivimos en una supuesta <a href="https://es.wikipedia.org/wiki/Democracia_representativa">"Democracia Representativa"</a> donde elegimos a otros para que controlen el pais, delegamos la responsabilidad al elegir un representante. El problema es que una vez que estos politicos que elegimos ganan, toman decisiones que no reflejan lo que prometieron, rompiendo por completo el sistema de Democracia Representativa.</p>
 
-<p>Ejemplo votaste por alguien que prometio combatir la corrupcion, mejorar la educacion etc. Pero suben y hacen cosas como:</p>
+<p>Ejemplo votaste por alguien que prometio combatir la corrupcion, mejorar la educacion etc. Pero suben y hacen:</p>
 
 
-<div class="contenedor-imagenes-animado" data-title="Ejemplos de Corrupcion" data-gallery-key="Ejemplos de Corrupcion" data-json-path="web/otros/Archivos/Dinamico/DemoDire/Ejemplos de Corrupcion/data.json" data-href="web/otros/Archivos/Dinamico/DemoDire/Ejemplos de Corrupcion/ListaEntera.html"></div>
+<div class="contenedor-imagenes-animado" data-title="Corrupción" data-gallery-key="Ejemplos de Corrupcion" data-json-path="web/otros/Archivos/Dinamico/DemoDire/Ejemplos de Corrupcion/data.json" data-href="web/otros/Archivos/Dinamico/DemoDire/Ejemplos de Corrupcion/ListaEntera.html"></div>
 
 <p>Esos son solo unos cuantos ejemplos...</p>
 
@@ -39,13 +39,9 @@
 <h3><span class="lk lk-wa">Quiero Participar</span></h3>
 </div>
 </a>
-<a class="BOTON-L1" href="#web/otros/Archivos/DemoDire/DemocraciaDirecta.md">
-<div class="BOTON-L1-CN">
-<h3>Leer Propuesta Completa</h3>
-</div>
-</a>
-</div>
 
+### Algunas Ideas de Propuestas
+<div class="contenedor-imagenes-animado" data-title="💡 Propuestas Publicas" data-gallery-key="Propuestas" data-json-path="web/otros/Archivos/Dinamico/DemoDire/Propuestas/data.json" data-href="web/otros/Archivos/Dinamico/DemoDire/Propuestas/ListaEntera.html"></div>
 
 
 
