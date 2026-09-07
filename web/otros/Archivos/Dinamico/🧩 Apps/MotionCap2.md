@@ -113,6 +113,7 @@ select.m2-s,#m2-port{padding:8px 10px;border-radius:var(--m2-r);border:1px solid
 <div class="m2-row" style="margin-top:10px;justify-content:center">
 <button class="m2-b on" id="m2-start">Iniciar camara</button>
 <button class="m2-b" id="m2-stop">Detener</button>
+<button class="m2-b" id="m2-flip" title="Girar camara">&#8635;</button>
 <button class="m2-b" id="m2-hide">Ocultar video</button>
 </div>
 </div>
@@ -182,7 +183,7 @@ let camShow=true,wl=null;
 let keyL=[],myMode='',myTw='',myCtrls=[],joyV={},btnS=[];
 let sen=null,evtOn=false,qRaw=null,txIv=null,ctlOn=false;
 let ctlSt={a:[],mv:[0,0],lk:[0,0]},twQ={};
-let PL=null,plBusy=false,stream=null,rafId=0,lastT=-1,camOn=false;
+let PL=null,plBusy=false,stream=null,rafId=0,lastT=-1,camOn=false,camFace='user';
 let oe={},lastFrame=0;
 const HP=location.hash.replace(/^#/,'').split('#');
 const PRE=(HP[1]||'').trim().toUpperCase();
@@ -340,10 +341,11 @@ function camSt(t){const e=$('m2-st');if(e)e.textContent=t;}
 async function camStart(){
   if(camOn)return;
   try{
-    stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:640},height:{ideal:480},facingMode:'user'},audio:false});
+    stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:640},height:{ideal:480},facingMode:camFace},audio:false});
   }catch(e){camSt('Sin permiso de camara');msg('Sin permiso de camara',true);return;}
   const v=$('m2-vid');
   v.srcObject=stream;
+  mirSet();
   await v.play().catch(()=>{});
   try{await plLoad();}
   catch(e){camSt('Error cargando modelo');msg('Error modelo '+(e&&e.message||''),true);return;}
@@ -404,6 +406,18 @@ function loop(){
   if(!o)return;
   camSt(camShow?'Siguiendo':'Siguiendo (video oculto)');
   for(const k of ['L','R','H'])emit({r:k,q:o[k].q,bd:o[k].bd});
+}
+function mirSet(){
+  const mir=camFace==='user';
+  $('m2-vid').style.transform=mir?'scaleX(-1)':'none';
+  $('m2-ov').style.transform=mir?'scaleX(-1)':'none';
+}
+async function camFlip(){
+  camFace=camFace==='user'?'environment':'user';
+  if(!camOn){mirSet();return;}
+  const wasOn=camOn;
+  camStop();
+  if(wasOn)await camStart();
 }
 function camHide(v){
   camShow=!v;
@@ -981,6 +995,7 @@ $('m2-sx').onclick=ctlStop;
 $('m2-adj').onclick=()=>edAdd('joy');
 $('m2-adb').onclick=()=>edAdd('btn');
 $('m2-stop').onclick=camStop;
+$('m2-flip').onclick=camFlip;
 $('m2-local').onclick=()=>{
   localCam=true;
   $('m2-cam').classList.add('on');
