@@ -263,6 +263,7 @@ function setupImgIO(){
         if(bg.classList.contains('BN_BG')){
           const im=new Image();
           im.onload=()=>{if(im.naturalWidth&&im.naturalHeight)bg.style.aspectRatio=im.naturalWidth+'/'+im.naturalHeight};
+          im.onerror=()=>{bg.classList.add('BN_BGN');bg.style.backgroundImage='none'};
           im.src=url;
         }
       }
