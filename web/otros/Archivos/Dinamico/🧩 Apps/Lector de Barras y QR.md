@@ -92,6 +92,7 @@
       <div class="qg-row"><label>Saturacion</label><input type="range" id="qg-sa" min="0" max="100" value="40"><span id="qg-sa-l">40%</span></div>
       <div class="qg-row"><label>Color</label><select id="qg-co"><option value="1">De la imagen</option><option value="0">Monocromo</option></select></div>
       <div class="qg-row"><label>Salida</label><select id="qg-px"><option value="512">512 px</option><option value="1024" selected>1024 px</option><option value="2048">2048 px</option></select></div>
+      <div class="qg-row"><label>Detalle img</label><input type="range" id="qg-sd" min="1" max="4" value="1"><span id="qg-sd-l">1x</span></div>
     </details>
     <div class="qr-ac">
       <button class="qr-btn" id="qg-pn">⬇️ PNG</button>
@@ -331,7 +332,7 @@
     return{ver:+$('qg-v').value,ecc:$('qg-e').value,sh:$('qg-sh').value,
       mn:+$('qg-mn').value/100,mx:+$('qg-mx').value/100,gh:+$('qg-gh').value/100,
       th:+$('qg-th').value/100,sat:+$('qg-sa').value/100,
-      col:$('qg-co').value==='1',px:+$('qg-px').value};
+      col:$('qg-co').value==='1',px:+$('qg-px').value,sd:+$('qg-sd').value};
   }
 
   function QG_M1(txt,ver,ecc){
@@ -366,6 +367,7 @@
     return{r:g.data[i],g:g.data[i+1],b:g.data[i+2],a:g.data[i+3]};
   }
 
+
   function QG_B1(p,amt){
     const mx=Math.max(p.r,p.g,p.b),mn=Math.min(p.r,p.g,p.b);
     if(mx===mn)return p;
@@ -385,10 +387,14 @@
     return o;
   }
 
-  function QG_K1(r,c,n,al){
+  function QG_K1(r,c,n){
     if(r<8&&c<8)return true;
     if(r<8&&c>=n-8)return true;
     if(r>=n-8&&c<8)return true;
+    return false;
+  }
+
+  function QG_K2(r,c,n,al){
     if(r===6||c===6)return true;
     for(let i=0;i<al.length;i++)for(let j=0;j<al.length;j++){
       const ar=al[i],ac=al[j];
@@ -420,63 +426,80 @@
     qgc.width=qgc.height=px;
     const x=qgc.getContext('2d');
     x.fillStyle='#fff';x.fillRect(0,0,px,px);
-    const grid=QG_I?QG_G1(QG_I,n):null,al=QG_A1(n);
+    const sd=P.sd||1,grid=QG_I?QG_G1(QG_I,n*sd):null,al=QG_A1(n);
     const dom=grid?QG_C1(grid):{r:17,g:17,b:17};
-    const fdr=P.col&&grid?'rgb('+Math.round(dom.r*.72)+','+Math.round(dom.g*.72)+','+Math.round(dom.b*.72)+')':'#111';
+    const gridM=QG_I?(sd>1?QG_G1(QG_I,n):grid):null;
     for(let r=0;r<n;r++)for(let c=0;c<n;c++){
       const cx=(c+q+.5)*cell,cy=(r+q+.5)*cell;
-      const crit=QG_K1(r,c,n,al),dark=QG_Q.isDark(r,c);
-      const p=grid?QG_P1(grid,c,r):null;
-      const has=!!p&&p.a>60;
-      const L=has?(.299*p.r+.587*p.g+.114*p.b)/255:0;
+      const crit=QG_K1(r,c,n),tim=QG_K2(r,c,n,al),dark=QG_Q.isDark(r,c);
+      if(dark&&crit){QG_D1(x,cx,cy,maxR*.98,P.sh,'#111');continue;}
       if(dark){
-        if(crit){x.fillStyle=fdr;x.fillRect(cx-cell/2,cy-cell/2,cell+.5,cell+.5);continue;}
+        const p=gridM?QG_P1(gridM,c,r):null,has=!!p&&p.a>60;
+        const L=has?(.299*p.r+.587*p.g+.114*p.b)/255:0;
         const rad=maxR*(has?Math.min(1.02,P.mn+(P.mx-P.mn)*(1-L)):.98);
         const cc=has?QG_MD(p,L,dom,P):{r:17,g:17,b:17};
         QG_D1(x,cx,cy,rad,P.sh,'rgb('+cc.r+','+cc.g+','+cc.b+')');
-      }else if(has&&!crit&&P.gh>0){
-        const d=1-L;
-        if(d<=P.th)continue;
-        const k=(d-P.th)/(1-P.th);
-        const cc=P.col?QG_B1(p,P.sat):{r:17,g:17,b:17};
-        QG_D1(x,cx+maxR,cy+maxR,maxR*Math.min(.42,.06+.42*P.gh*Math.pow(k,.55)),P.sh,'rgb('+cc.r+','+cc.g+','+cc.b+')');
+      }else if(!crit&&!tim&&P.gh>0&&grid){
+        QG_GH1(x,c,r,cell,q,sd,grid,P);
       }
     }
     return P;
   }
 
+  function QG_GH1(x,c,r,cell,q,sd,grid,P){
+    const sub=cell/sd,srad=sub/2;
+    for(let sy=0;sy<sd;sy++)for(let sx=0;sx<sd;sx++){
+      const px=QG_P1(grid,c*sd+sx,r*sd+sy);
+      if(!px||px.a<=60)continue;
+      const L=(.299*px.r+.587*px.g+.114*px.b)/255,d=1-L;
+      if(d<=P.th)continue;
+      const k=(d-P.th)/(1-P.th);
+      const cc=P.col?QG_B1(px,P.sat):{r:17,g:17,b:17};
+      const cx=(c+q)*cell+sx*sub+sub,cy=(r+q)*cell+sy*sub+sub;
+      QG_D1(x,cx,cy,srad*Math.min(.84,.12+.84*P.gh*Math.pow(k,.55)),P.sh,'rgb('+cc.r+','+cc.g+','+cc.b+')');
+    }
+  }
+
   function QG_SV1(){
     if(!QG_Q)return '';
     const P=QG_PR(),n=QG_Q.getModuleCount(),q=4,tot=n+q*2,px=P.px,cell=px/tot,maxR=cell/2;
-    const grid=QG_I?QG_G1(QG_I,n):null,al=QG_A1(n);
+    const sd=P.sd||1,grid=QG_I?QG_G1(QG_I,n*sd):null,al=QG_A1(n);
     const dom=grid?QG_C1(grid):{r:17,g:17,b:17};
-    const fdr=P.col&&grid?'rgb('+Math.round(dom.r*.72)+','+Math.round(dom.g*.72)+','+Math.round(dom.b*.72)+')':'#111';
+    const gridM=QG_I?(sd>1?QG_G1(QG_I,n):grid):null;
     const o=['<svg xmlns="http://www.w3.org/2000/svg" width="'+px+'" height="'+px+'" viewBox="0 0 '+px+' '+px+'"><rect width="'+px+'" height="'+px+'" fill="#fff"/>'];
-    const sp=(cx,cy,rad,col,al)=>{
-      const a=al<1?' opacity="'+al.toFixed(2)+'"':'';
-      if(P.sh==='ci')o.push('<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rad.toFixed(1)+'" fill="'+col+'"'+a+'/>');
-      else o.push('<rect x="'+(cx-rad).toFixed(1)+'" y="'+(cy-rad).toFixed(1)+'" width="'+(rad*2).toFixed(1)+'" height="'+(rad*2).toFixed(1)+'"'+(P.sh==='rd'?' rx="'+(rad*.5).toFixed(1)+'"':'')+' fill="'+col+'"'+a+'/>');
+    const sp=(cx,cy,rad,col)=>{
+      if(P.sh==='ci')o.push('<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rad.toFixed(1)+'" fill="'+col+'"/>');
+      else o.push('<rect x="'+(cx-rad).toFixed(1)+'" y="'+(cy-rad).toFixed(1)+'" width="'+(rad*2).toFixed(1)+'" height="'+(rad*2).toFixed(1)+'"'+(P.sh==='rd'?' rx="'+(rad*.5).toFixed(1)+'"':'')+' fill="'+col+'"/>');
     };
     for(let r=0;r<n;r++)for(let c=0;c<n;c++){
       const cx=(c+q+.5)*cell,cy=(r+q+.5)*cell;
-      const crit=QG_K1(r,c,n,al),dark=QG_Q.isDark(r,c);
-      const p=grid?QG_P1(grid,c,r):null;
-      const has=!!p&&p.a>60;
-      const L=has?(.299*p.r+.587*p.g+.114*p.b)/255:0;
+      const crit=QG_K1(r,c,n),tim=QG_K2(r,c,n,al),dark=QG_Q.isDark(r,c);
+      if(dark&&crit){sp(cx,cy,maxR*.98,'#111');continue;}
       if(dark){
-        if(crit){o.push('<rect x="'+(cx-cell/2).toFixed(1)+'" y="'+(cy-cell/2).toFixed(1)+'" width="'+(cell+.5).toFixed(1)+'" height="'+(cell+.5).toFixed(1)+'" fill="'+fdr+'"/>');continue;}
+        const p=gridM?QG_P1(gridM,c,r):null,has=!!p&&p.a>60;
+        const L=has?(.299*p.r+.587*p.g+.114*p.b)/255:0;
         const cc=has?QG_MD(p,L,dom,P):{r:17,g:17,b:17};
-        sp(cx,cy,maxR*(has?Math.min(1.02,P.mn+(P.mx-P.mn)*(1-L)):.98),'rgb('+cc.r+','+cc.g+','+cc.b+')',1);
-      }else if(has&&!crit&&P.gh>0){
-        const d=1-L;
-        if(d<=P.th)continue;
-        const k=(d-P.th)/(1-P.th);
-        const cc=P.col?QG_B1(p,P.sat):{r:17,g:17,b:17};
-        sp(cx+maxR,cy+maxR,maxR*Math.min(.42,.06+.42*P.gh*Math.pow(k,.55)),'rgb('+cc.r+','+cc.g+','+cc.b+')',1);
+        sp(cx,cy,maxR*(has?Math.min(1.02,P.mn+(P.mx-P.mn)*(1-L)):.98),'rgb('+cc.r+','+cc.g+','+cc.b+')');
+      }else if(!crit&&!tim&&P.gh>0&&grid){
+        QG_GS1(sp,c,r,cell,q,sd,grid,P);
       }
     }
     o.push('</svg>');
     return o.join('');
+  }
+
+  function QG_GS1(sp,c,r,cell,q,sd,grid,P){
+    const sub=cell/sd,srad=sub/2;
+    for(let sy=0;sy<sd;sy++)for(let sx=0;sx<sd;sx++){
+      const px=QG_P1(grid,c*sd+sx,r*sd+sy);
+      if(!px||px.a<=60)continue;
+      const L=(.299*px.r+.587*px.g+.114*px.b)/255,d=1-L;
+      if(d<=P.th)continue;
+      const k=(d-P.th)/(1-P.th);
+      const cc=P.col?QG_B1(px,P.sat):{r:17,g:17,b:17};
+      const cx=(c+q)*cell+sx*sub+sub,cy=(r+q)*cell+sy*sub+sub;
+      sp(cx,cy,srad*Math.min(.84,.12+.84*P.gh*Math.pow(k,.55)),'rgb('+cc.r+','+cc.g+','+cc.b+')');
+    }
   }
 
   function QG_U1(){
@@ -484,6 +507,7 @@
     QG_TO=setTimeout(()=>{
       const t=$('qg-t').value.trim();
       ['mn','mx','gh','th','sa'].forEach(k=>{$('qg-'+k+'-l').textContent=$('qg-'+k).value+'%';});
+      $('qg-sd-l').textContent=$('qg-sd').value+'x';
       if(!t){QG_Q=null;const x=qgc.getContext('2d');qgc.width=qgc.height=320;x.clearRect(0,0,320,320);QS_ST('Crear QR');return;}
       const P=QG_PR();
       QG_Q=QG_M1(t,P.ver,P.ecc);
@@ -561,7 +585,7 @@
   $('qg-ab').onclick=QG_ON;
   $('qg-bk').onclick=QG_OFF;
   $('qg-t').addEventListener('input',QG_U1);
-  ['qg-v','qg-e','qg-sh','qg-mn','qg-mx','qg-gh','qg-th','qg-sa','qg-co','qg-px'].forEach(id=>{
+  ['qg-v','qg-e','qg-sh','qg-mn','qg-mx','qg-gh','qg-th','qg-sa','qg-co','qg-px','qg-sd'].forEach(id=>{
     $(id).addEventListener('input',QG_U1);
   });
   $('qg-ib').onclick=()=>$('qg-if').click();
