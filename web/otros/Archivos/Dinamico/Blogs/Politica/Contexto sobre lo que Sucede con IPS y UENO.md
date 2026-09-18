@@ -1,12 +1,12 @@
 
 Un banco que hoy maneja mas de 900 millones de dolares de plata del Estado y de tu jubilacion, justo cuando el dueño se hace presidente... Que coincidencia! 
 
-< !-- <details>
+<details>
   <summary style="font-size: 1.0em; font-weight: bold;">🧸🎬 Resumen del Blog en Video </summary>
 
-
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/z5e5wx2wptg?si=IELPFzxLDhZ-1uUz&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </details>
---> 
+
 
 En 2021, Credicentro (que ahora es Ueno) publico en la Bolsa de Valores listando a sus dueños, y oh sorpresa, aparecia gente de Cartes, incluido Santi Peña WOW!... [Fuente](https://www.ultimahora.com/conocidos-rostros-los-accionistas-credicentro-n2923540) 
 [Fuente 2](https://elprisma.com.py/tres-hechos-que-revelan-conexiones-entre-el-grupo-cartes-y-el-grupo-vazquez-propietario-de-ueno-bank/)
@@ -30,7 +30,7 @@ Ahora UENO maneja mucha mas plata del Estado que capital propio tiene. O sea, el
 
 Y gracias a todo esto, los aportantes estan obligados a abrir cuenta en Ueno para recibir la plata, que Casualmente, es el banco de los socios de Peña... y encima no podes cambiar de banco. QUE BENDICION (si sos ueno)  [Fuente](https://www.abc.com.py/nacionales/2026/08/26/impulsan-pedidos-de-informes-al-bcp-y-al-ips-por-supuesto-monopolio-de-ueno-bank-en-la-acreditacion-de-prestamos/)
 
-Lo que hicieron es ilegal. [El Articulo 42 de la Ley 7235/2023](https://baselegal.com.py/docs/c73ef784-39ab-11f1-83aa-0200170c11d6) prohibe que un banco reciba mas del 10% de la cartera del IPS. (https://www.abc.com.py/politica/2026/07/03/confiesan-que-ueno-bank-tiene-fondos-del-ips-violando-los-limites-legales/)
+Lo que hicieron es ilegal. [El Articulo 42 de la Ley 7235/2023](https://baselegal.com.py/docs/c73ef784-39ab-11f1-83aa-0200170c11d6) prohibe que un banco reciba mas del 10% de la cartera del IPS. [Fuente](https://www.abc.com.py/politica/2026/07/03/confiesan-que-ueno-bank-tiene-fondos-del-ips-violando-los-limites-legales/)
 
 Pero no aplico para UENO. Meses incumpliendo la ley, porque parece que la ley solo aplica para el pobre. [Fuente](https://www.abc.com.py/edicion-impresa/editorial/2026/07/05/prueba-de-fuego-para-la-supervision-del-ips/)
 
@@ -42,7 +42,7 @@ Aun peor, una vez que acabaron los recursos de IPS, forzaron a que otras institu
 > Por que pobe empresita privada, va a quebrar si no le mantiene le papi estado 🥺
  [Fuente](https://www.abc.com.py/politica/2026/08/27/el-senado-acorrala-al-ips-y-al-bcp-por-monopolio-de-ueno-bank-en-creditos/)
 
-UENO le vendio deudas a Vinanzas, otra empresa del mismo dueño, por casi 300 mil millones de guaranies. La plata entro y se fue el mismo dia. El Senado sospecha que fue una forma de sacar plata de un bolsillo a otro sin que se note. [Fuente](https://www.ultimahora.com/ueno-senado-pide-al-bcp-detalles-de-su-solvencia-y-otras-30-consultas) (https://www.abc.com.py/economia/2026/09/07/esto-respondio-ueno-sobre-pedido-de-informe-del-congreso/)
+UENO le vendio deudas a Vinanzas, otra empresa del mismo dueño, por casi 300 mil millones de guaranies. La plata entro y se fue el mismo dia. El Senado sospecha que fue una forma de sacar plata de un bolsillo a otro sin que se note. [Fuente](https://www.ultimahora.com/ueno-senado-pide-al-bcp-detalles-de-su-solvencia-y-otras-30-consultas) [Fuente 2](https://www.abc.com.py/economia/2026/09/07/esto-respondio-ueno-sobre-pedido-de-informe-del-congreso/)
 
 Un banco que no existia hace solo 5 años, hoy tiene mas plata del Estado que capital propio. Y el que lo controla, es socio del presidente. Saquen sus conclusiones.
 

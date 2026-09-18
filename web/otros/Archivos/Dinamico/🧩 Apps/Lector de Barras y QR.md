@@ -27,6 +27,8 @@
 #qr-reader video{width:100%!important;border-radius:0}
 #qr-reader img{display:none!important}
 .qg-cv{display:block;margin:0 auto;max-width:min(320px,86vw);width:100%;height:auto;border-radius:14px;background:#fff}
+.qg-scr{max-height:52vh;overflow-y:auto;padding-right:4px}
+.qg-d{margin:2px 0 8px;font-size:11px;opacity:.65;line-height:1.35}
 .qg-in{width:100%;box-sizing:border-box;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 14px;color:white;font-size:.9em;font-family:inherit;outline:none;margin-bottom:10px}
 .qg-in:focus{border-color:rgba(56,189,248,.4)}
 .qg-row{display:flex;align-items:center;gap:10px;margin:6px 0}
@@ -82,17 +84,45 @@
     <input type="file" id="qg-if" accept="image/*" style="display:none">
     <details class="qg-adv">
       <summary>Ajuste fino</summary>
+      <div class="qg-scr">
       <div class="qg-row"><label>Densidad</label><select id="qg-v"><option value="0">Automatica</option><option value="5">v5 chico</option><option value="7">v7</option><option value="10">v10</option><option value="14">v14</option><option value="18">v18 denso</option></select></div>
+      <p class="qg-d">Mayor = mas espacio para que se note la imagen, pero mas dificil de escanear con camaras simples. Automatica elige el minimo necesario para el texto</p>
       <div class="qg-row"><label>Correccion</label><select id="qg-e"><option value="H">Alta (30%)</option><option value="Q">Media (25%)</option><option value="M">Baja (15%)</option><option value="L">Minima (7%)</option></select></div>
+      <p class="qg-d">Mayor = el QR sigue leyendose aunque este sucio o tapado, pero ocupa mas espacio</p>
       <div class="qg-row"><label>Forma</label><select id="qg-sh"><option value="ci">Circulo</option><option value="rd">Redondeado</option><option value="sq">Cuadrado</option></select></div>
+      <p class="qg-d">Cuadrado es lo mas parecido a un QR normal, mas facil de leer para camaras viejas</p>
       <div class="qg-row"><label>Punto min</label><input type="range" id="qg-mn" min="10" max="80" value="35"><span id="qg-mn-l">35%</span></div>
+      <p class="qg-d">Mayor = los puntos claros de la imagen se ven mas grandes</p>
       <div class="qg-row"><label>Punto max</label><input type="range" id="qg-mx" min="60" max="110" value="100"><span id="qg-mx-l">100%</span></div>
+      <p class="qg-d">Mayor = los puntos oscuros se agrandan y pueden tocar al vecino, complicando la lectura</p>
       <div class="qg-row"><label>Fantasma</label><input type="range" id="qg-gh" min="0" max="100" value="70"><span id="qg-gh-l">70%</span></div>
+      <p class="qg-d">Mayor = se ve mas imagen de fondo entre los bloques del QR</p>
       <div class="qg-row"><label>Umbral</label><input type="range" id="qg-th" min="0" max="90" value="15"><span id="qg-th-l">15%</span></div>
+      <p class="qg-d">Menor = mas partes de la imagen se unen entre bloques. Mayor = deja mas huecos en blanco</p>
+      <div class="qg-row"><label>Zona calibracion</label><select id="qg-tm"><option value="0">Proteger (recomendado)</option><option value="1">Tambien pintar</option></select></div>
+      <p class="qg-d">La cruz que usa la camara para medir el QR se deja en blanco por seguridad. Tambien pintar mete imagen ahi, se ve mas completo pero con mas riesgo de fallar la lectura</p>
       <div class="qg-row"><label>Saturacion</label><input type="range" id="qg-sa" min="0" max="100" value="40"><span id="qg-sa-l">40%</span></div>
+      <p class="qg-d">Mayor = colores mas intensos y vivos</p>
       <div class="qg-row"><label>Color</label><select id="qg-co"><option value="1">De la imagen</option><option value="0">Monocromo</option></select></div>
+      <p class="qg-d">Monocromo ignora los colores de la imagen, solo usa negro</p>
       <div class="qg-row"><label>Salida</label><select id="qg-px"><option value="512">512 px</option><option value="1024" selected>1024 px</option><option value="2048">2048 px</option></select></div>
+      <p class="qg-d">Mayor = mas resolucion en el archivo final, mas pesado</p>
       <div class="qg-row"><label>Detalle img</label><input type="range" id="qg-sd" min="1" max="4" value="1"><span id="qg-sd-l">1x</span></div>
+      <p class="qg-d">Mayor = se nota mas la imagen dentro de cada bloque, sin agrandar el QR</p>
+      <div class="qg-row" style="margin-top:10px"><label>Posicion X</label><input type="range" id="qg-ix" min="-100" max="100" value="0"><span id="qg-ix-l">0%</span></div>
+      <p class="qg-d">Mueve la imagen a la izquierda o derecha</p>
+      <div class="qg-row"><label>Posicion Y</label><input type="range" id="qg-iy" min="-100" max="100" value="0"><span id="qg-iy-l">0%</span></div>
+      <p class="qg-d">Mueve la imagen hacia arriba o abajo</p>
+      <div class="qg-row"><label>Zoom</label><input type="range" id="qg-iz" min="20" max="300" value="100"><span id="qg-iz-l">100%</span></div>
+      <p class="qg-d">Mayor = acerca la imagen (se ve mas grande y recortada)</p>
+      <div class="qg-row"><label>Giro</label><input type="range" id="qg-ir" min="0" max="359" value="0"><span id="qg-ir-l">0°</span></div>
+      <p class="qg-d">Rota la imagen dentro del QR (el QR en si nunca gira)</p>
+      <div class="qg-row"><label>Ancho img</label><input type="range" id="qg-iw" min="20" max="300" value="100"><span id="qg-iw-l">100%</span></div>
+      <p class="qg-d">Estira o achica la imagen solo a lo ancho</p>
+      <div class="qg-row"><label>Alto img</label><input type="range" id="qg-ih" min="20" max="300" value="100"><span id="qg-ih-l">100%</span></div>
+      <p class="qg-d">Estira o achica la imagen solo a lo alto</p>
+      <div class="qr-ac" style="margin-top:8px"><button class="qr-btn" id="qg-irs">↺ Reiniciar posicion</button></div>
+      </div>
     </details>
     <div class="qr-ac">
       <button class="qr-btn" id="qg-pn">⬇️ PNG</button>
@@ -332,7 +362,10 @@
     return{ver:+$('qg-v').value,ecc:$('qg-e').value,sh:$('qg-sh').value,
       mn:+$('qg-mn').value/100,mx:+$('qg-mx').value/100,gh:+$('qg-gh').value/100,
       th:+$('qg-th').value/100,sat:+$('qg-sa').value/100,
-      col:$('qg-co').value==='1',px:+$('qg-px').value,sd:+$('qg-sd').value};
+      col:$('qg-co').value==='1',px:+$('qg-px').value,sd:+$('qg-sd').value,
+      ix:+$('qg-ix').value/100,iy:+$('qg-iy').value/100,iz:+$('qg-iz').value/100,
+      ir:+$('qg-ir').value*Math.PI/180,iw:+$('qg-iw').value/100,ih:+$('qg-ih').value/100,
+      tm:$('qg-tm').value==='1'};
   }
 
   function QG_M1(txt,ver,ecc){
@@ -340,12 +373,15 @@
     catch{try{const q=qrcode(0,ecc);q.addData(txt);q.make();return q;}catch{return null;}}
   }
 
-  function QG_G1(img,sz){
+  function QG_G1(img,sz,P){
     const c=document.createElement('canvas');c.width=c.height=sz;
     const x=c.getContext('2d',{willReadFrequently:true});
     const iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height;
-    const s=Math.max(sz/iw,sz/ih);
-    x.drawImage(img,(sz-iw*s)/2,(sz-ih*s)/2,iw*s,ih*s);
+    const s=Math.max(sz/iw,sz/ih)*(P?P.iz:1);
+    const dw=iw*s*(P?P.iw:1),dh=ih*s*(P?P.ih:1);
+    x.translate(sz/2+(P?P.ix*sz/2:0),sz/2+(P?P.iy*sz/2:0));
+    if(P&&P.ir)x.rotate(P.ir);
+    x.drawImage(img,-dw/2,-dh/2,dw,dh);
     return x.getImageData(0,0,sz,sz);
   }
 
@@ -426,9 +462,9 @@
     qgc.width=qgc.height=px;
     const x=qgc.getContext('2d');
     x.fillStyle='#fff';x.fillRect(0,0,px,px);
-    const sd=P.sd||1,grid=QG_I?QG_G1(QG_I,n*sd):null,al=QG_A1(n);
+    const sd=P.sd||1,grid=QG_I?QG_G1(QG_I,n*sd,P):null,al=QG_A1(n);
     const dom=grid?QG_C1(grid):{r:17,g:17,b:17};
-    const gridM=QG_I?(sd>1?QG_G1(QG_I,n):grid):null;
+    const gridM=QG_I?(sd>1?QG_G1(QG_I,n,P):grid):null;
     for(let r=0;r<n;r++)for(let c=0;c<n;c++){
       const cx=(c+q+.5)*cell,cy=(r+q+.5)*cell;
       const crit=QG_K1(r,c,n),tim=QG_K2(r,c,n,al),dark=QG_Q.isDark(r,c);
@@ -439,7 +475,7 @@
         const rad=maxR*(has?Math.min(1.02,P.mn+(P.mx-P.mn)*(1-L)):.98);
         const cc=has?QG_MD(p,L,dom,P):{r:17,g:17,b:17};
         QG_D1(x,cx,cy,rad,P.sh,'rgb('+cc.r+','+cc.g+','+cc.b+')');
-      }else if(!crit&&!tim&&P.gh>0&&grid){
+      }else if(!crit&&(!tim||P.tm)&&P.gh>0&&grid){
         QG_GH1(x,c,r,cell,q,sd,grid,P);
       }
     }
@@ -463,9 +499,9 @@
   function QG_SV1(){
     if(!QG_Q)return '';
     const P=QG_PR(),n=QG_Q.getModuleCount(),q=4,tot=n+q*2,px=P.px,cell=px/tot,maxR=cell/2;
-    const sd=P.sd||1,grid=QG_I?QG_G1(QG_I,n*sd):null,al=QG_A1(n);
+    const sd=P.sd||1,grid=QG_I?QG_G1(QG_I,n*sd,P):null,al=QG_A1(n);
     const dom=grid?QG_C1(grid):{r:17,g:17,b:17};
-    const gridM=QG_I?(sd>1?QG_G1(QG_I,n):grid):null;
+    const gridM=QG_I?(sd>1?QG_G1(QG_I,n,P):grid):null;
     const o=['<svg xmlns="http://www.w3.org/2000/svg" width="'+px+'" height="'+px+'" viewBox="0 0 '+px+' '+px+'"><rect width="'+px+'" height="'+px+'" fill="#fff"/>'];
     const sp=(cx,cy,rad,col)=>{
       if(P.sh==='ci')o.push('<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rad.toFixed(1)+'" fill="'+col+'"/>');
@@ -480,7 +516,7 @@
         const L=has?(.299*p.r+.587*p.g+.114*p.b)/255:0;
         const cc=has?QG_MD(p,L,dom,P):{r:17,g:17,b:17};
         sp(cx,cy,maxR*(has?Math.min(1.02,P.mn+(P.mx-P.mn)*(1-L)):.98),'rgb('+cc.r+','+cc.g+','+cc.b+')');
-      }else if(!crit&&!tim&&P.gh>0&&grid){
+      }else if(!crit&&(!tim||P.tm)&&P.gh>0&&grid){
         QG_GS1(sp,c,r,cell,q,sd,grid,P);
       }
     }
@@ -508,6 +544,8 @@
       const t=$('qg-t').value.trim();
       ['mn','mx','gh','th','sa'].forEach(k=>{$('qg-'+k+'-l').textContent=$('qg-'+k).value+'%';});
       $('qg-sd-l').textContent=$('qg-sd').value+'x';
+      ['ix','iy','iz','iw','ih'].forEach(k=>{$('qg-'+k+'-l').textContent=$('qg-'+k).value+'%';});
+      $('qg-ir-l').textContent=$('qg-ir').value+'°';
       if(!t){QG_Q=null;const x=qgc.getContext('2d');qgc.width=qgc.height=320;x.clearRect(0,0,320,320);QS_ST('Crear QR');return;}
       const P=QG_PR();
       QG_Q=QG_M1(t,P.ver,P.ecc);
@@ -585,9 +623,14 @@
   $('qg-ab').onclick=QG_ON;
   $('qg-bk').onclick=QG_OFF;
   $('qg-t').addEventListener('input',QG_U1);
-  ['qg-v','qg-e','qg-sh','qg-mn','qg-mx','qg-gh','qg-th','qg-sa','qg-co','qg-px','qg-sd'].forEach(id=>{
+  ['qg-v','qg-e','qg-sh','qg-mn','qg-mx','qg-gh','qg-th','qg-sa','qg-co','qg-px','qg-sd','qg-ix','qg-iy','qg-iz','qg-ir','qg-iw','qg-ih','qg-tm'].forEach(id=>{
     $(id).addEventListener('input',QG_U1);
   });
+  $('qg-irs').onclick=()=>{
+    ['qg-ix','qg-iy','qg-ir'].forEach(id=>{$(id).value=0;});
+    ['qg-iz','qg-iw','qg-ih'].forEach(id=>{$(id).value=100;});
+    QG_U1();
+  };
   $('qg-ib').onclick=()=>$('qg-if').click();
   $('qg-if').onchange=e=>{const f=e.target.files[0];e.target.value='';QG_IM1(f);};
   $('qg-rb').onclick=()=>{
