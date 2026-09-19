@@ -118,15 +118,326 @@ Analogia: Cometa = Daño Ambiental
 
 
 ## Que podemos hacer?
-Se requieren cambios en las leyes para proteger activamente los recursos que Dios nos dio, pero como si los politicos hacen lo que quieren?
+Ayudanos a cuidar el Ambiente, Juntos es Posible.
 
-Es por eso que primero debemos armar una comunidad que se interese por esto
 
-<p>Puedes unirte a <a class="lk lk-wa" href="https://chat.whatsapp.com/FUCooyRJivk6CTbhEEwvf4" target="_blank" rel="noopener noreferrer">Comunidad en WhatsApp</a></p>
+<p>Unete a la <a class="lk lk-wa" href="https://chat.whatsapp.com/FUCooyRJivk6CTbhEEwvf4" target="_blank" rel="noopener noreferrer">Comunidad en WhatsApp</a></p>
 
-Hay grupos de Limpieza, se avisa cada vez que habra una actividad.
+Hay grupos de Limpieza, se avisa cada vez que habra una actividad o tambien podes ver desde [Aqui, Directo en la Web sin instalar Nada. Incluso podes Activar Notificaciones. ➡️](#web/otros/Archivos/HTML/Grupos.html)
+
+![b9c768bf9f8f47b3a44dd893affa4fe8](web/otros/Archivos/Imagenes/DañoAmbientalActual/b9c768bf9f8f47b3a44dd893affa4fe8mu7q6h8x.webp)
 
 Ademas en un futuro, Si somos muchos podemos manifestarnos para presionar la aprobacion de leyes de proteccion ambiental.
 
+
+
+#### Denuncias
+
+Para hacer denuncias Ambientales Presiona [Aqui ↗️](https://apps.mades.gov.py/siam/portal/denuncia-publica)
+
+Tambien podes ver las noticias del MADES aca abajo:
+
+<div id="rv-hd2">
+  <h2>📰 Novedades MADES</h2>
+  <a id="rv-rss-btn" class="lk lk-rss" href="https://www.mades.gov.py/feed" target="_blank" rel="noopener noreferrer" title="Suscribirse al feed RSS">RSS</a>
+</div>
+<div id="rv-c"></div>
+<button id="rv-btn" style="display:none" onclick="rvOpen()">Ver todas →</button>
+
+<dialog id="rv-ov">
+  <button id="rv-x" onclick="rvClose()">✕</button>
+  <div id="rv-f"></div>
+  <div id="rv-sentinel"></div>
+</dialog>
+
+<style>
+*{box-sizing:border-box}
+
+#rv-hd2{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px}
+#rv-hd2 h2{margin:0;font-size:1.1em;font-weight:700;color:#fff}
+.lk-rss{border-color:rgba(255,140,0,.35);background:rgba(255,140,0,.08);color:#ffaa33}
+.lk-rss:hover{background:rgba(255,140,0,.18)}
+.lk-rss::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z'/%3E%3C/svg%3E")}
+
+#rv-c{display:flex;flex-direction:column;gap:8px}
+
+.rv-ci{
+  display:flex;align-items:center;gap:11px;
+  padding:10px;border-radius:14px;
+  text-decoration:none;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  transition:background .18s,transform .15s;
+}
+.rv-ci:hover{background:rgba(255,255,255,.07);transform:translateY(-1px)}
+.rv-ci-thumb{
+  width:50px;height:50px;
+  border-radius:12px;object-fit:cover;flex-shrink:0;
+  background:rgba(255,255,255,.06);
+}
+.rv-ci-thumb.rv-no{
+  display:flex;align-items:center;justify-content:center;font-size:1.2em;
+}
+.rv-ci-info{flex:1;min-width:0}
+.rv-ci-title{
+  font-size:.88em;line-height:1.35;color:#fff;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.rv-ci-meta{margin-top:4px;font-size:.72em;color:rgba(255,255,255,.4)}
+
+#rv-btn{
+  margin-top:10px;width:100%;padding:11px;
+  border:1px solid rgba(255,255,255,.08);border-radius:14px;
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.8);font-size:.9em;cursor:pointer;
+  transition:background .18s,transform .15s;
+}
+#rv-btn:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
+
+#rv-ov{max-height:calc(100vh - 40px);overflow-y:auto;position:relative}
+
+#rv-x{
+  position:sticky;top:10px;float:right;z-index:2;
+  width:34px;height:34px;border:none;border-radius:10px;
+  background:rgba(255,255,255,.09);color:#fff;font-size:.95em;cursor:pointer;
+  transition:background .18s,transform .15s;
+  margin-bottom:-44px;
+}
+#rv-x:hover{background:rgba(255,255,255,.18);transform:scale(1.06)}
+
+#rv-f{display:flex;flex-direction:column;gap:10px}
+
+.rv-it{
+  border-radius:18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+}
+.rv-it-meta{padding:12px 14px 2px;font-size:.72em;color:rgba(255,255,255,.4)}
+.rv-it-title{
+  padding:2px 14px 10px;font-size:.97rem;
+  font-weight:700;line-height:1.4;
+}
+.rv-it-title a{color:#fff;text-decoration:none}
+.rv-it-title a:hover{opacity:.8}
+
+
+.rv-it-body{contain:content}
+.rv-it-body img,.rv-it-body video{width:100%;display:block;aspect-ratio:3/1}
+.rv-it-body audio{width:100%;display:block;padding:8px 12px;box-sizing:border-box}
+.rv-it-body p{margin:0;padding:6px 14px;font-size:.9em;line-height:1.6;color:rgba(255,255,255,.82)}
+.rv-it-body div{padding:4px 14px 10px;font-size:.83em;line-height:1.55;color:rgba(255,255,255,.68)}
+.rv-it-body a{color:#9fd3ff;text-decoration:none}
+.rv-it-body a:hover{text-decoration:underline}
+
+.rv-skeleton{
+  height:66px;border-radius:14px;
+  background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);
+  background-size:200%;
+  animation:rv-sh 1.4s infinite;
+}
+@keyframes rv-sh{0%{background-position:200%}100%{background-position:-200%}}
+
+@media(max-width:700px){
+  .rv-ci{padding:9px;border-radius:12px}
+  .rv-ci-thumb{width:44px;height:44px;border-radius:10px}
+  .rv-it{border-radius:15px}
+}
+</style>
+
+<script>
+(function(){
+const RSS_PATH='https://www.mades.gov.py/feed';
+const RSS_URL='https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(RSS_PATH);
+const FEED_BASE='https://www.mades.gov.py/';
+const cEl=document.getElementById('rv-c');
+const fEl=document.getElementById('rv-f');
+const btn=document.getElementById('rv-btn');
+const ovEl=document.getElementById('rv-ov');
+const sentinel=document.getElementById('rv-sentinel');
+let items=[],_populated=false,_chunkIdx=0;
+const PREVIEW=4,CHUNK=8;
+
+const LD=document.createElement('link');
+LD.rel='alternate';LD.type='application/rss+xml';
+LD.title='Actividades Paraguay';LD.href=RSS_PATH;
+document.head.appendChild(LD);
+
+
+const DROP=new Set(['SCRIPT','STYLE','IFRAME','FRAME','FRAMESET','OBJECT','EMBED','APPLET',
+  'FORM','INPUT','BUTTON','SELECT','TEXTAREA','OPTION','LABEL',
+  'LINK','META','BASE','TITLE','TEMPLATE','SLOT','NOSCRIPT','SVG','MATH','CANVAS','DIALOG']);
+
+
+const KEEP=new Set(['P','BR','HR','B','STRONG','I','EM','U','S','SMALL','SUB','SUP','SPAN','DIV',
+  'UL','OL','LI','DL','DT','DD','BLOCKQUOTE','PRE','CODE',
+  'H1','H2','H3','H4','H5','H6','FIGURE','FIGCAPTION',
+  'A','IMG','VIDEO','AUDIO','SOURCE',
+  'TABLE','THEAD','TBODY','TFOOT','TR','TH','TD','CAPTION']);
+
+
+const ATTRS={A:['href','title'],IMG:['src','alt','title','width','height'],
+  VIDEO:['src','poster','width','height'],AUDIO:['src'],SOURCE:['src','type'],
+  TD:['colspan','rowspan'],TH:['colspan','rowspan','scope']};
+const URL_ATTRS=new Set(['href','src','poster']);
+
+
+function safeUrl(u){
+  if(!u)return null;
+  try{
+    const p=new URL(String(u).trim(),FEED_BASE);
+    return(p.protocol==='http:'||p.protocol==='https:')?p.href:null;
+  }catch{return null;}
+}
+
+function scrub(node){
+  if(node.nodeType===3)return document.createTextNode(node.data);
+  if(node.nodeType!==1)return null;
+  const tag=node.tagName;
+  if(DROP.has(tag))return null;
+  if(!KEEP.has(tag)){
+    const frag=document.createDocumentFragment();
+    node.childNodes.forEach(c=>{const s=scrub(c);if(s)frag.appendChild(s);});
+    return frag;
+  }
+  const el=document.createElement(tag.toLowerCase());
+  (ATTRS[tag]||[]).forEach(name=>{
+    if(!node.hasAttribute(name))return;
+    let v=node.getAttribute(name);
+    if(URL_ATTRS.has(name)){v=safeUrl(v);if(!v)return;}
+    el.setAttribute(name,v);
+  });
+  if(tag==='A'){el.target='_blank';el.rel='noopener noreferrer nofollow';}
+  if(tag==='VIDEO'||tag==='AUDIO'){el.controls=true;el.preload='none';}
+  node.childNodes.forEach(c=>{const s=scrub(c);if(s)el.appendChild(s);});
+  return el;
+}
+
+function clean(html){
+  const doc=new DOMParser().parseFromString(html||'','text/html');
+  const frag=document.createDocumentFragment();
+  doc.body.childNodes.forEach(c=>{const s=scrub(c);if(s)frag.appendChild(s);});
+  return frag;
+}
+
+function firstImg(html){
+  const doc=new DOMParser().parseFromString(html||'','text/html');
+  return safeUrl(doc.querySelector('img')?.getAttribute('src'));
+}
+
+
+function pD(s){
+  if(!s)return null;
+  let d=new Date(String(s).replace(' ','T'));
+  if(isNaN(d))d=new Date(s);
+  return isNaN(d)?null:d;
+}
+
+function el(tag,cls,text){
+  const n=document.createElement(tag);
+  if(cls)n.className=cls;
+  if(text!=null)n.textContent=text;   
+  return n;
+}
+
+function mkItem(item,full){
+  const title=String(item.title||''),
+        link=safeUrl(item.link),
+        desc=item.content||item.description||'',
+        author=String(item.author||''),
+        dt=pD(item.pubDate),
+        d=dt?dt.toLocaleString('es-PY',full?undefined:{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+
+  if(!full){
+    const a=el('a','rv-ci');
+    if(link)a.href=link;
+    a.target='_blank';a.rel='noopener noreferrer';
+    const img=safeUrl(item.thumbnail)||safeUrl(item.enclosure&&item.enclosure.link)||firstImg(desc);
+    if(img){const im=el('img','rv-ci-thumb');im.src=img;im.loading='lazy';im.referrerPolicy='no-referrer';a.appendChild(im);}
+    else a.appendChild(el('div','rv-ci-thumb rv-no','📌'));
+    const info=el('div','rv-ci-info');
+    info.appendChild(el('div','rv-ci-title',title));
+    info.appendChild(el('div','rv-ci-meta',d));
+    a.appendChild(info);
+    return a;
+  }
+
+  const div=el('div','rv-it');
+  div.appendChild(el('div','rv-it-meta',[author,d].filter(Boolean).join(' · ')));
+  const tt=el('div','rv-it-title');
+  const la=el('a',null,title);
+  if(link)la.href=link;
+  la.target='_blank';la.rel='noopener noreferrer';
+  tt.appendChild(la);
+  div.appendChild(tt);
+  const body=el('div','rv-it-body');
+  body.appendChild(clean(desc));
+  div.appendChild(body);
+  return div;
+}
+
+function appendChunk(){
+  if(_chunkIdx>=items.length)return;
+  const end=Math.min(_chunkIdx+CHUNK,items.length);
+  const frag=document.createDocumentFragment();
+  for(let i=_chunkIdx;i<end;i++)frag.appendChild(mkItem(items[i],true));
+  fEl.appendChild(frag);
+  _chunkIdx=end;
+}
+
+let _io=null;
+function setupIO(){
+  if(_io)_io.disconnect();
+  _io=new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting)appendChunk();
+  },{root:ovEl,rootMargin:'200px'});
+  _io.observe(sentinel);
+}
+
+async function load(){
+  try{
+    const sk=document.createDocumentFragment();
+    for(let i=0;i<PREVIEW;i++)sk.appendChild(el('div','rv-skeleton'));
+    cEl.appendChild(sk);
+    const res=await fetch(RSS_URL);
+    cEl.textContent='';
+    if(!res.ok)return;
+    const data=await res.json();
+    if(data.status!=='ok'||!Array.isArray(data.items)||!data.items.length)return;
+    items=data.items;
+    const frag=document.createDocumentFragment();
+    items.slice(0,PREVIEW).forEach(i=>frag.appendChild(mkItem(i,false)));
+    cEl.appendChild(frag);
+    btn.style.display='';
+  }catch{cEl.textContent='';}
+}
+
+window.rvOpen=function(){
+  if(!_populated){
+    _populated=true;
+    _chunkIdx=0;
+    fEl.textContent='';
+    appendChunk();
+    setupIO();
+  }
+  ovEl.showModal();
+  document.body.style.overflow='hidden';
+};
+window.rvClose=function(){ovEl.close();document.body.style.overflow='';};
+ovEl.addEventListener('close',()=>{document.body.style.overflow='';});
+
+document.addEventListener('contentUnload',function(){
+  if(ovEl.open)ovEl.close();
+  document.body.style.overflow='';
+  if(_io){_io.disconnect();_io=null;}
+  LD.remove();
+  delete window.rvOpen;
+  delete window.rvClose;
+},{once:true});
+
+load();
+})();
+</script>
+
+<div id="sh"></div>
 
 <!--FE=2090-08-15T06:00:04.000Z-->
