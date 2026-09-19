@@ -1,3 +1,14 @@
+<p style="text-align:center;color:rgba(255,255,255,.5);padding:40px 0">Redirigiendo...</p>
+<script>
+setTimeout(function(){
+  var a=document.createElement('a');
+  a.href='web/otros/Archivos/Dinamico/Blogs/Grupos/Unete%20a%20Ayudar%20el%20Mundo.md';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+},0);
+</script>
+
 <div id="rv-hd2">
   <h2>📰 Novedades</h2>
   <a id="rv-rss-btn" class="lk lk-rss" href="/api/rss?url=https%3A%2F%2Fwww.mades.gov.py%2Ffeed" target="_blank" rel="noopener noreferrer" title="Suscribirse al feed RSS">RSS</a>
