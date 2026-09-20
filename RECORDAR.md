@@ -1,6 +1,6 @@
-core.js no carga contenido/bug si hay un <video> cuando hay estilizacion blur... la animacion css parece romperlo.
 
-Pendiente: galerias imagen fallback si avif no funciona.
+
+Pendiente: galerias imagen fallback si no funciona.
 
 core.js que añada inyeccion extra arriba de cada contenido cargado con env como un estilo o similar, inyecta html ahi, o como un plugin. asi tener barra de navegacion personalizable sin editar core.
 
@@ -9,19 +9,23 @@ core.js que añada inyeccion extra arriba de cada contenido cargado con env como
 discus comentarios, etiqueta dentro de contenido dinamico para que core.js cargue comentario aislado por publicacion
 
 404 hacer busqueda en search. No completado necesita cambios en core.js
+core.js prefetch de contenido al hacer hover/pointerdown sobre un link (llenar el cache "i" antes del click). Descartado por ahora: consume datos innecesarios en mobile. Si se retoma, condicionar a conexion wifi o navigator.connection.saveData===false.
+Solucion alternativa: sw.js descarga los .md de data.json si supera 2MB en total se detiene la descarga del resto.
 
+search.html cuando llega la ubicacion reconstruye el indice solo con el data.json principal, pierdo blogs, apps y juegos de la busqueda hasta recargar la pagina.
 ### Opcional
 
 
 
-core.js prefetch de contenido al hacer hover/pointerdown sobre un link (llenar el cache "i" antes del click). Descartado por ahora: consume datos innecesarios en mobile. Si se retoma, condicionar a conexion wifi o navigator.connection.saveData===false.
+
+
 
 core.js loader de plugins (DOMContentLoaded, Promise.all sobre cfg.plugins): los scripts creados con createElement no tienen script.async=false, asi que no se garantiza el orden de ejecucion entre plugins. Hoy no rompe nada porque los plugins actuales son event-driven, pero si un plugin futuro depende de otro ya cargado, agregar script.async=false antes de appendChild.
 
 core.js mismo loader de plugins: o.onerror=n resuelve la promesa igual que onload, asi que un plugin que falla en cargar no deja ningun rastro (ni console.warn). Agregar log minimo en el onerror si se necesita debuggear fallos de plugins en produccion.
 
 
-search.html cuando llega la ubicacion reconstruye el indice solo con el data.json principal, pierdo blogs, apps y juegos de la busqueda hasta recargar la pagina.
+
 
 Localizador.md: las categorias siguen hardcodeadas en CAT_EMOJI/CAT_LABEL y en los botones del html. Si subo un punto con una categoria nueva, parseEntry lo descarta en silencio (`if(!CAT_EMOJI[cat])return null`). Para hacerlo dinamico: generar los chips de las categorias que traiga el data.json y dejar esas tablas como opcional de lindura, cayendo al slug con guiones cambiados por espacios.
 
