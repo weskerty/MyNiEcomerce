@@ -1,4 +1,5 @@
-
+POS Negar archivos que no son formatos populares
+https://github.com/discourse/discourse/security/advisories/GHSA-vhm9-85gw-x335
 
 Pendiente: galerias imagen fallback si no funciona.
 
