@@ -26,6 +26,16 @@ function goSearch(){
   a.remove();
 }
 window.__RT=setTimeout(goSearch,5000);
-document.addEventListener('contentUnload',()=>clearTimeout(window.__RT),{once:true});
+const bgEl=document.getElementById('bg');
+const bgPrev=bgEl?.getAttribute('style');
+if(bgEl){
+  bgEl.style.backgroundImage="url('web/otros/Archivos/Imagenes/Permanente/PS2Fail.avif')";
+  bgEl.style.backgroundSize='cover';
+  bgEl.style.backgroundPosition='center';
+}
+document.addEventListener('contentUnload',()=>{
+  clearTimeout(window.__RT);
+  if(bgEl)bgEl.setAttribute('style',bgPrev||'');
+},{once:true});
 })();
 </script>
