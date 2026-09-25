@@ -1,6 +1,12 @@
 POS Negar archivos que no son formatos populares
 https://github.com/discourse/discourse/security/advisories/GHSA-vhm9-85gw-x335
 
+pos generar eliminar markdownit & anchor de core.js
+
+crear lista de entradas de data.json similar a list.json de blog, pero para tamaño archivo. 
+incluso poner en data.json tamaño de archivo por entrada... no vale la pena, romperia. mejor un plugin extra que genere especifico para rutas.
+sw.js o el propio html donde esta galerias si es pwa descargara todos los archivos si no pasa los 10kb de esta manera una experiencia mas rapida.
+
 Pendiente: galerias imagen fallback si no funciona.
 
 core.js que añada inyeccion extra arriba de cada contenido cargado con env como un estilo o similar, inyecta html ahi, o como un plugin. asi tener barra de navegacion personalizable sin editar core.
@@ -43,9 +49,7 @@ Galerias.js: si arrastro el carrusel justo mientras esta animando, el gesto se d
 
 
 ### Baja Prioridad
-Hacer data.json de blog separado. (Ya Existe Logica solo falta editar Blog.html e incluir en Search.html)
-Blog cargaria su propio notify/blog.js
-Esto para evitar evitar mezclarse con el peso de data.json de los productos. Actualmente esto no es un problema, data.json pesa muy poco.
+
 
 search.html indexa MiniSearch (ms.addAll) desde cero en cada visita. Con catalogo chico (hoy 16 items) es gratis, pero benchmark con 50000 items sinteticos dio ~630ms de indexado y ~53MB de heap en Node (no en celular real, capaz 4x-8x mas lento en gama baja). Si data.json crece de verdad, precalcular el indice server-side y servirlo como archivo estatico mitigaria eso.
 
