@@ -19,6 +19,7 @@
 
 el petróleo y el gas natural tienen su origen en organismos marinos antiguos que, tras millones de años de presión y temperatura bajo tierra, se transformaron en hidrocarburos. Estos pueden encontrarse en yacimientos convencionales o atrapados en formaciones rocosas densas llamadas lutita (o shale). Dado que los depósitos convencionales se están agotando, la industria desarrolló la fracturación hidráulica, técnica que se volvió viable comercialmente a principios del siglo XXI.
 
+![image](web/otros/Archivos/Imagenes/QueeselFRACKINGenelChaco/imagemugkqkqy.webp) [Fuente Imagen ↗️](https://www.celag.org/fracking-quiere-seducir-colombia/)
 
 #### Funcionamiento Técnico de la Fracturación Hidráulica
 
@@ -32,8 +33,10 @@ Un problema crítico es la gestión del agua. El proceso consume volúmenes masi
 
 Otro aspecto alarmante es la inducción de sismos. La inyección masiva de fluidos bajo tierra no solo lubrica fallas geológicas, provocando deslizamientos y terremotos, sino que también puede desencadenar actividad sísmica en zonas donde anteriormente no se registraban movimientos telúricos. El daño al paisaje y la biodiversidad es igualmente severo, ya que la explotación requiere una densa red de pozos e infraestructura que fragmenta los ecosistemas y deforesta áreas naturales.
 
-#### La Falacia de las Técnicas "Limpias" y el Camino a Seguir
+#### Técnicas "Limpias"
 
 No existen actuqlmente versiones sustentables del fracking. Suelen decir que si, y dan ejemolos como el uso de agua salada, el reciclaje de aguas residuales o el sellado mejorado son insuficientes, costosas y no logran eliminar los mismos problemas wue ya existen, solo cambian el metodo de la actividad. Las fugas siguen siendo comunes y la responsabilidad legal de las empresas es casi inexistente por no haber regulaciones sobre esto.
+
+Si este tema te interesa puedes pasar a leer mas en [Wikipedia ↗️](https://es.wikipedia.org/wiki/Fracturaci%C3%B3n_hidr%C3%A1ulica). (La version en Ingles tiene mas Contenido, cambia el idioma y usa el traductor.)
 
 <!--FE=2026-09-24T11:31:48.000Z-->
