@@ -19,7 +19,6 @@
 
 el petróleo y el gas natural tienen su origen en organismos marinos antiguos que, tras millones de años de presión y temperatura bajo tierra, se transformaron en hidrocarburos. Estos pueden encontrarse en yacimientos convencionales o atrapados en formaciones rocosas densas llamadas lutita (o shale). Dado que los depósitos convencionales se están agotando, la industria desarrolló la fracturación hidráulica, técnica que se volvió viable comercialmente a principios del siglo XXI.
 
-![](web/otros/Archivos/Imagenes/QueeselFRACKINGenelChaco/wallpaperpx13340264mug7j8ew.webp)
 
 #### Funcionamiento Técnico de la Fracturación Hidráulica
 
