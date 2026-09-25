@@ -119,7 +119,7 @@ function BN_P1(txt){
     const desc=BN_GH(it,'description');
     const d=new DOMParser().parseFromString(desc,'text/html');
     const im=d.querySelector('img');
-    const img=im?im.src:null;
+    const img=im?im.src:'web/otros/Archivos/Imagenes/Permanente/VacioFallback.jpg';
     d.querySelectorAll('img,video,audio').forEach(t=>t.remove());
     return{t:'n',link:BN_GT(it,'link'),name:BN_GT(it,'title'),img,desc:(d.body.textContent||'').trim()};
   }).filter(BN_OK1);

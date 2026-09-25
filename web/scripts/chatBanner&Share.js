@@ -8,8 +8,8 @@ const HIDE_PATHS=["web/otros/Archivos/Dinamico/🧩 Apps/","web/otros/Archivos/D
 const NB_ROUTES=[
   {path:'web/es.html',label:'Tienda',emoji:'🛍️'},
   {path:'web/blogs.html',label:'Blog',emoji:'🔔'},
-  {path:'web/otros/Archivos/HTML/apps.html',label:'Juegos',emoji:'🎮'},
-  {path:'web/otros/Archivos/HTML/Grupos.html',label:'Actividades',emoji:'👥'},
+  {path:'web/otros/Archivos/HTML/apps.html',label:'Apps',emoji:'🎮'},
+  {path:'web/otros/Archivos/HTML/Grupos.html',label:'Eventos',emoji:'👥'},
   {path:'web/search.html',label:'Buscar',emoji:'🔍'}
 ];
 const night=(h=>h>=19||h<5)(new Date().getHours());
