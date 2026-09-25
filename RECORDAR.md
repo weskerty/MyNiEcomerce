@@ -1,3 +1,5 @@
+core.js no usar # para su url principal.
+
 POS Negar archivos que no son formatos populares
 https://github.com/discourse/discourse/security/advisories/GHSA-vhm9-85gw-x335
 
