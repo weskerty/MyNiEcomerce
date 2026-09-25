@@ -19,6 +19,8 @@
 
 el petróleo y el gas natural tienen su origen en organismos marinos antiguos que, tras millones de años de presión y temperatura bajo tierra, se transformaron en hidrocarburos. Estos pueden encontrarse en yacimientos convencionales o atrapados en formaciones rocosas densas llamadas lutita (o shale). Dado que los depósitos convencionales se están agotando, la industria desarrolló la fracturación hidráulica, técnica que se volvió viable comercialmente a principios del siglo XXI.
 
+![](web/otros/Archivos/Imagenes/QueeselFRACKINGenelChaco/wallpaperpx13340264mug7j8ew.webp)
+
 #### Funcionamiento Técnico de la Fracturación Hidráulica
 
 El proceso consiste en perforar un pozo que desciende verticalmente y luego gira noventa grados para seguir una trayectoria horizontal a gran profundidad, donde se encuentra la roca madre. Posteriormente, se inyecta a presiones extremas un fluido compuesto por agua, arena y una mezcla secreta de aditivos químicos (incluyendo ácidos, lubricantes y desinfectantes). Esta presión fractura la roca, permitiendo que el gas y el petróleo fluyan hacia el pozo para su extracción. Aunque esta técnica ha impulsado la economía en países como Estados Unidos, el video cuestiona la veracidad de los beneficios económicos, sugiriendo que las cifras de producción suelen estar sobrevaloradas por las empresas.
