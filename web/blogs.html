@@ -12,9 +12,16 @@
 .bl-card:hover::after{transform:translateX(120%)}
 .bl-card:hover{will-change:transform;transform:translateY(-5px) scale(1.01);box-shadow:0 16px 40px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.2);text-decoration:none}
 .bl-card:active{transform:scale(.98)}
-.bl-cat{font-size:.68rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.bl-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s cubic-bezier(.2,.8,.2,1),filter .3s ease;filter:brightness(.5) saturate(1.2)}
+.bl-card:hover .bl-bg{transform:scale(1.05);filter:brightness(.4) saturate(1.4)}
+.bl-bg-none{background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.02))}
+.bl-gloss{position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,.1) 0%,transparent 100%);pointer-events:none;border-radius:20px 20px 0 0}
+.bl-body::before{content:'';position:absolute;left:0;right:0;bottom:0;height:55px;z-index:-1;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(0deg,#000 40%,transparent 100%);mask-image:linear-gradient(0deg,#000 40%,transparent 100%)}
+#bl-wrap.BN_LOFI .bl-body::before{background:linear-gradient(0deg,rgba(0,0,0,.65) 0%,transparent 100%);backdrop-filter:none;-webkit-backdrop-filter:none;-webkit-mask-image:none;mask-image:none}
+.bl-body{position:relative;z-index:2;padding:20px 18px 18px;display:flex;flex-direction:column;justify-content:flex-end;min-height:200px}
+.bl-cat{font-size:.68rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:7px;display:flex;align-items:center;gap:5px}
 .bl-cat::before{content:'';display:inline-block;width:14px;height:1px;background:rgba(255,255,255,.35)}
-.bl-title{font-size:.85rem;font-weight:600;color:rgba(255,255,255,.92);line-height:1.4}
+.bl-title{font-family:var(--font-h);font-size:clamp(1rem,2.5vw,1.3rem);font-weight:700;color:rgba(255,255,255,.95);line-height:1.25;text-shadow:0 2px 10px rgba(0,0,0,.4)}
 .bl-empty{text-align:center;padding:50px 20px;color:rgba(255,255,255,.4)}
 .bl-empty span{display:block;font-size:2rem;margin-bottom:10px}
 .bl-dots{display:flex;align-items:center;justify-content:center;gap:7px;padding:50px}
@@ -36,15 +43,15 @@
 .BN_BG{position:relative;aspect-ratio:16/9;background-size:cover;background-position:center;filter:saturate(1.15);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
 .bl-card:hover .BN_BG{transform:scale(1.03)}
 .BN_BGN{height:auto;aspect-ratio:auto;background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.02))}
-.BN_GL{position:absolute;left:0;right:0;bottom:0;height:65%;background:linear-gradient(0deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.55) 45%,transparent 100%);pointer-events:none}
-#bl-wrap.BN_LOFI .BN_GL{background:linear-gradient(0deg,rgba(0,0,0,.9) 0%,rgba(0,0,0,.4) 55%,transparent 100%)}
-#bl-wrap:not(.BN_LOFI) .BN_TT{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(0deg,#000 60%,transparent 100%);mask-image:linear-gradient(0deg,#000 60%,transparent 100%)}
+.BN_GL{position:absolute;left:0;right:0;bottom:0;height:60%;background:linear-gradient(0deg,rgba(0,0,0,.65) 0%,transparent 100%);pointer-events:none}
 .BN_BGN .BN_GL{display:none}
-#bl-wrap.BN_LOFI .BN_BGN .BN_GL,#bl-wrap:not(.BN_LOFI) .BN_BGN .BN_TT{backdrop-filter:none;-webkit-backdrop-filter:none}
-.BN_TT{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:10px 18px 12px}
-.BN_BGN .BN_TT{position:static;padding:12px 18px 4px}
-.BN_DS{font-size:.85rem;line-height:1.5;color:rgba(255,255,255,.78)}
-@media(prefers-reduced-motion:reduce){.bl-card:hover{transform:none}.bl-card:hover .BN_BG{transform:none}.bl-card::after{display:none}}
+.BN_TT{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:12px 18px}
+.BN_TT::before{content:'';position:absolute;left:0;right:0;bottom:0;height:42px;z-index:-1;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);-webkit-mask-image:linear-gradient(0deg,#000 40%,transparent 100%);mask-image:linear-gradient(0deg,#000 40%,transparent 100%)}
+#bl-wrap.BN_LOFI .BN_TT::before{background:linear-gradient(0deg,rgba(0,0,0,.65) 0%,transparent 100%);backdrop-filter:none;-webkit-backdrop-filter:none;-webkit-mask-image:none;mask-image:none}
+.BN_TT .bl-title{font-size:clamp(.95rem,2.3vw,1.15rem)}
+.BN_BGN .BN_TT{position:static;padding:14px 18px 4px}
+.BN_DS{padding:10px 18px 18px;font-size:.85rem;line-height:1.55;color:rgba(255,255,255,.75)}
+@media(prefers-reduced-motion:reduce){.bl-card:hover{transform:none}.bl-card:hover .bl-bg,.bl-card:hover .BN_BG{transform:none}.bl-card::after{display:none}}
 </style>
 
 <a class="bl-nb bl-nb-l" href="web/es.html">🏠</a>
@@ -212,31 +219,39 @@ function BN_MIX(bl,nw){
   return out;
 }
 
-function BN_CT(box,cat,title,desc){
-  if(cat){const c=document.createElement('div');c.className='bl-cat';c.textContent=cat;box.append(c);}
-  if(title){const t=document.createElement('div');t.className='bl-title';t.textContent=title;box.append(t);}
-  if(desc){const d=document.createElement('div');d.className='BN_DS';d.textContent=desc;box.append(d);}
+function BN_CT(box,cat,title){
+  const c=document.createElement('div');c.className='bl-cat';c.textContent=cat;
+  const t=document.createElement('div');t.className='bl-title';t.textContent=title;
+  box.append(c,t);
 }
 
 function mkCard(item){
   const a=document.createElement('a');
   a.className='bl-card';
-  const isN=item.t==='n';
-  if(isN){
+  if(item.t==='n'){
     a.href=/^https?:\/\//i.test(item.link)?item.link:'#';
     a.target='_blank';a.rel='noopener noreferrer';
+    const bg=document.createElement('div');
+    bg.className='BN_BG'+(item.img?'':' BN_BGN');
+    if(item.img)bg.dataset.bg=item.img;
+    if(!BN_NOTITLE){
+      const gl=document.createElement('div');gl.className='BN_GL';
+      const tt=document.createElement('div');tt.className='BN_TT';
+      BN_CT(tt,'NOTICIA',item.name);
+      bg.append(gl,tt);
+    }
+    const ds=document.createElement('div');ds.className='BN_DS';ds.textContent=item.desc;
+    a.append(bg,ds);
   }else{
     a.href=item.md;
+    const bg=document.createElement('div');
+    bg.className='bl-bg'+(item.img?'':' bl-bg-none');
+    if(item.img)bg.dataset.bg=item.img;
+    const gl=document.createElement('div');gl.className='bl-gloss';
+    const bd=document.createElement('div');bd.className='bl-body';
+    BN_CT(bd,item.cat,item.name);
+    a.append(bg,gl,bd);
   }
-  const bg=document.createElement('div');
-  bg.className='BN_BG'+(item.img?'':' BN_BGN');
-  if(item.img)bg.dataset.bg=item.img;
-  const gl=document.createElement('div');gl.className='BN_GL';
-  const tt=document.createElement('div');tt.className='BN_TT';
-  if(isN)BN_CT(tt,BN_NOTITLE?'':'NOTICIA',BN_NOTITLE?'':item.name,item.desc);
-  else BN_CT(tt,item.cat,item.name);
-  bg.append(gl,tt);
-  a.append(bg);
   return a;
 }
 
@@ -249,10 +264,14 @@ function setupImgIO(){
       if(url){
         bg.style.backgroundImage='url('+encodeURI(url)+')';
         delete bg.dataset.bg;
-        const im=new Image();
-        im.onload=()=>{if(im.naturalWidth&&im.naturalHeight)bg.style.aspectRatio=im.naturalWidth+'/'+im.naturalHeight;GS1(bg.closest('.bl-card'))};
-        im.onerror=()=>{bg.classList.add('BN_BGN');bg.style.backgroundImage='none';GS1(bg.closest('.bl-card'))};
-        im.src=url;
+        if(bg.classList.contains('BN_BG')){
+          const im=new Image();
+          im.onload=()=>{if(im.naturalWidth&&im.naturalHeight)bg.style.aspectRatio=im.naturalWidth+'/'+im.naturalHeight;GS1(bg.closest('.bl-card'))};
+          im.onerror=()=>{bg.classList.add('BN_BGN');bg.style.backgroundImage='none';GS1(bg.closest('.bl-card'))};
+          im.src=url;
+        }else{
+          GS1(bg.closest('.bl-card'));
+        }
       }
       imgIO.unobserve(bg);
     });
@@ -315,8 +334,7 @@ async function init(){
   if(!gr||_ini)return;
   _ini=true;
   const wrap=document.getElementById('bl-wrap');
-  const lofi=document.body.classList.contains('low-perf')||matchMedia('(prefers-reduced-motion:reduce)').matches;
-  if(wrap)wrap.classList.toggle('BN_LOFI',lofi);
+  if(wrap)wrap.classList.toggle('BN_LOFI',document.body.classList.contains('low-perf')||matchMedia('(prefers-reduced-motion:reduce)').matches);
   BN_RB1();
   gr.innerHTML='';
   const[galleries,nw]=await Promise.all([fetchData(),BN_FR(),BN_FT1()]);
