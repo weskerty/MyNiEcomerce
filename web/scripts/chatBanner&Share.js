@@ -16,7 +16,7 @@ const night=(h=>h>=19||h<5)(new Date().getHours());
 const grSrc=IMG_BASE+(night?"first_quarter_moon_face_animated.avif":"sun_with_face_animated.avif");
 
 function CB_H1(){
-  try{return decodeURIComponent(location.hash.slice(1))}catch(e){return location.hash.slice(1)}
+  const r=window.__RUTA||"";try{return decodeURIComponent(r)}catch(e){return r}
 }
 function isHidden(){
   return HIDE_PATHS.some(p=>CB_H1().includes(p));
