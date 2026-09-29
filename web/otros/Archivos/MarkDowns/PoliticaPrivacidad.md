@@ -8,16 +8,17 @@ CheAgana, contacto en:
 <details>
   <summary style="font-size: 1.5em; font-weight: bold;">🍪 Cookies</summary>
 
-[🖥 Que son las Cookies ↗️]()
+![](web/otros/Archivos/Imagenes/Permanente/Privacidad/FFPA.webp)
+
+[🖥 Que son las Cookies ↗️](https://es.wikipedia.org/wiki/Cookie_(inform%C3%A1tica))
+
+
 
 CheAgana por si misma no guarda cookies ni rastrea usuarios.
 Aunque esta Web puede generar cookies por la caja de comentarios [Disqus](https://help.disqus.com/en/articles/1717155-use-of-cookies) que encontras al final de la pagina.
 
 
-Para deshabilitar las cookies de Disqus tienes Multiples Opciones;
-1. "Bloquear Cookies de Terceros" (esta activado por defecto) 
-2. Borrar datos del Sitio.
-3. Instalar uBlock o demas Extensiones que Bloqueen estas Cookies.
+Protegerte de estas cookies de rastreo dependen de Ti, Instala [uBlock ⬇️](https://github.com/gorhill/ublock#ublock-origin-ubo)
 
 </details>
 
@@ -27,7 +28,7 @@ Para deshabilitar las cookies de Disqus tienes Multiples Opciones;
 
 <details><summary style="font-size: 1.5em; font-weight: bold;"> Tienda y Vendedores </summary>
 
-Nuestra web funciona como un Shopping, Se incluyen otros vendedores que prioricen el cuidado Ambiental. Estos vendedores pueden no respetar estas reglas, se les insta y controla para garantizar el cumplimiento; quienes no lo hagan serán **excluidos del catálogo**.
+Esta pagina web funciona como un Shopping, Se incluyen otros vendedores que prioricen el cuidado Ambiental. Estos vendedores pueden no respetar estas reglas, se les insta y controla para garantizar el cumplimiento; quienes no lo hagan serán **excluidos del catálogo**.
 
 Puedes Reportar a los Vendedores que no Siguen las Politicas de [Se Parte ↗️](web/otros/Archivos/MarkDowns/SeParte.md)
 
