@@ -9,10 +9,12 @@ Existen muchos versiculos en la Biblia que si te pones a mirar hoy, parecen una 
 
 ---
 
-`Apocalipsis 6:5-6`
+#### `Apocalipsis 6:5-6`
 > "Un caballo negro... una medida de trigo por un denario, y tres de cebada por un denario; y no dañes el aceite ni el vino."
 
-Parece una Crisis de plantios, cosechas que fallan por sequía o escasez de granos (y justo estamos en la epoca donde te meten preso por plantar la creacion de Dios)
+Parece una Crisis de plantios, cosechas que fallan por sequía o escasez de granos, y justo estamos en la epoca donde te meten preso por plantar la creacion de Dios... Un caso muy conocido es en India donde la empresa (no lo quiero decir no me vayan a cerrar la web) demando a todos los que plantaban una variante de papa, podes pasar a leer [Aqui ↗️](https://www.dw.com/es/patentes-para-plantas-una-gran-amenaza-para-los-agricultores/a-50277809). Desde el 2024 en dia Colombia, Argentina y Chile ya tienen leyes similares que prohiben la plantacion de semillas que las empresas se adueñaron... Y cada vez, las frutas ya vienen casi sin semillas... Nosotros parece estamos generando este Apocalipsis.
+
+![wallpaperpx33455329](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcológico/wallpaperpx33455329muomslwl.webp)
 
 `Apocalipsis 6:8`
 > "Se les dio potestad sobre la cuarta parte de la tierra para matar con espada, con hambre, con mortandad y con las fieras de la tierra."
