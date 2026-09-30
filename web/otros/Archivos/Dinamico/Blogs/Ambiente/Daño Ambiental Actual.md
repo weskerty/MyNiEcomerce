@@ -127,6 +127,108 @@ Hay grupos de Limpieza, se avisa cada vez que habra una actividad o tambien pode
 
 ![b9c768bf9f8f47b3a44dd893affa4fe8](web/otros/Archivos/Imagenes/DañoAmbientalActual/b9c768bf9f8f47b3a44dd893affa4fe8mu7q6h8x.webp)
 
+<div style="text-align:center;">
+<h1> Nadie Excluido 🤗</h1>
+
+<div class="BOTON-M1">
+  <a href="https://www.facebook.com/yoganopy" class="BOTON-M2" title="Facebook">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/facebook-1-svgrepo-com.svg" alt="GitHub">
+      </div>
+      <p class="BOTON-M5">Facebook</p>
+    </div>
+  </a>
+
+  <a href="https://www.instagram.com/cheagana" class="BOTON-M2" title="Instagram">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/instagram-2016-logo-svgrepo-com.svg" alt="Instagram">
+      </div>
+      <p class="BOTON-M5">Instagram</p>
+    </div>
+  </a>
+
+  <a href="https://www.tiktok.com/@cheagana" class="BOTON-M2" title="TikTok">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/tiktok-svgrepo-com.svg" alt="Tiktok">
+      </div>
+      <p class="BOTON-M5">Tiktok</p>
+    </div>
+  </a>
+
+  <a href="https://bsky.app/profile/cheagana.com" class="BOTON-M2" title="BlueSky">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Bluesky_Logo.svg/250px-Bluesky_Logo.svg.png?utm_source=es.wikipedia.org&utm_campaign=parser&utm_content=thumbnail" alt="BlueSky">
+      </div>
+      <p class="BOTON-M5">BlueSky</p>
+    </div>
+  </a>
+
+  <a href="https://mastodon.social/@cheAgana" class="BOTON-M2" title="Mastodon">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Mastodon_logotype_%28simple%29_new_hue.svg/250px-Mastodon_logotype_%28simple%29_new_hue.svg.png?utm_source=es.wikipedia.org&utm_campaign=parser&utm_content=thumbnail" alt="Mastodon">
+      </div>
+      <p class="BOTON-M5">Mastodon</p>
+    </div>
+  </a>
+
+  <a href="https://www.threads.com/@cheagana" class="BOTON-M2" title="Threads">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e6/Threads_2026_logo.svg/330px-Threads_2026_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail" alt="Threads">
+      </div>
+      <p class="BOTON-M5">Threads</p>
+    </div>
+  </a>
+
+
+  <a href="https://whatsapp.com/channel/0029Va8x68H0lwglgVgI0f38" class="BOTON-M2" title="WhatsApp">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg" alt="WhatsAppChannel">
+      </div>
+      <p class="BOTON-M5">WhatsApp</p>
+    </div>
+  </a>
+
+ <a href="https://t.me/cheagana" class="BOTON-M2" title="Telegram">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg" alt="TelegramChannel">
+      </div>
+      <p class="BOTON-M5">Telegram</p>
+    </div>
+  </a>
+
+  <a href="https://nostr.com/profile/f2a74c77e7f2ef8d553edc5b941b618afa6d15d276d94b645e48275102d6985c" class="BOTON-M2" title="Nostr">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://tchncs.de/images/logos/nostr.png" alt="Nostr">
+      </div>
+      <p class="BOTON-M5">Nostr</p>
+    </div>
+  </a>
+
+  <a href="https://www.youtube.com/@cheAgana" class="BOTON-M2" title="YouTube">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png?utm_source=es.wikipedia.org&utm_campaign=index&utm_content=original" alt="YouTube">
+      </div>
+      <p class="BOTON-M5">YouTube</p>
+    </div>
+  </a>
+
+              
+</div>
+
+
+
+<img width="720" height="480" alt="Se Parte" src="https://i.ibb.co/tMDfHQwW/Picsart-26-07-21-20-41-29-771-ezgif-com-png-to-jpg-converter.jpg" />
+
 Ademas en un futuro, Si somos muchos podemos manifestarnos para presionar la aprobacion de leyes de proteccion ambiental.
 
 
