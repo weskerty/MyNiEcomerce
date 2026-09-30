@@ -9,7 +9,7 @@ Existen muchos versiculos en la Biblia que si te pones a mirar hoy, parecen una 
 
 ---
 
-#### `Apocalipsis 6:5-6`
+`Apocalipsis 6:5-6`
 > "Un caballo negro... una medida de trigo por un denario, y tres de cebada por un denario; y no dañes el aceite ni el vino."
 
 Parece una Crisis de plantios, cosechas que fallan por sequía o escasez de granos, y justo estamos en la epoca donde te meten preso por plantar la creacion de Dios... Un caso muy conocido es en India donde la empresa (no lo quiero decir no me vayan a cerrar la web) demando a todos los que plantaban una variante de papa, podes pasar a leer [Aqui ↗️](https://www.dw.com/es/patentes-para-plantas-una-gran-amenaza-para-los-agricultores/a-50277809). Desde el 2024 en dia Colombia, Argentina y Chile ya tienen leyes similares que prohiben la plantacion de semillas que las empresas se adueñaron... Y cada vez, las frutas ya vienen casi sin semillas... Nosotros parece estamos generando este Apocalipsis.
@@ -21,30 +21,82 @@ Parece una Crisis de plantios, cosechas que fallan por sequía o escasez de gran
 
 Si se considerase empresas a quienes se le da el poder, entonces parece referencia a fauna silvestre desplazada hacia zonas habitadas al perder su hábitat.
 
+
 `Apocalipsis 6:12`
 > "Y vi cuando abrió el sexto sello... hubo un gran terremoto; el sol se puso negro como tela de cilicio y la luna se volvió toda como sangre."
 
 El Humo en extremo pueden oscurecer el Sol y hacer que la Luna se vea roja por dispersión de la luz.
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuonbx8v.webp)
 
 `Apocalipsis 6:13`
 > "Las estrellas del cielo cayeron sobre la tierra."
 
-Lluvias de meteoros, fragmentación de cometas o percepción visual de meteoritos.
+Podrian ser los Satelites, que se ven como estrellas desde aqui, asi se ven cayendo
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuonevlp.webp)
+
+Asi esta el mundo hoy
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuonfp77.webp)
 
 `Apocalipsis 6:14`
 > "El cielo se desvaneció como un pergamino."
 
-Colapso visual por contaminación extrema, humo global, tormentas de polvo o alteraciones atmosféricas.
+Literalmente ya no poder ver el cielo por que todo fue nublado con el humo. Paraguay cada año por las quemas de bosques y demas se ve asi
+<blockquote class="twitter-tweet" data-media-max-width="560"><p lang="es" dir="ltr"><a href="https://x.com/hashtag/Reiteramos?src=hash&amp;ref_src=twsrc%5Etfw">#Reiteramos</a> | 🚨Alerta por mala calidad del aire<br><br>▪️ Nuevas imágenes de la densa humareda que obstruye la visibilidad y afecta drásticamente la calidad del aire en Asunción y gran parte del país.<br><br>▪️ Se recomienda permanecer en espacios cerrados y evitar realizar actividades… <a href="https://t.co/vz6Te5GPJW">pic.twitter.com/vz6Te5GPJW</a></p>&mdash; Ñanduti (@nanduti) <a href="https://x.com/nanduti/status/1832866191905575328?ref_src=twsrc%5Etfw">September 8, 2024</a></blockquote> <script async src="https://platform.x.com/widgets.js" charset="utf-8"></script>
+
+
 
 `Apocalipsis 6:14`
 > "Todo monte e isla fueron removidos."
 
-Grandes terremotos, tsunamis, movimientos tectónicos y aumento del nivel del mar.
+Literalmente como estan acabando con todo... El Chaco Paraguayo casi ya ni tiene verde... Adios montes
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuonmbkn.webp)
 
 `Apocalipsis 7:1-3`
 > "Ángeles que detenían los cuatro vientos de la tierra... No hagáis daño a la tierra, ni al mar, ni a los árboles."
 
 El texto ya nombra tierra, mar y árboles como lo que no debe dañarse. Los vientos contenidos se leen como sistemas climáticos sostenidos hasta un punto de quiebre: al liberarse, el daño llega junto.
+
+Los Angeles no son criaturas, sino sistemas que estan funcionando... Ejemplo el Amoc, bajo esta definicion seria un Angel. Hasta parece un Corazon
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuonrk18.webp)
+
+Si no sabes que es el amoc, pasa a [ver este video ↗️](https://youtu.be/DWrlh8T5iXY?t=24)
+
+`Apocalipsis 8:8`
+> "La tercera parte del mar se convirtió en sangre."
+
+`Apocalipsis 11:6`
+> "Convertir las aguas en sangre."
+
+`Apocalipsis 16:3`
+> "El segundo ángel derramó su copa sobre el mar y éste se convirtió en sangre como de muerto."
+
+`Apocalipsis 16:4`
+> "El tercer ángel derramó su copa sobre ríos y fuentes."
+
+Mareas rojas, proliferación masiva de algas tóxicas, contaminación química.
+
+Asi se vio la LAGUNA DEL CHACO PARAGUAYO
+
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuoo1nok.webp)
+
+`Apocalipsis 8:9`
+> "Murió la tercera parte de los seres vivos del mar."
+
+Colapso de ecosistemas marinos por calentamiento, acidificación, sobrepesca y contaminación. Relacionado con Amoc que hablamos anteriormente.
+
+
+`Apocalipsis 8:11`
+> "La tercera parte de las aguas se convirtió en ajenjo."
+
+Contaminación industrial, metales pesados, pesticidas, residuos mineros o radiactividad.
+
+`Apocalipsis 8:11`
+> "Muchos hombres murieron por las aguas."
+
+Agua potable contaminada, enfermedades, intoxicaciones ambientales.
+
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuoo37nw.webp)
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuoo6tgc.webp)
 
 `Apocalipsis 8:7`
 > "Granizo y fuego mezclados con sangre fueron lanzados sobre la tierra."
@@ -64,57 +116,34 @@ Desertificación, incendios masivos y olas de calor.
 `Apocalipsis 8:8`
 > "Una gran montaña ardiendo fue arrojada al mar."
 
-Impacto de un asteroide, colapso volcánico o gran erupción insular.
+erupción insular? no encontre equivalente a dia de hoy.
 
-`Apocalipsis 8:8`
-> "La tercera parte del mar se convirtió en sangre."
 
-Mareas rojas, proliferación masiva de algas tóxicas, contaminación química o mortalidad marina.
-
-`Apocalipsis 8:9`
-> "Murió la tercera parte de los seres vivos del mar."
-
-Colapso de ecosistemas marinos por calentamiento, acidificación, sobrepesca y contaminación.
-
-`Apocalipsis 8:9`
-> "La tercera parte de las naves fue destruida."
-
-Tsunamis, tormentas extremas, puertos inutilizados o colapso económico marítimo.
-
-`Apocalipsis 8:10`
-> "Cayó del cielo una gran estrella llamada Ajenjo."
-
-Meteorito, contaminación química o radiactiva que vuelve tóxicas las fuentes de agua.
-
-`Apocalipsis 8:11`
-> "La tercera parte de las aguas se convirtió en ajenjo."
-
-Contaminación industrial, metales pesados, pesticidas, residuos mineros o radiactividad.
-
-`Apocalipsis 8:11`
-> "Muchos hombres murieron por las aguas."
-
-Agua potable contaminada, enfermedades, intoxicaciones ambientales.
 
 `Apocalipsis 8:12`
 > "Fue herida la tercera parte del sol, de la luna y de las estrellas."
 
-Oscurecimiento atmosférico por aerosoles, humo, ceniza volcánica o contaminación.
+Sabian que EEUU planeo bombardear la luna para amenazar a un pais? esto entraria en "Herir la Luna"
+
+
 
 `Apocalipsis 8:12`
 > "El día perdió la tercera parte de su luz."
 
-Invierno volcánico, humo persistente o impacto de gran asteroide.
+Invierno volcánico, humo persistente. Relacionado a lo que ya mencionamos anteriormente.
 
 `Apocalipsis 9:2`
 > "Se abrió el pozo del abismo y subió humo como de un gran horno."
 
-Erupción volcánica gigantesca, incendios de carbón o liberación masiva de humo industrial.
+Explociones petroleras?
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuoo7j85.webp)
 
 `Apocalipsis 9:2`
 > "El sol y el aire fueron oscurecidos por el humo."
 
 Contaminación atmosférica severa, incendios continentales, ceniza volcánica.
+
+Relacionado a lo que ya mencionamos anteriormente.
 
 `Apocalipsis 9:3-4`
 > "Langostas salieron del humo."
@@ -129,82 +158,67 @@ Invasiones de insectos, enfermedades transmitidas por vectores.
 `Apocalipsis 9:14`
 > "Desataron a los cuatro ángeles junto al Éufrates."
 
-Sin equivalente ambiental claro; el texto lo une a un contexto militar. Algunos lo relacionan con conflictos por agua en una cuenca que hoy sufre estrés hídrico.
+Los cuatro ángeles son liberados del Éufrates.
+Luego aparece un ejército de 200 millones de jinetes.
+Los jinetes tienen armas/elementos descritos como fuego, humo y azufre.
+Esas tres cosas causan la muerte de un tercio de la humanidad (Ap 9:15–18).
 
-`Apocalipsis 9:18`
-> "El fuego, humo y azufre mataron a la tercera parte de la humanidad."
+Algunos lo relacionan con conflictos por agua en una cuenca que hoy sufre estrés hídrico.
 
-Contaminación tóxica, guerra química, emisiones volcánicas o nucleares.
+
 
 `Apocalipsis 9:20`
-> "Los demás hombres... no se arrepintieron de las obras de sus manos."
+> "Y Los demás hombres no se arrepintieron de las obras de sus manos."
 
-Persistencia de actividades contaminantes pese a la evidencia científica.
+Incluso a que hay evidencia científica, la humanidad negaba su culpa por estas consecuencias.
 
-`Apocalipsis 11:6`
-> "Los dos testigos tienen poder para cerrar el cielo para que no llueva."
 
-Sequías prolongadas por alteración climática, fenómeno de El Niño, desertificación. Sobre teorías tipo HAARP: muy improbable; el texto habla de poder sobrenatural y referencia a Elías (1 Reyes 17), y no hay evidencia de que HAARP impida lluvias a escala continental: su potencia es millones de veces inferior a la energía de la atmósfera.
 
 `Apocalipsis 11:6`
-> "Convertir las aguas en sangre."
+> "Estos tienen poder para cerrar el cielo, a fin de que no llueva... y para herir la tierra con toda plaga, cuantas veces quieran."
 
-Contaminación hídrica severa.
+Sequías prolongadas por alteración climática, fenómeno de El Niño, desertificación. Incluso podria referirse Teorías conspiranoicas similar al HAARP.
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuoodrft.webp)
 
-`Apocalipsis 11:6`
-> "Herir la tierra con toda plaga."
 
-Desastres ecológicos múltiples.
+
+
 
 `Apocalipsis 11:18`
 > "...y de destruir a los que destruyen la tierra."
 
-Pieza central del lente: el juicio se dirige a quienes arruinan la tierra. El verbo griego (diaphtheirō) significa corromper o arruinar. Desde aquí, contaminación, deforestación y sobreexplotación son el motivo explícito del texto, no una lectura forzada.
+El juicio se dirige a quienes arruinan la tierra. El verbo griego (diaphtheirō) significa corromper o arruinar. Desde aquí, contaminación, deforestación y sobreexplotación son el motivo explícito del texto y castigo, no algo exclsivo de mi interpretacion.
 
-`Apocalipsis 11:19`
-> "Hubo relámpagos, voces, truenos, terremoto y gran granizo."
-
-Eventos climáticos extremos asociados al calentamiento global.
-
-`Apocalipsis 12:15`
-> "El dragón arrojó agua como un río."
-
-Grandes inundaciones o tsunamis.
-
-`Apocalipsis 12:16`
-> "La tierra ayudó a la mujer tragándose el río."
-
-Sumideros, fracturas del terreno, absorción natural de inundaciones.
+Jeremías 2:7: Dios dice que Israel entró en su tierra y la contaminó, haciendo abominable su heredad.
+Levítico 18:25: «La tierra está contaminada; y yo visitaré sobre ella su maldad... y la tierra vomitará sus moradores.»
 
 `Apocalipsis 16:2`
 > "Una úlcera maligna cayó sobre los hombres."
 
 Exposición a sustancias tóxicas, radiación, contaminación química.
 
-`Apocalipsis 16:3`
-> "El segundo ángel derramó su copa sobre el mar y éste se convirtió en sangre como de muerto."
+No buscar "Ulceras por Radiacion" son imagenes fuertes que no adjuntare... Pero ya se pueden imaginar.
 
-Zona muerta oceánica por contaminación y pérdida total de oxígeno.
 
-`Apocalipsis 16:3`
-> "Murió todo ser viviente del mar."
-
-Colapso ecológico marino extremo.
-
-`Apocalipsis 16:4`
-> "El tercer ángel derramó su copa sobre ríos y fuentes."
 
 Contaminación completa de agua dulce.
 
 `Apocalipsis 16:8`
 > "Cuarto ángel derramó su copa sobre el sol; y al sol le fue dado quemar a los hombres con fuego."
 
-Olas de calor extremas potenciadas por el cambio climático. También puede recordar al deterioro de la capa de ozono (mayor radiación UV), aunque el texto habla del calor del Sol, no específicamente de radiación ultravioleta.
+Olas de calor extremas potenciadas por el cambio climático. También puede recordar al deterioro de la capa de ozono, mayor radiación UV literalmente quema y da cancer a la gente.
+
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuoour0f.webp)
 
 `Apocalipsis 16:9`
 > "Los hombres fueron quemados con gran calor."
 
 Récords históricos de temperatura, golpes de calor, incendios.
+
+Vieron que el 28 de Setiembre fue de neuvo Record en Temperatura alta en Paraguay?
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuoozl17.webp)
+Pueden pasar a ver estos datos en la app de clima de esta web en el boton "Apps" de abajo.
+
 
 `Apocalipsis 16:9`
 > "Y blasfemaron contra Dios."
@@ -220,26 +234,27 @@ Apagones masivos, contaminación atmosférica, ceniza volcánica.
 > "Secó el gran río Éufrates."
 
 Sequías, sobreexplotación del agua y cambio climático. El propio Éufrates ha mostrado descensos importantes de caudal en tiempos modernos.
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuop1oxf.webp)
+Ex Rio
 
 `Apocalipsis 16:19`
 > "La gran ciudad fue dividida."
 
-Destrucción urbana por terremotos o desastres climáticos.
+Podria ser Destrucción urbana por terremotos o desastres climáticos.
 
 `Apocalipsis 16:20`
 > "Las islas huyeron y los montes desaparecieron."
 
-Elevación del nivel del mar, erosión costera, hundimientos y cambios geológicos.
+Esta es otra certera actualmente. El deshielo provocara el undimiento de continentes, haciendo que parezca "las islas y montes desaparecieron" por que literalmente estaran bajo el mar.
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuop3xpc.webp)
 
-`Apocalipsis 16:21`
-> "Del cielo cayó sobre los hombres un enorme granizo."
-
-Tormentas severas con granizo de gran tamaño favorecidas por atmósferas más energéticas.
 
 `Apocalipsis 18:3`
 > "Los mercaderes de la tierra se enriquecieron con la potencia de sus deleites."
 
 Consumo desmedido y extractivismo: la riqueza de unos se financia con el desgaste de los recursos de todos.
+
+El chaco siendo vendido a otros paises... 
 
 `Apocalipsis 18:11-13`
 > "Cargamentos de oro, plata, piedras preciosas... madera preciosa, marfil, canela, ganado, ovejas, caballos..."
@@ -254,21 +269,26 @@ Colapso económico rápido de un sistema que depende del comercio marítimo y de
 `Apocalipsis 21:1`
 > "Habrá cielo nuevo y tierra nueva."
 
-Interpretación tradicional: renovación completa de la creación. Desde el lente ambiental: la Tierra cambia tanto por la contaminación que termina siendo un planeta distinto (atmósfera diferente, océanos diferentes, nuevos compuestos químicos, extinción masiva, ecosistema irreconocible). Literalmente una "nueva Tierra", aunque no en el sentido positivo del texto.
+Interpretación tradicional: renovación completa de la creación. Muy optimista en mi opinion... 
+
+Pero desde el lente ambiental: la Tierra cambia tanto por la contaminación que termina siendo un planeta distinto (atmósfera diferente, océanos diferentes, nuevos compuestos químicos, extinción masiva, ecosistema irreconocible). Literalmente una "nueva Tierra", aunque no en el sentido positivo del texto.
 
 `Apocalipsis 21:1`
 > "Ya no existirá el mar."
 
-Interpretación tradicional: el mar simboliza el caos, el mal y la separación. Desde el lente ambiental: evaporación extrema, transformación química, océanos convertidos en masas tóxicas o pérdida de su función biológica. No implica necesariamente que desaparezca físicamente el agua.
+Interpretación tradicional: el mar simboliza el caos, el mal y la separación. Desde el lente ambiental: Literalmente una tierra nueva, totalmente diferente. No implica necesariamente que desaparezca físicamente el agua.
 
 `Apocalipsis 22:1-2`
 > "Un río limpio de agua de vida... y a cada lado del río, el árbol de la vida... y las hojas del árbol eran para la sanidad de las naciones."
 
-El lente se invierte: lo que se restaura es justo lo que antes se perdió (agua limpia, árboles, sanidad). Se lee como restauración ecológica: ríos limpios, reforestación y salud pública ligada al ambiente.
+Esto me da esperanza. Despues de que todos mueran, el ciclo de la vida volveria a surgir... Incluso sin el ser humano...
+
+Sabian que las elites estan haciendo bunkeres autosustentables? que saben ellos que nosotros no? o toman al pie de la letra el apocalipsis?
+![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuopboof.webp)
 
 ---
 
-## Antes del Apocalipsis: ley, profetas y salmos
+## Antes del Apocalipsis
 
 `Génesis 2:15`
 > "Lo puso en el jardín para que lo cultivara y lo cuidara."
@@ -283,7 +303,7 @@ La acción humana altera la tierra: suelos degradados, maleza invasora, cultivos
 `Génesis 6:11-13`
 > "La tierra estaba corrompida... llena de violencia... los destruiré junto con la tierra."
 
-Humanidad y tierra comparten destino: el deterioro de una arrastra a la otra.
+Humanidad y tierra comparten destino: el deterioro de una arrastra a la otra. Por que Dios es la Fuente.
 
 `Génesis 9:9-10`
 > "Yo establezco mi pacto con vosotros... y con todo ser viviente que está con vosotros."
@@ -320,6 +340,10 @@ El exilio como período en que la tierra se recupera del abuso.
 
 Protección de árboles frutales incluso en guerra; lo contrario es la tierra arrasada.
 
+No se si vieron las noticias de como estan acabando con plantas de olvio solo por que pertenece a X poblacion... Olivos que incluso simbolizaban la paz...
+
+
+
 `Deuteronomio 22:6-7`
 > "Si encuentras un nido... no tomarás la madre con los hijos; dejarás ir a la madre."
 
@@ -338,7 +362,7 @@ Suelos agotados y erosionados como evidencia del mal manejo del campo.
 `Salmo 24:1`
 > "Del Señor es la tierra y su plenitud."
 
-La naturaleza no pertenece al ser humano de manera absoluta.
+La naturaleza no pertenece al ser humano.
 
 `Salmo 107:33-34`
 > "Convierte los ríos en desierto... la tierra fructífera en salitral, por la maldad de los que la habitan."
@@ -412,7 +436,7 @@ Extinción masiva y colapso de ecosistemas terrestres, aéreos y marinos.
 
 ---
 
-## Nuevo Testamento y otros textos
+## Nuevo Testamento y otros
 
 `Lucas 21:25-26`
 > "En la tierra angustia de las gentes, por el bramido del mar y de las olas."
@@ -436,19 +460,13 @@ Las malas prácticas terminan perjudicando al propio ser humano.
 
 ---
 
-## Fenómenos que se repiten
+## Preocupado? 
+Todavia podemos hacer algo, muchas de estas cosas aun no sucedieron.
 
-- Incendios forestales.
-- Cambio climático y olas de calor.
-- Sequías y desertificación.
-- Contaminación del agua y del aire.
-- Colapso de ecosistemas y pérdida de biodiversidad.
-- Acidificación del océano y mareas rojas.
-- Erupciones volcánicas e impactos de asteroides.
-- Terremotos y tsunamis.
-- Deforestación, erosión y sobreexplotación de suelos.
-- Acaparamiento de tierras y consumo desmedido.
+No por que algunos hayan interpretado que "nos prometen una tierra nueva" significa que debamos matar lo que Dios nos dios...
 
-Nota: desde la exégesis bíblica, el consenso académico sostiene que el Apocalipsis usa lenguaje apocalíptico simbólico sobre las primeras comunidades cristianas bajo el Imperio romano y sobre juicio y esperanza. Las semejanzas con fenómenos actuales son una lectura contemporánea; este documento solo propone mirar con otro lente.
+Muchas cosas en la Biblia fueron Tergiversadas por el Hombre incluso, si tienes duda... Solo sigue los que dicen "Y dijo Jesus"
+
+<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@selena.9092/video/7688769261522734358" data-video-id="7688769261522734358" style="max-width: 605px;min-width: 325px;" > <section> <a target="_blank" title="@selena.9092" href="https://www.tiktok.com/@selena.9092?refer=embed">@selena.9092</a> <p>#RisasAseguradas #TendenciaViral #funny #TikTokEspañol #mexico</p> <a target="_blank" title="♬ sonido original - c.edgar.tj.0811 - selena.9092" href="https://www.tiktok.com/music/sonido-original-cedgartj0811-7688769308314454806?refer=embed">♬ sonido original - c.edgar.tj.0811 - selena.9092</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
 
 <!--FE=2026-09-30T21:37:35.632Z-->
