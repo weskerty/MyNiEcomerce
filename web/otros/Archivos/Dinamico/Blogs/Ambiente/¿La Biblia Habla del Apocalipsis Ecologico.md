@@ -51,6 +51,8 @@ Literalmente ya no poder ver el cielo por que todo fue nublado con el humo. Para
 Literalmente como estan acabando con todo... El Chaco Paraguayo casi ya ni tiene verde... Adios montes
 ![image](web/otros/Archivos/Imagenes/¿LaBibliaHabladelApocalipsisEcologico/imagemuonmbkn.webp)
 
+<iframe src="https://www.tiktok.com/player/v1/7661035228453997842" loading="lazy" allow="fullscreen" style="width:100%;aspect-ratio:9/16;border:0"></iframe>
+
 `Apocalipsis 7:1-3`
 > "Ángeles que detenían los cuatro vientos de la tierra... No hagáis daño a la tierra, ni al mar, ni a los árboles."
 
