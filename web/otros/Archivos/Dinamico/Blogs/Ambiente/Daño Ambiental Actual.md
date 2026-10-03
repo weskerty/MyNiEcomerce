@@ -1,8 +1,16 @@
-# Daño Ambiental 2026
+### Resumen Ambiental
 
-Este es un resumen simple de lo que esta pasando con el ambiente en Paraguay este año. 
+Este blog se ira Actualizando con mas Entradas, asi no crear diferentes. Si tienes las notificaciones activadas, no se notificara cuando haya nuevos cambios aqui, asi que pasa a revisar de vez en cuando. Recuerda que puedes contribuir. 
 
-## Medanos del Chaco
+<details>
+  <summary style="font-size: 1.0em; font-weight: bold;">🕋 DataCenters en Paraguay </summary>
+
+Alguien ya hizo un blog mejor [Aqui ↗️](https://consen.so/p/exclusivo-iguazu-ai-city-datacenter-uso-agua) pasa a leerlo.
+
+</details>
+
+<details>
+  <summary style="font-size: 1.0em; font-weight: bold;">🏜️ Medanos del Chaco </summary>
 
 Tiene mas de seiscientas mil hectareas. Ahi hay dunas de arena y bosques secos. Abajo de la tierra esta el acuifero Yrenda que es la reserva de agua dulce mas importante de toda esa zona seca. Tambien viven ahi los *ULTIMOS* guanacos de Paraguay.
 El guanaco es un pariente cercano del camello y de la llama 🐪. Puedes leer mas sobre el en [Wikipedia ↗️](https://es.wikipedia.org/wiki/Lama_guanicoe)
@@ -50,6 +58,33 @@ Fuentes
 [Mongabay la investigacion completa sobre la empresa](https://es.mongabay.com/2025/10/misteriosa-empresa-extender-triangulo-litio-paraguay/)
 
 [Consenso el seguimiento despues de la investigacion](https://consen.so/p/litio-licencia-ayoreo-mades)
+	
+	
+	## Opiniones Personales
+
+
+Yo creo que Medanos del Chaco funciona como cortina de humo. No necesariamente porque alguien lo planeo asi a proposito sino porque el sistema mismo termina funcionando de esa forma.
+
+Medanos genera pelea publica. Hay audiencias. Hay organizaciones que protestan todos los dias. Hay periodistas que escriben sobre el tema todo el tiempo. Eso ocupa toda la atencion disponible de la gente. Ya se prohibio varias veces, el politico lo vuelve a proponer una y otra vez, esto se llama desgaste, y llega un momento en donde se lo aprueban.
+
+Basicamente es como tu hermanito llorando sin parar para que le compres algo o un desconocido en una red social publicando a cada rato que se suscriban a su onlyfans...
+
+Mientras tanto el litio avanza con una empresa fantasma y un escandalo de corrupcion ya documentado que casi nadie leyo. El uranio se negocia con Estados Unidos sin pasar por el Congreso. Y el titanio mueve mil millones de dolares sin que casi nadie sepa siquiera que ese proyecto existe.
+
+El acuerdo con Estados Unidos poco transparente y el que peor huele en todo el proceso. Medanos es importante si. Pero es el arbol que no deja ver el bosque completo.
+
+No dejemos de mirar el Bosque por que hoy nos tapa un Arbol, quieren acabar con la naturaleza por todos lados.
+
+Incluso si lo de Medanos del Chaco no se aprueba esto dara una falsa sensacion de haber hecho algo bueno e ignorar lo que viene despues. Es un comportamiento humano que es abusado por gobiernos y empresas de marketing, podes leer mas aca [Wiki EN ↗️](https://en.wikipedia.org/wiki/Self-licensing)
+
+</details>
+
+
+
+
+
+<details>
+  <summary style="font-size: 1.0em; font-weight: bold;">☢️ Proyecto Uranio - Central Nuclear </summary>
 
 ## Paraguay firmo un pacto nuclear con Estados Unidos
 
@@ -86,6 +121,10 @@ Fuentes
 [Ultima Hora sobre Paso Yobai](https://www.ultimahora.com/paso-yobai-oro-unos-pocos-agua-metal-toxico-todos-n3039242)
 
 
+</details>
+
+
+
 ## Por que Importa?
 
 
@@ -93,22 +132,7 @@ Por que Afecta nuestra salud, acaba con animales nativos del Paraguay etc. Podes
 
 
 
-## Opiniones Personales
 
-
-Yo creo que Medanos del Chaco funciona como cortina de humo. No necesariamente porque alguien lo planeo asi a proposito sino porque el sistema mismo termina funcionando de esa forma.
-
-Medanos genera pelea publica. Hay audiencias. Hay organizaciones que protestan todos los dias. Hay periodistas que escriben sobre el tema todo el tiempo. Eso ocupa toda la atencion disponible de la gente. Ya se prohibio varias veces, el politico lo vuelve a proponer una y otra vez, esto se llama desgaste, y llega un momento en donde se lo aprueban.
-
-Basicamente es como tu hermanito llorando sin parar para que le compres algo o un desconocido en una red social publicando a cada rato que se suscriban a su onlyfans...
-
-Mientras tanto el litio avanza con una empresa fantasma y un escandalo de corrupcion ya documentado que casi nadie leyo. El uranio se negocia con Estados Unidos sin pasar por el Congreso. Y el titanio mueve mil millones de dolares sin que casi nadie sepa siquiera que ese proyecto existe.
-
-El acuerdo con Estados Unidos poco transparente y el que peor huele en todo el proceso. Medanos es importante si. Pero es el arbol que no deja ver el bosque completo.
-
-No dejemos de mirar el Bosque por que hoy nos tapa un Arbol, quieren acabar con la naturaleza por todos lados.
-
-Incluso si lo de Medanos del Chaco no se aprueba esto dara una falsa sensacion de haber hecho algo bueno e ignorar lo que viene despues. Es un comportamiento humano que es abusado por gobiernos y empresas de marketing, podes leer mas aca [Wiki EN ↗️](https://en.wikipedia.org/wiki/Self-licensing)
 
 # Analogia
 

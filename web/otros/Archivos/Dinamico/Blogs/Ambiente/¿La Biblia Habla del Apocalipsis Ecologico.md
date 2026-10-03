@@ -53,6 +53,8 @@ Literalmente como estan acabando con todo... El Chaco Paraguayo casi ya ni tiene
 
 <iframe src="https://www.tiktok.com/player/v1/7661035228453997842" loading="lazy" allow="fullscreen" style="width:100%;aspect-ratio:9/16;border:0"></iframe>
 
+
+
 `Apocalipsis 7:1-3`
 > "Ángeles que detenían los cuatro vientos de la tierra... No hagáis daño a la tierra, ni al mar, ni a los árboles."
 
@@ -469,6 +471,15 @@ No por que algunos hayan interpretado que "nos prometen una tierra nueva" signif
 
 Muchas cosas en la Biblia fueron Tergiversadas por el Hombre incluso, si tienes duda... Solo sigue los que dicen "Y dijo Jesus"
 
-<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@selena.9092/video/7688769261522734358" data-video-id="7688769261522734358" style="max-width: 605px;min-width: 325px;" > <section> <a target="_blank" title="@selena.9092" href="https://www.tiktok.com/@selena.9092?refer=embed">@selena.9092</a> <p>#RisasAseguradas #TendenciaViral #funny #TikTokEspañol #mexico</p> <a target="_blank" title="♬ sonido original - c.edgar.tj.0811 - selena.9092" href="https://www.tiktok.com/music/sonido-original-cedgartj0811-7688769308314454806?refer=embed">♬ sonido original - c.edgar.tj.0811 - selena.9092</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
+<iframe src="https://www.tiktok.com/player/v1/7688769261522734358" loading="lazy" allow="fullscreen" style="width:100%;aspect-ratio:9/16;border:0"></iframe>
+
+
+
+
+<blockquote class="reddit-embed-bq" style="height:500px" data-embed-locale="es-ES" data-embed-style="subreddit-first" data-embed-theme="dark" data-embed-height="454">
+<a href="https://www.reddit.com/r/FilosofiaBAR/comments/1w3cqnj/a_humanidade_esta_construido_o_apocalipse_com_as/">A humanidade esta construido o Apocalipse com as proprias mãos</a><br> by
+<a href="https://www.reddit.com/user/Phantom0000000007/">u/Phantom0000000007</a> in
+<a href="https://www.reddit.com/r/FilosofiaBAR/">FilosofiaBAR</a>
+</blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>
 
 <!--FE=2026-09-30T21:37:35.632Z-->
