@@ -1,105 +1,54 @@
 <style>
-:root{
---g1:rgba(255,255,255,0.06);
---g2:rgba(255,255,255,0.10);
---gb:rgba(255,255,255,0.13);
---gbb:rgba(255,255,255,0.18);
---txt:rgba(255,255,255,0.92);
---txt2:rgba(255,255,255,0.45);
---r:var(--r-md);
---ri:var(--r-sm);
-}
-#pb-wrap{color:var(--txt);font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;padding:0 0 90px;-webkit-font-smoothing:antialiased}
-#pb-wrap *{box-sizing:border-box}
-.pb-top{padding:22px 18px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--gb)}
-.pb-top h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.3px}
-.pb-top span{font-size:12px;color:var(--txt2);margin-top:2px;display:block}
-.pb-logo{width:42px;height:42px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;box-shadow:0 4px 14px rgba(var(--acc-rgb),.28)}
-.pb-sect{max-width:600px;margin:0 auto;padding:18px 14px 0}
-.pb-card{background:var(--g1);border:1px solid var(--gb);border-radius:var(--r);padding:18px;margin-bottom:14px}
-.pb-card h2{margin:0 0 14px;font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em}
+#pb-wrap{padding-bottom:90px}
+#pb-wrap button{font-family:inherit;margin:0}
+#pb-wrap button:disabled{opacity:.4;cursor:not-allowed}
+#pb-wrap .PG1{margin-bottom:12px}
+#pb-wrap .act{--GL_R:var(--GL_RC);--GL_F:var(--GL_FH)}
 .fg{margin-bottom:12px}
-.fg label{display:block;font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:5px;letter-spacing:.03em}
-.fg input,.fg select,.fg textarea{
-width:100%;background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);color:var(--txt);
-padding:10px 13px;font-size:15px;outline:none;transition:border .15s,background .15s;
--webkit-appearance:none;font-family:inherit;resize:vertical;
-}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:rgba(var(--acc-rgb),.6);background:var(--g2)}
-.fg select option{background:#1a1a2e;color:#fff}
-.fg-hint{font-size:11px;color:var(--txt2);margin-top:4px}
-.fg-hint.ok{color:var(--ok)}
-.fg-hint.err{color:var(--err)}
+.fg label{display:block;margin-bottom:4px;font-size:.85em;opacity:.6}
+.fg :is(input,select,textarea,button){width:100%}
+.fg-hint{font-size:.8em;opacity:.6;margin-top:4px}
+.fg-hint.ok{color:var(--ok);opacity:1}
+.fg-hint.err{color:var(--err);opacity:1}
+.pb-c{text-align:center;margin:20px 0}
 .pb-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pb-btn{
-display:inline-flex;align-items:center;justify-content:center;gap:7px;
-padding:12px 20px;border:none;border-radius:var(--ri);font-size:15px;font-weight:600;cursor:pointer;
-transition:opacity .15s,transform .1s,box-shadow .15s;width:100%;font-family:inherit;letter-spacing:-.1px;
-}
-.pb-btn:active{transform:scale(.97)}
-.pb-btn.pri{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 4px 18px rgba(var(--acc-rgb),.3)}
-.pb-btn.pri:hover{box-shadow:0 6px 22px rgba(var(--acc-rgb),.45)}
-.pb-btn.sec{background:transparent;color:var(--txt);border:1px solid var(--gbb)}
-.pb-btn.sec:hover{background:var(--g2)}
-.pb-btn:disabled{opacity:.4;cursor:not-allowed}
-.pb-msg{
-position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:rgba(20,20,35,0.85);
-border:1px solid var(--gb);border-radius:50px;padding:10px 22px;font-size:13px;font-weight:500;color:var(--txt);
-z-index:9999;pointer-events:none;white-space:nowrap;max-width:88vw;text-overflow:ellipsis;overflow:hidden;
-backdrop-filter:saturate(1.4);box-shadow:0 8px 32px rgba(0,0,0,.35);
-}
-.pb-msg.ok{border-color:rgba(52,211,153,.4);color:var(--ok)}
-.pb-msg.err{border-color:rgba(248,113,113,.4);color:var(--err)}
-.pb-msg.warn{border-color:rgba(251,191,36,.4);color:var(--warn)}
-.pb-tabs{display:flex;gap:2px;background:var(--g1);border:1px solid var(--gb);border-radius:50px;padding:3px;margin-bottom:18px}
-.pb-tab{flex:1;padding:8px;border:none;background:transparent;color:var(--txt2);border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
-.pb-tab.act{background:var(--g2);color:var(--txt);border:1px solid var(--gb)}
-.pb-img-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
-.pb-img-thumb{
-width:72px;height:72px;flex-shrink:0;border-radius:var(--ri);border:1.5px dashed var(--gb);overflow:hidden;cursor:pointer;
-background:var(--g1);display:flex;align-items:center;justify-content:center;font-size:24px;transition:border-color .15s,background .15s;position:relative;
-}
-.pb-img-thumb:hover{border-color:var(--acc);background:var(--g2)}
-.pb-img-thumb img{width:100%;height:100%;object-fit:cover;display:none;border-radius:calc(var(--ri) - 2px)}
-.pb-img-fields{flex:1;display:flex;flex-direction:column;gap:8px}
-.pb-img-fields .fg{margin:0}
-.pb-img-size{font-size:11px;color:var(--txt2);padding:0 2px}
-.pb-sol-item{background:var(--g1);border:1px solid var(--gb);border-radius:var(--ri);padding:13px;margin-bottom:10px;display:flex;gap:11px;align-items:flex-start}
-.pb-sol-info{flex:1;min-width:0}
-.pb-sol-info .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pb-sol-info .dt{font-size:11px;color:var(--txt2);margin-top:3px}
-.pb-sol-acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-.pb-sol-acts button{padding:5px 12px;border-radius:50px;border:1px solid var(--gb);background:var(--g1);color:var(--txt);font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s}
-.pb-sol-acts button:hover{background:var(--g2)}
-.pb-badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.04em}
-.pb-badge.pend{background:rgba(var(--acc-rgb),.15);color:#93c5fd;border:1px solid rgba(var(--acc-rgb),.25)}
-.pb-badge.apr{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)}
-.pb-badge.rej{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.2)}
-.pb-sol-neg{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:7px 10px;font-size:12px;color:#fca5a5;margin-top:6px}
+.pb-img-row{display:flex;gap:12px;align-items:flex-start}
+.pb-img-fields{flex:1}
+#pb-img-thumb{cursor:pointer}
+#pb-img-thumb img{display:none;width:100%;height:100%;object-fit:cover}
+.pb-sol-item{padding:12px;margin-bottom:8px;border:1px solid var(--rdm-border);border-radius:var(--r-sm)}
+.pb-sol-item .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pb-sol-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pb-sol-neg{margin-top:6px;padding:7px 10px;border-radius:var(--r-sm);font-size:.85em;color:var(--err);background:color-mix(in srgb,var(--err) 10%,transparent)}
+.pb-badge{padding:1px 8px;border:1px solid;border-radius:99px;font-size:.7em;font-weight:700;background:color-mix(in srgb,currentColor 14%,transparent)}
+.pb-badge.pend{color:var(--accent-2)}
+.pb-badge.apr{color:var(--ok)}
+.pb-badge.rej{color:var(--err)}
+.pb-msg{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);max-width:88vw;padding:10px 22px;border:1px solid var(--rdm-border);border-radius:var(--r-xl);background:var(--rdm-bg);box-shadow:var(--GL_E);z-index:9999;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pb-msg:is(.ok,.err,.warn){border-color:currentColor}
+.pb-msg.ok{color:var(--ok)}
+.pb-msg.err{color:var(--err)}
+.pb-msg.warn{color:var(--warn)}
 @keyframes pb-shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 .pb-shake{animation:pb-shake .4s ease 3;border-color:var(--err)!important}
-.pb-auth-note{font-size:12px;color:var(--txt2);text-align:center;margin-top:10px}
 </style>
 
 <div id="pb-wrap">
-<div class="pb-top">
-  <div class="pb-logo">Lugar</div>
-  <div><h1>Agregar Lugar</h1><span>Envia tu solicitud para publicar en el mapa/lista</span></div>
-</div>
-<div class="pb-sect">
+<h1>📍 Agregar Lugar</h1>
+<p class="fg-hint">Envia tu solicitud para publicar en el mapa/lista</p>
   <div id="pb-auth">
-    <div class="pb-tabs">
-      <button class="pb-tab act" id="pb-tlogin" onclick="PB_showTab('login')">Iniciar Sesion</button>
-      <button class="pb-tab" id="pb-treg" onclick="PB_showTab('reg')">Registrarse</button>
+    <div class="PG1">
+      <button class="back-button act" id="pb-tlogin" onclick="PB_showTab('login')">Iniciar Sesion</button>
+      <button class="back-button" id="pb-treg" onclick="PB_showTab('reg')">Registrarse</button>
     </div>
-    <form id="pb-login-box" class="pb-card">
+    <form id="pb-login-box">
       <h2>Acceso</h2>
       <div class="fg"><label>Numero de telefono</label><input id="pb-lu" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
       <div class="fg"><label>Contrasena</label><input id="pb-lp" type="password" placeholder="••••••" autocomplete="current-password"></div>
-      <button type="submit" class="pb-btn pri" onclick="event.preventDefault();PB_login()">Entrar</button>
-      <p class="pb-auth-note">Sin cuenta? <a onclick="PB_showTab('reg')">Registrate aqui</a></p>
+      <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_login()">Entrar</button></div>
+      <p class="fg-hint pb-c">Sin cuenta? <a onclick="PB_showTab('reg')">Registrate aqui</a></p>
     </form>
-    <form id="pb-reg-box" class="pb-card" style="display:none">
+    <form id="pb-reg-box" style="display:none">
       <h2>Nuevo Usuario</h2>
       <div class="fg"><label>Numero de telefono</label><input id="pb-ru" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
       <div class="fg">
@@ -108,20 +57,20 @@ background:var(--g1);display:flex;align-items:center;justify-content:center;font
         <div class="fg-hint" id="pb-rp-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
       </div>
       <div class="fg"><label>Confirmar</label><input id="pb-rp2" type="password" placeholder="••••••" autocomplete="new-password"></div>
-      <button type="submit" class="pb-btn pri" onclick="event.preventDefault();PB_registro()">Crear Cuenta</button>
-      <p class="pb-auth-note">Ya tenes cuenta? <a onclick="PB_showTab('login')">Inicia sesion</a></p>
+      <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_registro()">Crear Cuenta</button></div>
+      <p class="fg-hint pb-c">Ya tenes cuenta? <a onclick="PB_showTab('login')">Inicia sesion</a></p>
     </form>
-    <p class="pb-auth-note">Es la misma cuenta que usas para agregar productos</p>
+    <p class="fg-hint pb-c">Es la misma cuenta que usas para agregar productos</p>
   </div>
   <div id="pb-main" style="display:none">
-    <div class="pb-tabs">
-      <button class="pb-tab act" id="pb-tnuevo" onclick="PB_mainTab('nuevo')">Nueva Solicitud</button>
-      <button class="pb-tab" id="pb-tmis" onclick="PB_mainTab('mis')">Mis Lugares</button>
-      <button class="pb-tab" id="pb-tpend" onclick="PB_mainTab('pend')">Mis Solicitudes</button>
-      <button class="pb-tab" id="pb-tcuenta" onclick="PB_mainTab('cuenta')">Cuenta</button>
+    <div class="PG1">
+      <button class="back-button act" id="pb-tnuevo" onclick="PB_mainTab('nuevo')">Nueva Solicitud</button>
+      <button class="back-button" id="pb-tmis" onclick="PB_mainTab('mis')">Mis Lugares</button>
+      <button class="back-button" id="pb-tpend" onclick="PB_mainTab('pend')">Mis Solicitudes</button>
+      <button class="back-button" id="pb-tcuenta" onclick="PB_mainTab('cuenta')">Cuenta</button>
     </div>
     <div id="pb-tab-nuevo">
-      <div class="pb-card">
+      <div>
         <h2>Tipo de Lugar</h2>
         <div class="fg"><select id="pb-cat" onchange="PB_catChange()">
           <option value="minecraft">Servidor Minecraft</option>
@@ -129,17 +78,17 @@ background:var(--g1);display:flex;align-items:center;justify-content:center;font
           <option value="jugadores">Encuentra Jugadores</option>
         </select></div>
         <div class="pb-img-row">
-          <div class="pb-img-thumb" id="pb-img-thumb" onclick="document.getElementById('pb-img').click()">
-            <span id="pb-img-icon">+</span>
+          <div class="BS2" id="pb-img-thumb" onclick="document.getElementById('pb-img').click()">
+            <span id="pb-img-icon" class="BS4">📷</span>
             <img id="pb-imgprev" alt="">
           </div>
           <div class="pb-img-fields">
-            <div class="fg" style="margin:0"><label>Imagen / logo</label><div class="pb-img-size" id="pb-imgnm">Toca para subir</div></div>
+            <div class="fg"><label>Imagen / logo</label><div class="fg-hint" id="pb-imgnm">Toca para subir</div></div>
           </div>
           <input type="file" id="pb-img" accept="image/avif,image/webp,image/*" style="display:none">
         </div>
       </div>
-      <div class="pb-card" id="pb-f-minecraft">
+      <div id="pb-f-minecraft">
         <h2>Datos del Servidor</h2>
         <div class="fg"><label>Nombre</label><input id="pb-mc-nm" placeholder="Casita Server" maxlength="40"></div>
         <div class="fg"><label>Descripcion corta</label><textarea id="pb-mc-desc" rows="2" maxlength="90" placeholder="Bedrock Survival casi vanilla..."></textarea></div>
@@ -153,7 +102,7 @@ background:var(--g1);display:flex;align-items:center;justify-content:center;font
           <option value="B+J">Ambas</option>
         </select></div>
       </div>
-      <div class="pb-card" id="pb-f-localizador" style="display:none">
+      <div id="pb-f-localizador" style="display:none">
         <h2>Datos del Lugar</h2>
         <div class="fg"><label>Tipo de lugar</label><select id="pb-lz-tipo" onchange="PB_lzTipoChange()">
           <option value="banos">Baño</option>
@@ -171,7 +120,7 @@ background:var(--g1);display:flex;align-items:center;justify-content:center;font
         </select></div>
         <div class="fg"><label>Nombre</label><input id="pb-lz-nm" placeholder="Nombre del lugar" maxlength="60"></div>
         <div class="fg"><label>Horario</label><input id="pb-lz-hr" placeholder="Lun - Vie: 8:00 - 18:00" maxlength="60"></div>
-        <div class="fg"><label>Ubicacion</label><button type="button" class="pb-btn sec" id="pb-gps-btn-lz" style="padding:10px" onclick="PB_pedirGPS('pb-gps-hint-lz')">Usar mi ubicacion</button></div>
+        <div class="fg"><label>Ubicacion</label><button type="button" id="pb-gps-btn-lz" onclick="PB_pedirGPS('pb-gps-hint-lz')">Usar mi ubicacion</button></div>
         <div class="fg-hint" id="pb-gps-hint-lz"></div>
         <div class="fg"><label>Canal de contacto</label>
           <select id="pb-lz-ch">
@@ -182,7 +131,7 @@ background:var(--g1);display:flex;align-items:center;justify-content:center;font
           </select>
         </div>
       </div>
-      <div class="pb-card" id="pb-f-jugadores" style="display:none">
+      <div id="pb-f-jugadores" style="display:none">
         <h2>Datos del Jugador</h2>
         <div class="fg"><label>Nombre de Juego</label><input id="pb-jg-nm" placeholder="Overwatch 2" maxlength="40"></div>
         <div class="fg"><label>Descripcion</label><textarea id="pb-jg-desc" rows="2" maxlength="55" placeholder="Busco gente para jugar de noche, nivel medio"></textarea></div>
@@ -194,16 +143,16 @@ background:var(--g1);display:flex;align-items:center;justify-content:center;font
           </select>
         </div>
       </div>
-      <button class="pb-btn pri" id="pb-submit" onclick="PB_enviar()">Enviar Solicitud</button>
+      <div class="PG1"><button class="view-all-button" id="pb-submit" onclick="PB_enviar()">Enviar Solicitud</button></div>
     </div>
     <div id="pb-tab-mis" style="display:none">
-      <div id="pb-mis-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
+      <div id="pb-mis-list"><div class="fg-hint pb-c">Cargando...</div></div>
     </div>
     <div id="pb-tab-pend" style="display:none">
-      <div id="pb-sol-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
+      <div id="pb-sol-list"><div class="fg-hint pb-c">Cargando...</div></div>
     </div>
     <div id="pb-tab-cuenta" style="display:none">
-      <form class="pb-card">
+      <form>
         <h2>Cambiar Contrasena</h2>
         <div class="fg"><label>Contrasena Actual</label><input id="pb-cpa" type="password" placeholder="••••••" autocomplete="current-password"></div>
         <div class="fg">
@@ -212,12 +161,11 @@ background:var(--g1);display:flex;align-items:center;justify-content:center;font
           <div class="fg-hint" id="pb-cpn-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
         </div>
         <div class="fg"><label>Confirmar Nueva</label><input id="pb-cpn2" type="password" placeholder="••••••" autocomplete="new-password"></div>
-        <button type="submit" class="pb-btn pri" onclick="event.preventDefault();PB_cambiarPass()">Guardar Nueva Contrasena</button>
-        <button type="button" class="pb-btn sec" style="margin-top:8px" onclick="PB_logout()">Cerrar Sesion</button>
+        <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_cambiarPass()">Guardar Nueva Contrasena</button></div>
+        <div class="PG1"><button type="button" onclick="PB_logout()">Cerrar Sesion</button></div>
       </form>
     </div>
   </div>
-</div>
 </div>
 
 <script>
@@ -533,17 +481,17 @@ async function PB_scanAllLugares(force){
 
 window.PB_loadMisLugares=async function(){
   const lst=document.getElementById('pb-mis-list');
-  lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
+  lst.innerHTML='<div class="fg-hint pb-c">Cargando...</div>';
   const all=await PB_scanAllLugares(true);
   const mios=all.filter(e=>e.telefono===_PB_tel);
-  if(!mios.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Sin lugares publicados aun</div>';return;}
+  if(!mios.length){lst.innerHTML='<div class="fg-hint pb-c">Sin lugares publicados aun</div>';return;}
   lst.innerHTML='';
   mios.forEach(e=>{
     const div=document.createElement('div');div.className='pb-sol-item';
     const nombre=(e.NB||'').split(';')[0]||e.ID;
     div.innerHTML=`<div class="pb-sol-info">
       <div class="nm">${PB_esc(nombre)} <span class="pb-badge apr">Publicado</span></div>
-      <div class="dt">${PB_esc(PB_lzLabel(e.categoria,e.NB))}</div>
+      <div class="fg-hint">${PB_esc(PB_lzLabel(e.categoria,e.NB))}</div>
       <div class="pb-sol-acts">
         <button onclick="PB_solicitarBorrado('${PB_esc(e.ID)}')">Solicitar Borrado</button>
       </div>
@@ -561,11 +509,11 @@ window.PB_solicitarBorrado=async function(ID){
 
 window.PB_loadSolicitudes=async function(){
   const lst=document.getElementById('pb-sol-list');
-  lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
+  lst.innerHTML='<div class="fg-hint pb-c">Cargando...</div>';
   const{ok,data}=await PB_fetch('historial',{method:'POST',body:JSON.stringify({})});
-  if(!ok){lst.innerHTML=`<div style="color:var(--err);padding:20px">${data.error||'Error'}</div>`;return;}
+  if(!ok){lst.innerHTML=`<div class="fg-hint err">${data.error||'Error'}</div>`;return;}
   const entries=(data.entries||[]).filter(e=>PB_CATS.includes(e.categoria));
-  if(!entries.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Sin solicitudes pendientes</div>';return;}
+  if(!entries.length){lst.innerHTML='<div class="fg-hint pb-c">Sin solicitudes pendientes</div>';return;}
   lst.innerHTML='';
   const badges={pendiente:'<span class="pb-badge pend">Pendiente</span>',rechazado:'<span class="pb-badge rej">Rechazado</span>'};
   entries.forEach(e=>{
@@ -573,7 +521,7 @@ window.PB_loadSolicitudes=async function(){
     const nombre=(e.NB||'').split(';')[0]||e.ID;
     div.innerHTML=`<div class="pb-sol-info">
       <div class="nm">${PB_esc(nombre)} ${badges[e.estado]||''}</div>
-      <div class="dt">${PB_esc(PB_lzLabel(e.categoria,e.NB))}</div>
+      <div class="fg-hint">${PB_esc(PB_lzLabel(e.categoria,e.NB))}</div>
       ${e.estado==='rechazado'&&e.motivo?`<div class="pb-sol-neg">${PB_esc(e.motivo)}</div>`:''}
     </div>`;
     lst.appendChild(div);

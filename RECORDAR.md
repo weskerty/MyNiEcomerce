@@ -1,3 +1,5 @@
+Search.html limite de categorias hasta 20, boton mostrar mas. seleccion de categoria y sub categoria mostrar mas exclusivo.
+
 core.js no usar # para su url principal.
 
 POS Negar archivos que no son formatos populares
