@@ -1,157 +1,60 @@
 <style>
-:root{
---g1:rgba(255,255,255,0.06);
---g2:rgba(255,255,255,0.10);
---gb:rgba(255,255,255,0.13);
---gbb:rgba(255,255,255,0.18);
---txt:rgba(255,255,255,0.92);
---txt2:rgba(255,255,255,0.45);
---r:var(--r-md);
---ri:var(--r-sm);
-}
-#ap-wrap{color:var(--txt);font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;padding:0 0 90px;-webkit-font-smoothing:antialiased}
-#ap-wrap *{box-sizing:border-box}
-.ap-top{padding:22px 18px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--gb)}
-.ap-top h1{margin:0;font-size:19px;font-weight:700;letter-spacing:-.3px}
-.ap-top span{font-size:12px;color:var(--txt2);margin-top:2px;display:block}
-.ap-logo{width:42px;height:42px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;box-shadow:0 4px 14px rgba(var(--acc-rgb),.28)}
-.ap-sect{max-width:600px;margin:0 auto;padding:18px 14px 0}
-.ap-card{background:var(--g1);border:1px solid var(--gb);border-radius:var(--r);padding:18px;margin-bottom:14px;backdrop-filter:none}
-.ap-card h2{margin:0 0 14px;font-size:11px;font-weight:600;color:var(--txt2);text-transform:uppercase;letter-spacing:.1em}
+#ap-wrap{padding-bottom:90px}
+#ap-wrap button{font-family:inherit;margin:0}
+#ap-wrap button:disabled{opacity:.4;cursor:not-allowed}
+#ap-wrap .PG1{margin-bottom:12px}
+#ap-wrap .act{--GL_R:var(--GL_RC);--GL_F:var(--GL_FH)}
 .fg{margin-bottom:12px}
-.fg label{display:block;font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:5px;letter-spacing:.03em}
-.fg input,.fg select,.fg textarea{
-width:100%;
-background:var(--g1);
-border:1px solid var(--gb);
-border-radius:var(--ri);
-color:var(--txt);
-padding:10px 13px;
-font-size:15px;
-outline:none;
-transition:border .15s,background .15s;
--webkit-appearance:none;
-font-family:inherit;
-}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:rgba(var(--acc-rgb),.6);background:var(--g2)}
-.fg select option{background:#1a1a2e;color:#fff}
-.fg-hint{font-size:11px;color:var(--txt2);margin-top:4px}
-.fg-hint.ok{color:var(--ok)}
-.fg-hint.err{color:var(--err)}
+.fg label{display:block;margin-bottom:4px;font-size:.85em;opacity:.6}
+.fg :is(input,select,textarea,button){width:100%}
+.fg-hint{font-size:.8em;opacity:.6;margin-top:4px}
+.fg-hint.ok{color:var(--ok);opacity:1}
+.fg-hint.err{color:var(--err);opacity:1}
+.ap-c{text-align:center;margin:20px 0}
 .ap-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.ap-btn{
-display:inline-flex;align-items:center;justify-content:center;gap:7px;
-padding:12px 20px;border:none;border-radius:var(--ri);
-font-size:15px;font-weight:600;cursor:pointer;
-transition:opacity .15s,transform .1s,box-shadow .15s;
-width:100%;font-family:inherit;letter-spacing:-.1px;
-}
-.ap-btn:active{transform:scale(.97)}
-.ap-btn.pri{
-background:linear-gradient(135deg,var(--acc),var(--acc2));
-color:#fff;
-box-shadow:0 4px 18px rgba(var(--acc-rgb),.3);
-}
-.ap-btn.pri:hover{box-shadow:0 6px 22px rgba(var(--acc-rgb),.45)}
-.ap-btn.sec{
-background:transparent;
-color:var(--txt);
-border:1px solid var(--gbb);
-}
-.ap-btn.sec:hover{background:var(--g2)}
-.ap-btn:disabled{opacity:.4;cursor:not-allowed}
-.ap-msg{
-position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
-background:rgba(20,20,35,0.85);
-border:1px solid var(--gb);
-border-radius:50px;padding:10px 22px;
-font-size:13px;font-weight:500;color:var(--txt);
-z-index:9999;pointer-events:none;white-space:nowrap;
-max-width:88vw;text-overflow:ellipsis;overflow:hidden;
-backdrop-filter:saturate(1.4);
-box-shadow:0 8px 32px rgba(0,0,0,.35);
-}
-.ap-msg.ok{border-color:rgba(52,211,153,.4);color:var(--ok)}
-.ap-msg.err{border-color:rgba(248,113,113,.4);color:var(--err)}
-.ap-msg.warn{border-color:rgba(251,191,36,.4);color:var(--warn)}
-.ap-tabs{
-display:flex;gap:2px;
-background:var(--g1);
-border:1px solid var(--gb);
-border-radius:50px;padding:3px;margin-bottom:18px;
-}
-.ap-tab{flex:1;padding:8px;border:none;background:transparent;color:var(--txt2);border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
-.ap-tab.act{background:var(--g2);color:var(--txt);border:1px solid var(--gb)}
-
-.ap-img-row{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
-.ap-img-thumb{
-width:72px;height:72px;flex-shrink:0;
-border-radius:var(--ri);
-border:1.5px dashed var(--gb);
-overflow:hidden;cursor:pointer;
-background:var(--g1);
-display:flex;align-items:center;justify-content:center;
-font-size:24px;transition:border-color .15s,background .15s;
-position:relative;
-}
-.ap-img-thumb:hover{border-color:var(--acc);background:var(--g2)}
-.ap-img-thumb img{width:100%;height:100%;object-fit:cover;display:none;border-radius:calc(var(--ri) - 2px)}
-.ap-img-fields{flex:1;display:flex;flex-direction:column;gap:8px}
-.ap-img-fields .fg{margin:0}
-.ap-img-size{font-size:11px;color:var(--txt2);padding:0 2px}
-
-.ap-sol-item{
-background:var(--g1);border:1px solid var(--gb);
-border-radius:var(--ri);padding:13px;margin-bottom:10px;
-display:flex;gap:11px;align-items:flex-start;
-}
-.ap-sol-info{flex:1;min-width:0}
-.ap-sol-info .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ap-sol-info .dt{font-size:11px;color:var(--txt2);margin-top:3px}
-.ap-sol-acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-.ap-sol-acts button{
-padding:5px 12px;border-radius:50px;
-border:1px solid var(--gb);background:var(--g1);
-color:var(--txt);font-size:12px;cursor:pointer;
-font-family:inherit;transition:background .15s;
-}
-.ap-sol-acts button:hover{background:var(--g2)}
-.ap-badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.04em}
-.ap-badge.pend{background:rgba(var(--acc-rgb),.15);color:#93c5fd;border:1px solid rgba(var(--acc-rgb),.25)}
-.ap-badge.apr{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)}
-.ap-badge.rej{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.2)}
-.ap-sol-neg{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:8px;padding:7px 10px;font-size:12px;color:#fca5a5;margin-top:6px}
+.ap-img-row{display:flex;gap:12px;align-items:flex-start}
+.ap-img-fields{flex:1}
+#ap-img-thumb{cursor:pointer}
+#ap-img-thumb img{display:none;width:100%;height:100%;object-fit:cover}
+.ap-sol-item{padding:12px;margin-bottom:8px;border:1px solid var(--rdm-border);border-radius:var(--r-sm)}
+.ap-sol-item .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ap-sol-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ap-sol-neg{margin-top:6px;padding:7px 10px;border-radius:var(--r-sm);font-size:.85em;color:var(--err);background:color-mix(in srgb,var(--err) 10%,transparent)}
+.ap-badge{padding:1px 8px;border:1px solid;border-radius:99px;font-size:.7em;font-weight:700;background:color-mix(in srgb,currentColor 14%,transparent)}
+.ap-badge.pend{color:var(--accent-2)}
+.ap-badge.apr{color:var(--ok)}
+.ap-badge.rej{color:var(--err)}
+.ap-msg{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);max-width:88vw;padding:10px 22px;border:1px solid var(--rdm-border);border-radius:var(--r-xl);background:var(--rdm-bg);box-shadow:var(--GL_E);z-index:9999;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ap-msg:is(.ok,.err,.warn){border-color:currentColor}
+.ap-msg.ok{color:var(--ok)}
+.ap-msg.err{color:var(--err)}
+.ap-msg.warn{color:var(--warn)}
 @keyframes ap-shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 .ap-shake{animation:ap-shake .4s ease 3;border-color:var(--err)!important}
-.ap-auth-note{font-size:12px;color:var(--txt2);text-align:center;margin-top:10px}
-
-#ap-mde .EasyMDEContainer{background:transparent!important;border-radius:var(--ri);overflow:hidden}
-#ap-mde .CodeMirror{background:var(--g1)!important;color:var(--txt)!important;min-height:180px;border-radius:0 0 var(--ri) var(--ri)!important;border:1px solid var(--gb)!important;border-top:none!important}
-#ap-mde .editor-toolbar{background:var(--g1)!important;border:1px solid var(--gb)!important;border-bottom:1px solid var(--gb)!important;border-radius:var(--ri) var(--ri) 0 0!important}
-#ap-mde .editor-toolbar button{color:var(--txt2)!important}
-#ap-mde .editor-toolbar button:hover,#ap-mde .editor-toolbar button.active{background:var(--g2)!important;border-color:var(--gb)!important}
-#ap-mde .editor-toolbar i.separator{border-color:var(--gb)!important}
+#ap-mde .CodeMirror,#ap-mde .editor-toolbar{background:rgba(255,255,255,.06)!important;color:#fff!important;border-color:rgba(255,255,255,.15)!important}
+#ap-mde .CodeMirror{min-height:180px}
+#ap-mde .CodeMirror-cursor{border-left-color:#fff!important}
+#ap-mde .editor-toolbar button{color:rgba(255,255,255,.6)!important}
+#ap-mde .editor-toolbar button:is(:hover,.active){background:rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.15)!important}
+#ap-mde .editor-toolbar i.separator{border-color:rgba(255,255,255,.15)!important}
 </style>
 
 <div id="ap-wrap">
-<div class="ap-top">
-  <div class="ap-logo">Tienda</div>
-  <div><h1>Agregar Producto</h1><span>Envia tu solicitud para publicar en la tienda</span></div>
-</div>
-<div class="ap-sect">
+<h1>🏪 Agregar Producto</h1>
+<p class="fg-hint">Envia tu solicitud para publicar en la tienda</p>
   <div id="ap-auth">
-    <div class="ap-tabs">
-      <button class="ap-tab act" id="ap-tlogin" onclick="AP_showTab('login')">Iniciar Sesion</button>
-      <button class="ap-tab" id="ap-treg" onclick="AP_showTab('reg')">Registrarse</button>
+    <div class="PG1">
+      <button class="back-button act" id="ap-tlogin" onclick="AP_showTab('login')">Iniciar Sesion</button>
+      <button class="back-button" id="ap-treg" onclick="AP_showTab('reg')">Registrarse</button>
     </div>
-    <form id="ap-login-box" class="ap-card">
+    <form id="ap-login-box">
       <h2>Acceso</h2>
       <div class="fg"><label>Numero de telefono</label><input id="ap-lu" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
       <div class="fg"><label>Contrasena</label><input id="ap-lp" type="password" placeholder="••••••" autocomplete="current-password"></div>
-      <button type="submit" class="ap-btn pri" onclick="event.preventDefault();AP_login()">Entrar</button>
-      <p class="ap-auth-note">Sin cuenta? <a onclick="AP_showTab('reg')">Registrate aqui</a></p>
+      <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();AP_login()">Entrar</button></div>
+      <p class="fg-hint ap-c">Sin cuenta? <a onclick="AP_showTab('reg')">Registrate aqui</a></p>
     </form>
-    <form id="ap-reg-box" class="ap-card" style="display:none">
+    <form id="ap-reg-box" style="display:none">
       <h2>Nuevo Usuario</h2>
       <div class="fg"><label>Numero de telefono</label><input id="ap-ru" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
       <div class="fg">
@@ -160,20 +63,20 @@ font-family:inherit;transition:background .15s;
         <div class="fg-hint" id="ap-rp-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
       </div>
       <div class="fg"><label>Confirmar</label><input id="ap-rp2" type="password" placeholder="••••••" autocomplete="new-password"></div>
-      <button type="submit" class="ap-btn pri" onclick="event.preventDefault();AP_registro()">Crear Cuenta</button>
-      <p class="ap-auth-note">Ya tenes cuenta? <a onclick="AP_showTab('login')">Inicia sesion</a></p>
+      <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();AP_registro()">Crear Cuenta</button></div>
+      <p class="fg-hint ap-c">Ya tenes cuenta? <a onclick="AP_showTab('login')">Inicia sesion</a></p>
     </form>
-    <p class="ap-auth-note">Tu numero de telefono es tu identidad en la tienda, no se puede cambiar despues</p>
+    <p class="fg-hint ap-c">Tu numero de Telefono es tu Identidad</p>
   </div>
   <div id="ap-main" style="display:none">
-    <div class="ap-tabs">
-      <button class="ap-tab act" id="ap-tnuevo" onclick="AP_mainTab('nuevo')">Nueva Solicitud</button>
-      <button class="ap-tab" id="ap-tmis" onclick="AP_mainTab('mis')">Mis Productos</button>
-      <button class="ap-tab" id="ap-tpend" onclick="AP_mainTab('pend')">Mis Solicitudes</button>
-      <button class="ap-tab" id="ap-tcuenta" onclick="AP_mainTab('cuenta')">Cuenta</button>
+    <div class="PG1">
+      <button class="back-button act" id="ap-tnuevo" onclick="AP_mainTab('nuevo')">Nueva Solicitud</button>
+      <button class="back-button" id="ap-tmis" onclick="AP_mainTab('mis')">Mis Productos</button>
+      <button class="back-button" id="ap-tpend" onclick="AP_mainTab('pend')">Mis Solicitudes</button>
+      <button class="back-button" id="ap-tcuenta" onclick="AP_mainTab('cuenta')">Cuenta</button>
     </div>
     <div id="ap-tab-nuevo">
-      <div class="ap-card">
+      <div>
         <h2>Datos del Producto</h2>
         <div class="ap-row">
           <div class="fg"><label>Categoria</label><select id="ap-cat" onchange="AP_updSub()"></select></div>
@@ -191,14 +94,14 @@ font-family:inherit;transition:background .15s;
             </select>
           </div>
           <div class="fg"><label>Ubicacion</label>
-            <button type="button" class="ap-btn sec" id="ap-gps-btn" style="padding:10px" onclick="AP_pedirGPS()">Usar mi ubicacion</button>
+            <button type="button" id="ap-gps-btn" onclick="AP_pedirGPS()">Usar mi ubicacion</button>
           </div>
         </div>
         <div class="fg-hint" id="ap-gps-hint"></div>
-        <div class="ap-card" style="padding:12px;margin-bottom:0;background:var(--g1);border-radius:var(--ri)">
+        <div>
           <div class="ap-img-row">
-            <div class="ap-img-thumb" id="ap-img-thumb" onclick="document.getElementById('ap-img').click()">
-              <span id="ap-img-icon">+</span>
+            <div class="BS2" id="ap-img-thumb" onclick="document.getElementById('ap-img').click()">
+              <span id="ap-img-icon" class="BS4">📷</span>
               <img id="ap-imgprev" alt="">
             </div>
             <div class="ap-img-fields">
@@ -206,32 +109,31 @@ font-family:inherit;transition:background .15s;
               <div class="fg"><label>Codigo ID</label><input id="ap-id" type="text" placeholder="SKU123" maxlength="50" autocomplete="off"></div>
             </div>
           </div>
-          <div class="ap-img-size" id="ap-imgnm"></div>
+          <div class="fg-hint" id="ap-imgnm"></div>
           <div class="fg-hint" id="ap-id-hint"></div>
           <input type="file" id="ap-img" accept="image/avif,image/webp,image/*" style="display:none">
         </div>
-        <div style="height:12px"></div>
         <div class="ap-row">
           <div class="fg"><label>Precio (Gs)</label><input id="ap-pc" type="text" placeholder="50.000" inputmode="numeric" maxlength="14" autocomplete="off"></div>
           <div class="fg"><label>Compra minima (opcional)</label><input id="ap-cm" type="text" placeholder="1" inputmode="numeric" maxlength="4" autocomplete="off"></div>
         </div>
         <div class="fg"><label>Fecha Limite (opcional)</label><input id="ap-tm" type="text" placeholder="DD.MM.YYYY.HH.MM" maxlength="16" inputmode="numeric" autocomplete="off"></div>
       </div>
-      <div class="ap-card" id="ap-mde">
+      <div id="ap-mde">
         <h2>Descripcion (Markdown)</h2>
-        <p style="font-size:12px;color:var(--txt2);margin:0 0 10px">Solo enlaces externos para imagenes/videos. Ejemplo: <code style="background:rgba(0,0,0,.3);padding:2px 6px;border-radius:5px;font-size:11px">![](https://...)</code></p>
+        <p class="fg-hint">Solo enlaces externos para imagenes/videos. Ejemplo: <code>![](https://...)</code></p>
         <textarea id="ap-mdtxt"></textarea>
       </div>
-      <button class="ap-btn pri" id="ap-submit" onclick="AP_enviar()">Enviar Solicitud</button>
+      <div class="PG1"><button class="view-all-button" id="ap-submit" onclick="AP_enviar()">Enviar Solicitud</button></div>
     </div>
     <div id="ap-tab-mis" style="display:none">
-      <div id="ap-mis-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
+      <div id="ap-mis-list"><div class="fg-hint ap-c">Cargando...</div></div>
     </div>
     <div id="ap-tab-pend" style="display:none">
-      <div id="ap-sol-list"><div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div></div>
+      <div id="ap-sol-list"><div class="fg-hint ap-c">Cargando...</div></div>
     </div>
     <div id="ap-tab-cuenta" style="display:none">
-      <form class="ap-card">
+      <form>
         <h2>Cambiar Contrasena</h2>
         <div class="fg"><label>Contrasena Actual</label><input id="ap-cpa" type="password" placeholder="••••••" autocomplete="current-password"></div>
         <div class="fg">
@@ -240,12 +142,11 @@ font-family:inherit;transition:background .15s;
           <div class="fg-hint" id="ap-cpn-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
         </div>
         <div class="fg"><label>Confirmar Nueva</label><input id="ap-cpn2" type="password" placeholder="••••••" autocomplete="new-password"></div>
-        <button type="submit" class="ap-btn pri" onclick="event.preventDefault();AP_cambiarPass()">Guardar Nueva Contrasena</button>
-        <button type="button" class="ap-btn sec" style="margin-top:8px" onclick="AP_logout()">Cerrar Sesion</button>
+        <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();AP_cambiarPass()">Guardar Nueva Contrasena</button></div>
+        <div class="PG1"><button type="button" onclick="AP_logout()">Cerrar Sesion</button></div>
       </form>
     </div>
   </div>
-</div>
 </div>
 
 <script>
@@ -653,16 +554,16 @@ function AP_resetForm(){
 
 window.AP_loadMisProductos=async function(){
   const lst=document.getElementById('ap-mis-list');
-  lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
+  lst.innerHTML='<div class="fg-hint ap-c">Cargando...</div>';
   const all=await AP_scanAllProductos();
   const mios=all.filter(e=>e.telefono===_AP_tel);
-  if(!mios.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Sin productos publicados aun</div>';return;}
+  if(!mios.length){lst.innerHTML='<div class="fg-hint ap-c">Sin productos publicados aun</div>';return;}
   lst.innerHTML='';
   mios.forEach(e=>{
     const div=document.createElement('div');div.className='ap-sol-item';
     div.innerHTML=`<div class="ap-sol-info">
       <div class="nm">${AP_esc(e.NB||e.ID)} <span class="ap-badge apr">Publicado</span></div>
-      <div class="dt">ID: ${AP_esc(e.ID)} · ${AP_esc(e.categoria)}${e.sub?'/'+AP_esc(e.sub):''} · ${AP_FP(e.PC)} Gs</div>
+      <div class="fg-hint">ID: ${AP_esc(e.ID)} · ${AP_esc(e.categoria)}${e.sub?'/'+AP_esc(e.sub):''} · ${AP_FP(e.PC)} Gs</div>
       <div class="ap-sol-acts">
         <button onclick='AP_editarPublicado(${JSON.stringify(e).replace(/'/g,"&apos;")})'>Editar</button>
         <button onclick="AP_solicitarBorrado('${AP_esc(e.ID)}')">Solicitar Borrado</button>
@@ -725,11 +626,11 @@ window.AP_editarRechazado=async function(ID){
 
 window.AP_loadSolicitudes=async function(){
   const lst=document.getElementById('ap-sol-list');
-  lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Cargando...</div>';
+  lst.innerHTML='<div class="fg-hint ap-c">Cargando...</div>';
   const{ok,data}=await AP_fetch('historial',{method:'POST',body:JSON.stringify({})});
-  if(!ok){lst.innerHTML=`<div style="color:var(--err);padding:20px">${data.error||'Error'}</div>`;return;}
+  if(!ok){lst.innerHTML=`<div class="fg-hint err">${data.error||'Error'}</div>`;return;}
   const entries=data.entries||[];
-  if(!entries.length){lst.innerHTML='<div style="text-align:center;color:var(--txt2);padding:40px">Sin solicitudes pendientes</div>';return;}
+  if(!entries.length){lst.innerHTML='<div class="fg-hint ap-c">Sin solicitudes pendientes</div>';return;}
   lst.innerHTML='';
   const badges={
     pendiente:'<span class="ap-badge pend">Pendiente</span>',
@@ -739,7 +640,7 @@ window.AP_loadSolicitudes=async function(){
     const div=document.createElement('div');div.className='ap-sol-item';
     div.innerHTML=`<div class="ap-sol-info">
       <div class="nm">${AP_esc(e.NB||e.ID)} ${badges[e.estado]||''}</div>
-      <div class="dt">${AP_esc(e.categoria)}${e.sub?'/'+AP_esc(e.sub):''}</div>
+      <div class="fg-hint">${AP_esc(e.categoria)}${e.sub?'/'+AP_esc(e.sub):''}</div>
       ${e.estado==='rechazado'&&e.motivo?`<div class="ap-sol-neg">${AP_esc(e.motivo)}</div>`:''}
       ${e.estado==='rechazado'?`<div class="ap-sol-acts"><button onclick="AP_editarRechazado('${AP_esc(e.ID)}')">Editar y Reenviar</button></div>`:''}
     </div>`;
