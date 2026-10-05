@@ -1,6 +1,4 @@
-# Leer digital: mas verde y mas libre con EPUB y PDF
-
-## Libros Digitales?
+# Leer digital: mas verde y mas libre
 
 Un libro impreso consume madera, agua, energia, tintas y transporte. Un archivo digital se copia infinitas veces sin talar un solo arbol.
 
@@ -13,27 +11,40 @@ Aunque el dispositivo tambien tiene huella, por eso lo mas ecologico es leer en 
 
 ## Lectores en Android
 
-- [**KOReader:**](http://koreader.rocks/) muy potente, soporta EPUB, PDF, DJVU y mas. Ideal para quien quiere control total.
+
+- [**Librera Reader:**](https://librera.mobi/) 
+Lector Minimalista Extremo para los que gusten
+![image](web/otros/Archivos/Imagenes/LeersinContaminar-LectoresDigitales/imagemuvfgs4g.webp)
+Pasar a [Descargar Aqui ⬇️](https://play.google.com/store/apps/details?id=com.foobnix.pdf.reader&hl=es)
 
 
-- **Librera Reader:** rapido, soporta muchos formatos y tiene buen modo lectura.
+- [**FBReader:**](https://fbreader.org/) 
+Otra buena alternativa que ademas es compatible con PCs, Windows, Mac, Linux.
+![image](web/otros/Archivos/Imagenes/LeersinContaminar-LectoresDigitales/imagemuvfiskw.webp)
+Pasar a [Descargar Aqui ⬇️](https://fbreader.org/)
 
-
-- [**FBReader:**](https://fbreader.org/) simple y ligero.
+- [**KOReader:**](http://koreader.rocks/) 
+Es en caso de que tengas lectores con pantalla de Tinta, su UI esta adaptada a eso.
+![image](web/otros/Archivos/Imagenes/LeersinContaminar-LectoresDigitales/imagemuvf22tx.webp)
+Podes pasar a [Descargar Aqui ⬇️](https://github.com/koreader/koreader/releases). Deberas elegir la version compatible con tu Dispositivo... Esto es un poco mas complejo que los demas, ya que se diferencian por arquitecturas del procesador de tu dispositivo.
 
 
 ## En PC Windows y Linux
 
-**Calibre** es suficiente: es libre, multiplataforma y hace todo.
+- [**Calibre**](https://calibre-ebook.com/es/) 
+El clasico desde hace decadas.
+![image](web/otros/Archivos/Imagenes/LeersinContaminar-LectoresDigitales/imagemuvfnju0.webp)
 
-- Lee EPUB, PDF y muchos formatos mas.
-- Organiza tu biblioteca completa.
-- Convierte entre formatos (PDF a EPUB, etc.).
-- Edita metadatos y portadas.
+Pasar a [Descargar Aqui ⬇️](https://calibre-ebook.com/es/download) 
 
-Descarga Calibre [desde Aqui ⬇️](https://calibre-ebook.com/es/download) 
+o el que ya mencionamos antes pero para PC
 
-## Por que EPUB es mejor que PDF?
+- [**FBReader:**](https://fbreader.org/) 
+Otra buena alternativa que ademas es compatible con PCs, Windows, Mac, Linux.
+![image](web/otros/Archivos/Imagenes/LeersinContaminar-LectoresDigitales/imagemuvfm7rr.webp)
+Pasar a [Descargar Aqui ⬇️](https://fbreader.org/)
+
+## EPUB vs PDF?
 
 
 | | PDF | EPUB |
@@ -71,5 +82,8 @@ No sabes que es el Codigo Libre? Pasa a leer [➡️ Aqui]()
 
 
 Leer en digital reduce el consumo de papel, y elegir **EPUB con apps libres** te devuelve el control sobre tu biblioteca. Menos arboles talados, menos dependencia, mas libertad para leer.
+
+### Conseguir
+Pero ahora, de donde rayos conseguimos los libros?... Existe una tal "[Annas Archive](https://es.wikipedia.org/wiki/Anna%27s_Archive)" puedes buscarlo en internet.
 
 <!--FE=2026-09-05T09:15:59.860Z-->
