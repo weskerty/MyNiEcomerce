@@ -2,7 +2,9 @@ los inline script como reddit no se vuelven a cargar si hay duplicados. no se co
 
 Search.html limite de categorias hasta 20, boton mostrar mas. seleccion de categoria y sub categoria mostrar mas exclusivo.
 
-galerias.js boton de categorias usar active de botones.
+navbar en vez de ocultar volver al viejo circulo acoplable al borde inferior mostrando sol o luna de acuerdo a horario como ya estaba. presionarlo abriria navbar
+
+regla botones emojis descentrados
 
 
 POS Negar archivos que no son formatos populares

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
+@property --h{syntax:'<number>';inherits:false;initial-value:0}
+@property --w{syntax:'<length>';inherits:false;initial-value:3px}
+@property --c1{syntax:'<color>';inherits:false;initial-value:#f0abfc}
+@property --c2{syntax:'<color>';inherits:false;initial-value:#38bdf8}
+:root{--bg:#f4f4f6;--bg2:#fff;--tx:#1a1a1f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121216;--bg2:#1e1f25;--tx:#eee}}
+:root[data-theme="dark"]{--bg:#121216;--bg2:#1e1f25;--tx:#eee}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;padding:16px;background:var(--bg);color:var(--tx);font:16px system-ui,sans-serif}
+h1,h2,.BA_NF{max-width:760px;margin:0 auto 10px}
+h1{font-size:1.1rem}
+h2{font-size:.9rem;margin-top:22px;opacity:.7}
+.BA_NF{display:none;color:#e11d48}
+.BA_GR{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;max-width:760px;margin:0 auto}
+.BA1{--r:16px;--c:border-area,padding-box;--g:linear-gradient(135deg,#f0abfc,#38bdf8,#fbbf24);box-sizing:border-box;height:90px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:600;font-size:.8rem;color:var(--tx);border:var(--w) var(--s,solid) #0000;border-radius:var(--r);background:var(--g),linear-gradient(var(--bg2),var(--bg2));background-clip:var(--c);background-origin:border-box}
+.BA_RA1{--g:radial-gradient(circle at 30% 30%,#fbbf24,#f0abfc,#38bdf8)}
+.BA_CO1{--g:conic-gradient(#f0abfc,#38bdf8,#fbbf24,#f0abfc)}
+.BA_RY1{--g:repeating-linear-gradient(45deg,#f0abfc 0 6px,#38bdf8 6px 12px)}
+.BA_MC1{--g:conic-gradient(from 90deg,#f0abfc99,#38bdf899,#fbbf2499,#f0abfc99),linear-gradient(135deg,#38bdf8,#a78bfa);--c:border-area,border-area,padding-box}
+.BA_G1{--w:1px}
+.BA_G2{--w:5px}
+.BA_G3{--w:10px}
+.BA_ST1{--s:dashed;--w:4px}
+.BA_ST2{--s:dotted;--w:4px}
+.BA_ST3{--s:double;--w:6px}
+.BA_RD1{--r:0}
+.BA_RD2{--r:30px}
+.BA_RD3{--r:45px}
+.BA_TX1{background-image:var(--g),var(--g);background-clip:border-area,text;color:#0000;font-size:1.3rem;font-weight:800}
+.BA_A1{--g:conic-gradient(from var(--a),#f0abfc,#38bdf8,#fbbf24,#f0abfc);animation:BA_K1 3s linear infinite}
+.BA_A2{--g:linear-gradient(90deg,#f0abfc,#38bdf8,#fbbf24,#f0abfc);background-size:200% 100%,100% 100%;animation:BA_K2 3s linear infinite}
+.BA_A3{--g:conic-gradient(hsl(var(--h) 90% 65%),hsl(calc(var(--h) + 120) 90% 65%),hsl(calc(var(--h) + 240) 90% 65%),hsl(var(--h) 90% 65%));animation:BA_K3 4s linear infinite}
+.BA_A4{animation:BA_K4 1.4s ease-in-out infinite alternate}
+.BA_A5{--g:linear-gradient(135deg,var(--c1),var(--c2));transition:--c1 .7s,--c2 .7s}
+.BA_A5:hover{--c1:#fbbf24;--c2:#f0abfc}
+@keyframes BA_K1{to{--a:360deg}}
+@keyframes BA_K2{to{background-position:200% 0,0 0}}
+@keyframes BA_K3{to{--h:360}}
+@keyframes BA_K4{to{--w:12px}}
+@media(prefers-reduced-motion:reduce){.BA1{animation:none}}
+@supports not (background-clip:border-area){.BA_NF{display:block}.BA1{border-color:#8888;--g:linear-gradient(#0000,#0000)}}
+</style>
+</head>
+<body>
+<h1>background-clip: border-area</h1>
+<p class="BA_NF">Este navegador no soporta border-area</p>
+<h2>Contenido</h2>
+<div class="BA_GR">
+<div class="BA1">Lineal</div>
+<div class="BA1 BA_RA1">Radial</div>
+<div class="BA1 BA_CO1">Conico</div>
+<div class="BA1 BA_RY1">Rayas</div>
+<div class="BA1 BA_MC1">Multicapa</div>
+</div>
+<h2>Grosor</h2>
+<div class="BA_GR">
+<div class="BA1 BA_G1">1px</div>
+<div class="BA1 BA_G2">5px</div>
+<div class="BA1 BA_G3">10px</div>
+</div>
+<h2>Estilo de borde</h2>
+<div class="BA_GR">
+<div class="BA1 BA_ST1">Dashed</div>
+<div class="BA1 BA_ST2">Dotted</div>
+<div class="BA1 BA_ST3">Double</div>
+</div>
+<h2>Esquinas</h2>
+<div class="BA_GR">
+<div class="BA1 BA_RD1">Recto</div>
+<div class="BA1 BA_RD2">Redondo</div>
+<div class="BA1 BA_RD3">Pastilla</div>
+</div>
+<h2>Texto</h2>
+<div class="BA_GR">
+<div class="BA1 BA_TX1">Borde y texto</div>
+</div>
+<h2>Animacion</h2>
+<div class="BA_GR">
+<div class="BA1 BA_A1">Giro</div>
+<div class="BA1 BA_A2">Desplazar</div>
+<div class="BA1 BA_A3">Matiz</div>
+<div class="BA1 BA_A4">Grosor</div>
+<div class="BA1 BA_A5">Hover</div>
+</div>
+</body>
+</html>
