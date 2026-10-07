@@ -1,6 +1,9 @@
+los inline script como reddit no se vuelven a cargar si hay duplicados. no se como resolver xd
+
 Search.html limite de categorias hasta 20, boton mostrar mas. seleccion de categoria y sub categoria mostrar mas exclusivo.
 
-core.js no usar # para su url principal.
+galerias.js boton de categorias usar active de botones.
+
 
 POS Negar archivos que no son formatos populares
 https://github.com/discourse/discourse/security/advisories/GHSA-vhm9-85gw-x335
