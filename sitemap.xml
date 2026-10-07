@@ -121,6 +121,11 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://cheagana.com/web/LiteMode/blog/tutoriales-desbloquear-instalar-aplicaciones</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://cheagana.com/web/LiteMode/blog/tutoriales-leer-sin-contaminar-lectores-digitales</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
