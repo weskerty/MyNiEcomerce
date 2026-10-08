@@ -1,7 +1,8 @@
 IACHat:
 mejorar UI
 mensaje de chrome requerido e ia si quiere crear sala
-
+al iniciar ya descargar modelo
+cuando llega a 90% se queda bug, requiere recargar pagina
 unir usar camara
 crear sala copia ID a portapapeles
 reusar sala chat secret con togle de ia?
