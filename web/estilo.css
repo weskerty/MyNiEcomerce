@@ -187,6 +187,13 @@ section h3{margin:12px 0 6px;font-size:.98em;color:var(--TX2);font-weight:600}
 section p{margin:0 0 10px;color:var(--TX3);font-size:.9em}
 section hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:14px 0;height:auto;background:none}
 
+.PL1{--GL_R:linear-gradient(rgba(255,255,255,.2),rgba(255,255,255,.2));--PL_F:rgba(255,255,255,.08);padding:8px 18px;border:1px solid #0000;border-radius:20px;font-family:inherit;font-size:.78rem;letter-spacing:.05em;line-height:1.2;color:rgba(255,255,255,.85);text-decoration:none;cursor:pointer;background-color:var(--PL_F);background-image:var(--GL_R),linear-gradient(#0000,#0000);background-clip:border-area,padding-box;background-origin:border-box;translate:0 0;transition:background-color .2s,translate var(--GL_T) ease}
+.PL1:hover{--PL_F:rgba(255,255,255,.16);translate:0 calc(var(--GL_Y)*var(--GL_M)*.5)}
+.PL1:active{translate:0 calc(1px*var(--GL_M))}
+.PL1_A{--PL_F:rgba(var(--accent-2-rgb),.18);color:var(--accent-2)}
+.PL1_A:hover{--PL_F:rgba(var(--accent-2-rgb),.28)}
+.PL1:active,.PL1_A{--GL_R:var(--GL_RC)}
+@supports not (background-clip:border-area){.PL1{--GL_R:linear-gradient(#0000,#0000);border-color:rgba(255,255,255,.2)}.PL1_A{border-color:rgba(var(--accent-2-rgb),.45)}}
 .lk{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:20px;font-size:.78em;font-weight:600;text-decoration:none;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:#fff;transition:background .18s,transform .15s}
 .lk:hover{background:rgba(255,255,255,.13);transform:translateY(-1px)}
 .lk::before{content:'';display:inline-block;width:14px;height:14px;flex-shrink:0;background-color:currentColor;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;-webkit-mask-image:var(--LK_I);mask-image:var(--LK_I)}
@@ -229,12 +236,13 @@ ins.adsbygoogle[data-ad-status=unfilled]{display:none!important}
 @keyframes FR1{to{--a:360deg}}
 :focus-visible{outline:2px solid var(--accent-2);outline-offset:2px}
 @supports (background-clip:border-area){
-:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.BMD1):focus-visible,details:not([open]):has(>summary:focus-visible),details[open]>summary:focus-visible{outline:none;--FRH:0 0 0 3px rgba(var(--accent-2-rgb),.4),0 0 16px rgba(var(--accent-2-rgb),.5);--GL_R:var(--GL_RC);--GL_RS:var(--GL_RC);--GL_E:var(--FRH);--GL_EH:var(--FRH)}
+:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.BMD1):focus-visible,details:not([open]):has(>summary:focus-visible),details[open]>summary:focus-visible,.PL1:focus-visible{outline:none;--FRH:0 0 0 3px rgba(var(--accent-2-rgb),.4),0 0 16px rgba(var(--accent-2-rgb),.5);--GL_R:var(--GL_RC);--GL_RS:var(--GL_RC);--GL_E:var(--FRH);--GL_EH:var(--FRH)}
 details:not([open]):has(>summary:focus-visible){box-shadow:var(--FRH),var(--GL_IN)}
 details[open]>summary:focus-visible{background:var(--GL_RC) border-box,var(--rdm-bg) padding-box;background-clip:border-area,padding-box;box-shadow:var(--FRH)}
 details:not([open])>summary:focus-visible{outline:none}
+.PL1:focus-visible{box-shadow:var(--FRH)}
 @media(prefers-reduced-motion:no-preference){
-body:not(.low-perf) :is(.GL_C,.BMD1:hover,:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.BMD1):active,:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.BMD1):focus-visible,details:not([open]):has(>summary:focus-visible),details[open]>summary:focus-visible){--GL_RC:conic-gradient(from var(--a),var(--GL_CS));animation:FR1 3s linear infinite}
+body:not(.low-perf) :is(.GL_C,.PL1_A,.PL1:active,.PL1:focus-visible,.BMD1:hover,:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.BMD1):active,:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.BMD1):focus-visible,details:not([open]):has(>summary:focus-visible),details[open]>summary:focus-visible){--GL_RC:conic-gradient(from var(--a),var(--GL_CS));animation:FR1 3s linear infinite}
 }
 }
 
