@@ -46,7 +46,7 @@
 <input type="text" id="si-code" placeholder="Codigo de sala" maxlength="8" autocomplete="off" autocorrect="off" spellcheck="false">
 <button id="si-join">Unirme</button>
 </div>
-<p class="SI8">Tambien podes entrar con el codigo que te pasen, sin IA en tu equipo.</p>
+<p class="SI8">Tambien podes entrar con el codigo que te pasen.</p>
 </div>
 
 <div id="si-room" class="hide">
@@ -54,7 +54,7 @@
 <div id="si-share" class="hide">
 <div class="SI3" id="si-qr"></div>
 <div class="SI4" id="si-codetxt"></div>
-<p class="SI8">Pasale este codigo o el QR a quien quieras invitar.</p>
+<p class="SI8">Envia el codigo a quien quieras invitar.</p>
 </div>
 
 <div class="SI5" id="si-msgs"></div>
@@ -67,11 +67,11 @@
 <details id="si-cfg" class="hide">
 <summary>⚙️ Ajustes de la IA</summary>
 <section>
-<div class="SIA"><label>Instrucciones del sistema</label><textarea id="si-sys" rows="3"></textarea></div>
+<div class="SIA"><label>Instrucciones</label><textarea id="si-sys" rows="3"></textarea></div>
 <div class="SIA"><label>Temperatura <span id="si-tv"></span></label><input type="range" id="si-temp" min="0" max="1" step=".1"></div>
 <div class="SIA"><label>Top K <span id="si-kv"></span></label><input type="range" id="si-topk" min="1" max="10" step="1"></div>
 <div class="SI9"><button id="si-apply">Aplicar y reiniciar</button></div>
-<p class="SI8">Cambiar esto borra la conversacion que la IA recuerda. Lo que ya se escribio en pantalla queda.</p>
+<p class="SI8">Cambiar esto borra la conversacion que la IA recuerda.</p>
 </section>
 </details>
 
@@ -91,7 +91,7 @@
   const MAX=2000,HIST=120,QMAX=8;
 
   let Peer=null,peer=null,pid='',host=false,code='',conns={},nick='',sess=null,nosys=false,deg=[],busy=false,q=[],ac=0,left=false;
-  const cfg={sys:'Sos un asistente breve y claro. Responde siempre en espanol.',temp:.8,topk:3};
+  const cfg={sys:'Detecta solo falacias claramente presentes. Ignora posibles o discutibles. Explica brevemente cuál es y por qué. Si no hay ninguna, no respondas. Texto plano, sin Markdown. Formato: Falacia: Tipo: Explicación:',temp:.8,topk:3};
 
   const cut=v=>String(v==null?'':v).slice(0,MAX);
   const st=t=>{$('si-st').textContent=t};
@@ -148,7 +148,7 @@
       badge('no','Sin IA local en este equipo');
       $('si-new').disabled=true;
       $('si-dl').classList.add('hide');
-      $('si-hint').textContent='Para crear una sala hace falta Chrome 148 o mas nuevo en una PC, con la IA integrada activada. Igual podes unirte a la sala de otro.';
+      $('si-hint').textContent='Para crear una sala hace falta Chrome 155 o mas nuevo en un Dispositivo con la IA integrada activada. Igual podes unirte a la sala de otro.';
     }
     return a;
   }
@@ -536,3 +536,4 @@
 <br>
 <a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a>
 </div>
+

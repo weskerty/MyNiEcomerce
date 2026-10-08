@@ -1,3 +1,11 @@
+IACHat:
+mejorar UI
+mensaje de chrome requerido e ia si quiere crear sala
+
+unir usar camara
+crear sala copia ID a portapapeles
+reusar sala chat secret con togle de ia?
+
 los inline script como reddit no se vuelven a cargar si hay duplicados. no se como resolver xd
 
 Search.html limite de categorias hasta 20, boton mostrar mas. seleccion de categoria y sub categoria mostrar mas exclusivo.
