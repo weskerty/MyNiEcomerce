@@ -109,7 +109,7 @@
     if(i===0)return'Hoy';
     return new Date((ts+tz)*1000).toLocaleDateString('es-PY',{weekday:'short',timeZone:'UTC'});
   }
-  function windDir(d){return['N','NE','E','SE','S','SO','O','NO'][Math.round(d/45)%8];}
+  function windDir(d){return['norte','noreste','este','sureste','sur','suroeste','oeste','noroeste'][Math.round(d/45)%8];}
 
   function startCD(){
     _cdEnd=Date.now()+CD;qEl.readOnly=true;qEl.blur();
