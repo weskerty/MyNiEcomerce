@@ -13,36 +13,50 @@
 .sk-bar.sk-cd::after{content:'';position:absolute;left:0;top:0;height:100%;width:var(--sk-cd-p,0%);background:rgba(56,189,248,.13);transition:width .1s linear;pointer-events:none;z-index:0}
 .sk-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.97);border:1px solid rgba(255,255,255,.15);color:white;padding:10px 22px;border-radius:12px;font-size:.88em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999;white-space:nowrap}
 .sk-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.wt-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:20px;padding:18px 16px;margin-bottom:10px;text-align:left}
-.wt-city{font-size:1.3em;font-weight:600;color:white;text-align:center}
-.wt-sub{font-size:.78em;color:rgba(255,255,255,.5);text-align:center;margin-top:1px}
-.wt-temp{font-size:5rem;font-weight:200;color:white;line-height:1;text-align:center;margin:4px 0}
-.wt-desc{font-size:1em;color:rgba(255,255,255,.75);text-transform:capitalize;text-align:center}
-.wt-minmax{font-size:.92em;color:rgba(255,255,255,.55);text-align:center;margin-top:4px}
-.wt-minmax b{color:rgba(255,255,255,.85);font-weight:600}
-.wt-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.wt-st{background:rgba(255,255,255,.06);border-radius:11px;padding:9px 11px;display:flex;align-items:center;gap:8px}
-.wt-st span:first-child{font-size:1.2rem;flex-shrink:0}
-.wt-sl{display:flex;flex-direction:column}
-.wt-sk{font-size:.67em;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.04em}
-.wt-sv{font-size:.87em;color:white;font-weight:600}
-.wt-sec{color:rgba(255,255,255,.42);font-size:.75em;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-.wt-hr{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.wt-card,.wt-t{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:20px;padding:16px;text-align:left}
+.wt-cols{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
+.wt-cols>div{flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.wt-hd{text-align:left;padding:6px 4px 10px;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+.wt-city{font-size:1.25em;font-weight:600;color:white}
+.wt-sub{font-size:.75em;color:rgba(255,255,255,.65);margin-top:1px}
+.wt-temp{font-size:6rem;font-weight:200;color:white;line-height:1;margin:10px 0 6px;letter-spacing:-.03em}
+.wt-desc{font-size:1.15em;color:white;text-transform:capitalize}
+.wt-minmax{font-size:.9em;color:rgba(255,255,255,.75);margin-top:6px}
+.wt-sec{color:rgba(255,255,255,.55);font-size:.75em;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.wt-hr{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
 .wt-hr::-webkit-scrollbar{display:none}
-.wt-hr-it{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:8px 9px;min-width:58px;display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;transition:background .15s}
-.wt-hr-it.wt-sun-it{background:rgba(255,200,80,.08);border-color:rgba(255,200,80,.18)}
-.wt-hr-h{font-size:.68em;color:rgba(255,255,255,.48)}
-.wt-hr-ic{font-size:1.25rem;line-height:1}
-.wt-hr-t{font-size:.83em;font-weight:700;color:white}
-.wt-hr-r{font-size:.63em;color:#7dd3fc}
-.wt-fc{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
-.wt-fc::-webkit-scrollbar{display:none}
-.wt-fc-d{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:10px 9px;min-width:68px;display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0}
-.wt-fc-dn{font-size:.7em;color:rgba(255,255,255,.5);text-transform:capitalize}
-.wt-fc-ic{font-size:1.5rem;line-height:1}
-.wt-fc-hi{font-size:.88em;font-weight:700;color:white}
-.wt-fc-lo{font-size:.73em;color:rgba(255,255,255,.42)}
-.wt-fc-pp{font-size:.65em;color:#7dd3fc}
+.wt-hr-it{min-width:56px;padding:8px 6px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:5px;flex-shrink:0}
+.wt-sun-it{background:rgba(255,200,80,.08)}
+.wt-sun-it .wt-hr-t{font-size:.68em}
+.wt-hr-h{font-size:.68em;color:rgba(255,255,255,.55);white-space:nowrap}
+.wt-hr-ic{font-size:1.4rem;line-height:1}
+.wt-hr-t{font-size:.9em;font-weight:700;color:white}
+.wt-hr-r{font-size:.65em;color:#7dd3fc}
+.wt-dr{display:grid;grid-template-columns:3em 3.2em 1.8em 2.2em 1fr 2.2em;align-items:center;gap:6px;padding:8px 0;border-top:1px solid rgba(255,255,255,.08);font-size:.9em;color:white}
+.wt-sec+.wt-dr{border-top:0}
+.wt-dn{text-transform:capitalize;font-weight:600}
+.wt-dp{font-size:.78em;color:#7dd3fc}
+.wt-di{font-size:1.3rem;text-align:center;line-height:1}
+.wt-dl{color:rgba(255,255,255,.5);text-align:right}
+.wt-dh{font-weight:700;text-align:right}
+.wt-rg{position:relative;height:5px;border-radius:3px;background:rgba(255,255,255,.14);overflow:hidden}
+.wt-rg i{position:absolute;top:0;bottom:0;min-width:6px;border-radius:3px;background:linear-gradient(90deg,#7dd3fc,#fbbf24)}
+.wt-tm{display:flex;align-items:center;gap:14px;color:white}
+.wt-tm>span{font-size:2.4rem;line-height:1}
+.wt-tm small{display:block;font-size:.8em;color:#7dd3fc;margin-top:3px}
+.wt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wt-t{padding:12px 14px;border-radius:18px}
+.wt-w2{grid-column:span 2;display:flex;align-items:center;gap:16px}
+.wt-tk{font-size:.72em;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.04em}
+.wt-tv{font-size:1.5em;font-weight:600;color:white;margin-top:4px}
+.wt-tx{font-size:.8em;color:rgba(255,255,255,.65);margin-top:4px}
+.wt-bar{height:5px;border-radius:3px;background:rgba(255,255,255,.14);margin-top:10px;overflow:hidden}
+.wt-bar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#7dd3fc,#38bdf8)}
+.wt-cp{position:relative;width:84px;height:84px;border:3px solid rgba(255,255,255,.18);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;color:white;line-height:1.1}
+.wt-cp b{font-size:1.4em;font-weight:600}
+.wt-cp small{font-size:.65em;color:rgba(255,255,255,.6)}
+.wt-cp i{position:absolute;inset:-3px;transition:transform .3s}
+.wt-cp i::before{content:'';position:absolute;top:0;left:50%;margin-left:-5px;border:5px solid transparent;border-top:8px solid #7dd3fc;border-bottom:0}
 .wt-msg{text-align:center;color:rgba(255,255,255,.42);font-size:.88em;padding:28px 0}
 .wt-rec{text-align:center;font-size:.9em;color:rgba(255,255,255,.75)}
 .wt-rec b{color:white}
@@ -169,49 +183,25 @@
     const now=new Date().toLocaleTimeString('es-PY',{hour:'2-digit',minute:'2-digit'});
     setBg(w.weather[0].id,w.weather[0].icon);
 
-    let h=`<div class="wt-card">
-<div class="wt-city">📍 ${w.name}</div>
-<div class="wt-sub">🇵🇾 Paraguay · Actualizado ${now}</div>
-<div class="wt-temp">${R(w.main.temp)}°</div>
-<div class="wt-desc">${w.weather[0].description}</div>
-<div class="wt-minmax">Maxima: <b>${hiT}°</b>  Minima: <b>${loT}°</b></div>
-</div>
+    const gl=Math.min(...days.map(d=>Math.min(...d.t))),gh=Math.max(...days.map(d=>Math.max(...d.t))),gr=(gh-gl)||1;
+    const S=d=>({hi:Math.max(...d.t),lo:Math.min(...d.t),ic:wi(d.ic[d.ic.length>>1]),pp:R(Math.max(...d.pop)*100)});
+    const T=(i,k,v,x='')=>`<div class="wt-t"><div class="wt-tk">${i} ${k}</div><div class="wt-tv">${v}</div>${x}</div>`;
+    const B=p=>`<div class="wt-bar"><i style="width:${p}%"></i></div>`;
+    const hic=w.weather[0].id===800&&w.weather[0].icon.endsWith('n')?'🌙':wi(w.weather[0].id);
 
-<div class="wt-card">
-<div class="wt-grid">
-  <div class="wt-st"><span>💧</span><div class="wt-sl"><span class="wt-sk">Humedad</span><span class="wt-sv">${w.main.humidity}%</span></div></div>
-  <div class="wt-st"><span>💨</span><div class="wt-sl"><span class="wt-sk">Viento</span><span class="wt-sv">${R(w.wind.speed*3.6)} km/h ${windDir(w.wind.deg)}</span></div></div>
-  <div class="wt-st"><span>👁️</span><div class="wt-sl"><span class="wt-sk">Visibilidad</span><span class="wt-sv">${w.visibility?R(w.visibility/1000)+' km':'--'}</span></div></div>
-  <div class="wt-st"><span>📊</span><div class="wt-sl"><span class="wt-sk">Presion</span><span class="wt-sv">${w.main.pressure} hPa</span></div></div>
-  <div class="wt-st"><span>☁️</span><div class="wt-sl"><span class="wt-sk">Nubosidad</span><span class="wt-sv">${w.clouds.all}%</span></div></div>
-  ${w.wind.gust?`<div class="wt-st"><span>🌬️</span><div class="wt-sl"><span class="wt-sk">Rafaga</span><span class="wt-sv">${R(w.wind.gust*3.6)} km/h</span></div></div>`:''}
-</div>
-</div>`;
+    let c1=`<div class="wt-hd"><div class="wt-city">📍 ${w.name}</div><div class="wt-sub">🇵🇾 Paraguay · Actualizado ${now}</div><div class="wt-temp">${R(w.main.temp)}°</div><div class="wt-desc">${hic} ${w.weather[0].description}</div><div class="wt-minmax">↑${hiT}° / ↓${loT}° · Sensacion termica ${R(w.main.feels_like)}°</div></div>`;
 
-    if(hrItems.length){
-      h+=`<div class="wt-card"><div class="wt-sec">🕐 Proximas horas</div><div class="wt-hr">`;
-      hrItems.forEach(x=>{
-        if(x.type==='sun'){
-          h+=`<div class="wt-hr-it wt-sun-it"><span class="wt-hr-h">${fmtT(x.t,tz)}</span><span class="wt-hr-ic">${x.ic}</span><span class="wt-hr-t" style="font-size:.68em">${x.label}</span></div>`;
-        }else{
-          h+=`<div class="wt-hr-it"><span class="wt-hr-h">${fmtT(x.t,tz)}</span><span class="wt-hr-ic">${x.ic}</span><span class="wt-hr-t">${x.temp}°</span>${x.pop>10?`<span class="wt-hr-r">💧${x.pop}%</span>`:''}</div>`;
-        }
-      });
-      h+=`</div></div>`;
-    }
+    if(hrItems.length)c1+=`<div class="wt-card"><div class="wt-sec">🕐 Proximas horas</div><div class="wt-hr">${hrItems.map(x=>`<div class="wt-hr-it${x.type==='sun'?' wt-sun-it':''}"><span class="wt-hr-h">${fmtT(x.t,tz)}</span><span class="wt-hr-ic">${x.ic}</span><span class="wt-hr-t">${x.type==='sun'?x.label:x.temp+'°'}</span>${x.type==='sun'?'':`<span class="wt-hr-r">💧${x.pop}%</span>`}</div>`).join('')}</div></div>`;
 
-    if(days.length){
-      h+=`<div class="wt-card"><div class="wt-sec">📅 Pronostico 5 dias</div><div class="wt-fc">`;
-      days.forEach((d,i)=>{
-        const hi=Math.max(...d.t),lo=Math.min(...d.t);
-        const ic=d.ic[Math.floor(d.ic.length/2)]||d.ic[0];
-        const pp=d.pop.length?R(Math.max(...d.pop)*100):0;
-        h+=`<div class="wt-fc-d"><span class="wt-fc-dn">${fmtDay(d.dt,tz,i)}</span><span class="wt-fc-ic">${wi(ic)}</span><span class="wt-fc-hi">${R(hi)}°</span><span class="wt-fc-lo">${R(lo)}°</span>${pp>10?`<span class="wt-fc-pp">💧${pp}%</span>`:''}</div>`;
-      });
-      h+=`</div></div>`;
-    }
+    if(days.length)c1+=`<div class="wt-card"><div class="wt-sec">📅 Pronostico 5 dias</div>${days.map((d,i)=>{const s=S(d);return `<div class="wt-dr"><span class="wt-dn">${fmtDay(d.dt,tz,i)}</span><span class="wt-dp">💧${s.pp}%</span><span class="wt-di">${s.ic}</span><span class="wt-dl">${R(s.lo)}°</span><span class="wt-rg"><i style="left:${(s.lo-gl)/gr*100}%;right:${(gh-s.hi)/gr*100}%"></i></span><span class="wt-dh">${R(s.hi)}°</span></div>`}).join('')}</div>`;
 
-    mainEl.innerHTML=h+`<div class="wt-card" id="wt-recCard"><div class="wt-sec">📊 Record historico</div><div id="wt-recBody" class="wt-rec"></div></div>`;
+    const s1=days[1]&&S(days[1]);
+    const gu=w.wind.gust?`<div class="wt-tx">Rafaga ${R(w.wind.gust*3.6)} km/h</div>`:'';
+    const c2=(s1?`<div class="wt-card"><div class="wt-sec">🔮 Dia siguiente</div><div class="wt-tm"><span>${s1.ic}</span><div>Maxima de <b>${R(s1.hi)}°</b> · Minima de <b>${R(s1.lo)}°</b><small>💧${s1.pp}% de lluvia</small></div></div></div>`:'')
+      +`<div class="wt-grid">${T('💧','Humedad',w.main.humidity+'%',B(w.main.humidity))}${T('☁️','Nubosidad',w.clouds.all+'%',B(w.clouds.all))}<div class="wt-t wt-w2"><div class="wt-cp"><i style="transform:rotate(${w.wind.deg}deg)"></i><b>${R(w.wind.speed*3.6)}</b><small>km/h</small></div><div><div class="wt-tk">💨 Viento</div><div class="wt-tv">Del ${windDir(w.wind.deg)}</div>${gu}</div></div>${T('📊','Presion',w.main.pressure+' hPa')}${T('👁️','Visibilidad',w.visibility?R(w.visibility/1000)+' km':'--')}</div>`
+      +`<div class="wt-card" id="wt-recCard"><div class="wt-sec">📊 Record historico</div><div id="wt-recBody" class="wt-rec"></div></div>`;
+
+    mainEl.innerHTML=`<div class="wt-cols"><div>${c1}</div><div>${c2}</div></div>`;
     loadRecord(w.coord.lat,w.coord.lon,R(w.main.temp_max),R(w.main.temp_min));
   }
 
