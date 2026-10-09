@@ -1,8 +1,9 @@
 @font-face{font-family:'Comfortaa';src:url('otros/Archivos/Fuentes/Comfortaa/font.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Ubuntu';src:url('otros/Archivos/Fuentes/Ubuntu/UbuntuSans-Regular.woff2') format('woff2');font-display:swap}
 @font-face{font-family:'Fluent Emoji Color';src:url('otros/Archivos/Fuentes/Emojis/FluentEmojiColor.woff2') format('woff2') tech(color-COLRv1);font-display:swap}
 
 :root{
---font:'Comfortaa','Fluent Emoji Color',sans-serif;
+--font:'Ubuntu',system-ui,Roboto,'Fluent Emoji Color',sans-serif;
 --font-h:'Comfortaa','Fluent Emoji Color',sans-serif;
 --gap-btn-l:12px;
 color-scheme:only dark;
@@ -55,14 +56,14 @@ color-scheme:only dark;
 --BG_CT:rgba(20,20,20,.6);
 --BG_DG:rgba(18,18,22,.62);
 --BG_DQ:rgba(0,0,0,.6);
---TX2:rgba(255,255,255,.82);
---TX3:rgba(255,255,255,.74);
+--TX2:rgba(255,255,255,.9);
+--TX3:rgba(255,255,255,.85);
 }
 @supports not (background-clip:border-area){:root{--GL_RW:linear-gradient(#0000,#0000);--GL_RC:var(--GL_RW);--GL_RS:var(--GL_RW);--GL_RU:var(--GL_RW);--GL_BC:rgba(255,255,255,.22);--GL_BT:rgba(255,255,255,.4);--GL_BB:rgba(255,255,255,.12);--GL_CL:padding-box;--GL_IN:inset 1px 1px 0 rgba(255,255,255,.5),inset -1px -1px 0 rgba(255,255,255,.2),inset 0 0 14px rgba(255,255,255,.07)}}
 
 html{touch-action:pan-x pan-y}
 button,a,label,input{-webkit-tap-highlight-color:transparent}
-body{margin:0;color:#fff;background:#000;font-family:var(--font);overscroll-behavior-y:none;line-height:1.6}
+body{margin:0;color:#fff;background:#000;font-family:var(--font);font-size:17px;overscroll-behavior-y:none;line-height:1.6}
 body.mob{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 body.mob .sel,body.mob .sel *{user-select:text;-webkit-user-select:text}
 body::before{content:"";position:fixed;inset:0;height:110vh;z-index:-1;background:url('otros/Archivos/Imagenes/wallpaper.webp') no-repeat center/cover;transform:translateZ(0);will-change:transform}
@@ -152,7 +153,7 @@ button:not([class]):disabled::after{display:none}
 .BMD1 img{width:58px;height:58px;object-fit:cover;background:rgba(0,0,0,.25);display:block;flex-shrink:0}
 .BMD1-CN{display:flex;flex-direction:column;justify-content:center;padding:0 36px 0 14px;flex:1;min-width:0;gap:2px}
 .BMD1-CN h3{margin:0;font-size:.94rem;line-height:1.3;color:#fff;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;border:none!important}
-.BMD1-CN p{margin:0;font-size:.78rem;color:var(--TX3);line-height:1.3;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.BMD1-CN p{margin:0;font-size:.85rem;color:var(--TX3);line-height:1.3;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 
 .GL_C{--GL_R:var(--GL_RC)}
 

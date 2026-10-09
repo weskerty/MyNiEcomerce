@@ -1,4 +1,4 @@
-const V='v132';
+const V='v133';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -19,7 +19,7 @@ FRASES_HTML
 ];
 
 
-const PERM_C='permanent';
+const PERM_C='2';
 const PRE_PERM=[
 'web/otros/Archivos/Dinamico/🧩 Apps/es.html',
 'web/otros/Archivos/Dinamico/🎮 Juegos/es.html',
@@ -39,6 +39,7 @@ const PRE_PERM=[
 'web/favicon.ico',
 'web/otros/Archivos/Imagenes/wallpaper.webp',
 'web/otros/Archivos/Fuentes/Comfortaa/font.woff2',
+'web/otros/Archivos/Fuentes/Ubuntu/UbuntuSans-Regular.woff2',
 'web/otros/Archivos/Fuentes/Emojis/FluentEmojiColor.woff2',
 'web/otros/Archivos/Imagenes/Permanente/404.avif',
 'web/otros/Archivos/Imagenes/Permanente/wait.avif',
@@ -55,7 +56,7 @@ N_ICO,
 N_BANNER
 ];
 
-const TEMP_ROUTES=[{match:'/api/chat/',ttl:10000},{match:'/api/',ttl:18000000}];
+const TEMP_ROUTES=[{match:'/api/chat/',ttl:9000},{match:'/api/',ttl:18000000}];
 const EXT_CACHE=[
   {origin:'esm.unpkg.com',ttl:0},
   {origin:'unpkg.com',ttl:0}
