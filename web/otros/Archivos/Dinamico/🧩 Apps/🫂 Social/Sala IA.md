@@ -99,12 +99,14 @@
 <div id="SI_vg"></div>
 <div class="SI_m" id="SI_ms"></div>
 <div class="SI_pp" id="SI_pp">
-<div class="SI_qw"><div class="SI_hs" style="margin-bottom:8px">Escanea para entrar</div><div class="SI_qr" id="SI_qr"></div><div class="SI_ct" id="SI_ct"></div><button id="SI_cy" style="margin-top:8px">📋 Copiar ID</button></div>
+<div class="SI_qw"><div class="SI_hs" style="margin-bottom:8px">Escanea para entrar</div><div class="SI_qr" id="SI_qr"></div><div class="SI_ct" id="SI_ct"></div></div>
 <div id="SI_pl"></div>
 </div>
 <div class="SI_in"><textarea id="SI_ip" rows="1" placeholder="Mensaje..." maxlength="2000"></textarea><button class="SI_ib sn" id="SI_sn">➤</button></div>
 <div class="SI_hs" id="SI_nt"></div>
 </div>
+
+<div class="SI_hs SI_c" id="SI_ft"></div>
 
 <div id="SI_sc" class="hide"><div id="SI_rd"></div><button id="SI_sx">Cancelar</button></div>
 <div id="SI_t"></div>
@@ -118,7 +120,7 @@ const OP={expectedInputs:[{type:'text',languages:['es']}],expectedOutputs:[{type
 const SM=['most-predictable','predictable','slightly-predictable','balanced','slightly-creative','creative','most-creative'];
 const CL=['#e8a0a0','#e8c4a0','#a8d8a0','#a0c4e8','#c4a8e8','#e8a8d0','#a8dede','#e8e0a0'];
 let Peer,peer,pid='',host=0,code='',conns={},nick='',sess,busy=0,q=[],ac=0,left=0,ro={},ab,dlp=0,wa=0,rt=0,vs,calls={},wl,hbi,cu,log=[],bub={},cc={},ci=0,jd=0,rj=0,rr=0,lc,tt,mi,mm=0,mu={},au={},sb={},tc={},vo=localStorage.getItem('si_vo')!=='0';
-const cfg={tl:'es',tv:'',tr:1,tp:1,sys:'Detecta solo falacias claramente presentes. Ignora posibles o discutibles. Explica brevemente cual es y por que. Si no hay ninguna, no respondas. Texto plano, sin Markdown. Formato: Falacia: Tipo: Explicacion:',sm:''};
+const cfg={tl:'es',tv:'',tr:1,tp:1,sys:'Detecta solo falacias claramente presentes. Ignora posibles o discutibles. Explica brevemente cual es y por que. Si no hay ninguna, respode con solo X. Texto plano, sin Markdown. Formato: Falacia: Tipo: Explicacion:',sm:''};
 const tf=()=>({t:'tt',l:cfg.tl,v:cfg.tv,r:cfg.tr,p:cfg.tp});
 const cut=v=>String(v==null?'':v).slice(0,MX);
 const col=i=>cc[i]||(cc[i]=CL[ci++%CL.length]);
@@ -220,6 +222,7 @@ function ad(k,w,tx,id,ia){
 function hs(){
   const n=Object.keys(ro).length||1;
   $('SI_hs').textContent=n+(n===1?' persona':' personas')+(rj?' · Reconectando...':'');
+  const H=ro[PF+code];$('SI_ft').textContent=H?'La IA es local, no consume agua ni se ejecuta en un centro de datos, la IA esta funcionando directamente desde la computadora de '+H:'';
   $('SI_tk').classList.toggle('hide',!cu);
   if(cu){const p=Math.min(100,Math.round(cu.u/cu.w*100)),i=$('SI_ti');i.style.width=p+'%';i.className=p>90?'e':p>70?'w':'';$('SI_tn').textContent=cu.u+' / '+cu.w+' tokens'}
 }
@@ -396,10 +399,7 @@ async function qr(){
   try{const Q=(await import(MQ)).default,b=$('SI_qr');b.textContent='';Q.render({text:code,radius:.4,ecLevel:'M',size:174,quiet:2,fill:'#000',background:'#fff'},b)}
   catch(e){$('SI_qr').textContent='QR no disponible'}
 }
-async function cp(){
-  if(!code)return;
-  try{await navigator.clipboard.writeText(code);tos('ID copiado: '+code)}catch(e){tos('No se pudo copiar el ID')}
-}
+async function cp(){try{await navigator.clipboard.writeText(code)}catch(e){}}
 async function wk(){
   if(wl||!code||!('wakeLock' in navigator))return;
   try{wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}catch(e){}
@@ -470,7 +470,7 @@ function out(){
   $('SI_ms').textContent='';$('SI_vg').textContent='';$('SI_vg').classList.remove('on');
   $('SI_bv').style.opacity=1;$('SI_bm').style.opacity=1;$('SI_bm').textContent='🎤';
   $('SI_ch').classList.add('hide');$('SI_cf').classList.add('hide');$('SI_lb').classList.remove('hide');
-  $('SI_jn').disabled=$('SI_nw').disabled=0;nt('');chk();
+  $('SI_jn').disabled=$('SI_nw').disabled=0;nt('');$('SI_ft').textContent='';chk();
 }
 function fail(m){out();ht(m)}
 
@@ -478,9 +478,7 @@ $('SI_nw').onclick=create;
 $('SI_jn').onclick=join;
 $('SI_bk').onclick=out;
 $('SI_sn').onclick=send;
-$('SI_cy').onclick=cp;
-$('SI_ct').onclick=cp;
-$('SI_bp').onclick=()=>sv($('SI_pp').classList.contains('on')?'m':'p');
+$('SI_bp').onclick=()=>{const o=$('SI_pp').classList.contains('on');sv(o?'m':'p');if(!o)cp()};
 $('SI_bc').onclick=()=>$('SI_cf').classList.toggle('hide');
 $('SI_cd').addEventListener('keydown',e=>{if(e.key==='Enter')join()});
 $('SI_ip').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
@@ -556,6 +554,4 @@ window.addEventListener('beforeunload',td);
 })();
 </script>
 
-<br>
-<a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a>
 </div>
