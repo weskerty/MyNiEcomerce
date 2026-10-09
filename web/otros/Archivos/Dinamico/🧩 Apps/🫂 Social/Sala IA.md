@@ -1,539 +1,456 @@
-<div style="text-align:center;position:relative;padding-top:0;margin-top:0" id="si-app">
+<div id="SI_app">
 <style>
-.SI0{color:rgba(255,255,255,.75);font-size:1.3em;font-weight:600;margin:10px 0 14px;min-height:1.5em}
-.SI1{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:20px;font-size:.78em;font-weight:600;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);margin-bottom:16px}
-.SI1 s{width:8px;height:8px;border-radius:50%;background:var(--warn);text-decoration:none;flex:0 0 auto}
-.SI1.ok s{background:var(--ok)}
-.SI1.no s{background:var(--err)}
-.SI2{display:flex;gap:8px;max-width:420px;margin:0 auto 10px}
-.SI2 input{flex:1;min-width:0;text-align:center;letter-spacing:.12em;text-transform:uppercase;font-size:1.05em}
-.SI3{background:#fff;border-radius:14px;padding:8px;display:inline-block;line-height:0;margin:10px auto 6px}
-.SI4{font-family:monospace;font-size:1.5em;letter-spacing:.18em;font-weight:700;user-select:all}
-.SI5{text-align:left;height:52vh;min-height:280px;overflow-y:auto;border:1px solid rgba(255,255,255,.09);border-radius:var(--r-sm);background:rgba(0,0,0,.2);padding:10px;display:flex;flex-direction:column;gap:8px}
-.SI6{max-width:88%;padding:8px 12px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);font-size:.9em;line-height:1.45;overflow-wrap:break-word;white-space:pre-wrap}
-.SI6.me{align-self:flex-end;background:rgba(var(--accent-rgb),.22);border-color:rgba(var(--accent-rgb),.35)}
-.SI6.ia{align-self:flex-start;background:rgba(var(--accent-2-rgb),.13);border-color:rgba(var(--accent-2-rgb),.28)}
-.SI6.sys{align-self:center;max-width:100%;background:none;border:none;color:rgba(255,255,255,.4);font-size:.78em;padding:2px}
-.SI6 b{display:block;font-size:.72em;opacity:.65;margin-bottom:2px;font-weight:600}
-.SI7{display:flex;gap:8px;margin-top:10px}
-.SI7 textarea{flex:1;min-width:0;font-family:var(--font);font-size:.9em;resize:none;height:44px}
-.SI8{color:rgba(255,255,255,.45);font-size:.8em;margin:10px 0 0}
-.SI9{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0 4px}
-.SIA{display:grid;gap:4px;text-align:left;margin-bottom:10px}
-.SIA label{font-size:.72rem;color:rgba(255,255,255,.5);letter-spacing:.03em}
-.SIA input,.SIA textarea{width:100%;font-family:var(--font);font-size:.86em}
+#SI_app{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:10px;text-align:left}
+#SI_app *{box-sizing:border-box}
+#SI_app .hide{display:none!important}
+.SI_c{text-align:center}
+.SI_t{color:rgba(255,255,255,.75);font-size:1.3em;font-weight:600;margin:6px 0 10px}
+.SI_bd{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:20px;font-size:.78em;font-weight:600;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06)}
+.SI_bd s{width:8px;height:8px;border-radius:50%;background:var(--warn);text-decoration:none}
+.SI_bd.ok s{background:var(--ok)}
+.SI_bd.no s{background:var(--err)}
+.SI_pg{height:4px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden;max-width:420px;margin:8px auto 0}
+.SI_pg i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}
+.SI_r{display:flex;gap:8px;max-width:420px;margin:10px auto 0}
+.SI_r input{flex:1;min-width:0;text-align:center}
+.SI_ht{color:rgba(255,255,255,.45);font-size:.8em;margin:10px auto 0;max-width:420px}
+#SI_ch{border:1px solid rgba(255,255,255,.09);border-radius:var(--r-sm,12px);background:rgba(0,0,0,.2);overflow:hidden}
+.SI_h{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.1)}
+.SI_hx{flex:1;min-width:0}
+.SI_hn{font-size:.92rem;font-weight:600}
+.SI_hs{font-size:.68rem;color:rgba(255,255,255,.5)}
+.SI_ib{border:none;background:rgba(255,255,255,.07);color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;flex:0 0 auto;display:flex;align-items:center;justify-content:center;padding:0}
+.SI_ib.sn{background:var(--accent)}
+.SI_cf{display:grid;gap:6px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.1)}
+.SI_cf label{font-size:.7rem;color:rgba(255,255,255,.5)}
+.SI_cf textarea,.SI_cf select{width:100%;font-family:var(--font);font-size:.86em}
+#SI_vg{display:none;gap:8px;padding:8px;overflow-x:auto;border-bottom:1px solid rgba(255,255,255,.1)}
+#SI_vg.on{display:flex}
+.SI_vp{flex:0 0 auto}
+.SI_vp video{width:100px;height:75px;border-radius:12px;object-fit:cover;background:#000;display:block}
+.SI_vp div{font-size:.6rem;color:rgba(255,255,255,.6);text-align:center;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.SI_m,.SI_pp{height:52vh;overflow-y:auto;padding:12px 10px}
+.SI_m{display:flex;flex-direction:column;gap:6px}
+.SI_m.hid{display:none}
+.SI_pp{display:none;flex-wrap:wrap;gap:16px;align-content:flex-start}
+.SI_pp.on{display:flex}
+.SI_g{display:flex;max-width:84%;align-self:flex-start}
+.SI_g.me{align-self:flex-end}
+.SI_b{padding:8px 12px;border-radius:16px;border-bottom-left-radius:4px;font-size:.86rem;line-height:1.4;word-break:break-word;white-space:pre-wrap;background:rgba(255,255,255,.06)}
+.SI_g.me .SI_b{background:rgba(var(--accent-rgb),.28);border-radius:16px 16px 4px 16px}
+.SI_n{font-size:.62rem;font-weight:600;margin-bottom:2px}
+.SI_s{font-size:.68rem;color:rgba(255,255,255,.45);text-align:center;padding:4px 0}
+.SI_qw{flex:0 0 100%;text-align:center}
+.SI_qr{background:#fff;border-radius:14px;padding:8px;display:inline-block;line-height:0}
+.SI_ct{font-family:monospace;font-size:1.4em;letter-spacing:.18em;font-weight:700;cursor:pointer;margin-top:6px}
+#SI_pl{display:flex;flex-wrap:wrap;gap:16px;flex:0 0 100%}
+.SI_pb{display:flex;flex-direction:column;align-items:center;gap:6px;width:76px;background:none;border:none;color:#fff;cursor:pointer;font-family:inherit;padding:0}
+.SI_pc{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+.SI_pn{font-size:.7rem;max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.SI_in{display:flex;align-items:flex-end;gap:6px;padding:8px 10px;border-top:1px solid rgba(255,255,255,.1)}
+.SI_in textarea{flex:1;min-width:0;padding:9px 13px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:18px;color:#fff;font-family:var(--font);font-size:.88rem;outline:none;resize:none;height:38px;line-height:1.4}
+#SI_nt{padding:0 12px 8px;min-height:1em}
+#SI_t{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.97);border:1px solid rgba(255,255,255,.15);color:#fff;padding:10px 22px;border-radius:12px;font-size:.85em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999;max-width:80vw}
+#SI_t.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 
-<div style="font-size:2.8rem;margin:0 auto 4px;line-height:1.2">🧠</div>
-<div class="SI0" id="si-st">Sala IA</div>
-
-<div id="si-lobby">
-<div class="SI1" id="si-badge"><s></s><span id="si-badge-t">Comprobando IA local...</span></div>
-
-<div class="SI2">
-<input type="text" id="si-nick" placeholder="Tu nombre" maxlength="24" autocomplete="off" style="text-transform:none;letter-spacing:normal">
-</div>
-
-<div class="SI9">
-<button id="si-new">➕ Crear sala</button>
-<button id="si-dl" class="hide">⬇️ Bajar el modelo</button>
-</div>
-<p class="SI8" id="si-hint">Quien crea la sala presta su IA local. Los que se unen no necesitan nada.</p>
-
+<div id="SI_lb" class="SI_c">
+<div style="font-size:2.8rem;line-height:1.2">🧠</div>
+<div class="SI_t">Sala IA</div>
+<div class="SI_bd" id="SI_bd"><s></s><span id="SI_bt">Comprobando IA local...</span></div>
+<div class="SI_pg hide" id="SI_pg"><i></i></div>
+<div class="SI_r"><input type="text" id="SI_nk" placeholder="Tu nombre" maxlength="24" autocomplete="off"></div>
+<div class="SI_r"><button id="SI_nw" style="flex:1" disabled>➕ Crear sala</button></div>
+<p class="SI_ht" id="SI_ht">Quien crea la sala presta su IA local (requiere Chrome de escritorio). Los que se unen no necesitan nada.</p>
 <hr style="border:none;border-top:1px solid rgba(255,255,255,.08);margin:20px auto;max-width:420px">
-
-<div class="SI2">
-<input type="text" id="si-code" placeholder="Codigo de sala" maxlength="8" autocomplete="off" autocorrect="off" spellcheck="false">
-<button id="si-join">Unirme</button>
-</div>
-<p class="SI8">Tambien podes entrar con el codigo que te pasen.</p>
+<div class="SI_r"><input type="text" id="SI_cd" placeholder="ID de sala" maxlength="8" autocomplete="off" autocorrect="off" spellcheck="false" style="text-transform:uppercase;letter-spacing:.12em"><button id="SI_jn">Unirme</button></div>
 </div>
 
-<div id="si-room" class="hide">
-
-<div id="si-share" class="hide">
-<div class="SI3" id="si-qr"></div>
-<div class="SI4" id="si-codetxt"></div>
-<p class="SI8">Envia el codigo a quien quieras invitar.</p>
+<div id="SI_ch" class="hide">
+<div class="SI_h">
+<button class="SI_ib" id="SI_bk">←</button>
+<div class="SI_hx"><div class="SI_hn" id="SI_hn"></div><div class="SI_hs" id="SI_hs"></div></div>
+<button class="SI_ib" id="SI_cp" title="Copiar ID">🔗</button>
+<button class="SI_ib" id="SI_bv" title="Camara">📷</button>
+<button class="SI_ib" id="SI_bp" title="Participantes">👥</button>
+<button class="SI_ib hide" id="SI_bc" title="Ajustes de la IA">⚙️</button>
+</div>
+<div class="SI_cf hide" id="SI_cf">
+<label>Instrucciones</label><textarea id="SI_sy" rows="3" maxlength="2000"></textarea>
+<label>Creatividad</label><select id="SI_sm"></select>
+<div class="SI_hs" id="SI_ci"></div>
+<div class="SI_hs">Modelo: el que Chrome tenga instalado (Gemini Nano), no se puede elegir desde la pagina. Creatividad solo funciona con el origin trial de Chrome. Aplicar borra la memoria de la IA.</div>
+<button id="SI_ap">Aplicar y reiniciar</button>
+</div>
+<div id="SI_vg"></div>
+<div class="SI_m" id="SI_ms"></div>
+<div class="SI_pp" id="SI_pp">
+<div class="SI_qw hide" id="SI_qw"><div class="SI_qr" id="SI_qr"></div><div class="SI_ct" id="SI_ct"></div></div>
+<div id="SI_pl"></div>
+</div>
+<div class="SI_in"><textarea id="SI_ip" rows="1" placeholder="Mensaje..." maxlength="2000"></textarea><button class="SI_ib sn" id="SI_sn">➤</button></div>
+<div class="SI_hs" id="SI_nt"></div>
 </div>
 
-<div class="SI5" id="si-msgs"></div>
-<div class="SI7">
-<textarea id="si-in" placeholder="Escribi tu mensaje..." maxlength="2000"></textarea>
-<button id="si-send">Enviar</button>
-</div>
-<p class="SI8" id="si-note"></p>
-
-<details id="si-cfg" class="hide">
-<summary>⚙️ Ajustes de la IA</summary>
-<section>
-<div class="SIA"><label>Instrucciones</label><textarea id="si-sys" rows="3"></textarea></div>
-<div class="SIA"><label>Temperatura <span id="si-tv"></span></label><input type="range" id="si-temp" min="0" max="1" step=".1"></div>
-<div class="SIA"><label>Top K <span id="si-kv"></span></label><input type="range" id="si-topk" min="1" max="10" step="1"></div>
-<div class="SI9"><button id="si-apply">Aplicar y reiniciar</button></div>
-<p class="SI8">Cambiar esto borra la conversacion que la IA recuerda.</p>
-</section>
-</details>
-
-<div class="SI9"><button id="si-out">Salir de la sala</button></div>
-</div>
+<div id="SI_t"></div>
 
 <script>
 (function(){
-  const $=i=>document.getElementById(i);
-  if(!$('si-app'))return;
+const $=i=>document.getElementById(i),mk=(t,c)=>{const e=document.createElement(t);if(c)e.className=c;return e};
+if(!$('SI_app'))return;
+const MP='https://cdn.jsdelivr.net/npm/peerjs@1.5.5/+esm',MQ='https://cdn.jsdelivr.net/npm/qr-creator@1.0.0/+esm',PF='cheia-',AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789',RE=/^IA[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{6}$/,MX=2000,HS=120,QM=8,HB=10000;
+const OP={expectedInputs:[{type:'text',languages:['es']}],expectedOutputs:[{type:'text',languages:['es']}]};
+const SM=['most-predictable','predictable','slightly-predictable','balanced','slightly-creative','creative','most-creative'];
+const CL=['#e8a0a0','#e8c4a0','#a8d8a0','#a0c4e8','#c4a8e8','#e8a8d0','#a8dede','#e8e0a0'];
+let Peer,peer,pid='',host=0,code='',conns={},nick='',sess,busy=0,q=[],ac=0,left=0,ro={},ab,dlp=0,wa=0,rt=0,vs,calls={},wl,hbi,cu,log=[],bub={},cc={},ci=0,jd=0,rj=0,rr=0,lc,tt;
+const cfg={sys:'Detecta solo falacias claramente presentes. Ignora posibles o discutibles. Explica brevemente cual es y por que. Si no hay ninguna, no respondas. Texto plano, sin Markdown. Formato: Falacia: Tipo: Explicacion:',sm:''};
+const cut=v=>String(v==null?'':v).slice(0,MX);
+const col=i=>cc[i]||(cc[i]=CL[ci++%CL.length]);
+const ht=t=>{$('SI_ht').textContent=t};
+const nt=t=>{$('SI_nt').textContent=t};
+const sc=()=>{const w=$('SI_ms');w.scrollTop=w.scrollHeight};
+const tos=t=>{const e=$('SI_t');e.textContent=t;e.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('show'),3500)};
+const gc=()=>{const r=crypto.getRandomValues(new Uint32Array(6));let s='IA';for(const x of r)s+=AL[x%AL.length];return s};
+const ids=()=>Object.keys(ro).filter(i=>i!==pid);
+const cx0=c=>{try{c.close()}catch(e){}};
+const bd=(c,t)=>{$('SI_bd').className='SI_bd'+(c?' '+c:'');$('SI_bt').textContent=t};
+const pg=p=>{const g=$('SI_pg');g.classList.toggle('hide',p==null);if(p!=null)g.firstChild.style.width=p+'%'};
 
-  const M_PEER='https://cdn.jsdelivr.net/npm/peerjs@1.5.5/+esm';
-  const M_QR='https://cdn.jsdelivr.net/npm/qr-creator@1.0.0/+esm';
-  const PFX='cheia-';
-  const AL='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-  const RE=/^IA[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{6}$/;
-  const MAX=2000,HIST=120,QMAX=8;
+try{const j=JSON.parse(localStorage.getItem('si_cfg')||'null');if(j){cfg.sys=String(j.sys||cfg.sys).slice(0,MX);cfg.sm=SM.includes(j.sm)?j.sm:''}}catch(e){}
+nick=(localStorage.getItem('si_nick')||'').slice(0,24);
+$('SI_nk').value=nick;
+$('SI_sm').innerHTML='<option value="">Automatica</option>'+SM.map(s=>'<option>'+s+'</option>').join('');
 
-  let Peer=null,peer=null,pid='',host=false,code='',conns={},nick='',sess=null,nosys=false,deg=[],busy=false,q=[],ac=0,left=false;
-  const cfg={sys:'Detecta solo falacias claramente presentes. Ignora posibles o discutibles. Explica brevemente cuál es y por qué. Si no hay ninguna, no respondas. Texto plano, sin Markdown. Formato: Falacia: Tipo: Explicación:',temp:.8,topk:3};
-
-  const cut=v=>String(v==null?'':v).slice(0,MAX);
-  const st=t=>{$('si-st').textContent=t};
-  const note=t=>{$('si-note').textContent=t};
-
-  function genCode(){
-    const r=crypto.getRandomValues(new Uint32Array(6));
-    let s='IA';
-    for(let i=0;i<6;i++)s+=AL[r[i]%AL.length];
-    return s;
+async function av(){
+  if(!self.LanguageModel)return'no';
+  try{return await LanguageModel.availability(OP)}catch(e){return'unavailable'}
+}
+const go=()=>{if(rt++<8)dl();else bd('no','No se pudo bajar el modelo, recarga la pagina')};
+function wt(){
+  if(wa)return;wa=1;
+  const E=['pointerdown','pointerup','keydown'],f=()=>{wa=0;E.forEach(k=>document.removeEventListener(k,f,true));go()};
+  E.forEach(k=>document.addEventListener(k,f,true));
+}
+async function chk(){
+  const a=await av();
+  $('SI_nw').disabled=a!=='available';
+  if(a==='available'){rt=0;bd('ok','IA local lista');pg()}
+  else if(a==='no'||a==='unavailable'){
+    bd('no',a==='no'?'Falta Chrome 148 o mas nuevo (escritorio)':'Este equipo no soporta la IA integrada');
+    ht('Para crear una sala hace falta Chrome 148 o mas nuevo en escritorio con la IA integrada (22 GB libres y GPU con mas de 4 GB de VRAM o 16 GB de RAM). Para unirte no hace falta nada.');
+  }else{
+    bd('',a==='downloading'?'Bajando el modelo...':'Falta bajar el modelo');
+    if(a==='downloading'||(navigator.userActivation&&navigator.userActivation.isActive))go();else wt();
   }
+}
+function dl(){
+  if(dlp)return;
+  const da=new AbortController();let lp=Date.now(),iv;
+  const end=()=>{if(!dlp)return;clearInterval(iv);dlp=0;setTimeout(chk,500)};
+  dlp=1;
+  LanguageModel.create({...OP,signal:da.signal,monitor:m=>m.addEventListener('downloadprogress',e=>{lp=Date.now();const p=Math.round((e.loaded||0)*100);bd('',p>=99?'Cargando el modelo...':'Bajando el modelo '+p+'%');pg(p)})}).then(s=>s.destroy()).catch(()=>{}).then(end);
+  iv=setInterval(async()=>{if(!dlp)return;if(await av()==='available')end();else if(Date.now()-lp>9e4)da.abort()},3000);
+}
 
+const mkS=()=>LanguageModel.create({...OP,initialPrompts:[{role:'system',content:cfg.sys}],...(cfg.sm?{samplingMode:cfg.sm}:{})});
+async function rs(){
+  try{sess&&sess.destroy()}catch(e){}
+  sess=null;sess=await mkS();
+  sess.addEventListener('contextoverflow',()=>{bc({t:'s',m:'La IA olvido los mensajes mas viejos'});cx()});
+  cx();
+}
+function cx(){
+  if(!sess||typeof sess.contextUsage!=='number')return;
+  snd({t:'x',u:sess.contextUsage,w:sess.contextWindow});
+}
+
+function ad(k,w,tx,id,ia){
+  const m=$('SI_ms'),g=mk('div',k==='s'?'SI_s':'SI_g'+(k?' '+k:'')),s=mk('span');
+  s.textContent=tx;
+  if(k==='s')g.append(s);
+  else{
+    const b=mk('div','SI_b');
+    if(k!=='me'){const c=ia?'#38bdf8':col(id||w),n=mk('div','SI_n');n.textContent=w;n.style.color=c;b.style.background=c+'26';b.append(n)}
+    b.append(s);g.append(b);
+  }
+  m.append(g);while(m.children.length>HS)m.firstChild.remove();sc();return s;
+}
+function hs(){
+  const n=Object.keys(ro).length||1;
+  $('SI_hs').textContent=(host?'🔗 ':'')+n+(n===1?' persona':' personas')+(cu?' · IA '+cu.u+'/'+cu.w:'')+(rj?' · Reconectando...':'');
+  $('SI_ci').textContent=cu?'Contexto usado: '+cu.u+' de '+cu.w+' tokens ('+Math.round(cu.u/cu.w*100)+'%)':'';
+}
+function rp(){
+  const w=$('SI_pl');w.textContent='';
+  Object.keys(ro).forEach(id=>{
+    const b=mk('button','SI_pb'),c=mk('div','SI_pc'),n=mk('div','SI_pn');
+    c.style.background=col(id);c.textContent=ro[id].slice(0,2).toUpperCase();
+    n.textContent=ro[id]+(id===pid?' (vos)':'');
+    b.append(c,n);
+    if(id!==pid)b.onclick=()=>{const i=$('SI_ip');i.value+=(i.value&&!i.value.endsWith(' ')?' ':'')+'@'+ro[id]+' ';sv('m');i.focus()};
+    w.append(b);
+  });
+}
+const sv=v=>{$('SI_ms').classList.toggle('hid',v!=='m');$('SI_pp').classList.toggle('on',v==='p');if(v==='p')rp()};
+
+function ap(m){
+  const t=m.t;
+  if(t==='m')ad(m.from===pid?'me':'',m.nick||'?',cut(m.txt),m.from);
+  else if(t==='a')ad('','IA',cut(m.txt),0,1);
+  else if(t==='a0')bub[m.id]=ad('','IA','',0,1);
+  else if(t==='ch'){const b=bub[m.id]||(bub[m.id]=ad('','IA','',0,1));b.textContent+=cut(m.d);sc()}
+  else if(t==='end')delete bub[m.id];
+  else if(t==='err'){const b=bub[m.id];if(!b)ad('s','',cut(m.m));else if(!b.textContent)b.textContent=cut(m.m);delete bub[m.id]}
+  else if(t==='s')ad('s','',cut(m.m));
+  else if(t==='x'){cu=m;hs()}
+  else if(t==='r'){ro=m.l||{};rp();hs();if(vs&&peer)ids().forEach(i=>{if(!calls[i])cl(i)})}
+  else if(t==='h'){$('SI_ms').textContent='';bub={};(m.l||[]).forEach(ap)}
+}
+function snd(m){Object.values(conns).forEach(c=>{try{c.open&&c.send(m)}catch(e){}});ap(m)}
+function bc(m){log.push(m);if(log.length>HS)log.shift();snd(m)}
+
+async function once(id,p){
+  let f='';
+  for await(const c of sess.promptStreaming(p,{signal:ab.signal})){f+=c;snd({t:'ch',id,d:cut(c)})}
+  return f;
+}
+async function run(nk,tx){
+  const id=++ac;snd({t:'a0',id});
   try{
-    const j=JSON.parse(localStorage.getItem('si_cfg')||'null');
-    if(j){cfg.sys=String(j.sys||cfg.sys).slice(0,MAX);cfg.temp=+j.temp||cfg.temp;cfg.topk=+j.topk||cfg.topk}
-  }catch(e){}
-  nick=(localStorage.getItem('si_nick')||'').slice(0,24);
-  $('si-nick').value=nick;
-
-  function LM(){
-    if(self.LanguageModel)return self.LanguageModel;
-    const a=self.ai;
-    if(a&&(a.languageModel||a.assistant))return a.languageModel||a.assistant;
-    return null;
+    if(!sess)await rs();
+    const f=await once(id,nk+': '+tx);
+    log.push({t:'a',txt:f});if(log.length>HS)log.shift();
+    snd({t:'end',id});
+  }catch(e){
+    snd({t:'err',id,m:'Error IA '+((e&&e.name)||'')});
+    if(!left&&!(e&&e.name==='AbortError')){try{sess.destroy()}catch(x){}sess=null}
   }
+  cx();
+}
+async function pump(){
+  if(busy)return;busy=1;
+  while(q.length&&!left){const j=q.shift();nt(q.length?'En cola: '+q.length:'IA escribiendo...');await run(j[0],j[1])}
+  busy=0;nt('');
+}
+function ask(nk,tx){
+  if(q.length>=QM){bc({t:'s',m:'Cola llena, esperen un momento'});return}
+  q.push([nk,tx]);pump();
+}
 
-  const OK1={available:1,readily:1};
-  const DL1={downloadable:1,downloading:1,'after-download':1};
+function hb(){
+  clearInterval(hbi);
+  hbi=setInterval(()=>{Object.values(conns).forEach(c=>{if(++c.__m>3){cx0(c);return}try{c.send({t:'p'})}catch(e){}})},HB);
+}
+const rc=()=>{if(left||!peer)return;setTimeout(()=>{try{if(peer.disconnected&&!peer.destroyed)peer.reconnect()}catch(e){}},2000)};
 
-  async function avail(){
-    const m=LM();
-    if(!m)return 'no';
-    let v='';
-    try{
-      if(m.availability)v=await m.availability();
-      else if(m.capabilities)v=(await m.capabilities()).available;
-    }catch(e){}
-    if(OK1[v])return 'ok';
-    if(DL1[v])return 'dl';
-    return 'no';
+function hh(c){
+  c.on('open',()=>{
+    const o=conns[c.peer];if(o&&o!==c)cx0(o);
+    const re=!!ro[c.peer],n=cut((c.metadata&&c.metadata.nick)||'Alguien').slice(0,24);
+    conns[c.peer]=c;c.__m=0;ro[c.peer]=n;
+    try{c.send({t:'h',l:log})}catch(e){}
+    if(!re)bc({t:'s',m:n+' entro'});
+    snd({t:'r',l:ro});
+  });
+  c.on('data',d=>{
+    c.__m=0;
+    if(!d)return;
+    if(d.t==='p'){try{c.send({t:'o'})}catch(e){}return}
+    if(d.t!=='q')return;
+    const tx=cut(d.txt).trim();if(!tx)return;
+    const n=ro[c.peer]||'Alguien';
+    bc({t:'m',from:c.peer,nick:n,txt:tx});ask(n,tx);
+  });
+  const by=()=>{
+    if(conns[c.peer]!==c)return;
+    delete conns[c.peer];const n=ro[c.peer]||'Alguien';delete ro[c.peer];
+    bc({t:'s',m:n+' salio'});snd({t:'r',l:ro});
+  };
+  c.on('close',by);c.on('error',by);
+}
+function hg(c){
+  lc=c;let ok=0;
+  c.on('open',()=>{ok=1;rj=0;rr=0;c.__m=0;conns[c.peer]=c;if(!jd){jd=1;en()}hs()});
+  c.on('data',d=>{c.__m=0;if(!d||!d.t)return;if(d.t==='p'){try{c.send({t:'o'})}catch(e){}}else if(d.t!=='o')ap(d)});
+  c.on('close',()=>gl(c));c.on('error',()=>gl(c));
+  setTimeout(()=>{if(!ok)gl(c)},15000);
+}
+function gl(c){
+  if(left||host||c.__x)return;c.__x=1;
+  if(conns[c.peer]===c)delete conns[c.peer];
+  if(!jd)return fail('No se encontro esa sala');
+  if(rr>=4)return fail('Se cerro la sala');
+  rj=1;rr++;hs();
+  setTimeout(()=>{if(left)return;if(!peer||peer.destroyed)return fail('Se corto la sala');hg(peer.connect(PF+code,{metadata:{nick},reliable:true}))},2000*rr);
+}
+
+function cl(i){hc(peer.call(i,vs,{metadata:{nick}}))}
+function hc(c){
+  const p=c.peer;
+  if(calls[p]&&calls[p]!==c)cx0(calls[p]);
+  calls[p]=c;
+  c.on('stream',s=>{c.__s=1;if(s.getVideoTracks().length)vp(p,s)});
+  c.on('close',()=>{
+    if(calls[p]!==c)return;
+    delete calls[p];rv(p);
+    if(c.__s&&vs&&ro[p]&&!left)setTimeout(()=>{if(vs&&ro[p]&&!calls[p]&&peer)cl(p)},800);
+  });
+}
+function vp(id,s,n){
+  let e=$('SI_v'+id);
+  if(!e){
+    e=mk('div','SI_vp');e.id='SI_v'+id;
+    const v=mk('video'),l=mk('div');v.autoplay=v.playsInline=1;if(id==='me')v.muted=1;
+    l.textContent=n||ro[id]||id.slice(0,8);e.append(v,l);$('SI_vg').append(e);
   }
+  e.firstChild.srcObject=s;$('SI_vg').classList.add('on');
+}
+function rv(id){const e=$('SI_v'+id);if(e)e.remove();if(!$('SI_vg').children.length)$('SI_vg').classList.remove('on')}
 
-  function badge(cls,txt){
-    const b=$('si-badge');
-    b.className='SI1'+(cls?' '+cls:'');
-    $('si-badge-t').textContent=txt;
-  }
-
-  async function chk(){
-    const a=await avail();
-    if(a==='ok'){badge('ok','IA local lista');$('si-new').disabled=false;$('si-dl').classList.add('hide')}
-    else if(a==='dl'){badge('','Falta bajar el modelo');$('si-new').disabled=true;$('si-dl').classList.remove('hide')}
-    else{
-      badge('no','Sin IA local en este equipo');
-      $('si-new').disabled=true;
-      $('si-dl').classList.add('hide');
-      $('si-hint').textContent='Para crear una sala hace falta Chrome 155 o mas nuevo en un Dispositivo con la IA integrada activada. Igual podes unirte a la sala de otro.';
-    }
-    return a;
-  }
-
-  async function mkSess(){
-    const m=LM();
-    if(!m)throw new Error('sin IA');
-    const mon=x=>{x.addEventListener('downloadprogress',e=>{
-      const p=Math.round((e.loaded||0)*100);
-      badge('','Bajando el modelo '+p+'%');
-      st('Bajando el modelo '+p+'%');
-    })};
-    if(!m.create){
-      nosys=true;
-      deg=['ajustes'];
-      return await m.createTextSession({temperature:cfg.temp,topK:cfg.topk});
-    }
-    const ip=[{role:'system',content:cfg.sys}];
-    const sp={temperature:cfg.temp,topK:cfg.topk};
-    const sets=[
-      Object.assign({initialPrompts:ip,expectedInputs:[{type:'text',languages:['es']}]},sp),
-      Object.assign({initialPrompts:ip},sp),
-      {initialPrompts:ip},
-      {}
-    ];
-    let last=null;
-    for(let i=0;i<sets.length;i++){
-      try{
-        const x=await m.create(Object.assign({monitor:mon},sets[i]));
-        nosys=i===3;
-        deg=[];
-        if(i>=2)deg.push('temperatura y Top K');
-        if(i>=3)deg.push('instrucciones del sistema como mensaje aparte');
-        return x;
-      }catch(e){last=e}
-    }
-    throw last||new Error('sin IA');
-  }
-
-  async function resetSess(){
-    try{if(sess&&sess.destroy)sess.destroy()}catch(e){}
-    sess=null;nosys=false;deg=[];
-    sess=await mkSess();
-    try{
-      if(sess.addEventListener)sess.addEventListener('contextoverflow',()=>{
-        bcast({t:'sys',m:'La IA se quedo sin memoria y olvido lo mas viejo'});
+function mp(id){
+  return new Promise((res,rej)=>{
+    const go=P=>{
+      peer=id?new P(id):new P();let ok=0;
+      peer.on('error',e=>{
+        const t=(e&&e.type)||'';
+        if(t==='peer-unavailable'){if(lc&&!host)gl(lc);return}
+        if(!ok){ok=1;rej(e);return}
+        if(!left){tos('Error de conexion '+t);rc()}
       });
-    }catch(e){}
-    if(deg.length)add('sys','','Este navegador no acepto: '+deg.join(', '));
-  }
-
-  function add(kind,who,txt){
-    const w=$('si-msgs');
-    const d=document.createElement('div');
-    d.className='SI6 '+kind;
-    if(who){const b=document.createElement('b');b.textContent=who;d.appendChild(b)}
-    const s=document.createElement('span');
-    s.textContent=txt||'';
-    d.appendChild(s);
-    w.appendChild(d);
-    while(w.children.length>HIST)w.removeChild(w.firstChild);
-    w.scrollTop=w.scrollHeight;
-    return s;
-  }
-
-  const bubbles={};
-  function apply(m){
-    if(m.t==='m')add(m.from===pid?'me':'',m.nick||'?',cut(m.txt));
-    else if(m.t==='a0')bubbles[m.id]=add('ia','IA','');
-    else if(m.t==='ch'){
-      const b=bubbles[m.id];
-      if(b){b.textContent+=cut(m.d);$('si-msgs').scrollTop=$('si-msgs').scrollHeight}
-    }
-    else if(m.t==='end')delete bubbles[m.id];
-    else if(m.t==='err'){
-      const b=bubbles[m.id];
-      if(b)b.textContent=b.textContent||('Error IA '+cut(m.m));
-      else add('sys','',cut(m.m));
-      delete bubbles[m.id];
-    }
-    else if(m.t==='sys')add('sys','',cut(m.m));
-    else if(m.t==='hist'&&Array.isArray(m.msgs))m.msgs.slice(-HIST).forEach(apply);
-  }
-
-  const log=[];
-  function bcast(m,skip){
-    log.push(m);
-    if(log.length>HIST)log.shift();
-    for(const k in conns){
-      if(k===skip)continue;
-      try{conns[k].send(m)}catch(e){}
-    }
-    apply(m);
-  }
-
-  function toHost(m){
-    const c=conns[PFX+code];
-    if(!c)return false;
-    try{c.send(m);return true}catch(e){return false}
-  }
-
-  async function once(id,p){
-    let got=false;
-    if(sess.promptStreaming){
-      try{
-        let acc='';
-        const s=sess.promptStreaming(p);
-        for await(const c of s){
-          let d=c;
-          if(typeof c==='string'&&c.length>=acc.length&&c.indexOf(acc)===0){d=c.slice(acc.length);acc=c}
-          else acc+=c;
-          if(d){got=true;bcast({t:'ch',id,d:cut(d)})}
-        }
-      }catch(e){if(got||(e&&e.name==='QuotaExceededError'))throw e}
-    }
-    if(!got){
-      const r=await sess.prompt(p);
-      bcast({t:'ch',id,d:cut(r)});
-    }
-  }
-
-  async function run(nk,txt){
-    const id=++ac;
-    bcast({t:'a0',id});
-    try{
-      if(!sess)await resetSess();
-      const p=(nosys?cfg.sys+'\n\n':'')+nk+': '+txt;
-      try{await once(id,p)}
-      catch(e){
-        if(!e||e.name!=='QuotaExceededError')throw e;
-        bcast({t:'sys',m:'La IA se quedo sin memoria, arranca de cero'});
-        await resetSess();
-        await once(id,(nosys?cfg.sys+'\n\n':'')+nk+': '+txt);
-      }
-      bcast({t:'end',id});
-    }catch(e){
-      bcast({t:'err',id,m:'Error IA '+((e&&e.name)||'')});
-      try{if(sess&&sess.destroy)sess.destroy()}catch(x){}
-      sess=null;
-    }
-  }
-
-  async function pump(){
-    if(busy)return;
-    busy=true;
-    while(q.length){
-      const j=q.shift();
-      note(q.length?'En cola: '+q.length:'');
-      await run(j[0],j[1]);
-    }
-    busy=false;
-    note('');
-  }
-
-  function ask(nk,txt){
-    if(q.length>=QMAX){bcast({t:'sys',m:'Cola llena, esperen un momento'});return}
-    q.push([nk,txt]);
-    if(q.length>1)note('En cola: '+q.length);
-    pump();
-  }
-
-  function hookHost(c){
-    c.on('open',()=>{
-      conns[c.peer]=c;
-      const n=cut((c.metadata&&c.metadata.nick)||'Alguien').slice(0,24);
-      c.__n=n;
-      try{c.send({t:'hist',msgs:log})}catch(e){}
-      bcast({t:'sys',m:n+' entro'});
-      who();
-    });
-    c.on('data',d=>{
-      if(!d||d.t!=='q')return;
-      const txt=cut(d.txt).trim();
-      if(!txt)return;
-      const n=c.__n||'Alguien';
-      bcast({t:'m',from:c.peer,nick:n,txt});
-      ask(n,txt);
-    });
-    const bye=()=>{
-      if(!conns[c.peer])return;
-      delete conns[c.peer];
-      bcast({t:'sys',m:(c.__n||'Alguien')+' salio'});
-      who();
+      peer.once('open',x=>{
+        ok=1;pid=x;
+        peer.on('disconnected',rc);
+        peer.on('call',c=>{c.answer(vs||new MediaStream());hc(c)});
+        res();
+      });
     };
-    c.on('close',bye);
-    c.on('error',bye);
+    if(Peer)return go(Peer);
+    import(MP).then(m=>{Peer=m.Peer||m.default;go(Peer)}).catch(rej);
+  });
+}
+async function qr(){
+  $('SI_ct').textContent=code;
+  try{const Q=(await import(MQ)).default,b=$('SI_qr');b.textContent='';Q.render({text:code,radius:.4,ecLevel:'M',size:168,quiet:2,fill:'#000',background:'#fff'},b)}
+  catch(e){$('SI_qr').textContent='QR no disponible'}
+}
+async function cp(){
+  if(!code)return;
+  try{await navigator.clipboard.writeText(code);tos('ID copiado: '+code)}catch(e){tos('No se pudo copiar el ID')}
+}
+async function wk(){
+  if(wl||!code||!('wakeLock' in navigator))return;
+  try{wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}catch(e){}
+}
+const vc=()=>{if(document.visibilityState==='visible'&&code){wk();rc()}};
+function nk(){nick=$('SI_nk').value.trim().slice(0,24)||'Alguien';try{localStorage.setItem('si_nick',nick)}catch(e){}}
+
+function en(){
+  $('SI_lb').classList.add('hide');$('SI_ch').classList.remove('hide');
+  $('SI_hn').textContent='Sala '+code;
+  $('SI_bc').classList.toggle('hide',!host);$('SI_qw').classList.toggle('hide',!host);
+  if(host){$('SI_sy').value=cfg.sys;$('SI_sm').value=cfg.sm}
+  sv('m');hs();hb();wk();
+}
+async function create(){
+  nk();$('SI_nw').disabled=1;bd('','Preparando la IA...');
+  ab=new AbortController();left=0;
+  try{await rs()}catch(e){ht('No se pudo iniciar la IA local');stop();return chk()}
+  host=1;
+  for(let i=0;i<4;i++){
+    code=gc();
+    try{await mp(PF+code);break}
+    catch(e){try{peer&&peer.destroy()}catch(x){}peer=null;if(!(e&&e.type==='unavailable-id'))break}
   }
+  if(!peer){ht('No se pudo abrir la sala');stop();host=0;return chk()}
+  peer.on('connection',hh);
+  ro={[pid]:nick};log=[];
+  en();qr();cp();
+  ad('s','','Sala abierta. Escribi vos o espera a que entren.');
+}
+async function join(){
+  const v=$('SI_cd').value.trim().toUpperCase();
+  if(!RE.test(v))return ht('ID invalido. Son 8 caracteres que empiezan con IA');
+  nk();code=v;host=0;left=0;jd=0;rr=0;rj=0;
+  $('SI_jn').disabled=1;ht('Conectando...');
+  try{await mp('')}catch(e){$('SI_jn').disabled=0;return ht('No se pudo conectar')}
+  $('SI_jn').disabled=0;
+  hg(peer.connect(PF+code,{metadata:{nick},reliable:true}));
+}
+function send(){
+  const v=cut($('SI_ip').value).trim();if(!v)return;
+  $('SI_ip').value='';
+  if(host){bc({t:'m',from:pid,nick,txt:v});ask(nick,v)}
+  else{try{conns[PF+code].send({t:'q',txt:v})}catch(e){tos('No se pudo enviar')}}
+}
+function stop(){
+  left=1;clearInterval(hbi);
+  try{ab&&ab.abort()}catch(e){}
+  Object.values(conns).forEach(cx0);conns={};
+  Object.values(calls).forEach(cx0);calls={};
+  if(vs){vs.getTracks().forEach(t=>t.stop());vs=null}
+  q=[];busy=0;
+  try{sess&&sess.destroy()}catch(e){}
+  sess=null;
+  try{peer&&!peer.destroyed&&peer.destroy()}catch(e){}
+  peer=null;pid='';
+  if(wl){wl.release().catch(()=>{});wl=null}
+}
+function out(){
+  stop();host=0;code='';log=[];ro={};cu=null;bub={};
+  $('SI_ms').textContent='';$('SI_vg').textContent='';$('SI_vg').classList.remove('on');
+  $('SI_bv').style.opacity=1;
+  $('SI_ch').classList.add('hide');$('SI_cf').classList.add('hide');$('SI_lb').classList.remove('hide');
+  $('SI_jn').disabled=0;nt('');chk();
+}
+function fail(m){out();ht(m)}
 
-  function who(){
-    const n=Object.keys(conns).length;
-    st('Sala '+code+' · '+(n+1)+(n+1===1?' persona':' personas'));
+$('SI_nw').onclick=create;
+$('SI_jn').onclick=join;
+$('SI_bk').onclick=out;
+$('SI_sn').onclick=send;
+$('SI_cp').onclick=cp;
+$('SI_ct').onclick=cp;
+$('SI_bp').onclick=()=>sv($('SI_pp').classList.contains('on')?'m':'p');
+$('SI_bc').onclick=()=>$('SI_cf').classList.toggle('hide');
+$('SI_cd').addEventListener('keydown',e=>{if(e.key==='Enter')join()});
+$('SI_ip').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
+$('SI_bv').onclick=async()=>{
+  if(vs){
+    vs.getTracks().forEach(t=>t.stop());vs=null;
+    Object.values(calls).forEach(cx0);calls={};
+    rv('me');$('SI_bv').style.opacity=1;return;
   }
+  try{
+    vs=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480},frameRate:{max:24}},audio:false});
+    vp('me',vs,nick+' (vos)');ids().forEach(cl);$('SI_bv').style.opacity=.5;
+  }catch(e){tos('Sin acceso a camara')}
+};
+$('SI_ap').onclick=async()=>{
+  cfg.sys=cut($('SI_sy').value);cfg.sm=$('SI_sm').value;
+  try{localStorage.setItem('si_cfg',JSON.stringify(cfg))}catch(e){}
+  $('SI_ap').disabled=1;
+  try{
+    await rs();bc({t:'s',m:'La IA arranca de cero'});
+    if(cfg.sm&&sess.samplingMode!==cfg.sm)tos('Este Chrome ignoro la creatividad (requiere origin trial)');
+  }catch(e){ad('s','','Error IA al reiniciar')}
+  $('SI_ap').disabled=0;
+};
 
-  function hookGuest(c){
-    let ok=false;
-    c.on('open',()=>{
-      ok=true;
-      conns[c.peer]=c;
-      st('Sala '+code);
-      $('si-room').classList.remove('hide');
-      $('si-lobby').classList.add('hide');
-      add('sys','','Conectado. La IA la pone quien creo la sala.');
-    });
-    c.on('data',d=>{if(d&&d.t)apply(d)});
-    c.on('close',()=>{if(!left)fail('Se corto la sala')});
-    c.on('error',()=>{if(!ok)fail('No se encontro ese codigo')});
-    setTimeout(()=>{if(!ok&&!left)fail('No se encontro ese codigo')},15000);
-  }
-
-  function fail(m){
-    st('Sala IA');
-    note('');
-    $('si-room').classList.add('hide');
-    $('si-lobby').classList.remove('hide');
-    $('si-hint').textContent=m;
-    stop();
-  }
-
-  function mkPeer(id){
-    return new Promise((res,rej)=>{
-      const go=P=>{
-        peer=id?new P(id):new P();
-        let done=false;
-        peer.on('error',e=>{
-          const t=(e&&e.type)||'';
-          if(t==='peer-unavailable')return;
-          if(!done){done=true;rej(e);return}
-          if(!left)add('sys','','Error de conexion '+t);
-        });
-        peer.once('open',x=>{
-          done=true;pid=x;
-          peer.on('disconnected',()=>{if(!left)peer.reconnect()});
-          res();
-        });
-      };
-      if(Peer)return go(Peer);
-      import(M_PEER).then(m=>{Peer=m.Peer||m.default;go(Peer)}).catch(rej);
-    });
-  }
-
-  async function showQR(){
-    $('si-codetxt').textContent=code;
-    try{
-      const QR=(await import(M_QR)).default;
-      const b=$('si-qr');
-      b.innerHTML='';
-      QR.render({text:code,radius:.4,ecLevel:'M',size:168,quiet:2,fill:'#000',background:'#fff'},b);
-    }catch(e){$('si-qr').textContent='QR no disponible'}
-  }
-
-  function askNick(){
-    nick=$('si-nick').value.trim().slice(0,24)||'Alguien';
-    try{localStorage.setItem('si_nick',nick)}catch(e){}
-    return true;
-  }
-
-  async function create(){
-    if(!askNick())return;
-    $('si-new').disabled=true;
-    st('Preparando la IA...');
-    try{await resetSess()}
-    catch(e){st('Sala IA');$('si-hint').textContent='No se pudo iniciar la IA local.';$('si-new').disabled=false;chk();return}
-    host=true;left=false;
-    for(let i=0;i<4;i++){
-      code=genCode();
-      try{await mkPeer(PFX+code);break}
-      catch(e){
-        try{if(peer&&!peer.destroyed)peer.destroy()}catch(x){}
-        peer=null;
-        if(e&&e.type==='unavailable-id'&&i<3){code='';continue}
-        break;
-      }
-    }
-    if(!peer||peer.destroyed){
-      st('Sala IA');$('si-hint').textContent='No se pudo abrir la sala.';$('si-new').disabled=false;
-      try{if(sess&&sess.destroy)sess.destroy()}catch(e){}
-      sess=null;return;
-    }
-    peer.on('connection',hookHost);
-    $('si-lobby').classList.add('hide');
-    $('si-room').classList.remove('hide');
-    $('si-share').classList.remove('hide');
-    $('si-cfg').classList.remove('hide');
-    $('si-sys').value=cfg.sys;
-    $('si-temp').value=cfg.temp;$('si-tv').textContent=cfg.temp;
-    $('si-topk').value=cfg.topk;$('si-kv').textContent=cfg.topk;
-    who();
-    showQR();
-    add('sys','','Sala abierta. Escribi vos o espera a que entren.');
-  }
-
-  async function join(){
-    const v=$('si-code').value.trim().toUpperCase();
-    if(!RE.test(v)){$('si-hint').textContent='Codigo invalido. Son 8 caracteres que empiezan con IA.';return}
-    if(!askNick())return;
-    code=v;host=false;left=false;
-    $('si-join').disabled=true;
-    st('Conectando...');
-    try{await mkPeer('')}
-    catch(e){$('si-join').disabled=false;st('Sala IA');$('si-hint').textContent='No se pudo conectar.';return}
-    const c=peer.connect(PFX+code,{metadata:{nick},reliable:true});
-    $('si-join').disabled=false;
-    if(!c){fail('No se pudo conectar');return}
-    hookGuest(c);
-  }
-
-  function send(){
-    const v=cut($('si-in').value).trim();
-    if(!v)return;
-    $('si-in').value='';
-    if(host){
-      bcast({t:'m',from:pid,nick,txt:v});
-      ask(nick,v);
-    } else if(!toHost({t:'q',txt:v}))add('sys','','No se pudo enviar');
-  }
-
-  function stop(){
-    left=true;
-    for(const k in conns){try{conns[k].close()}catch(e){}}
-    conns={};
-    q=[];busy=false;
-    try{if(sess&&sess.destroy)sess.destroy()}catch(e){}
-    sess=null;
-    try{if(peer&&!peer.destroyed)peer.destroy()}catch(e){}
-    peer=null;pid='';
-  }
-
-  function out(){
-    stop();
-    host=false;code='';log.length=0;
-    $('si-msgs').textContent='';
-    $('si-room').classList.add('hide');
-    $('si-share').classList.add('hide');
-    $('si-cfg').classList.add('hide');
-    $('si-lobby').classList.remove('hide');
-    $('si-new').disabled=false;
-    st('Sala IA');note('');
-    chk();
-  }
-
-  $('si-new').onclick=create;
-  $('si-join').onclick=join;
-  $('si-out').onclick=out;
-  $('si-send').onclick=send;
-  $('si-code').addEventListener('keydown',e=>{if(e.key==='Enter')join()});
-  $('si-in').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}});
-  $('si-temp').oninput=()=>{$('si-tv').textContent=$('si-temp').value};
-  $('si-topk').oninput=()=>{$('si-kv').textContent=$('si-topk').value};
-
-  $('si-dl').onclick=async()=>{
-    $('si-dl').disabled=true;
-    try{
-      const s=await mkSess();
-      if(s&&s.destroy)s.destroy();
-      $('si-hint').textContent='Modelo listo. Ya podes crear una sala.';
-    }catch(e){$('si-hint').textContent='No se pudo bajar el modelo.'}
-    $('si-dl').disabled=false;
-    st('Sala IA');
-    chk();
-  };
-
-  $('si-apply').onclick=async()=>{
-    cfg.sys=cut($('si-sys').value);
-    cfg.temp=+$('si-temp').value;
-    cfg.topk=+$('si-topk').value;
-    try{localStorage.setItem('si_cfg',JSON.stringify(cfg))}catch(e){}
-    $('si-apply').disabled=true;
-    try{await resetSess();bcast({t:'sys',m:'La IA arranca de cero'})}
-    catch(e){add('sys','','Error IA al reiniciar')}
-    $('si-apply').disabled=false;
-  };
-
-  chk();
-
-  function teardown(){
-    window.removeEventListener('beforeunload',teardown);
-    stop();
-  }
-  const ce=$('content');
-  if(ce)ce.addEventListener('contentUnload',teardown,{once:true});
-  window.addEventListener('beforeunload',teardown);
+chk();
+document.addEventListener('visibilitychange',vc);
+window.addEventListener('online',rc);
+function td(){
+  window.removeEventListener('beforeunload',td);
+  document.removeEventListener('visibilitychange',vc);
+  window.removeEventListener('online',rc);
+  stop();
+}
+const ce=$('content');
+if(ce)ce.addEventListener('contentUnload',td,{once:true});
+window.addEventListener('beforeunload',td);
 })();
 </script>
 
 <br>
 <a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a>
 </div>
-
