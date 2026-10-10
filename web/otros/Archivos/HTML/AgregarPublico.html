@@ -463,7 +463,7 @@ function PB_extractEntries(node,cat,out){
 
 async function PB_fetchPublicoJson(cat,force){
   try{
-    const r=await fetch(`${PB_PUBLICO_BASE}/${cat}/data.json`+(force?`?t=${Date.now()}`:''));
+    const r=await fetch(`${PB_PUBLICO_BASE}/${cat}/data.json`);
     if(!r.ok)return null;
     const d=await r.json();
     return d.galleries||d;
