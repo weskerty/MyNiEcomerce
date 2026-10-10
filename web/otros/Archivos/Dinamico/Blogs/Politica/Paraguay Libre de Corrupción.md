@@ -39,6 +39,7 @@
 <h3><span class="lk lk-wa">Quiero Participar</span></h3>
 </div>
 </a>
+</div>
 
 ### Algunas Ideas de Propuestas
 <div class="contenedor-imagenes-animado" data-title="💡 Propuestas Publicas" data-gallery-key="Propuestas" data-json-path="web/otros/Archivos/Dinamico/DemoDire/Propuestas/data.json" data-href="web/otros/Archivos/Dinamico/DemoDire/Propuestas/ListaEntera.html"></div>

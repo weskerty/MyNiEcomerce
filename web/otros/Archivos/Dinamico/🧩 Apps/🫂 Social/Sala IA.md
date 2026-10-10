@@ -1,6 +1,7 @@
 <div id="SI_app">
 <style>
-#SI_app{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:10px;text-align:left}
+#disqus-container{display:none!important}
+#SI_app{--SI_h:clamp(320px,66vh,640px);margin:-10px;display:flex;flex-direction:column;gap:10px;text-align:left}
 #SI_app *{box-sizing:border-box}
 #SI_app .hide{display:none!important}
 .SI_c{text-align:center}
@@ -15,7 +16,7 @@
 .SI_r input{flex:1;min-width:0;text-align:center}
 .SI_er{color:var(--err,#f87171);font-size:.8em;margin:8px auto 0;max-width:420px;min-height:1em}
 .SI_r input.er{border-color:var(--err,#f87171)}
-#SI_ch{border:1px solid rgba(255,255,255,.09);border-radius:var(--r-sm,12px);background:rgba(0,0,0,.2);overflow:hidden}
+#SI_ch{overflow:hidden}
 .SI_h{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.1)}
 .SI_hx{flex:1;min-width:0}
 .SI_hn{font-size:.92rem;font-weight:600}
@@ -30,7 +31,7 @@
 .SI_vp{flex:0 0 auto}
 .SI_vp video{width:100px;height:75px;border-radius:12px;object-fit:cover;background:#000;display:block}
 .SI_vp div{font-size:.6rem;color:rgba(255,255,255,.6);text-align:center;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.SI_m,.SI_pp{height:52vh;overflow-y:auto;padding:12px 10px}
+.SI_m,.SI_pp{height:var(--SI_h);overflow-y:auto;padding:12px 10px}
 .SI_m{display:flex;flex-direction:column;gap:6px}
 .SI_m.hid{display:none}
 .SI_pp{display:none;flex-wrap:wrap;gap:16px;align-content:flex-start}
@@ -51,7 +52,7 @@
 .SI_pn{font-size:.7rem;max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #SI_wa{display:none;align-items:center;justify-content:center;gap:8px;font-size:.78rem;color:rgba(255,255,255,.55)}
 #SI_wa img{width:28px;height:28px;object-fit:contain;opacity:.85}
-#SI_wa.on{display:flex;flex-direction:column;height:52vh;gap:10px}
+#SI_wa.on{display:flex;flex-direction:column;height:var(--SI_h);gap:10px}
 #SI_wa.on img{width:64px;height:64px}
 #SI_ch:has(#SI_wa.on) .SI_m,#SI_ch:has(#SI_wa.on) .SI_pp{display:none!important}
 .SI_in{display:flex;align-items:flex-end;gap:6px;padding:8px 10px;border-top:1px solid rgba(255,255,255,.1)}
