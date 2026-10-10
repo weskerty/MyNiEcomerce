@@ -5,17 +5,13 @@ const IA_URL="/api/ia";
 const IMG_BASE="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/";
 const OFICIALPROVIDER=["595972184435"];
 const HIDE_PATHS=["web/otros/Archivos/Dinamico/🧩 Apps/","web/otros/Archivos/Dinamico/🎮 Juegos/","web/otros/Archivos/HTML/centralPage.html","web/otros/Archivos/DemoDire/","web/otros/Archivos/HTML/AgregarProducto.html","web/otros/Archivos/Dinamico/DemoDire","web/Pruebas/"];
-const NB_DEFAULT_ROUTES=[
+const NB_ROUTES=[
   {path:'web/es.html',label:'Tienda',emoji:'🛍️'},
   {path:'web/blogs.html',label:'Blog',emoji:'🔔'},
   {path:'web/otros/Archivos/HTML/apps.html',label:'Apps',emoji:'🎮'},
   {path:'web/otros/Archivos/HTML/Grupos.html',label:'Eventos',emoji:'👥'},
   {path:'web/search.html',label:'Buscar',emoji:'🔍'}
 ];
-const NB_HOME_PATH=window.__CFG?.home||NB_DEFAULT_ROUTES[0].path;
-const NB_HOME_MATCHED=NB_DEFAULT_ROUTES.some(r=>r.path===NB_HOME_PATH);
-const NB_HOME_ROUTE=NB_DEFAULT_ROUTES.find(r=>r.path===NB_HOME_PATH)||{path:NB_HOME_PATH,label:'Inicio',emoji:'🏠'};
-const NB_ROUTES=[NB_HOME_ROUTE,...NB_DEFAULT_ROUTES.filter(r=>r.path!==NB_HOME_PATH&&(NB_HOME_MATCHED||r.path!==NB_DEFAULT_ROUTES[0].path))];
 const night=(h=>h>=19||h<5)(new Date().getHours());
 const grSrc=IMG_BASE+(night?"first_quarter_moon_face_animated.avif":"sun_with_face_animated.avif");
 
@@ -92,16 +88,9 @@ css.textContent=`
 .share-btn::before{content:'↗';font-size:1.15em;line-height:1}
 .share-btn:hover{transform:scale(1.06) translateY(-2px);box-shadow:0 8px 30px rgba(16,185,129,0.65),0 0 0 0 rgba(16,185,129,0);text-decoration:none}
 @keyframes SH_pulse{0%,100%{box-shadow:0 4px 18px rgba(16,185,129,0.45),0 0 0 0 rgba(16,185,129,0.35)}60%{box-shadow:0 4px 18px rgba(16,185,129,0.45),0 0 0 14px rgba(16,185,129,0)}}
-.cb-nb{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);height:48px;border-radius:26px;display:flex;align-items:center;background:rgba(255,255,255,0.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.18);z-index:9999;transition:opacity .22s ease,transform .38s cubic-bezier(.2,.8,.2,1);will-change:transform,opacity;box-shadow:0 4px 24px rgba(0,0,0,0.25);padding:0 8px;gap:2px;width:340px;overflow:hidden}
+.cb-nb{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);height:48px;border-radius:26px;display:flex;align-items:center;background:rgba(255,255,255,0.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.18);z-index:9999;transition:opacity .3s,transform .3s,width .4s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 24px rgba(0,0,0,0.25);padding:0 8px;gap:2px;width:340px;overflow:hidden}
 .cb-nb.cb-nh{opacity:0;transform:translateX(-50%) translateY(80px);pointer-events:none}
 .cb-nb.cb-ab{animation:cb-nab .6s cubic-bezier(0.22,1,0.36,1)}
-.cb-nb.cb-collapsed{opacity:0;pointer-events:none;transform:translateX(calc(50vw - 41px - 50%)) translateY(-9px) scale(.2)}
-.cb-nb-bubble{position:fixed;right:12px;bottom:12px;width:58px;height:58px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.18);border-radius:50%;padding:0;background:rgba(255,255,255,.12);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 4px 24px rgba(0,0,0,.25);opacity:0;pointer-events:none;transform:scale(.7);transition:opacity .18s ease,transform .32s cubic-bezier(.2,.8,.2,1);will-change:transform,opacity;cursor:pointer;z-index:9999}
-.cb-nb-bubble img{display:block;width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 2px 5px rgba(0,0,0,.35))}
-.cb-nb-bubble.cb-v{opacity:1;pointer-events:auto;transform:scale(1)}
-.cb-nb-bubble.cb-v:hover{transform:scale(1.08)}
-.cb-nb-bubble:focus-visible{outline:2px solid rgba(255,255,255,.9);outline-offset:3px}
-@media(prefers-reduced-motion:reduce){.cb-nb,.cb-nb-bubble{transition-duration:.01ms!important}}
 @keyframes cb-nab{0%{transform:translateX(-50%) translateY(0) rotate(0deg)}18%{transform:translateX(-50%) translateY(4px) rotate(-3deg)}36%{transform:translateX(-50%) translateY(9px) rotate(-5deg)}54%{transform:translateX(-50%) translateY(5px) rotate(-2deg)}72%{transform:translateX(-50%) translateY(2px) rotate(-1deg)}100%{transform:translateX(-50%) translateY(0) rotate(0deg)}}
 .cb-nb-i{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:66px;height:44px;padding:0 10px;border-radius:28px;cursor:pointer;transition:background .2s,transform .2s;box-sizing:border-box;flex-shrink:0}
 .cb-nb-i:hover{background:rgba(255,255,255,.15)}
@@ -162,25 +151,6 @@ function openExt(url){
 const _nb=document.createElement('div');
 _nb.className='cb-nb cb-nh';
 const _nbCt=_nb;
-let _hiddenOpen=false,_collapseTimer=0;
-function _scheduleCollapse(){
-  clearTimeout(_collapseTimer);
-  if(isHidden()&&_hiddenOpen)_collapseTimer=setTimeout(()=>{_hiddenOpen=false;syncNB();},5000);
-}
-const _nbBubble=document.createElement('button');
-_nbBubble.type='button';
-_nbBubble.className='cb-nb-bubble';
-_nbBubble.setAttribute('aria-label','Abrir menú');
-_nbBubble.innerHTML=`<img src="${grSrc}" alt="${night?'Luna':'Sol'}">`;
-_nbBubble.addEventListener('click',()=>{
-  if(!isHidden())return;
-  _hiddenOpen=true;
-  _nb.classList.remove('cb-collapsed','cb-nh');
-  syncNB();
-  _scheduleCollapse();
-});
-_nb.addEventListener('pointerdown',()=>{if(_hiddenOpen)_scheduleCollapse();});
-_nb.addEventListener('keydown',ev=>{if(_hiddenOpen&&ev.key!=='Tab')_scheduleCollapse();});
 
 const pk=document.createElement("div");pk.className="cb-pk";pk.innerHTML="📦";
 document.body.appendChild(pk);
@@ -208,7 +178,6 @@ _iR.addEventListener('click',()=>_navTo(_rR.path));
 _nb.appendChild(_iR);
 
 document.body.appendChild(_nb);
-document.body.appendChild(_nbBubble);
 
 function _mkSep(){const s=document.createElement('div');s.className='cb-nb-sep';return s;}
 function _navTo(path){
@@ -273,20 +242,8 @@ function _mkGreet(){
 let _grShown=false;
 
 function syncNB(){
-  const hidden=isHidden();
-  if(hidden){
-    _grShown=false;
-    _nb.classList.remove('cb-nh');
-    _nb.classList.toggle('cb-collapsed',!_hiddenOpen);
-    _nbBubble.classList.toggle('cb-v',!_hiddenOpen);
-    fng.classList.remove('cb-v');
-    if(!_hiddenOpen){clearTimeout(_collapseTimer);return;}
-  }else{
-    clearTimeout(_collapseTimer);
-    _hiddenOpen=false;
-    _nb.classList.remove('cb-nh','cb-collapsed');
-    _nbBubble.classList.remove('cb-v');
-  }
+  if(isHidden()){_nb.classList.add('cb-nh');fng.classList.remove('cb-v');return;}
+  _nb.classList.remove('cb-nh');
 
   if(_grShown)return;
 
@@ -663,5 +620,3 @@ st.r=!0;dcW1();requestAnimationFrame(initPage);
 if(content)content.addEventListener("contentLoaded",()=>{st.r=!0;syncNB();setTimeout(()=>{dcW1();requestAnimationFrame(initPage)},100)});
 window.addEventListener("hashchange",syncNB);
 }();
-
-// Anti 666 🥺
