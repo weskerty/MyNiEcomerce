@@ -5,12 +5,17 @@ Es por eso que aqui explicare como usar IA sin centro de datos. Esta IA sera tan
 Hay varias alternativas, unas podrian funcionarte y otras no.
 > La inteligencia y velocidad Dependera de la Potencia de tu Dispositivo
 
-## WebLLM
+Estas funcionan desde el navegador, sin instalar nada. 
 
-Es una IA que funciona desde el navegador, sin instalar nada. 
+* Alternativa 1: [Chat IA ↗️](#web/search.html#IA) 
+Esto utiliza la IA pequeña del navegador (gemini nano) si tu navegador es Compatible.
 
+* Alternativa 2:
+### WebLLM
 
 Simplemente anda a [Esta Pagina Web ↗️](https://chat.webllm.ai), preguntale algo y espera a que descargue el modelo elegido.
+
+
 
 ### En Android
 Aun no complete esta parte. A futuro 😅
