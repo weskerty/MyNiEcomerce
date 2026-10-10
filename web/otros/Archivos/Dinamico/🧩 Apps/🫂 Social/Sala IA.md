@@ -273,11 +273,17 @@ function ap(m){
 function snd(m){Object.values(conns).forEach(c=>{try{c.open&&c.send(m)}catch(e){}});ap(m)}
 function bc(m){log.push(m);if(log.length>HS)log.shift();snd(m)}
 
-const nn=k=>ro[k]||(log.find(x=>x.from===k)||{}).nick||'?';
-function ts(k){
+function bk(k){
   const B=Math.round((sess.contextWindow||4096)*1.5);let n=0,a=[];
-  for(let j=k;j>=0&&n<B;j--){const x=log[j];if(x.t!=='m')continue;const l=x.nick+': '+x.txt;n+=l.length;a.unshift(l)}
-  return a.join('\n');
+  for(let j=k;j>=0&&n<B;j--){const x=log[j];if(x.t!=='m')continue;n+=x.nick.length+x.txt.length+2;a.unshift(x)}
+  return a;
+}
+const ts=k=>bk(k).map(x=>x.nick+': '+x.txt).join('\n');
+function tg(k){
+  const g={};
+  bk(k).forEach(x=>(g[x.from]=g[x.from]||{n:x.nick,l:[]}).l.push(x.txt));
+  const P=Object.values(g);
+  return 'Participantes: '+P.map(p=>p.n).join(', ')+'. Cada nombre es una sola persona.\n\n'+P.map(p=>p.n+':\n- '+p.l.join('\n- ')).join('\n\n')+'\n\nFalacias detectadas: '+Object.keys(g).map(i=>g[i].n+': '+(fc[i]||0)).join(', ')+'\n\nResume el debate con una linea por participante: su postura y sus puntos validos. Al final indica quien tuvo mas falacias.';
 }
 async function an(i){
   const k=log.findIndex(x=>x.t==='m'&&x.i===i);if(k<0)return null;
@@ -314,7 +320,7 @@ async function sum(){
     if(!sess)await rs();
     const c=await sess.clone({signal:ab.signal});
     try{
-      const r=await c.prompt(ts(log.length-1)+'\n\nFalacias por persona: '+(Object.keys(fc).map(k=>nn(k)+' '+fc[k]).join(', ')||'ninguna')+'\n\nResume el debate: la postura de cada persona, sus puntos validos y quien tuvo mas falacias.',{signal:ab.signal});
+      const r=await c.prompt(tg(log.length-1),{signal:ab.signal});
       cx(c);bc({t:'ru',i:0,nick:'',txt:r.trim()||'Sin resumen'});
     }finally{c.destroy()}
   }catch(e){snd({t:'s',m:'Error IA'})}
@@ -342,7 +348,8 @@ const rc=()=>{if(left||!peer)return;setTimeout(()=>{try{if(peer.disconnected&&!p
 function hh(c){
   c.on('open',()=>{
     const o=conns[c.peer];if(o&&o!==c)cx0(o);
-    const re=!!ro[c.peer],n=cut((c.metadata&&c.metadata.nick)||'Alguien').slice(0,24);
+    const re=!!ro[c.peer],b=cut((c.metadata&&c.metadata.nick)||'Alguien').slice(0,24);let n=b,k=1;
+    while(Object.keys(ro).some(i=>i!==c.peer&&ro[i]===n))n=b+'_'+(++k);
     conns[c.peer]=c;c.__m=0;ro[c.peer]=n;
     try{c.send({t:'h',l:log})}catch(e){}
     if(cu)try{c.send({t:'x',u:cu.u,w:cu.w})}catch(e){}
