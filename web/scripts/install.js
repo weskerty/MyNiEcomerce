@@ -9,9 +9,7 @@ customElements.whenDefined('pwa-install').then(()=>{
   p.addEventListener('pwa-user-choice-result-event',e=>{
     if(e.detail?.message==='dismissed')localStorage.setItem(PI_N,'1');
   });
-  if(!PI_S)return;
-  const s=()=>p.showDialog();
-  p.isInstallAvailable?s():p.addEventListener('pwa-install-available-event',s,{once:true});
+  if(PI_S)p.updateComplete.then(()=>p.showDialog(true));
 });
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();

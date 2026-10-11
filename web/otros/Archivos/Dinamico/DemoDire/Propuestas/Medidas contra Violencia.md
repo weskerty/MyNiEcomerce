@@ -1,7 +1,11 @@
 # GPS para prevenir agresiones
+
+
 Las órdenes de alejamiento por sí solas no impiden que un agresor se acerque a su víctima. Los sistemas de monitoreo electrónico permiten detectar aproximaciones, emitir alertas y facilitar una intervención policial antes de que la situación termine en una agresión.
 
 ### ¿Cómo funciona?
+
+![Infografiadelmonitoreoelectronico](web/otros/Archivos/Imagenes/MedidascontraViolencia/Infografiadelmonitoreoelectronicomv3wiwhb.webp)
 
 El agresor llevaria un dispositivo de geolocalización y la víctima puede recibir una alerta cuando aquel entra en una zona de exclusión definida judicialmente. El sistema también puede notificar a la policia para activar los protocolos de intervención.
 
