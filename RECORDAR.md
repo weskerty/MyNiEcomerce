@@ -1,11 +1,4 @@
-IACHat:
-mejorar UI
-mensaje de chrome requerido e ia si quiere crear sala
-al iniciar ya descargar modelo
-cuando llega a 90% se queda bug, requiere recargar pagina
-unir usar camara
-crear sala copia ID a portapapeles
-reusar sala chat secret con togle de ia?
+
 
 App mensaje encriptado
 Poner contraseña hash para ver
@@ -16,7 +9,8 @@ al convertir en html en servidor reemplazar los enlaces de este tipo o solo de i
 
 Search.html limite de categorias hasta 20, boton mostrar mas. seleccion de categoria y sub categoria mostrar mas exclusivo.
 
-navbar en vez de ocultar volver al viejo circulo acoplable al borde inferior mostrando sol o luna de acuerdo a horario como ya estaba. presionarlo abriria navbar
+navbar compartir de acuerdo a nombre
+tambien converter de server crea variantes en A/
 
 regla botones emojis descentrados
 
