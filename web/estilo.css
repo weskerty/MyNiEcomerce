@@ -26,13 +26,13 @@ color-scheme:only dark;
 --rdm-va-bg:rgba(var(--accent-rgb),.4);
 --rdm-back-bg:rgba(102,102,102,.4);
 --rdm-shadow:0 2px 4px rgba(0,0,0,.2);
---glass-spot:radial-gradient(120% 70% at 25% 0,rgba(255,255,255,.2),transparent 65%),radial-gradient(90% 60% at 90% 100%,rgba(255,255,255,.09),transparent 65%);
+--glass-spot:radial-gradient(120% 70% at 25% 0,rgba(255,255,255,.2),transparent 65%);
 --glass-sweep:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.13),transparent 60%);
---GL_F:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.05) 50%,rgba(255,255,255,.13));
---GL_FH:linear-gradient(135deg,rgba(255,255,255,.3),rgba(255,255,255,.09) 50%,rgba(255,255,255,.2));
+--GL_F:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.05) 50%,rgba(255,255,255,.05));
+--GL_FH:linear-gradient(135deg,rgba(255,255,255,.3),rgba(255,255,255,.09) 50%,rgba(255,255,255,.09));
 --GL_SF:#0000;
---GL_RW:linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,255,255,.12) 32%,rgba(255,255,255,.08) 62%,rgba(255,255,255,.55));
---GL_RS:linear-gradient(135deg,rgba(255,255,255,.5),rgba(255,255,255,.08) 32%,rgba(255,255,255,.05) 62%,rgba(255,255,255,.3));
+--GL_RW:linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,255,255,.12) 32%,rgba(255,255,255,.08));
+--GL_RS:linear-gradient(135deg,rgba(255,255,255,.5),rgba(255,255,255,.08) 32%,rgba(255,255,255,.05));
 --GL_CS:#fff,rgba(240,171,252,.9) 24%,rgba(56,189,248,.85) 48%,rgba(167,139,250,.85) 68%,rgba(251,191,36,.9) 88%,#fff;
 --GL_RC:linear-gradient(135deg,var(--GL_CS));
 --GL_R:var(--GL_RW);
@@ -59,7 +59,7 @@ color-scheme:only dark;
 --TX2:rgba(255,255,255,.9);
 --TX3:rgba(255,255,255,.85);
 }
-@supports not (background-clip:border-area){:root{--GL_RW:linear-gradient(#0000,#0000);--GL_RC:var(--GL_RW);--GL_RS:var(--GL_RW);--GL_RU:var(--GL_RW);--GL_BC:rgba(255,255,255,.22);--GL_BT:rgba(255,255,255,.4);--GL_BB:rgba(255,255,255,.12);--GL_CL:padding-box;--GL_IN:inset 1px 1px 0 rgba(255,255,255,.5),inset -1px -1px 0 rgba(255,255,255,.2),inset 0 0 14px rgba(255,255,255,.07)}}
+@supports not (background-clip:border-area){:root{--GL_RW:linear-gradient(#0000,#0000);--GL_RC:var(--GL_RW);--GL_RS:var(--GL_RW);--GL_RU:var(--GL_RW);--GL_BC:rgba(255,255,255,.22);--GL_BT:rgba(255,255,255,.4);--GL_BB:rgba(255,255,255,.12);--GL_CL:padding-box;--GL_IN:inset 1px 1px 0 rgba(255,255,255,.5),inset 0 0 14px rgba(255,255,255,.07)}}
 
 html{touch-action:pan-x pan-y}
 button,a,label,input{-webkit-tap-highlight-color:transparent}
@@ -127,7 +127,7 @@ transition:translate var(--GL_T) ease,scale var(--GL_T) ease,box-shadow var(--GL
 
 .BOTON-L1{display:flex;flex-direction:column;align-items:center;padding:7px 11px;border-radius:var(--r-lg);cursor:pointer;--GL_Y:-3px}
 .BOTON-L1-CN{flex:1;text-align:center;padding:6px 8px;position:relative;z-index:3}
-.BOTON-L1-CN h3{font-weight:700;margin:0 0 3px;font-size:1.4em;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3);border:none!important;padding-bottom:0}
+.BOTON-L1-CN h3{-webkit-mask:none;mask:none;font-weight:700;margin:0 0 3px;font-size:1.4em;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.3);border:none!important;padding-bottom:0}
 .BOTON-L1-CN p{margin:0;color:var(--TX2);font-size:.95em;line-height:1.4;text-shadow:0 1px 3px rgba(0,0,0,.25)}
 .BOTON-L1-LST{display:flex;flex-direction:column;gap:var(--gap-btn-l);margin:20px 0}
 @media(min-width:600px){.BOTON-L1-LST{display:grid;grid-template-columns:1fr 1fr}}

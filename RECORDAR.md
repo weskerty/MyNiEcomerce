@@ -11,7 +11,8 @@ App mensaje encriptado
 Poner contraseña hash para ver
 
 
-los inline script como reddit no se vuelven a cargar si hay duplicados. no se como resolver xd
+los inline script como reddit no se vuelven a cargar si hay duplicados. 
+al convertir en html en servidor reemplazar los enlaces de este tipo o solo de insta, tiktok, yt etc para incluir su iframe
 
 Search.html limite de categorias hasta 20, boton mostrar mas. seleccion de categoria y sub categoria mostrar mas exclusivo.
 
