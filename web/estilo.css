@@ -28,8 +28,8 @@ color-scheme:only dark;
 --rdm-shadow:0 2px 4px rgba(0,0,0,.2);
 --glass-spot:radial-gradient(120% 70% at 25% 0,rgba(255,255,255,.2),transparent 65%);
 --glass-sweep:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.13),transparent 60%);
---GL_F:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.05) 50%,rgba(255,255,255,.05));
---GL_FH:linear-gradient(135deg,rgba(255,255,255,.3),rgba(255,255,255,.09) 50%,rgba(255,255,255,.09));
+--GL_F:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05) 50%,rgba(255,255,255,.02));
+--GL_FH:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.09) 50%,rgba(255,255,255,.05));
 --GL_SF:#0000;
 --GL_RW:linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,255,255,.12) 32%,rgba(255,255,255,.08));
 --GL_RS:linear-gradient(135deg,rgba(255,255,255,.5),rgba(255,255,255,.08) 32%,rgba(255,255,255,.05));
@@ -41,7 +41,7 @@ color-scheme:only dark;
 --GL_CL:border-area,padding-box,padding-box,padding-box;
 --GL_IN:inset 0 0 14px rgba(255,255,255,.07);
 --GL_RU:conic-gradient(rgba(255,255,255,.5),rgba(255,255,255,.18) 25%,rgba(255,255,255,.14) 40%,rgba(255,255,255,.32) 50%,rgba(255,255,255,.14) 62%,rgba(255,255,255,.22) 78%,rgba(255,255,255,.5));
---GL_SK:inset 0 1px 0 rgba(255,255,255,.22),inset 0 -2px 3px rgba(0,0,0,.2);
+--GL_SK:inset 0 1px 0 rgba(255,255,255,.3),inset 0 -2px 3px rgba(0,0,0,.2);
 --GL_WL:inset 0 2px 5px rgba(0,0,0,.4),0 1px 0 rgba(255,255,255,.07);
 --GL_E:0 6px 18px rgba(0,0,0,.22);
 --GL_EH:0 10px 26px rgba(0,0,0,.3);
@@ -133,7 +133,7 @@ transition:translate var(--GL_T) ease,scale var(--GL_T) ease,box-shadow var(--GL
 @media(min-width:600px){.BOTON-L1-LST{display:grid;grid-template-columns:1fr 1fr}}
 
 .view-all-button,.back-button{display:inline-block;padding:10px 20px;border-radius:var(--r-lg)}
-.view-all-button{margin-top:20px;--GL_F:linear-gradient(135deg,rgba(var(--accent-rgb),.3),rgba(var(--accent-rgb),.15) 50%,rgba(var(--accent-rgb),.25));--GL_FH:linear-gradient(135deg,rgba(var(--accent-rgb),.42),rgba(var(--accent-rgb),.22) 50%,rgba(var(--accent-rgb),.36))}
+.view-all-button{margin-top:20px;--GL_F:linear-gradient(180deg,rgba(var(--accent-rgb),.3),rgba(var(--accent-rgb),.15) 50%,rgba(var(--accent-rgb),.12));--GL_FH:linear-gradient(180deg,rgba(var(--accent-rgb),.42),rgba(var(--accent-rgb),.22) 50%,rgba(var(--accent-rgb),.2))}
 .back-button{margin:20px}
 
 button:not([class]){display:inline-block;padding:8px 16px;border-radius:var(--r-md);font-family:inherit;font-size:.9em;cursor:pointer}
@@ -158,7 +158,7 @@ button:not([class]):disabled::after{display:none}
 .BS4{font-size:3em;line-height:1;display:inline-block}
 .BS5{margin:0;font-size:.7rem;white-space:nowrap}
 
-.BMD1{display:flex;align-items:center;border-radius:var(--r-md);margin-bottom:8px;--GL_R:var(--GL_RS);--GL_F:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.03) 50%,rgba(255,255,255,.06));--GL_FH:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.06) 50%,rgba(255,255,255,.1))}
+.BMD1{display:flex;align-items:center;border-radius:var(--r-md);margin-bottom:8px;--GL_R:var(--GL_RS);--GL_F:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03) 50%,rgba(255,255,255,.02));--GL_FH:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.06) 50%,rgba(255,255,255,.04))}
 .BMD1:hover{--GL_R:var(--GL_RC)}
 .BMD1::before{content:'›';position:absolute;right:14px;font-size:1.2rem;color:rgba(255,255,255,.45);opacity:0;transform:translateX(-4px);transition:opacity .18s,transform .18s}
 .BMD1:hover::before{opacity:1;transform:none}
