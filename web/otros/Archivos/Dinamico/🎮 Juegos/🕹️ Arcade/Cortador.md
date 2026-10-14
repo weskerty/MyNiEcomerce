@@ -8,8 +8,8 @@
 <script>
 !function(){
 const a=document.getElementById('CF_C'),c=a.getContext('2d'),RD=Math.PI*2;
-const UF=['nuclearpowerplant','refinery','smokestack','oilrig','oilspill','powerplant','landfill','pollution'],UC=['cat','kitten','cat','kitten','tabby'];
-const I=[...UF,...UC].map((t,k)=>{const m=new Image();m.src=`https://loremflickr.com/160/160/${t}?lock=${k+1}`;return m}),NF=UF.length;
+const EF=['\u{1F3ED}','\u2622\uFE0F','\u2623\uFE0F','\u{1F6E2}\uFE0F','\u{1F6AC}','\u{1F5D1}\uFE0F','\u{1F32B}\uFE0F','\u26FD','\u{1F525}','\u{1F697}','\u{1F964}','\u{1F50B}'],EC=['\u{1F431}','\u{1F408}','\u{1F63A}','\u{1F638}','\u{1F63B}','\u{1F640}','\u{1F639}','\u{1F63C}'];
+const PK=a=>a[Math.random()*a.length|0];
 let W,E,Gv,Ob=[],PT=[],TR=[],pp=0,sc=0,lv=3,sp=.5,fl=0,id=0,lt=performance.now(),best=+localStorage.getItem('CF_B')||0;
 const vb=n=>navigator.vibrate&&navigator.vibrate(n);
 const DS=(px,py,ax,ay,bx,by)=>{const dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((px-ax)*dx+(py-ay)*dy)/l));return Math.hypot(px-ax-t*dx,py-ay-t*dy)};
@@ -28,7 +28,7 @@ function RT(){if(sc>best){best=sc;localStorage.setItem('CF_B',best)}sc=0;lv=3;Ob
 function BM(o){vb([80,40,120]);PS(o.x,o.y,28,'#e33',E*.7);fl=1;return--lv<=0}
 function SP(bm){
 const r=Math.max(24,Math.min(60,Math.min(W,E)*.09)),h=E*(.55+Math.random()*.3);
-const o={x:W*(.2+Math.random()*.6),y:E+r,vx:(Math.random()-.5)*W*.4,vy:-Math.sqrt(2*Gv*h),a:0,w:(Math.random()-.5)*6,r,i:bm?NF+(Math.random()*(I.length-NF)|0):Math.random()*NF|0,f:bm?0:1,ox:0,oy:0,br:r*1.42,V:[[-r,-r],[r,-r],[r,r],[-r,r]],b:bm};
+const o={x:W*(.2+Math.random()*.6),y:E+r,vx:(Math.random()-.5)*W*.4,vy:-Math.sqrt(2*Gv*h),a:0,w:(Math.random()-.5)*6,r,e:PK(bm?EC:EF),f:bm?0:1,ox:0,oy:0,br:r*1.42,V:[[-r,-r],[r,-r],[r,r],[-r,r]],b:bm};
 o.ar=PC(o.V)[0];
 Ob.push(o);
 }
@@ -77,9 +77,11 @@ c.beginPath();
 o.V.forEach((v,k)=>k?c.lineTo(v[0],v[1]):c.moveTo(v[0],v[1]));
 c.closePath();
 c.clip();
-const m=I[o.i],r=o.r;
-if(m.naturalWidth)c.drawImage(m,o.ox-r,o.oy-r,r*2,r*2);
-else{c.fillStyle=o.b?'#e33':`hsl(${o.i*45},70%,55%)`;c.fillRect(o.ox-r,o.oy-r,r*2,r*2)}
+c.fillStyle='#fff';
+c.font=`${o.r*1.6|0}px sans-serif`;
+c.textAlign='center';
+c.textBaseline='middle';
+c.fillText(o.e,o.ox,o.oy);
 c.restore();
 c.restore();
 }
