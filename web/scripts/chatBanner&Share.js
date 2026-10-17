@@ -52,9 +52,9 @@ body.low-perf{--CB_SF:#2B2B2A}
 .cb-ci{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);transition:opacity .4s,transform .4s}
 .cb-ci.cb-rm{opacity:0;transform:translateY(-20px)}
 .cb-ct{font-size:.92em;font-weight:600;line-height:1.35}
-.cb-cr{display:flex;justify-content:space-between;align-items:center}
+.cb-cr{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px 10px}
 .cb-cs{font-size:.85em;opacity:.85;white-space:nowrap}
-.cb-cc{display:flex;align-items:center;gap:10px}
+.cb-cc{display:flex;align-items:center;gap:10px;margin-left:auto}
 .cb-cc span{min-width:24px;text-align:center;font-weight:700}
 .cb-mb .cb-cc button{width:32px;height:32px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem}
 .cb-cf{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
@@ -623,6 +623,6 @@ window.addEventListener("cartAdd",ev=>{const{type:tp,num,id,q,pc,nb}=ev.detail;a
 
 const content=document.getElementById("content");
 st.r=!0;dcW1();requestAnimationFrame(initPage);
-if(content)content.addEventListener("contentLoaded",()=>{st.r=!0;syncNB();setTimeout(()=>{dcW1();requestAnimationFrame(initPage)},100)});
+if(content)content.addEventListener("contentLoaded",()=>{st.r=!0;syncNB();setTimeout(()=>{dcW1();requestAnimationFrame(initPage)},10)});
 window.addEventListener("hashchange",()=>{_op=!1;syncNB()});
 }();
