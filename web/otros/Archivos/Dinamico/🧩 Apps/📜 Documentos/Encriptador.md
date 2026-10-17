@@ -1,15 +1,12 @@
 <style>
 #EN_W{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px;text-align:center}
-#EN_W textarea,#EN_W select,#EN_W input{width:100%;box-sizing:border-box;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:inherit;font:inherit}
-#EN_W option,#EN_W optgroup{color:#000}
+#EN_W :is(textarea,select,input){width:100%;box-sizing:border-box}
 #EN_W .EN_R{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-#EN_W button{padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);cursor:pointer;font:inherit;font-size:.85rem}
-#EN_W button:hover{background:rgba(255,255,255,.16)}
 #EN_M{margin:0;font-size:.8rem;opacity:.8}
 </style>
 <div id="EN_W">
 <h2>Mensajes Secretos</h2>
-<p>Cifra y descifra con codigos, simbolos o tu propio diccionario. Solo AES con clave protege de verdad; el resto oculta el texto.</p>
+<p>Cifra y descifra con codigos, simbolos o tu propio diccionario.</p>
 <textarea id="EN_I" rows="5" placeholder="Mensaje"></textarea>
 <select id="EN_S"></select>
 <input id="EN_K" type="text" style="display:none">
@@ -97,6 +94,7 @@ try{O.value=await M[S.value][d?3:2](I.value,K.value);T.textContent=''}
 catch(e){O.value='Error '+(d?'Descifrar ':'Cifrar ')+(typeof e=='string'?e:'Formato')}
 }
 RO();
+S.value=M.findIndex(m=>m[1]=='Texto invisible');
 SK();
 S.onchange=SK;
 $('EN_E').onclick=()=>RN(0);
