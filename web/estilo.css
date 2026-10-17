@@ -7,6 +7,7 @@
 --font-h:'Comfortaa','Fluent Emoji Color',sans-serif;
 --gap-btn-l:12px;
 color-scheme:only dark;
+scrollbar-color:rgba(255,255,255,.35) transparent;
 --accent-rgb:26,115,232;
 --accent:rgb(var(--accent-rgb));
 --accent-2-rgb:56,189,248;
@@ -194,7 +195,7 @@ summary::-webkit-details-marker{display:none}
 summary::after{content:'›';margin-left:auto;font-size:1.2em;opacity:.7;transition:transform .22s}
 details[open] summary::after{transform:rotate(90deg)}
 details[open]{background-image:none;box-shadow:none;border-color:#0000;overflow:visible}
-details[open]>summary{position:sticky;top:0;z-index:3;max-width:none;margin-inline:-18px;padding-inline:17px;border:1px solid #0000;border-radius:var(--r-md);background:var(--rdm-bg);box-shadow:var(--rdm-shadow)}
+details[open]>summary{max-width:none;margin-inline:-18px;padding-inline:17px;border:1px solid #0000;border-radius:var(--r-md);background:var(--rdm-bg);box-shadow:var(--rdm-shadow)}
 section{padding:14px 16px}
 section h3{margin:12px 0 6px;font-size:.98em;color:var(--TX2);font-weight:600}
 section p{margin:0 0 10px;color:var(--TX3);font-size:.9em}

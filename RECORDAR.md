@@ -1,16 +1,19 @@
 
 
-App mensaje encriptado
-Poner contraseña hash para ver
-
-
 los inline script como reddit no se vuelven a cargar si hay duplicados. 
 al convertir en html en servidor reemplazar los enlaces de este tipo o solo de insta, tiktok, yt etc para incluir su iframe
 
 Search.html limite de categorias hasta 20, boton mostrar mas. seleccion de categoria y sub categoria mostrar mas exclusivo.
 
-navbar compartir de acuerdo a nombre
+navbar compartir de acuerdo a nombre hash
 tambien converter de server crea variantes en A/
+core.js podria mostrar hash al compartir, no se romperia navbar por que enlace de barra seria diferente a enlace interno.
+hash de cosas con ID= es ID, si no ID es hash.
+
+anular h1 estilo en search y galerias.
+
+configuracion sw.js cambiar wallpaper, cambiar color solido. modo low device.
+
 
 regla botones emojis descentrados
 
