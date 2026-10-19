@@ -11,6 +11,7 @@ tambien converter de server crea variantes en A/
 core.js podria mostrar hash al compartir, no se romperia navbar por que enlace de barra seria diferente a enlace interno.
 hash de cosas con ID= es ID, si no ID es hash.
 
+core.js imagen extra estirar como css se mueve al ocultar barra
 
 anular h1 estilo en search y galerias.
 

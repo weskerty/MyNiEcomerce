@@ -14,47 +14,6 @@
 <style>
 *{box-sizing:border-box}
 
-details{
-  background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.09);
-  border-radius:16px;
-  margin:10px 0;
-  overflow:hidden;
-  transition:border-color .2s;
-}
-details[open]{border-color:rgba(255,255,255,.18)}
-summary{
-  cursor:pointer;
-  padding:15px 18px;
-  font-size:1.05em;
-  font-weight:600;
-  list-style:none;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  color:#fff;
-  user-select:none;
-}
-summary::-webkit-details-marker{display:none}
-summary::after{
-  content:'›';
-  margin-left:auto;
-  font-size:1.2em;
-  opacity:.5;
-  transition:transform .22s;
-}
-details[open] summary::after{transform:rotate(90deg)}
-details[open] summary{border-bottom:1px solid rgba(255,255,255,.07)}
-section{padding:14px 16px}
-h3{margin:12px 0 6px;font-size:.98em;color:rgba(255,255,255,.75);font-weight:600}
-p{margin:0 0 10px;color:rgba(255,255,255,.55);font-size:.9em}
-hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:14px 0}
-
-.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:6px;margin:10px 0}
-.g a{display:block;border-radius:10px;overflow:hidden;background:rgba(255,255,255,.05)}
-.g img{width:100%;height:86px;object-fit:cover;display:block;transition:transform .22s}
-.g a:hover img{transform:scale(1.04)}
-
 .links{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 
 #rv-hd2{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px}
@@ -123,7 +82,7 @@ hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:14px 0}
 }
 .rv-it-title a{color:#fff;text-decoration:none}
 .rv-it-title a:hover{opacity:.8}
-.rv-it-body img,.rv-it-body video{width:100%;display:block;aspect-ratio:3/1}
+.rv-it-body img,.rv-it-body video{width:100%;height:auto;display:block}
 .rv-it-body audio{width:100%;display:block;padding:8px 12px;box-sizing:border-box}
 .rv-it-body p{margin:0;padding:6px 14px;font-size:.9em;line-height:1.6;color:rgba(255,255,255,.82)}
 .rv-it-body div{padding:4px 14px 10px;font-size:.83em;line-height:1.55;color:rgba(255,255,255,.68)}
@@ -137,16 +96,6 @@ hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:14px 0}
   animation:rv-sh 1.4s infinite;
 }
 @keyframes rv-sh{0%{background-position:200%}100%{background-position:-200%}}
-
-blockquote.red{
-  border-left:3px solid rgba(255,80,80,.5);
-  background:rgba(255,40,40,.06);
-  border-radius:0 12px 12px 0;
-  padding:12px 16px;margin:16px 0 0;
-}
-blockquote.red p{color:rgba(255,255,255,.65);margin:0 0 8px;font-size:.88em}
-blockquote.red p:last-of-type{margin-bottom:8px}
-blockquote.red a{color:#9fd3ff;font-size:.85em}
 
 @media(max-width:700px){
   .rv-ci{padding:9px;border-radius:12px}
@@ -304,87 +253,101 @@ wOPFS();
 })();
 </script>
 
+<h1> Siguenos 🤗</h1>
+
+<div class="BOTON-M1">
+  <a href="https://www.facebook.com/yoganopy" class="BOTON-M2" title="Facebook">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/facebook-1-svgrepo-com.svg" alt="GitHub">
+      </div>
+      <p class="BOTON-M5">Facebook</p>
+    </div>
+  </a>
+
+  <a href="https://www.instagram.com/cheagana" class="BOTON-M2" title="Instagram">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/instagram-2016-logo-svgrepo-com.svg" alt="Instagram">
+      </div>
+      <p class="BOTON-M5">Instagram</p>
+    </div>
+  </a>
+
+  <a href="https://www.tiktok.com/@cheagana" class="BOTON-M2" title="TikTok">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/tiktok-svgrepo-com.svg" alt="Tiktok">
+      </div>
+      <p class="BOTON-M5">Tiktok</p>
+    </div>
+  </a>
+
+  <a href="https://bsky.app/profile/cheagana.com" class="BOTON-M2" title="BlueSky">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Bluesky_Logo.svg/250px-Bluesky_Logo.svg.png?utm_source=es.wikipedia.org&utm_campaign=parser&utm_content=thumbnail" alt="BlueSky">
+      </div>
+      <p class="BOTON-M5">BlueSky</p>
+    </div>
+  </a>
+
+  <a href="https://mastodon.social/@cheAgana" class="BOTON-M2" title="Mastodon">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Mastodon_logotype_%28simple%29_new_hue.svg/250px-Mastodon_logotype_%28simple%29_new_hue.svg.png?utm_source=es.wikipedia.org&utm_campaign=parser&utm_content=thumbnail" alt="Mastodon">
+      </div>
+      <p class="BOTON-M5">Mastodon</p>
+    </div>
+  </a>
+
+  <a href="https://www.threads.com/@cheagana" class="BOTON-M2" title="Threads">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e6/Threads_2026_logo.svg/330px-Threads_2026_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail" alt="Threads">
+      </div>
+      <p class="BOTON-M5">Threads</p>
+    </div>
+  </a>
+
+
+  <a href="https://whatsapp.com/channel/0029Va8x68H0lwglgVgI0f38" class="BOTON-M2" title="WhatsApp">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg" alt="WhatsAppChannel">
+      </div>
+      <p class="BOTON-M5">WhatsApp</p>
+    </div>
+  </a>
+
+ <a href="https://t.me/cheagana" class="BOTON-M2" title="Telegram">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg" alt="TelegramChannel">
+      </div>
+      <p class="BOTON-M5">Telegram</p>
+    </div>
+  </a>
+
+  <a href="https://nostr.com/profile/f2a74c77e7f2ef8d553edc5b941b618afa6d15d276d94b645e48275102d6985c" class="BOTON-M2" title="Nostr">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://tchncs.de/images/logos/nostr.png" alt="Nostr">
+      </div>
+      <p class="BOTON-M5">Nostr</p>
+    </div>
+  </a>
+
+  <a href="https://www.youtube.com/@cheAgana" class="BOTON-M2" title="YouTube">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png?utm_source=es.wikipedia.org&utm_campaign=index&utm_content=original" alt="YouTube">
+      </div>
+      <p class="BOTON-M5">YouTube</p>
+    </div>
+  </a>
+
+              
+</div>
+
 <h1 style="margin:24px 0 14px;font-size:1.5em;font-weight:700;color:#fff">Grupos</h1>
-
-<details>
-  <summary>🌱 Ambientalismo</summary>
-  <section>
-    <p>Grupos de limpieza y reciclaje.</p>
-    <hr>
-    <h3>Atrevidos</h3>
-    <p>Agrupacion de Limpieza y Concienciacion</p>
-    <div class="g">
-      <a href="#"><img src="web/otros/Archivos/Imagenes/Grupos/AtrevidosAmbiental.avif" loading="lazy"></a>
-      <a href="#"><img src="web/otros/Archivos/Imagenes/Grupos/Atrevidos2.avif" loading="lazy"></a>
-      <a href="#"><img src="web/otros/Archivos/Imagenes/Grupos/Atrevidos3.avif" loading="lazy"></a>
-    </div>
-    <div class="links">
-      <a class="lk lk-wa" href="https://chat.whatsapp.com/FUCooyRJivk6CTbhEEwvf4" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-      <a class="lk lk-ig" href="https://www.instagram.com/atrevidos.py?igsh=MXQzZHhmN2syMTExMQ==" target="_blank" rel="noopener noreferrer">Instagram</a>
-      <a class="lk lk-fb" href="https://www.facebook.com/p/Atrevidos-61557080633469/" target="_blank" rel="noopener noreferrer">Facebook</a>
-    </div>
-  </section>
-</details>
-
-<details>
-  <summary>💻 Tecnologia</summary>
-  <section>
-    <h3>FLISOL Paraguay</h3>
-    <p>Festival de software libre (abril).</p>
-    <div class="g">
-      <a href="#"><img src="web/otros/Archivos/Imagenes/Grupos/FLISOL.avif" loading="lazy"></a>
-      <a href="#"><img src="web/otros/Archivos/Imagenes/Grupos/FLISOL2.avif" loading="lazy"></a>
-      <a href="#"><img src="web/otros/Archivos/Imagenes/Grupos/FLISOL3.avif" loading="lazy"></a>
-    </div>
-    <div class="links">
-      <a class="lk lk-tg" href="https://t.me/flisolpy" target="_blank" rel="noopener noreferrer">Telegram</a>
-      <a class="lk lk-ig" href="https://www.instagram.com/flisol_asu?igsh=eWUxNmMwNGN5dTkw" target="_blank" rel="noopener noreferrer">Instagram</a>
-      <a class="lk lk-fb" href="https://www.facebook.com/FLISoLPY/" target="_blank" rel="noopener noreferrer">Facebook</a>
-    </div>
-    <hr>
-    <h3>Ciencia de Datos Paraguay</h3>
-    <div class="links">
-      <a class="lk lk-tg" href="https://t.me/Data_Science_PY" target="_blank" rel="noopener noreferrer">Telegram</a>
-    </div>
-    <hr>
-    <h3>Arduino y Placas Base</h3>
-    <div class="links">
-      <a class="lk lk-tg" href="https://t.me/arduinopy" target="_blank" rel="noopener noreferrer">Telegram</a>
-    </div>
-    <hr>
-    <h3>Linux Paraguay</h3>
-    <div class="links">
-      <a class="lk lk-tg" href="https://t.me/LinuxPyo" target="_blank" rel="noopener noreferrer">Telegram</a>
-    </div>
-  </section>
-</details>
-
-<details>
-  <summary>🫂 Juntadas</summary>
-  <section>
-    <p>Grupos para conocer y organizar reuniones.</p>
-    <hr>
-    <h3>Debate Paraguay</h3>
-    <div class="links">
-      <a class="lk lk-wa" href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-    </div>
-    <hr>
-    <h3>Libreria Digital</h3>
-    <p>Venta y discusion de ebooks.</p>
-    <div class="links">
-      <a class="lk lk-wa" href="https://chat.whatsapp.com/HXdpk6CpmSRDqHUOTLXp20" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-      <a class="lk lk-tg" href="https://t.me/ebookpy" target="_blank" rel="noopener noreferrer">Telegram</a>
-    </div>
-  </section>
-</details>
-
-<div style="margin-top:20px"></div>
-
-<div id="sh"></div>
-
-<blockquote class="red">
-  <p>Este sitio es una plataforma colaborativa. Lo aqui listado no tiene relacion con CheAgana; cualquier persona puede publicar.</p>
-  <p>Los Grupos pertenecen a terceros y son responsabilidad exclusiva de sus creadores. CheAgana no se responsabiliza por el contenido encontrado en estas, seguridad, daños derivados de su uso, ni por las acciones de los usuarios dentro de esos grupos.</p>
-  <p>⚠️ Nunca ingreses contraseñas ni datos privados en grupos Publicos. ⚠️</p>
-  <a href="https://chatgpt.com/?q=Como%20protegerme%20del%20phishing%20y%20estafas%20web%20Como%20saber%20que%20una%20web%20es%20autentica" target="_blank">Como protegerme de estafas ↗️</a>
-</blockquote>

@@ -46,7 +46,7 @@ body.low-perf{--CB_SF:#2B2B2A}
 .cb-mhT{font-size:.85em;opacity:.8;white-space:nowrap}
 .cb-mx{width:34px;height:34px;border:none;border-radius:10px;background:rgba(255,255,255,.09);color:#fff;cursor:pointer;flex-shrink:0;transition:background .18s,transform .15s}
 .cb-mx:hover{background:rgba(255,255,255,.18);transform:scale(1.06)}
-.cb-mb{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:4px 18px 18px;color:#fff}
+.cb-mb{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:4px 18px 18px;color:#fff}
 .cb-cp{margin-bottom:10px;padding:12px;border-radius:var(--r-md);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09)}
 .cb-cn{margin:0 0 10px;font-size:.75em;font-weight:600;letter-spacing:.07em;text-transform:uppercase;opacity:.75}
 .cb-ci{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);transition:opacity .4s,transform .4s}
