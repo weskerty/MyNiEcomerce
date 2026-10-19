@@ -147,11 +147,11 @@ button:not([class]):disabled::after{display:none}
 @media(max-width:480px){.PG1 button{flex:1;min-width:0;padding:0 10px}}
 
 .BOTON-M1{display:flex;flex-wrap:wrap;gap:14px;margin:24px 0;justify-content:center}
-.BOTON-M2{width:92px;height:92px;display:flex;align-items:center;justify-content:center;padding:8px;border-radius:var(--r-lg);--GL_Y:-3px;--GL_Z:.04}
+.BOTON-M2{width:80px;height:80px;display:flex;align-items:center;justify-content:center;padding:6px 4px;border-radius:var(--r-lg);--GL_Y:-3px;--GL_Z:.04}
 .BOTON-M3{text-align:center}
 .BOTON-M4{width:44px;height:44px;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;font-size:36px;line-height:1;filter:drop-shadow(0 3px 4px rgba(0,0,0,.25))}
 .BOTON-M4 img{width:100%;height:100%;object-fit:contain;display:block}
-.BOTON-M5{margin:0;font-size:.74rem;font-weight:500;letter-spacing:.02em;color:rgba(255,255,255,.85);white-space:nowrap}
+.BOTON-M5{margin:0;font-size:.74rem;font-weight:500;letter-spacing:.02em;color:rgba(255,255,255,.85);line-height:1.15;overflow-wrap:anywhere}
 
 .BS1{display:flex;flex-wrap:wrap;justify-content:center}
 .BS2{width:64px;height:64px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;border-radius:var(--r-sm);margin:4px;--GL_Z:.05}

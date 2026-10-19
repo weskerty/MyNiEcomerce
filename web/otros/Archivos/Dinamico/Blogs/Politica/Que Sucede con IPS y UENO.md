@@ -7,6 +7,13 @@ Un banco que hoy maneja mas de 900 millones de dolares de plata del Estado y de 
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/z5e5wx2wptg?si=IELPFzxLDhZ-1uUz&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 </details>
 
+<blockquote class="reddit-embed-bq" data-embed-locale="es-ES" data-embed-style="subreddit-first" data-embed-theme="dark" data-embed-height="292">
+<a href="https://www.reddit.com/r/Paraguay/comments/1x9aaft/comment/phjw3fp/">Comment</a><br> by
+<a href="https://www.reddit.com/user/Responsible_Land_164/">u/Responsible_Land_164</a> from discussion
+<a href="https://www.reddit.com/r/Paraguay/comments/1x9aaft/alguien_me_puede_explicar_como_a_un_mitai_de_5/"></a><br> in
+<a href="https://www.reddit.com/r/Paraguay/">Paraguay</a>
+</blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>
+
 
 En 2021, Credicentro (que ahora es Ueno) publico en la Bolsa de Valores listando a sus dueños, y oh sorpresa, aparecia gente de Cartes, incluido Santi Peña WOW!... [Fuente](https://www.ultimahora.com/conocidos-rostros-los-accionistas-credicentro-n2923540) 
 [Fuente 2](https://elprisma.com.py/tres-hechos-que-revelan-conexiones-entre-el-grupo-cartes-y-el-grupo-vazquez-propietario-de-ueno-bank/)
