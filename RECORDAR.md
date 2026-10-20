@@ -1,4 +1,5 @@
-
+centfalPage ve opfs lista paginas favoritas, botones pasan a botones 
+mitigaccion a accesos directos en pwa
 
 los inline script como reddit no se vuelven a cargar si hay duplicados. 
 al convertir en html en servidor reemplazar los enlaces de este tipo o solo de insta, tiktok, yt etc para incluir su iframe
