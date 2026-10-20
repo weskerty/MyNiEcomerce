@@ -12,6 +12,7 @@ core.js podria mostrar hash al compartir, no se romperia navbar por que enlace d
 hash de cosas con ID= es ID, si no ID es hash.
 
 core.js imagen extra estirar como css se mueve al ocultar barra
+tecla atras en movil no funciona?
 
 anular h1 estilo en search y galerias.
 
