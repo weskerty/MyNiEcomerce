@@ -1,5 +1,5 @@
 <div style="text-align:center;">
-<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Sun%20Behind%20Rain%20Cloud.png" alt="Man Technologist Medium-Dark Skin Tone" width="180px" />
+<img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Sun%20Behind%20Rain%20Cloud.png" alt="Man Technologist Medium-Dark Skin Tone" width="100px" />
 </div>
 
 
@@ -88,15 +88,9 @@ Esto son solo unos cuantos, Puedes ver la lista completa en diversas webs que se
 
 
 
-<!-- <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@luciadcr/video/7547694306513964310" data-video-id="7547694306513964310" style="max-width: 605px;min-width: 325px;" > <section> <a target="_blank" title="@luciadcr" href="https://www.tiktok.com/@luciadcr?refer=embed">@luciadcr</a> 🌍 Los ricos no van a actuar frente al cambio climático porque tienen un plan: huir de las consecuencias.  <a title="cambioclimatico" target="_blank" href="https://www.tiktok.com/tag/cambioclimatico?refer=embed">#cambioclimatico</a> <a title="millonarios" target="_blank" href="https://www.tiktok.com/tag/millonarios?refer=embed">#millonarios</a> <a title="politica" target="_blank" href="https://www.tiktok.com/tag/politica?refer=embed">#politica</a> <a title="informacion" target="_blank" href="https://www.tiktok.com/tag/informacion?refer=embed">#informacion</a> <a title="analisis" target="_blank" href="https://www.tiktok.com/tag/analisis?refer=embed">#analisis</a> <a target="_blank" title="♬ sonido original - Lucía de Castro" href="https://www.tiktok.com/music/sonido-original-7547694336021613334?refer=embed">♬ sonido original - Lucía de Castro</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script> -->
-
-
-
-
-
 
 # ¿Aquieres Ayudar?
-Puedes hacerlo, No compres productos que no necesitas, no uses Jabones no Biodegradables como OMO, usa alternativas limpias como Cavallaro sin (nombre quimicos contaminantes), no compres Tecnologia con obsolecencia programada como iPhones o Dispositivos con Bootliader Cerrado. Informarnos hoy para la salud del mañana. 
+Puedes hacerlo, No compres productos que no necesitas, no uses Jabones no Biodegradables, usa alternativas limpias sin (quimicos contaminantes), no compres Tecnologia con obsolecencia programada como iPhones o Dispositivos con Bootliader Cerrado. Informarnos hoy para la salud del mañana. 
 Tambien puedes unirte a grupos de Limpieza y Concientizacion como BasuraChallengeParaguay:
 <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-post="ParaguayLibreDeCorrupcion/144" data-width="100%" data-userpic="false" data-color="738633" data-dark="1"></script>
 
@@ -112,126 +106,10 @@ Inevitablemente el mas apto tambien morira por haber sido el mas apto.
 
 el arte no vale nada en un planeta muerto. La gente deambula admirando el arte mientras la casa se incendia. Es como los pasajeros de primera clase que dan un paseo nocturno después de que el Titanic chocara con el iceberg, ignorando las alarmas porque no comprenden lo que está a punto de suceder.
 
-<!-- Galeria -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script>
+### Otras Ideas
 
-<script>
-async function loadGalleryData(jsonPath) {
-    try {
-        console.log(`Intentando cargar: ${jsonPath}`);
-        const response = await fetch(jsonPath);
-        console.log(`Response status: ${response.status}`);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const data = await response.json();
-        console.log('Datos cargados:', data);
-        return data.galleries;
-    } catch (error) {
-        console.error(`Error loading gallery data from ${jsonPath}:`, error);
-        return null;
-    }
-}
-
-function createSwiper(container, images) {
-    container.innerHTML = `
-        <div class="swiper-wrapper">
-            ${images.map(item => `
-                <div class="swiper-slide">
-                    <a href="${item.link || '#'}">
-                        <img src="${item.image}" alt="${item.name || 'Imagen'}" loading="lazy" />
-                    </a>
-                </div>
-            `).join('')}
-        </div>
-    `;
-
-    return new Swiper(container, {
-        slidesPerView: 'auto',
-        spaceBetween: 20,
-        loop: true,
-        centeredSlides: true,
-        autoplay: {
-            delay: 3000,
-            disableOnInteraction: false,
-        }
-    });
-}
-
-function filterGalleryData(galleryData, container) {
-    const galleryKey = container.dataset.galleryKey;
-    const galleryFilter = container.dataset.galleryFilter;
-    const containerId = container.id.replace('-gallery', '');
-    
-    if (galleryKey && galleryData[galleryKey]) {
-        return galleryData[galleryKey].images || [];
-    }
-    
-    if (galleryFilter) {
-        const matchingEntries = Object.entries(galleryData).filter(([key, value]) => 
-            key.toLowerCase().includes(galleryFilter.toLowerCase())
-        );
-        
-        if (matchingEntries.length > 0) {
-            return matchingEntries.flatMap(([key, value]) => value.images || []);
-        }
-    }
-    
-    const matchingKey = Object.keys(galleryData).find(key => 
-        key.toLowerCase() === containerId.toLowerCase()
-    );
-    
-    if (matchingKey && galleryData[matchingKey]) {
-        return galleryData[matchingKey].images || [];
-    }
-    
-    return [];
-}
-
-async function initializeUniversalSwiper() {
-    if (typeof Swiper === 'undefined') {
-        console.log('Swiper no está cargado aún');
-        return;
-    }
-    
-    const galleryElements = document.querySelectorAll('.contenedor-imagenes-animado[data-json-path]');
-    
-    for (const container of galleryElements) {
-        const jsonPath = container.dataset.jsonPath;
-        
-        if (!jsonPath) {
-            container.innerHTML = '<p>No se especificó ruta JSON</p>';
-            continue;
-        }
-        
-        const galleryData = await loadGalleryData(jsonPath);
-        
-        if (!galleryData) {
-            container.innerHTML = '<p>Error al cargar datos</p>';
-            continue;
-        }
-        
-        const images = filterGalleryData(galleryData, container);
-        
-        if (images.length > 0) {
-            container.classList.add('swiper');
-            createSwiper(container, images);
-        } else {
-            container.innerHTML = '<p>Sin Elementos</p>';
-        }
-    }
-}
-
-function waitForSwiperAndInit() {
-    if (typeof Swiper !== 'undefined') {
-        initializeUniversalSwiper();
-    } else {
-        setTimeout(waitForSwiperAndInit, 100);
-    }
-}
-
-waitForSwiperAndInit();
-</script>
+<blockquote class="reddit-embed-bq" style="height:500px" data-embed-locale="es-ES" data-embed-style="subreddit-first" data-embed-theme="dark" data-embed-height="614">
+<a href="https://www.reddit.com/r/BeAmazed/comments/1xblud6/how_chinas_school_canteens_are_fighting_food_waste/">How China's school canteens are fighting food waste.</a><br> by
+<a href="https://www.reddit.com/user/AugustIstheMonth/">u/AugustIstheMonth</a> in
+<a href="https://www.reddit.com/r/BeAmazed/">BeAmazed</a>
+</blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>

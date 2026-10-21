@@ -16,6 +16,7 @@ core.js imagen extra estirar como css se mueve al ocultar barra
 tecla atras en movil no funciona?
 
 anular h1 estilo en search y galerias.
+galerias en modo low o motion no respeta fitlibreria.
 
 configuracion sw.js cambiar wallpaper, cambiar color solido. modo low device.
 
