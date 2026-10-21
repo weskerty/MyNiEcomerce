@@ -12,7 +12,7 @@
 <input id="EN_K" type="text" style="display:none">
 <div class="EN_R"><button id="EN_E">Cifrar</button><button id="EN_D">Descifrar</button></div>
 <textarea id="EN_O" rows="5" readonly placeholder="Resultado"></textarea>
-<div class="EN_R"><button id="EN_C">Copiar</button><button id="EN_X">Usar como mensaje</button><button id="EN_L">Cargar Diccionario</button></div>
+<div class="EN_R"><button id="EN_C">Copiar</button><button id="EN_X">Usar como mensaje</button><button id="EN_L" title=".txt con símbolos separados por espacios">Cargar Diccionario</button></div>
 <input id="EN_F" type="file" accept=".txt,.csv" hidden>
 <p id="EN_M"></p>
 </div>
