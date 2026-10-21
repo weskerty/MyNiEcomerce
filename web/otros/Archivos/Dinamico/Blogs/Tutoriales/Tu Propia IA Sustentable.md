@@ -26,7 +26,7 @@ Aun no complete esta parte. A futuro 😅
 
 Un programa para Windows, Mac y Linux que te deja descargar modelos de IA y chatear con ellos, todo en tu compu. Es gratis, incluso para usarlo en el trabajo: ya no piden licencia comercial desde julio de 2025.
 
-1. **Bajá la app desde [lmstudio.ai](https://lmstudio.ai).** (En Windows necesitás un procesador con AVX2 o no se instalara).
+1. **Bajá la app desde [lmstudio.ai](https://lmstudio.ai/download).** 
 En su web o vas a ver también **Bionic**. No es una actualización: es **otra app** pensada para agentes que si usa Data Centers...
 
 

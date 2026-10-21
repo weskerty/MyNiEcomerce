@@ -1,26 +1,13 @@
 <style>
 #ST_W{padding:8px 12px}
-.ST_TB{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
-.ST_TB a{font-size:1.3rem;text-decoration:none;opacity:.8}
-.ST_INFO{margin-left:auto;font-size:.78em;color:rgba(255,255,255,.5)}
-#ST_FE{min-height:340px;position:relative;background:rgba(255,255,255,.04);border:1px solid var(--rdm-border);border-radius:var(--r-md);overflow:hidden;display:flex;flex-direction:column}
-.ST_CRUMB{display:flex;gap:4px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--rdm-border);font-size:.82em;align-items:center}
-.ST_CRUMB span{cursor:pointer;color:var(--accent-2)}
-.ST_CRUMB span:hover{text-decoration:underline}
-.ST_CRUMB .sep{color:rgba(255,255,255,.35);cursor:default}
-.ST_LIST{flex:1;overflow-y:auto;max-height:50vh}
-.ST_ROW{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;user-select:none}
-.ST_ROW:hover{background:rgba(255,255,255,.05)}
-.ST_ROW input{margin:0}
-.ST_ROW .ic{font-size:1.1em;width:22px;text-align:center;flex-shrink:0}
-.ST_ROW .nm{flex:1;font-size:.88em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ST_ROW .sz{font-size:.75em;color:rgba(255,255,255,.45);flex-shrink:0}
-.ST_ACTIONS{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--rdm-border);flex-wrap:wrap}
-#ST_W [data-x]{color:var(--err)}
+#ST_D[hidden]{display:none}
+.ST_INFO{font-size:.78em;color:rgba(255,255,255,.5);margin-bottom:10px}
 .ST_CACHES{display:flex;flex-direction:column;gap:8px}
 .ST_CI{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid var(--rdm-border);border-radius:var(--r-sm);padding:12px 14px}
 .ST_CI .nm{flex:1;font-size:.9em}
-.ST_CI .ct{font-size:.75em;color:rgba(255,255,255,.5)}
+.ST_CACHES .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ST_CI .ct{font-size:.75em;color:rgba(255,255,255,.5);flex-shrink:0}
+.ST_CI button{min-width:0;padding:4px 10px}
 .ST_SW{position:relative;cursor:pointer}
 .ST_SW input{position:absolute;opacity:0}
 .ST_SW i{position:relative;flex:none;width:48px;height:28px;border-radius:14px;background:rgba(255,255,255,.2);transition:background .2s}
@@ -31,234 +18,71 @@
 .ST_MSG{text-align:center;color:rgba(255,255,255,.5);padding:24px;font-size:.9em}
 </style>
 
-<br id="ST_W">
+<div id="ST_W">
 <label class="ST_CI ST_SW"><span class="nm">Desactivar Transparencia y Animaciones</span><input type="checkbox" id="ST_SW"><i></i></label>
-
-</br>
-
-<details>
-<summary>⚠️ Avanzado ⚠️</summary>
+<details id="ST_D" hidden>
+<summary>🧹 Liberar espacio</summary>
 <section>
-<div class="ST_TB">
-<a href="web/es.html">🏠</a>
-<button class="PL1 PL1_A" id="ST_TFS">📁 Archivos</button>
-<button class="PL1" id="ST_TCH">🗄️ Cache</button>
-<span class="ST_INFO" id="ST_QT"></span>
-</div>
-<div id="ST_PFS">
-<div id="ST_FE">
-<div class="ST_CRUMB" id="ST_CR"></div>
-<div class="ST_LIST" id="ST_LI"></div>
-<div class="ST_ACTIONS">
-<button id="ST_NF">📁 Nueva carpeta</button>
-<button id="ST_DW" disabled>⬇️ Descargar seleccionados</button>
-<button id="ST_DL" data-x disabled>🗑️ Borrar seleccionados</button>
-</div>
-</div>
-</div>
-<div id="ST_PCH" hidden>
+<div class="ST_INFO" id="ST_QT"></div>
+<p>Es contenido que se vuelve a llenar al navegar. Se descarga una vez para ahorrar saldo. Pero puedes borrar para liberar espacio.</p>
 <div class="ST_CACHES" id="ST_CL"></div>
-</div>
 </section>
 </details>
 </div>
 
 <script>
 (function(){
-  const tFS=document.getElementById('ST_TFS'),tCH=document.getElementById('ST_TCH');
-  const pFS=document.getElementById('ST_PFS'),pCH=document.getElementById('ST_PCH');
-  const qtEl=document.getElementById('ST_QT');
-  const clEl=document.getElementById('ST_CL');
-  const crEl=document.getElementById('ST_CR');
-  const liEl=document.getElementById('ST_LI');
-  const nfBtn=document.getElementById('ST_NF');
-  const dwBtn=document.getElementById('ST_DW');
-  const dlBtn=document.getElementById('ST_DL');
-  const swEl=document.getElementById('ST_SW');
-  let curPath=[];
-  let sel=new Set();
+  const $=i=>document.getElementById(i);
+  const dEl=$('ST_D'),clEl=$('ST_CL'),qtEl=$('ST_QT'),swEl=$('ST_SW');
+  const fmt=b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':b<1073741824?(b/1048576).toFixed(1)+' MB':(b/1073741824).toFixed(2)+' GB';
+  const upd=e=>{qtEl.textContent=fmt(e.usage)+' / '+fmt(e.quota)};
+  const B=(t,f)=>{const b=document.createElement('button');b.textContent=t;b.onclick=f;return b};
+  const S=(c,t)=>{const s=document.createElement('span');s.className=c;s.textContent=t;return s};
 
-  function fmtSize(b){
-    if(b==null)return '-';
-    if(b<1024)return b+' B';
-    if(b<1048576)return (b/1024).toFixed(1)+' KB';
-    if(b<1073741824)return (b/1048576).toFixed(1)+' MB';
-    return (b/1073741824).toFixed(2)+' GB';
-  }
-
-  async function updQuota(){
-    try{
-      const est=await navigator.storage.estimate();
-      qtEl.textContent=fmtSize(est.usage)+' / '+fmtSize(est.quota);
-    }catch{qtEl.textContent='';}
-  }
-
-  async function getDirByPath(path){
-    let dir=await navigator.storage.getDirectory();
-    for(const seg of path)dir=await dir.getDirectoryHandle(seg);
-    return dir;
-  }
-
-  function renderCrumb(){
-    crEl.innerHTML='';
-    const root=document.createElement('span');
-    root.textContent='OPFS (/)';
-    root.onclick=()=>{curPath=[];sel.clear();loadFS();};
-    crEl.appendChild(root);
-    curPath.forEach((seg,i)=>{
-      const s=document.createElement('span');s.className='sep';s.textContent=' / ';
-      crEl.appendChild(s);
-      const b=document.createElement('span');
-      b.textContent=seg;
-      b.onclick=()=>{curPath=curPath.slice(0,i+1);sel.clear();loadFS();};
-      crEl.appendChild(b);
-    });
-  }
-
-  function updDlBtn(){
-    dlBtn.disabled=sel.size===0;
-    dlBtn.textContent='🗑️ Borrar seleccionados'+(sel.size?' ('+sel.size+')':'');
-    dwBtn.disabled=sel.size===0;
-    dwBtn.textContent='⬇️ Descargar seleccionados'+(sel.size?' ('+sel.size+')':'');
-  }
-
-  async function loadFS(){
-    renderCrumb();
-    liEl.innerHTML='<div class="ST_MSG">Cargando...</div>';
-    sel.clear();updDlBtn();
-    try{
-      const dir=await getDirByPath(curPath);
-      const items=[];
-      for await(const[name,handle]of dir.entries()){
-        if(handle.kind==='directory'){
-          items.push({name,isdir:true,size:null});
-        }else{
-          let size=0;
-          try{size=(await handle.getFile()).size;}catch{}
-          items.push({name,isdir:false,size});
-        }
-      }
-      items.sort((a,b)=>a.isdir!==b.isdir?(a.isdir?-1:1):a.name.localeCompare(b.name));
-      liEl.innerHTML='';
-      if(!items.length){liEl.innerHTML='<div class="ST_MSG">Carpeta vacia</div>';return;}
-      items.forEach(it=>{
-        const row=document.createElement('div');row.className='ST_ROW';
-        const cb=document.createElement('input');cb.type='checkbox';
-        cb.onclick=e=>{
-          e.stopPropagation();
-          cb.checked?sel.add(it.name):sel.delete(it.name);
-          updDlBtn();
-        };
-        const ic=document.createElement('span');ic.className='ic';ic.textContent=it.isdir?'📁':'📄';
-        const nm=document.createElement('span');nm.className='nm';nm.textContent=it.name;
-        const sz=document.createElement('span');sz.className='sz';sz.textContent=it.isdir?'':fmtSize(it.size);
-        row.append(cb,ic,nm,sz);
-        row.onclick=()=>{if(it.isdir){curPath=curPath.concat(it.name);loadFS();}};
-        liEl.appendChild(row);
-      });
-      updQuota();
-    }catch(e){
-      liEl.innerHTML='<div class="ST_MSG">Error al leer OPFS: '+e.message+'</div>';
+  async function walk(d,p,o){
+    for await(const[n,h]of d.entries()){
+      if(h.kind==='directory')await walk(h,p+n+'/',o);
+      else try{o.push({l:'📄 '+p+n,s:(await h.getFile()).size,n,g:()=>h.getFile(),x:()=>d.removeEntry(n)})}catch{}
     }
   }
 
-  nfBtn.onclick=async()=>{
-    const name=prompt('Nombre de la carpeta:');
-    if(!name)return;
-    try{
-      const dir=await getDirByPath(curPath);
-      await dir.getDirectoryHandle(name,{create:true});
-      loadFS();
-    }catch(e){alert('Error: '+e.message);}
-  };
-
-  dlBtn.onclick=async()=>{
-    if(!sel.size)return;
-    if(!confirm('Borrar '+sel.size+' elemento(s) de forma PERMANENTE? Esto no se puede deshacer.'))return;
-    try{
-      const dir=await getDirByPath(curPath);
-      for(const name of sel)await dir.removeEntry(name,{recursive:true});
-      loadFS();
-    }catch(e){alert('Error al borrar: '+e.message);}
-  };
-
-  function downloadBlob(file,name){
-    const url=URL.createObjectURL(file);
-    const a=document.createElement('a');
-    a.href=url;a.download=name;
-    document.body.appendChild(a);a.click();a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url),4000);
-  }
-
-  async function delay(ms){return new Promise(r=>setTimeout(r,ms));}
-
-  async function downloadDirRecursive(dirHandle){
-    for await(const[name,handle]of dirHandle.entries()){
-      if(handle.kind==='directory'){
-        await downloadDirRecursive(handle);
-      }else{
-        const file=await handle.getFile();
-        downloadBlob(file,name);
-        await delay(250);
+  async function cs(o){
+    for(const k of await caches.keys()){
+      const c=await caches.open(k);let s=0;
+      for(const q of await c.keys()){
+        const r=await c.match(q);
+        if(r)s+=+r.headers.get('content-length')||(await r.blob()).size;
       }
+      if(s)o.push({l:'🗄️ Cache '+k,s,x:()=>caches.delete(k)});
     }
   }
 
-  dwBtn.onclick=async()=>{
-    if(!sel.size)return;
-    dwBtn.disabled=true;
-    try{
-      const dir=await getDirByPath(curPath);
-      for(const name of sel){
-        const handle=await dir.getDirectoryHandle(name).catch(()=>null);
-        if(handle){
-          await downloadDirRecursive(handle);
-        }else{
-          const fh=await dir.getFileHandle(name);
-          const file=await fh.getFile();
-          downloadBlob(file,name);
-          await delay(250);
-        }
-      }
-    }catch(e){alert('Error al descargar: '+e.message);}
-    updDlBtn();
-  };
-
-  async function loadCaches(){
-    clEl.innerHTML='<p class="ST_MSG">Cargando...</p>';
-    try{
-      const keys=await caches.keys();
-      if(!keys.length){clEl.innerHTML='<p class="ST_MSG">Sin caches almacenados</p>';return;}
-      clEl.innerHTML='';
-      for(const key of keys){
-        const c=await caches.open(key);
-        const reqs=await c.keys();
-        const row=document.createElement('div');
-        row.className='ST_CI';
-        row.innerHTML='<div class="nm">'+key+'</div><div class="ct">'+reqs.length+' entradas</div>';
-        const btn=document.createElement('button');
-        btn.textContent='Borrar';
-        btn.dataset.x=1;
-        btn.onclick=async()=>{
-          if(!confirm('Borrar el cache "'+key+'" completo?'))return;
-          await caches.delete(key);
-          loadCaches();
-          updQuota();
-        };
-        row.appendChild(btn);
-        clEl.appendChild(row);
-      }
-    }catch(e){
-      clEl.innerHTML='<p class="ST_MSG">Error: '+e.message+'</p>';
-    }
+  function row(it){
+    const r=document.createElement('div');r.className='ST_CI';
+    r.append(S('nm',it.l),S('ct',fmt(it.s)));
+    if(it.g)r.append(B('⬇️',async()=>{
+      const u=URL.createObjectURL(await it.g()),a=document.createElement('a');
+      a.href=u;a.download=it.n;document.body.append(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(u),4000);
+    }));
+    r.append(B('🗑️',async()=>{
+      if(!confirm('Borrar '+it.l+'? No se puede deshacer.'))return;
+      try{await it.x()}catch{}
+      load();
+    }));
+    return r;
   }
 
-  const T={fs:[tFS,pFS],ch:[tCH,pCH]};
-  function showTab(t){
-    for(const k in T){T[k][0].classList.toggle('PL1_A',k===t);T[k][1].hidden=k!==t;}
-    if(t==='ch')loadCaches();
+  async function load(){
+    clEl.innerHTML='<p class="ST_MSG">Calculando...</p>';
+    const o=[];
+    try{await cs(o)}catch{}
+    try{await walk(await navigator.storage.getDirectory(),'',o)}catch{}
+    o.sort((a,b)=>b.s-a.s);
+    if(!o.length){dEl.hidden=true;return}
+    clEl.replaceChildren(...o.slice(0,10).map(row));
+    navigator.storage.estimate().then(upd).catch(()=>{});
   }
-  for(const k in T)T[k][0].onclick=()=>showTab(k);
 
   swEl.checked=localStorage.getItem('perf')==='low';
   swEl.onchange=()=>{
@@ -266,10 +90,10 @@
     document.body.classList.toggle('low-perf',swEl.checked);
   };
 
-  loadFS();
-  updQuota();
+  dEl.ontoggle=()=>{if(dEl.open)load()};
+  navigator.storage?.estimate?.().then(e=>{if(typeof e.usage==='number'){dEl.hidden=false;upd(e)}}).catch(()=>{});
 })();
 </script>
 
 <br><br>
-<a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a>
+<a href="web/otros/Archivos/HTML/centralPage.html" class="back-button">← Volver al Inicio</a>
