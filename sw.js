@@ -1,4 +1,4 @@
-const V='v138';
+const V='v139';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -19,7 +19,7 @@ FRASES_HTML
 ];
 
 
-const PERM_C='7';
+const PERM_C='8';
 const PRE_PERM=[
 'web/otros/Archivos/Dinamico/🧩 Apps/es.html',
 'web/otros/Archivos/Dinamico/🎮 Juegos/es.html',
