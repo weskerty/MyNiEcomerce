@@ -20,6 +20,10 @@ galerias en modo low o motion no respeta fitlibreria.
 
 configuracion sw.js cambiar wallpaper, cambiar color solido. modo low device.
 
+core.js usar siempre id= para ruta
+al entrar fallara, 404.html tendra logica de data.json y encontrar para reenviar...
+
+que tan escalable es? dudoso. 
 
 regla botones emojis descentrados
 
