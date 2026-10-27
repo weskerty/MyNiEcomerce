@@ -1,6 +1,7 @@
 !function(){
 const WA_BASE="https://wa.me/595972184435?text=";
 const IA=false;
+const SHARE_ALL=true;
 const IA_URL="/api/ia";
 const IMG_BASE="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/";
 const OFICIALPROVIDER=["595972184435"];
@@ -561,10 +562,10 @@ function initProduct(){
   let cs=document.getElementById("cs");
   if(!cs){
     const gal=document.querySelector(".galeriaMD");
-    if(!gal)return;
     cs=document.createElement("div");
     cs.id="cs";
-    gal.insertAdjacentElement("afterend",cs);
+    if(gal)gal.insertAdjacentElement("afterend",cs);
+    else CB_E1().appendChild(cs);
   }
   const id=mID[1],pc=parseInt(mPC[1]),nb=mNB[1],num=mNM[1],avail=mCD?parseInt(mCD[1]):null;
   if(mTM){const[d,mo,y,h,mi]=mTM[1].split('.').map(Number);const e=new Date(y,mo-1,d,h,mi);if(e<=new Date())return void set404(cs);}
@@ -604,9 +605,14 @@ function initProduct(){
   render();
 }
 
+function CB_E1(){return document.querySelector("#content .markdown-content")||document.getElementById("content");}
 function initShare(){
   let el=document.getElementById("sh");
-  if(!el)return;
+  if(!el){
+    if(!SHARE_ALL||!navigator.share||document.getElementById("compartir-enlace"))return;
+    el=document.createElement("div");
+    CB_E1().appendChild(el);
+  }
   el.id="compartir-enlace";
   el.innerHTML=`<div id="compartir-bloque"><a id="compartir-btn" href="#"><span class="share-btn view-all-button GL_C">Compartir</span></a></div>`;
   const a=document.getElementById("compartir-btn");
@@ -617,7 +623,16 @@ function initShare(){
   document.addEventListener("contentUnload",()=>a.removeEventListener("click",onSh),{once:true});
 }
 
-function initPage(){initProduct();initShare();syncNB();}
+function CB_H2(s){let a=0xdeadbeef,b=0x41c6ce57;for(const c of s){const k=c.codePointAt(0);a=Math.imul(a^k,2654435761);b=Math.imul(b^k,1597334677)}a=Math.imul(a^a>>>16,2246822507)^Math.imul(b^b>>>13,3266489909);b=Math.imul(b^b>>>16,2246822507)^Math.imul(a^a>>>13,3266489909);return(4294967296*(2097151&b)+(a>>>0)).toString(36).padStart(11,'0').slice(-7)}
+function CB_A1(){
+  const r=CB_H1();
+  if(/^web\/(otros\/Archivos\/Imagenes|otros\/Privado|Pruebas)\//.test(r)||!document.querySelector('#content script[src$="HTMLCoreInyector.js"]'))return;
+  const f=r.split('/').pop().replace(/\.[^.]+$/,'').normalize('NFC'),m=f.match(/ID=(.*?)(?=-[A-Z]{2}=|$)/);
+  const a=history.state&&history.state.a;
+  history.replaceState(history.state,'','A/'+((m?m[1].replace(/[^A-Za-z0-9_]/g,''):'')||CB_H2(f))+(a?'#'+a:''));
+}
+
+function initPage(){initProduct();initShare();syncNB();CB_A1();}
 
 window.addEventListener("cartAdd",ev=>{const{type:tp,num,id,q,pc,nb}=ev.detail;addItem(tp,num,id,q,pc,nb)});
 

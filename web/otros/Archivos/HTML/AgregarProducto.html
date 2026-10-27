@@ -337,7 +337,7 @@ window.AP_pedirGPS=function(){
 };
 
 document.getElementById('ap-id').oninput=function(){
-  this.value=this.value.replace(/[^a-zA-Z0-9_-]/g,'').slice(0,50);
+  this.value=this.value.replace(/[^a-zA-Z0-9_]/g,'').slice(0,50);
   const hint=document.getElementById('ap-id-hint');
   if(!this.value){hint.className='fg-hint';hint.textContent='';return;}
   if(_AP_editando&&this.value===_AP_editando.ID){hint.className='fg-hint ok';hint.textContent='Editando este producto';return;}

@@ -1,7 +1,8 @@
 (function(){
 if(window.__CFG)return;
 try{new Function('a?.b')}catch(e){return}
-let p=location.pathname.slice(1);
+const r=document.currentScript&&document.currentScript.dataset.r;
+let p=r?encodeURI(r):location.pathname.slice(1);
 if(!/\.html$/i.test(p))p+='.html';
 history.replaceState(null,'','/#'+p+location.hash);
 const h=document.head;

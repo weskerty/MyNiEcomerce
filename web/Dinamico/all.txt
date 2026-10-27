@@ -4,4 +4,4 @@ USBOTGSA|Adaptador USB-C Pendrive para Teléfono|30000|3|WA.TG|595972184435|🍸
 7803403004131|Taza Mezcladora Universal|50000|1|WA.TG|595972184435|🍸 Accesorios>🍳 Cocina
 JarraDIamante|Jarra de Vidrio Efecto Diamante|30000|1|WA.TG|595972184435|🍸 Accesorios>🍳 Cocina
 ControlPorton4Botones|Control para Portón y Coche|70000|16|WA.TG|595972184435|🍸 Accesorios>💆 Personal
-Perla|Detergente 5L Biodegradable VE|45000|-|WA|WA595992912741|🍸 Accesorios>🧼 Limpieza
+PerlaD5LBD|Detergente 5L Biodegradable VE|45000|-|WA|595992912741|🍸 Accesorios>🧼 Limpieza
