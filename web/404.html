@@ -14,18 +14,33 @@
 <script>
 (function(){
 clearTimeout(window.__RT);
+let E4_F1=0,E4_N=0;
+const E4_H0=location.hash;
+const E4_GO=()=>{
+if(E4_F1)return;
+if(location.hash===E4_H0&&E4_N++<20)return setTimeout(E4_GO,50);
 const h=decodeURIComponent(location.hash.substring(1));
 const m=h.match(/NB=([^-]+?)(?:\.\w+)?$/);
 const kw=m?m[1].trim():'';
 const dest=kw?`#web/search.html#${encodeURIComponent(kw)}`:'#web/search.html';
-function goSearch(){
-  const a=document.createElement('a');
-  a.href=dest;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+function goSearch(u){
+  u=(u||dest).slice(1);
+  const[pp,aa='']=u.split('#');
+  history.replaceState({p:pp,a:aa},'','#'+u);
+  dispatchEvent(new PopStateEvent('popstate',{state:history.state}));
 }
 window.__RT=setTimeout(goSearch,5000);
+const E4_ID=(h.match(/(?:ID=|#A\/)(\w+)/)||[])[1];
+if(E4_ID)fetch('web/Dinamico/data.json').then(r=>r.json()).then(d=>{
+  const fl=o=>Object.values(o).flatMap(v=>Array.isArray(v)?v:typeof v==='object'&&v?fl(v):[]);
+  const p=fl(d.galleries||{}).find(s=>typeof s==='string'&&(s.match(/ID=(\w+)/)||[])[1]===E4_ID);
+  const u=p&&p.replace(/\.[^.]+$/,'.html');
+  if(!u||E4_F1||u===h)return;
+  clearTimeout(window.__RT);
+  goSearch('#'+u);
+}).catch(()=>{});
+};
+E4_GO();
 const bgEl=document.getElementById('bg');
 const bgPrev=bgEl?.getAttribute('style');
 if(bgEl){
@@ -34,6 +49,7 @@ if(bgEl){
   bgEl.style.backgroundPosition='center';
 }
 document.addEventListener('contentUnload',()=>{
+  E4_F1=1;
   clearTimeout(window.__RT);
   if(bgEl)bgEl.setAttribute('style',bgPrev||'');
 },{once:true});
