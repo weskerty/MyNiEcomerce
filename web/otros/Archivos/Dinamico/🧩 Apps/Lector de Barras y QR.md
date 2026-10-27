@@ -107,6 +107,8 @@
       <div class="qg-row"><label>Forma</label><select id="qg-af"><option value="">Automatica</option><option value="compact">Compacto</option><option value="full">Completo</option></select></div>
       <p class="qg-d">Compacto es mas chico pero admite pocos datos. Completo agrega la grilla de referencia</p>
       </div>
+      <div class="qg-row"><label>Margen</label><input type="range" id="qg-qz" min="0" max="4" value="1"><span id="qg-qz-l">1</span></div>
+      <p class="qg-d">Borde blanco alrededor, en bloques. Menor = imagen mas aprovechada. El estandar pide 4: con 0 o 1 puede fallar si se pega sobre un fondo oscuro o con dibujo</p>
       <div class="qg-row"><label>Forma</label><select id="qg-sh"><option value="ci">Circulo</option><option value="rd">Redondeado</option><option value="sq">Cuadrado</option><option value="ht">Halftone</option></select></div>
       <p class="qg-d">Cuadrado es lo mas parecido a un QR normal, mas facil de leer para camaras viejas. Halftone: la imagen cubre todo el QR y solo el centro de cada bloque lleva el dato (Fantasma = cuanto manda la imagen)</p>
       <div class="qg-row"><label>Punto min</label><input type="range" id="qg-mn" min="10" max="80" value="35"><span id="qg-mn-l">35%</span></div>
@@ -404,7 +406,7 @@
       col:$('qg-co').value==='1',px:+$('qg-px').value,sd:+$('qg-sd').value,
       ix:+$('qg-ix').value/100,iy:+$('qg-iy').value/100,iz:+$('qg-iz').value/100,
       ir:+$('qg-ir').value*Math.PI/180,iw:+$('qg-iw').value/100,ih:+$('qg-ih').value/100,
-      tm:$('qg-tm').value==='1'};
+      tm:$('qg-tm').value==='1',qz:+$('qg-qz').value};
   }
 
   function QG_A1(n){
@@ -438,7 +440,7 @@
     }
     if(!q)return null;
     const n=q.getModuleCount(),al=QG_A1(n);
-    return{n,q:4,dk:(r,c)=>q.isDark(r,c),cr:(r,c)=>QG_K1(r,c,n),tm:(r,c)=>QG_K2(r,c,n,al)};
+    return{n,q:P.qz,dk:(r,c)=>q.isDark(r,c),cr:(r,c)=>QG_K1(r,c,n),tm:(r,c)=>QG_K2(r,c,n,al)};
   }
 
   function QG_MA(txt,P){
@@ -450,7 +452,7 @@
       let full=true;
       for(let i=-6;i<=6&&full;i++)for(const[dr,dc]of[[-6,i],[6,i],[i,-6],[i,6]])if(!at(c0+dr,c0+dc)){full=false;break;}
       const cr=full?7:5;
-      return{n,q:2,dk:(r,c)=>at(r,c)===1,
+      return{n,q:P.qz,dk:(r,c)=>at(r,c)===1,
         cr:(r,c)=>Math.max(Math.abs(r-c0),Math.abs(c-c0))<=cr,
         tm:(r,c)=>full&&((r-c0)%16===0||(c-c0)%16===0)};
     }catch{return null;}
@@ -655,6 +657,7 @@
       const k=++QG_K,t=$('qg-t').value.trim();
       ['mn','mx','gh','th','sa','ae'].forEach(i=>{$('qg-'+i+'-l').textContent=$('qg-'+i).value+'%';});
       $('qg-sd-l').textContent=$('qg-sd').value+'x';
+      $('qg-qz-l').textContent=$('qg-qz').value;
       ['ix','iy','iz','iw','ih'].forEach(i=>{$('qg-'+i+'-l').textContent=$('qg-'+i).value+'%';});
       $('qg-ir-l').textContent=$('qg-ir').value+'°';
       QD_CL();
@@ -803,7 +806,7 @@
   $('qg-ab').onclick=QG_ON;
   $('qg-bk').onclick=QG_OFF;
   $('qg-t').addEventListener('input',QG_U1);
-  ['qg-k','qg-ae','qg-af','qg-v','qg-e','qg-sh','qg-mn','qg-mx','qg-gh','qg-th','qg-sa','qg-co','qg-px','qg-sd','qg-ix','qg-iy','qg-iz','qg-ir','qg-iw','qg-ih','qg-tm'].forEach(id=>{
+  ['qg-k','qg-ae','qg-af','qg-v','qg-e','qg-sh','qg-mn','qg-mx','qg-gh','qg-th','qg-sa','qg-co','qg-px','qg-sd','qg-ix','qg-iy','qg-iz','qg-ir','qg-iw','qg-ih','qg-tm','qg-qz'].forEach(id=>{
     $(id).addEventListener('input',QG_U1);
   });
   $('qg-irs').onclick=()=>{
