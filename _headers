@@ -9,10 +9,10 @@
 /web/Dinamico/data.json
   Cache-Control: no-cache
 
-/web/Dinamico/*
+/web/LiteMode/*
   X-Robots-Tag: noindex
 
-/web/otros/*
+/web/otros/Privado/*
   X-Robots-Tag: noindex
 
 /web/Pruebas/*

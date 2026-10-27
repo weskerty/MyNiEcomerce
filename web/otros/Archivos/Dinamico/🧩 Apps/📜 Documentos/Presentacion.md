@@ -1,1 +1,0 @@
-https://whatpwacando.today/capture-handle/ + https://whatpwacando.today/wake-lock/

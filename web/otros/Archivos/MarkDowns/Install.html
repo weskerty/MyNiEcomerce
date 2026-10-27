@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Install - Che Agana</title>
+<meta name="description" content="Instalar Aplicacion Al instalar como aplicacion gastas menos saldo al navegar por aqui, carga mas rapido y tienes casi todo disponible incluso sin conexion">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Che Agana">
+<meta property="og:title" content="Install">
+<meta property="og:description" content="Instalar Aplicacion Al instalar como aplicacion gastas menos saldo al navegar por aqui, carga mas rapido y tienes casi todo disponible incluso sin conexion">
+
+<meta property="og:url" content="https://cheagana.com/web/otros/Archivos/MarkDowns/Install">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Install">
+<meta name="twitter:description" content="Instalar Aplicacion Al instalar como aplicacion gastas menos saldo al navegar por aqui, carga mas rapido y tienes casi todo disponible incluso sin conexion">
+
+<link rel="canonical" href="https://cheagana.com/web/otros/Archivos/MarkDowns/Install">
+<base href="/">
+<script src="/web/scripts/Otros/HTMLCoreInyector.js"></script>
+</head><body><div class="markdown-content"><div style="text-align:center;">
+<style>
+.app-btn{margin:10px auto 0;padding:8px 18px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);font-size:.78rem;letter-spacing:.05em;cursor:pointer;transition:background .2s,transform .15s}
+.app-btn:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
+.app-btn:disabled{opacity:.5;cursor:default;transform:none}
+</style>
+<div id="INS_W">
+  <h2>Instalar Aplicacion</h2>
+  <p>Al instalar como aplicacion gastas menos saldo al navegar por aqui, carga mas rapido y tienes casi todo disponible incluso sin conexion. Util si tienes datos limitados para no gastar saldo innecesariamente.</p>
+  <button id="PI" class="app-btn" style="display:none">📲 Instalar App 💕</button>
+  <h3 style="display:flex;justify-content:center;">⬆️ Pruebalo ⬆️</h3>
+  <p>y si no te gusta se desinstala como cualquier otra app 🤗</p>
+  <div style="display:flex;justify-content:center;">
+    <img src="web/otros/Archivos/Imagenes/Permanente/Install.md/UnInstall.avif"
+    style="width:320px;height:120px;object-fit:cover;border-radius:12px">
+  </div>
+</div>
+<div id="NT_W">
+<h2>Notificaciones</h2>
+<p>Tambien puedes activar notificaciones para recibir ofertas y nuevos productos</p>
+<button id="NT" class="app-btn" style="display:none"></button>
+</div>
+<div id="NC_W" style="display:none">
+  <p style="font-size:3rem;margin:0">😿</p>
+  <p>Tu Navegador no es compatible con las Aplicaciones Web</p>
+</div>
+<script>
+(function(){
+  const w=document.getElementById('INS_W');
+  const pi=document.querySelector('pwa-install');
+
+  function show(){
+    w.style.display='';
+    if(pi&&customElements.get('pwa-install'))pi.showDialog(true);
+  }
+  function hide(){w.style.display='none';}
+
+  if(window._PWA)show();
+  else hide();
+  window.addEventListener('beforeinstallprompt',show);
+  window.addEventListener('appinstalled',hide);
+
+  const W='https://yoganopy-push.marcoygor0.workers.dev';
+  const VP='BHhzutw-yWrRIzIXr3NS1VlY9Z0ryqQ5FRm-W-p3lBN6wj9jePY7tBqatF_OUkMWJcobIpzucuqqgkV159lC_Mk';
+  const ntw=document.getElementById('NT_W');
+  const pushOK=('serviceWorker' in navigator)&&('PushManager' in window)&&Notification.permission!=='denied';
+
+  if(!pushOK){
+    ntw.style.display='none';
+    if(!window._PWA)document.getElementById('NC_W').style.display='';
+    return;
+  }
+
+  const btn=document.getElementById('NT');
+  function u8(s){const p=atob(s.replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from(p,c=>c.charCodeAt(0));}
+  async function upd(sw){
+    try{const s=await sw.pushManager.getSubscription();btn.textContent=s?'🔕 Desactivar Notificaciones':'🔔 Activar Notificaciones';btn.style.display='block';}catch{}
+  }
+  async function tog(sw){
+    btn.disabled=true;
+    try{
+      const s=await sw.pushManager.getSubscription();
+      if(s){
+        await fetch(W+'/unsubscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({endpoint:s.endpoint})}).catch(()=>{});
+        await s.unsubscribe();
+      }else{
+        if(await Notification.requestPermission()!=='granted'){btn.disabled=false;return;}
+        const ns=await sw.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(VP)});
+        await fetch(W+'/subscribe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(ns.toJSON())}).catch(()=>{});
+      }
+      await upd(sw);
+    }catch{}
+    btn.disabled=false;
+  }
+  Promise.race([navigator.serviceWorker.ready,new Promise((_,rj)=>setTimeout(()=>rj(),3000))])
+    .then(sw=>{
+      upd(sw);
+      btn.addEventListener('click',()=>tog(sw));
+    })
+    .catch(()=>{});
+})();
+</script>
+</div></div></body></html>

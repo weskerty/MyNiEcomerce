@@ -76,7 +76,7 @@ const r=document.getElementById('sh-r');
 
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1].trim():n}
-function mL(p){return p.replace(/\.[^.]+$/,'.md')}
+function mL(p){return p.replace(/\.[^.]+$/,'.html')}
 const _PC=/PC=(\d+)/,_ID=/ID=(.*?)(?=-[A-Z]{2}=|$)/;
 function fPC(n){const m=n.match(_PC);return m?m[1].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+' Gs':''}
 function fID(n){const m=n.match(_ID);return m?m[1]:''}

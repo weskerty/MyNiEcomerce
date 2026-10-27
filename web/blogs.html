@@ -92,7 +92,7 @@ let PAGE=20;
 let curList=[],curPg=0,imgIO=null,fetchAC=null,rssAC=null,_ini=false,_lst=[],_cat=null;
 
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
-function mL(p){return p.replace(/\.[^.]+$/,'.md')}
+function mL(p){return p.replace(/\.[^.]+$/,'.html')}
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1].trim():n.replace(/-/g,' ')}
 
 function parseBlogs(galleries){
@@ -380,7 +380,7 @@ try{nA=EP(JSON.parse(txt));oA=EP(JSON.parse(prev));}catch{return notify(null);}
 const oIDs=new Set(oA.map(fN));
 const nP=nA.filter(p=>!oIDs.has(fN(p)));
 for(const p of nP){
-  const url=self.location.origin+'/#'+p.replace(/\.[^.]+$/,'.md').replace(/ /g,'%20');
+  const url=self.location.origin+'/#'+p.replace(/\.[^.]+$/,'.html').replace(/ /g,'%20');
   notify({title:'Nuevo Blog \uD83D\uDCDD',body:nN(fN(p)),image:p,tag:fN(p),url});
 }
 })();`;

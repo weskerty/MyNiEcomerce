@@ -52,18 +52,18 @@
     <div class="BOTON-L1-CN"><h3>🌱 Donde Desechar</h3><p>Juntos por un Paraguay Limpio y Sano</p></div>
   </a>
   
-  <a href="web/otros/Archivos/MarkDowns/SerParte.md" class="BOTON-L1">
+  <a href="web/otros/Archivos/MarkDowns/SerParte.html" class="BOTON-L1">
     <img src="">
     <div class="BOTON-L1-CN"><h3>🤝 Ser Parte</h3><p>Añade tus Productos Aqui</p></div>
   </a>
   
-  <a href="web/otros/Archivos/MarkDowns/TiendaSimilar.md" class="BOTON-L1">
+  <a href="web/otros/Archivos/MarkDowns/TiendaSimilar.html" class="BOTON-L1">
     <img src="">
     <div class="BOTON-L1-CN"><h3>💞 Tiendas Similares</h3><p>Mas Proyectos con Conciencia Ambiental.</p></div>
   </a>
 
 
-  <a href="web/otros/Archivos/MarkDowns/Install.md" class="BOTON-L1">
+  <a href="web/otros/Archivos/MarkDowns/Install.html" class="BOTON-L1">
     <img src="">
     <div class="BOTON-L1-CN"><h3>📱 Instala la App</h3><p>Ahorra Saldo y Recibe Ofertas</p></div>
   </a>
@@ -78,7 +78,7 @@
   
   
   
-<p> <a href="web/otros/Archivos/MarkDowns/PoliticaPrivacidad.md">Acuerdo y Privacidad</a> </p>
+<p> <a href="web/otros/Archivos/MarkDowns/PoliticaPrivacidad.html">Acuerdo y Privacidad</a> </p>
   
 
 
@@ -168,7 +168,7 @@ const oIDs=new Set(oA.map(eID));
 const nP=nA.filter(p=>!oIDs.has(eID(p)));
 for(const p of nP){
   const type=eN(p);
-  const url=self.location.origin+'/#'+p.replace(/\.[^.]+$/,'.md').replace(/ /g,'%20');
+  const url=self.location.origin+'/#'+p.replace(/\.[^.]+$/,'.html').replace(/ /g,'%20');
   notify({title:NTL[type],body:eNM(p),image:p,tag:eID(p),url});
 }
 })();`;

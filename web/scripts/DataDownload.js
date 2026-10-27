@@ -31,11 +31,11 @@ if(document.hidden||!(navigator.serviceWorker&&navigator.serviceWorker.controlle
 const R=await Promise.all(L.map(LD));
 if(R.some(x=>!x))return;
 const cur=new Set(R.flat());
-if(!(navigator.connection&&navigator.connection.saveData)&&!document.body.classList.contains('low-perf'))await Q([...cur].map(p=>p.replace(IM,'.md')));
+if(!(navigator.connection&&navigator.connection.saveData)&&!document.body.classList.contains('low-perf'))await Q([...cur].map(p=>p.replace(IM,'.html')));
 let pv=[];
 try{pv=JSON.parse(localStorage.getItem(K))||[]}catch{}
 const gone=pv.filter(p=>!cur.has(p));
-if(gone.length)await CL(gone.flatMap(p=>[p,p.replace(IM,'.md')]));
+if(gone.length)await CL(gone.flatMap(p=>[p,p.replace(IM,'.html')]));
 try{localStorage.setItem(K,JSON.stringify([...cur]))}catch{}
 };
 setTimeout(()=>RN().catch(()=>{}),9000);

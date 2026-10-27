@@ -348,7 +348,7 @@ function renderCart(){
   const groups={};
   st.c.forEach(x=>{const k=x.t+"-"+x.n;groups[k]||(groups[k]={t:x.t,n:x.n,items:[]});groups[k].items.push(x)});
   const gks=Object.keys(groups),multi=gks.length>1;
-  let html=multi?'<div style="text-align:center;margin-bottom:8px"><a href="web/otros/Archivos/MarkDowns/SerParte.md" style="color:var(--warn);font-weight:600;font-size:.85rem">⚠️ Varios Proveedores ❔</a></div>':"";
+  let html=multi?'<div style="text-align:center;margin-bottom:8px"><a href="web/otros/Archivos/MarkDowns/SerParte.html" style="color:var(--warn);font-weight:600;font-size:.85rem">⚠️ Varios Proveedores ❔</a></div>':"";
   gks.forEach(k=>{
     const g=groups[k];
     html+=`<div class="cb-cp" data-gk="${k}"><p class="cb-cn">📦 ${g.n}</p>`;
@@ -580,7 +580,7 @@ function initProduct(){
     if(tmExp&&tmStr===null)return void set404(cs);
     cs.className='';
     cs.innerHTML=
-      (!isOff?`<div class="cb-dsp"><a href="web/otros/Archivos/MarkDowns/SerParte.md" style="color:var(--warn);font-weight:600;font-size:13px;text-decoration:none">Proveedor Externo ↗️</a></div>`:"")+
+      (!isOff?`<div class="cb-dsp"><a href="web/otros/Archivos/MarkDowns/SerParte.html" style="color:var(--warn);font-weight:600;font-size:13px;text-decoration:none">Proveedor Externo ↗️</a></div>`:"")+
       (tmStr?`<div class="cb-dsp cb-dsp-tm">⏳ Se Acaba En: ${tmStr}</div>`:"")+
       (null!==avail?`<div class="cb-dsp">Disponible: ${avail} unidades</div>`:"")+
       `<div class="cb-p">Precio: <span class="cb-t" id="cpt">${fmt(pc*qty)}</span>Gs</div>`+

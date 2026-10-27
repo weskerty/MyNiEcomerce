@@ -58,7 +58,7 @@ function fCD0(idx){
   return idx._f0={_all:idx._all.filter(p=>!_CD0.test(p)),f:Object.fromEntries(Object.entries(idx.f).map(([k,v])=>[k,v.filter(p=>!_CD0.test(p))]))};
 }
 function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1]:n}
-function mL(p){return p.replace(/\.[^.]+$/,'.md')}
+function mL(p){return p.replace(/\.[^.]+$/,'.html')}
 const _PC=/PC=(\d+)/;
 function fPC(n){const m=n.match(_PC);return m?m[1].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+' Gs':''}
 let _GF=window.GridFit||null,_GFp=null;
