@@ -24,7 +24,9 @@
 .qr-modal.open{display:flex;flex-direction:column;align-items:center;padding:20px 16px;gap:12px}
 .qr-cw{position:relative;max-width:min(90vw,420px);max-height:60vh;overflow:hidden}
 .qr-cw img{display:block;max-width:100%;max-height:60vh}
-#qr-reader video{width:100%!important;border-radius:0}
+#qr-reader{position:relative;aspect-ratio:1}
+#qr-reader video{width:100%!important;height:100%;object-fit:cover;display:block;border-radius:0}
+.QS_G1{position:absolute;inset:12%;pointer-events:none;--c:rgba(56,189,248,.95);--l:26px;--w:4px;background:linear-gradient(var(--c) 0 0) 0 0/var(--l) var(--w),linear-gradient(var(--c) 0 0) 0 0/var(--w) var(--l),linear-gradient(var(--c) 0 0) 100% 0/var(--l) var(--w),linear-gradient(var(--c) 0 0) 100% 0/var(--w) var(--l),linear-gradient(var(--c) 0 0) 0 100%/var(--l) var(--w),linear-gradient(var(--c) 0 0) 0 100%/var(--w) var(--l),linear-gradient(var(--c) 0 0) 100% 100%/var(--l) var(--w),linear-gradient(var(--c) 0 0) 100% 100%/var(--w) var(--l);background-repeat:no-repeat}
 #qr-reader img{display:none!important}
 .qg-wr{position:relative;margin:0 auto;max-width:min(320px,86vw);width:100%}
 .qg-cv{display:block;width:100%;height:auto;border-radius:14px;background:#fff}
@@ -82,13 +84,13 @@
     <div class="qg-row"><label>Tipo</label><select id="qg-k"><option value="qr">QR (lo lee cualquier camara)</option><option value="az">Aztec (mas correccion)</option></select></div>
     <div class="qg-wr"><canvas class="qg-cv" id="qg-cv" width="320" height="320"></canvas><canvas class="qg-ov" id="qg-ov"></canvas></div>
     <div class="qr-ac" style="margin:12px 0">
-      <button class="qr-btn" id="qg-ib">🖼 Imagen</button>
+      <button class="qr-btn" id="qg-ib">🖼 Imagen o video</button>
       <button class="qr-btn" id="qg-rb" style="display:none">🗑 Quitar</button>
       <button class="qr-btn" id="qg-tb">🔍 Probar escaneo</button>
       <button class="qr-btn" id="qg-mp" style="display:none">🗺 Mapa</button>
     </div>
     <div class="qg-dg" id="qg-dg"></div>
-    <input type="file" id="qg-if" accept="image/*" style="display:none">
+    <input type="file" id="qg-if" accept="image/*,video/*" style="display:none">
     <details class="qg-adv">
       <summary>Ajuste fino</summary>
       <div class="qg-scr">
@@ -105,8 +107,8 @@
       <div class="qg-row"><label>Forma</label><select id="qg-af"><option value="">Automatica</option><option value="compact">Compacto</option><option value="full">Completo</option></select></div>
       <p class="qg-d">Compacto es mas chico pero admite pocos datos. Completo agrega la grilla de referencia</p>
       </div>
-      <div class="qg-row"><label>Forma</label><select id="qg-sh"><option value="ci">Circulo</option><option value="rd">Redondeado</option><option value="sq">Cuadrado</option></select></div>
-      <p class="qg-d">Cuadrado es lo mas parecido a un QR normal, mas facil de leer para camaras viejas</p>
+      <div class="qg-row"><label>Forma</label><select id="qg-sh"><option value="ci">Circulo</option><option value="rd">Redondeado</option><option value="sq">Cuadrado</option><option value="ht">Halftone</option></select></div>
+      <p class="qg-d">Cuadrado es lo mas parecido a un QR normal, mas facil de leer para camaras viejas. Halftone: la imagen cubre todo el QR y solo el centro de cada bloque lleva el dato (Fantasma = cuanto manda la imagen)</p>
       <div class="qg-row"><label>Punto min</label><input type="range" id="qg-mn" min="10" max="80" value="35"><span id="qg-mn-l">35%</span></div>
       <p class="qg-d">Mayor = los puntos claros de la imagen se ven mas grandes</p>
       <div class="qg-row"><label>Punto max</label><input type="range" id="qg-mx" min="60" max="110" value="100"><span id="qg-mx-l">100%</span></div>
@@ -143,6 +145,7 @@
     <div class="qr-ac">
       <button class="qr-btn" id="qg-pn">⬇️ PNG</button>
       <button class="qr-btn" id="qg-sv">⬇️ SVG</button>
+      <button class="qr-btn" id="qg-mv" style="display:none">⬇️ MP4</button>
       <button class="qr-btn" id="qg-bk">↩ Volver</button>
     </div>
   </div>
@@ -184,10 +187,11 @@
   const QGL='https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode.js';
   const QGU='https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode_UTF8.js';
   const BWL='https://cdn.jsdelivr.net/npm/bwip-js@4.11.4/dist/bwip-js-min.js';
+  const MBL='https://cdn.jsdelivr.net/npm/mediabunny@1.62.1/dist/bundles/mediabunny.min.mjs';
   const QG_HOME='https://cheagana.com';
 
   let _cam=null,_cp=null,_pf=null,_res='',_tt=null,_blobUrl=null;
-  let QG_I=null,QG_IU=null,QG_TO=null,QG_M=null,QG_PD=null,QG_K=0;
+  let QG_I=null,QG_IU=null,QG_TO=null,QG_M=null,QG_PD=null,QG_K=0,QG_VF=null,QG_VC=null;
   const _ld={};
 
   const $=id=>document.getElementById(id);
@@ -267,10 +271,12 @@
     QS_ST('Iniciando camara...','act');
     try{
       await QS_LZ();
-      const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
+      const s=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720},frameRate:{ideal:30}},audio:false});
+      try{s.getVideoTracks()[0].applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(()=>{});}catch{}
       const v=document.createElement('video');
       v.muted=true;v.playsInline=true;v.setAttribute('playsinline','');v.srcObject=s;
-      const rd=$('qr-reader');rd.innerHTML='';rd.appendChild(v);
+      const rd=$('qr-reader'),gd=document.createElement('div');gd.className='QS_G1';
+      rd.innerHTML='';rd.append(v,gd);
       const k={s,v,on:true,t:0,i:0};_cam=k;
       sa.style.display='';
       await v.play();
@@ -279,15 +285,15 @@
       const lp=async()=>{
         if(!k.on)return;
         if(v.readyState>=2&&v.videoWidth){
-          const sc=Math.min(1,960/Math.max(v.videoWidth,v.videoHeight));
-          c.width=Math.round(v.videoWidth*sc);c.height=Math.round(v.videoHeight*sc);
-          x.drawImage(v,0,0,c.width,c.height);
+          const vw=v.videoWidth,vh=v.videoHeight,s0=Math.min(vw,vh),hd=k.i++%3===2,z=Math.min(s0,hd?960:480);
+          c.width=c.height=z;
+          x.drawImage(v,(vw-s0)/2,(vh-s0)/2,s0,s0,0,0,z,z);
           let r=null;
-          try{r=await QS_DC(x.getImageData(0,0,c.width,c.height),k.i++%3!==2);}catch{}
+          try{r=await QS_DC(x.getImageData(0,0,z,z),!hd);}catch{}
           if(!k.on)return;
           if(r){QS_KK();QS_SR(r);return;}
         }
-        k.t=setTimeout(lp,90);
+        if(v.requestVideoFrameCallback)v.requestVideoFrameCallback(lp);else k.t=setTimeout(lp,30);
       };
       lp();
     }catch(e){
@@ -453,7 +459,7 @@
   function QG_G1(img,sz,P){
     const c=document.createElement('canvas');c.width=c.height=sz;
     const x=c.getContext('2d',{willReadFrequently:true});
-    const iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height;
+    const iw=img.naturalWidth||img.videoWidth||img.displayWidth||img.width,ih=img.naturalHeight||img.videoHeight||img.displayHeight||img.height;
     const s=Math.max(sz/iw,sz/ih)*(P?P.iz:1);
     const dw=iw*s*(P?P.iw:1),dh=ih*s*(P?P.ih:1);
     x.translate(sz/2+(P?P.ix*sz/2:0),sz/2+(P?P.iy*sz/2:0));
@@ -478,7 +484,7 @@
   function QG_D1(x,cx,cy,rad,sh,col){
     if(rad<=0)return;
     x.fillStyle=col;
-    if(sh==='sq'){x.fillRect(cx-rad,cy-rad,rad*2,rad*2);return;}
+    if(sh==='sq'||sh==='ht'){x.fillRect(cx-rad,cy-rad,rad*2,rad*2);return;}
     if(sh==='rd'&&x.roundRect){x.beginPath();x.roundRect(cx-rad,cy-rad,rad*2,rad*2,rad*.5);x.fill();return;}
     x.beginPath();x.arc(cx,cy,rad,0,6.2832);x.fill();
   }
@@ -505,9 +511,35 @@
     }
   }
 
-  function QG_RD(sp,P,M){
+  function QG_LM(c,t){
+    const L=(.299*c.r+.587*c.g+.114*c.b)/255;
+    if(t<=L){const f=L?t/L:0;return{r:Math.round(c.r*f),g:Math.round(c.g*f),b:Math.round(c.b*f)};}
+    const f=(t-L)/(1-L);
+    return{r:Math.round(c.r+(255-c.r)*f),g:Math.round(c.g+(255-c.g)*f),b:Math.round(c.b+(255-c.b)*f)};
+  }
+
+  function QG_HT(sp,P,M,im){
+    const n=M.n,q=M.q,cell=P.px/(n+q*2),s=cell/3,h=s/2+.3,k=(1-P.gh)*.5;
+    const g=im?QG_G1(im,n*3,P):null;
+    for(let r=0;r<n;r++)for(let c=0;c<n;c++){
+      const d=M.dk(r,c),x0=(c+q)*cell,y0=(r+q)*cell;
+      if(!g||M.cr(r,c)||(M.tm(r,c)&&!P.tm)){if(d)sp(x0+cell/2,y0+cell/2,cell/2+.3,'#111');continue;}
+      for(let sy=0;sy<3;sy++)for(let sx=0;sx<3;sx++){
+        let p=QG_P1(g,c*3+sx,r*3+sy);
+        if(p.a<=60)p={r:255,g:255,b:255};
+        if(P.col)p=QG_B1(p,P.sat);
+        else{const v=Math.round(.299*p.r+.587*p.g+.114*p.b);p={r:v,g:v,b:v};}
+        const L=(.299*p.r+.587*p.g+.114*p.b)/255;
+        const t=sx===1&&sy===1?(d?Math.min(L,.28):Math.max(L,.78)):L+((d?0:1)-L)*k;
+        sp(x0+sx*s+s/2,y0+sy*s+s/2,h,QG_RG(QG_LM(p,t)));
+      }
+    }
+  }
+
+  function QG_RD(sp,P,M,im=QG_I){
+    if(P.sh==='ht')return QG_HT(sp,P,M,im);
     const n=M.n,q=M.q,cell=P.px/(n+q*2),maxR=cell/2,sd=P.sd||1;
-    const grid=QG_I?QG_G1(QG_I,n*sd,P):null,gridM=QG_I?(sd>1?QG_G1(QG_I,n,P):grid):null;
+    const grid=im?QG_G1(im,n*sd,P):null,gridM=im?(sd>1?QG_G1(im,n,P):grid):null;
     for(let r=0;r<n;r++)for(let c=0;c<n;c++){
       const cx=(c+q+.5)*cell,cy=(r+q+.5)*cell,crit=M.cr(r,c),dark=M.dk(r,c);
       if(dark&&crit){sp(cx,cy,maxR*.98,'#111');continue;}
@@ -648,13 +680,60 @@
   }
 
   function QG_IM1(f){
-    if(!f||!f.type.startsWith('image/')){QS_T('Solo imagenes');return;}
+    const vd=!!f&&f.type.startsWith('video/');
+    if(!f||(!vd&&!f.type.startsWith('image/'))){QS_T('Solo imagen o video');return;}
     if(QG_IU)URL.revokeObjectURL(QG_IU);
     QG_IU=URL.createObjectURL(f);
+    const ok=el=>{QG_I=el;QG_VF=vd?f:null;$('qg-rb').style.display='';$('qg-mv').style.display=vd?'':'none';QG_U1();};
+    if(vd){
+      const v=document.createElement('video');
+      v.muted=true;v.playsInline=true;v.preload='auto';
+      v.onloadedmetadata=()=>{v.currentTime=Math.min(1,(v.duration||0)/2);};
+      v.onseeked=()=>{v.onseeked=null;ok(v);};
+      v.onerror=()=>{QS_T('Video invalido');};
+      v.src=QG_IU;
+      return;
+    }
     const im=new Image();
-    im.onload=()=>{QG_I=im;$('qg-rb').style.display='';QG_U1();};
+    im.onload=()=>ok(im);
     im.onerror=()=>{QS_T('Imagen invalida');};
     im.src=QG_IU;
+  }
+
+  async function QG_VX(){
+    if(!QG_M||!QG_VF)return;
+    const b=$('qg-mv');b.disabled=true;
+    QS_ST('Cargando conversor...','act');
+    try{
+      const MB=await import(MBL);
+      const P=QG_PR(),M=QG_M,px=Math.min(P.px,1024),Q={...P,px};
+      const c=document.createElement('canvas');c.width=c.height=px;
+      const x=c.getContext('2d',{willReadFrequently:true});
+      const sp=(cx,cy,rad,col)=>QG_D1(x,cx,cy,rad,Q.sh,col);
+      const out=new MB.Output({format:new MB.Mp4OutputFormat(),target:new MB.BufferTarget()});
+      let n=0,t=0,ok=0;
+      const cv=await MB.Conversion.init({
+        input:new MB.Input({source:new MB.BlobSource(QG_VF),formats:MB.ALL_FORMATS}),output:out,
+        video:{forceTranscode:true,processedWidth:px,processedHeight:px,process:async s=>{
+          x.fillStyle='#fff';x.fillRect(0,0,px,px);
+          QG_RD(sp,Q,M,s.toCanvasImageSource());
+          if(n++%10===0){t++;try{if(await QS_DC(x.getImageData(0,0,px,px),true))ok++;}catch{}}
+          return c;
+        }}
+      });
+      if(!cv.isValid)throw new Error('formato no soportado');
+      cv.onProgress=p=>QS_ST('Video '+Math.round(p*100)+'%','act');
+      QG_VC=cv;
+      await cv.execute();
+      QG_VC=null;
+      dg.textContent='Video: lee '+ok+' de '+t+' cuadros muestreados';
+      QS_ST('Crear QR','ok');
+      await QG_OUT(new Blob([out.target.buffer],{type:'video/mp4'}),'qr.mp4','video/mp4');
+    }catch(e){
+      QG_VC=null;
+      if(e&&e.name!=='ConversionCanceledError'){QS_T('Error Video: '+(e.message||e));QS_ST('Crear QR');}
+    }
+    b.disabled=false;
   }
 
   async function QG_ON(){
@@ -718,9 +797,9 @@
   $('qg-ib').onclick=()=>$('qg-if').click();
   $('qg-if').onchange=e=>{const f=e.target.files[0];e.target.value='';QG_IM1(f);};
   $('qg-rb').onclick=()=>{
-    QG_I=null;
+    QG_I=null;QG_VF=null;
     if(QG_IU){URL.revokeObjectURL(QG_IU);QG_IU=null;}
-    $('qg-rb').style.display='none';QG_U1();
+    $('qg-rb').style.display='none';$('qg-mv').style.display='none';QG_U1();
   };
   $('qg-pn').onclick=()=>{
     if(!QG_M){QS_T('Escribi algo primero');return;}
@@ -731,6 +810,7 @@
     QG_OUT(new Blob([QG_SV1()],{type:'image/svg+xml'}),'qr.svg','image/svg+xml');
   };
   $('qg-tb').onclick=QD_RUN;
+  $('qg-mv').onclick=QG_VX;
   mp.onclick=()=>{qgo.style.display=qgo.style.display==='none'?'':'none';};
 
   document.addEventListener('paste',QG_PV);
@@ -738,6 +818,7 @@
   const cont=document.getElementById('content');
   if(cont)cont.addEventListener('contentUnload',()=>{
     QS_KK();QS_CX();
+    if(QG_VC)QG_VC.cancel().catch(()=>{});
     document.removeEventListener('paste',QG_PV);
     if(QG_IU){URL.revokeObjectURL(QG_IU);QG_IU=null;}
     clearTimeout(_tt);clearTimeout(QG_TO);
