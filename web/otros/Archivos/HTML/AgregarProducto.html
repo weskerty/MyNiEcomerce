@@ -580,6 +580,28 @@ window.AP_solicitarBorrado=async function(ID){
   AP_toast('Borrado solicitado');
 };
 
+function AP_H2M(n){
+  return[...n.childNodes].map(c=>{
+    if(c.nodeType===3)return c.textContent;
+    if(c.nodeType!==1)return'';
+    const t=c.tagName,i=()=>AP_H2M(c);
+    if(/^H[1-6]$/.test(t))return'\n'+'#'.repeat(t[1])+' '+c.textContent.trim()+'\n';
+    switch(t){
+      case'P':return c.attributes.length?c.outerHTML:'\n'+i().trim()+'\n';
+      case'BR':return'';
+      case'STRONG':case'B':return'**'+i()+'**';
+      case'EM':case'I':return'*'+i()+'*';
+      case'A':return'['+i()+']('+c.getAttribute('href')+')';
+      case'IMG':return[...c.attributes].some(a=>a.name!=='src'&&a.name!=='alt')?c.outerHTML:'!['+(c.getAttribute('alt')||'')+']('+c.getAttribute('src')+')';
+      case'UL':case'OL':return'\n'+[...c.children].map((li,k)=>(t==='OL'?(k+1)+'. ':'- ')+AP_H2M(li).trim().replace(/\n/g,'\n  ')).join('\n')+'\n';
+      case'BLOCKQUOTE':return'\n'+i().trim().split('\n').map(l=>'> '+l).join('\n')+'\n';
+      case'HR':return'\n---\n';
+      case'CODE':return'`'+c.textContent+'`';
+      default:return c.outerHTML;
+    }
+  }).join('');
+}
+
 window.AP_editarPublicado=async function(e){
   AP_mainTab('nuevo');
   document.getElementById('ap-ch').value=e.CH||'WA.TG';
@@ -593,10 +615,11 @@ window.AP_editarPublicado=async function(e){
   setTimeout(()=>{document.getElementById('ap-sub').value=e.sub||'';},50);
   _AP_gpsCT=e.CT||null;
   if(e.CT)document.getElementById('ap-gps-hint').textContent='Se mantiene la ubicacion anterior, podes actualizarla';
-  const mdPath=e.fn.replace(/\.\w+$/,'.md');
+  const hPath=e.fn.replace(/\.\w+$/,'.html');
   try{
-    const r=await fetch(mdPath.startsWith('web/')?`/${mdPath}`:mdPath);
-    if(r.ok&&_AP_mde)_AP_mde.value(await r.text());
+    const r=await fetch(hPath.startsWith('web/')?`/${hPath}`:hPath);
+    const mc=r.ok&&new DOMParser().parseFromString(await r.text(),'text/html').querySelector('.markdown-content');
+    if(mc&&_AP_mde)_AP_mde.value(AP_H2M(mc).replace(/\n{3,}/g,'\n\n').trim());
   }catch{}
   _AP_editando={ID:e.ID};
   document.getElementById('ap-submit').textContent='Guardar Edicion';
