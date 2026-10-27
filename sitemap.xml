@@ -11,6 +11,16 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/Editor%20Datos%20EXIF</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/editor%20exif</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://cheagana.com/web/LiteMode/alimentos/pasta-frola-dulce8643</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
