@@ -55,3 +55,6 @@ Espero que te sea útil. Si lo mejorás me gustaria ver tambien 🥺👉👈
 
 Respetá la licencia: libre para usar, no para revender.
 
+--- 
+
+Desde hace un tiempo se usa IA para muchas partes... Si lees el codigo es probable notar discrepacias. 

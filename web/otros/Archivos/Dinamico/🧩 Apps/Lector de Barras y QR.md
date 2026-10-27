@@ -188,10 +188,10 @@
   const QGU='https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode_UTF8.js';
   const BWL='https://cdn.jsdelivr.net/npm/bwip-js@4.11.4/dist/bwip-js-min.js';
   const MBL='https://cdn.jsdelivr.net/npm/mediabunny@1.62.1/dist/bundles/mediabunny.min.mjs';
-  const QG_HOME='https://cheagana.com';
+  const QG_HOME='https://cheagana.com',QG_AU='cheagana.com';
 
   let _cam=null,_cp=null,_pf=null,_res='',_tt=null,_blobUrl=null;
-  let QG_I=null,QG_IU=null,QG_TO=null,QG_M=null,QG_PD=null,QG_K=0,QG_VF=null,QG_VC=null;
+  let QG_I=null,QG_IU=null,QG_TO=null,QG_M=null,QG_PD=null,QG_K=0,QG_VF=null,QG_VC=null,QG_CT=null;
   const _ld={};
 
   const $=id=>document.getElementById(id);
@@ -564,7 +564,7 @@
   function QG_SV1(){
     if(!QG_M)return '';
     const P=QG_PR(),px=P.px;
-    const o=['<svg xmlns="http://www.w3.org/2000/svg" width="'+px+'" height="'+px+'" viewBox="0 0 '+px+' '+px+'"><rect width="'+px+'" height="'+px+'" fill="#fff"/>'];
+    const o=['<svg xmlns="http://www.w3.org/2000/svg" width="'+px+'" height="'+px+'" viewBox="0 0 '+px+' '+px+'"><metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description><dc:creator>'+QG_AU+'</dc:creator></rdf:Description></rdf:RDF></metadata><rect width="'+px+'" height="'+px+'" fill="#fff"/>'];
     const sp=(cx,cy,rad,col)=>{
       if(P.sh==='ci')o.push('<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rad.toFixed(1)+'" fill="'+col+'"/>');
       else o.push('<rect x="'+(cx-rad).toFixed(1)+'" y="'+(cy-rad).toFixed(1)+'" width="'+(rad*2).toFixed(1)+'" height="'+(rad*2).toFixed(1)+'"'+(P.sh==='rd'?' rx="'+(rad*.5).toFixed(1)+'"':'')+' fill="'+col+'"/>');
@@ -700,23 +700,39 @@
     im.src=QG_IU;
   }
 
+  function QG_CR(b){
+    if(!QG_CT){QG_CT=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;QG_CT[n]=c>>>0;}}
+    let c=~0;for(const v of b)c=QG_CT[(c^v)&255]^(c>>>8);
+    return(~c)>>>0;
+  }
+
+  async function QG_PA(blob){
+    const a=new Uint8Array(await blob.arrayBuffer()),d=new TextEncoder().encode('Author\0'+QG_AU);
+    const ch=new Uint8Array(12+d.length),v=new DataView(ch.buffer);
+    v.setUint32(0,d.length);ch.set([116,69,88,116],4);ch.set(d,8);
+    v.setUint32(8+d.length,QG_CR(ch.subarray(4,8+d.length)));
+    return new Blob([a.subarray(0,33),ch,a.subarray(33)],{type:'image/png'});
+  }
+
   async function QG_VX(){
     if(!QG_M||!QG_VF)return;
     const b=$('qg-mv');b.disabled=true;
+    QD_CL();st.scrollIntoView({behavior:'smooth',block:'start'});
     QS_ST('Cargando conversor...','act');
     try{
       const MB=await import(MBL);
       const P=QG_PR(),M=QG_M,px=Math.min(P.px,1024),Q={...P,px};
       const c=document.createElement('canvas');c.width=c.height=px;
       const x=c.getContext('2d',{willReadFrequently:true});
-      const sp=(cx,cy,rad,col)=>QG_D1(x,cx,cy,rad,Q.sh,col);
+      const sp=(cx,cy,rad,col)=>QG_D1(x,cx,cy,rad,Q.sh,col),pv=qgc.getContext('2d');
       const out=new MB.Output({format:new MB.Mp4OutputFormat(),target:new MB.BufferTarget()});
       let n=0,t=0,ok=0;
       const cv=await MB.Conversion.init({
-        input:new MB.Input({source:new MB.BlobSource(QG_VF),formats:MB.ALL_FORMATS}),output:out,
+        input:new MB.Input({source:new MB.BlobSource(QG_VF),formats:MB.ALL_FORMATS}),output:out,tags:{artist:QG_AU},
         video:{forceTranscode:true,processedWidth:px,processedHeight:px,process:async s=>{
           x.fillStyle='#fff';x.fillRect(0,0,px,px);
           QG_RD(sp,Q,M,s.toCanvasImageSource());
+          pv.drawImage(c,0,0,qgc.width,qgc.height);
           if(n++%10===0){t++;try{if(await QS_DC(x.getImageData(0,0,px,px),true))ok++;}catch{}}
           return c;
         }}
@@ -733,6 +749,7 @@
       QG_VC=null;
       if(e&&e.name!=='ConversionCanceledError'){QS_T('Error Video: '+(e.message||e));QS_ST('Crear QR');}
     }
+    QG_R1();
     b.disabled=false;
   }
 
@@ -803,7 +820,7 @@
   };
   $('qg-pn').onclick=()=>{
     if(!QG_M){QS_T('Escribi algo primero');return;}
-    qgc.toBlob(b=>{if(b)QG_OUT(b,'qr.png','image/png');},'image/png');
+    qgc.toBlob(async b=>{if(b)QG_OUT(await QG_PA(b),'qr.png','image/png');},'image/png');
   };
   $('qg-sv').onclick=()=>{
     if(!QG_M){QS_T('Escribi algo primero');return;}
