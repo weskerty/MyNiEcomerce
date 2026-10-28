@@ -626,10 +626,11 @@ function initShare(){
 function CB_H2(s){let a=0xdeadbeef,b=0x41c6ce57;for(const c of s){const k=c.codePointAt(0);a=Math.imul(a^k,2654435761);b=Math.imul(b^k,1597334677)}a=Math.imul(a^a>>>16,2246822507)^Math.imul(b^b>>>13,3266489909);b=Math.imul(b^b>>>16,2246822507)^Math.imul(a^a>>>13,3266489909);return(4294967296*(2097151&b)+(a>>>0)).toString(36).padStart(11,'0').slice(-7)}
 function CB_A1(){
   const r=CB_H1();
-  if(/^web\/(otros\/Archivos\/Imagenes|otros\/Privado|Pruebas)\//.test(r)||!document.querySelector('#content script[src$="HTMLCoreInyector.js"]'))return;
+  const s=document.querySelector('#content script[src$="HTMLCoreInyector.js"]');
+  if(/^web\/(otros\/Archivos\/Imagenes|Pruebas)\//.test(r)||!s)return;
   const f=r.split('/').pop().replace(/\.[^.]+$/,'').normalize('NFC'),m=f.match(/ID=(.*?)(?=-[A-Z]{2}=|$)/);
   const a=history.state&&history.state.a;
-  history.replaceState(history.state,'','A/'+((m?m[1].replace(/[^A-Za-z0-9_]/g,''):'')||CB_H2(f))+(a?'#'+a:''));
+  history.replaceState(history.state,'','A/'+(s.dataset.a||(m?m[1].replace(/[^A-Za-z0-9_]/g,''):'')||CB_H2(f))+(a?'#'+a:''));
 }
 
 function initPage(){initProduct();initShare();syncNB();CB_A1();}

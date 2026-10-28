@@ -44,9 +44,8 @@ body.low-perf .gallery-item::after{display:none}
 .gi-section{position:relative;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;margin-top:14px}
 .gi-section:has(.grid-gallery){padding-left:0;padding-right:0}
 .gi-section>a.gi-hd{position:absolute;top:0;left:50%;transform:translate(-50%,-50%);padding:0 14px;margin:0;background:inherit;display:inline-block;white-space:nowrap;text-decoration:none;color:inherit}
-.gi-section>a.gi-hd>h2{margin:0;border:none!important;display:inline}
+.gi-section>a.gi-hd>h2,.gi-hd-flat>h2{margin:0;border:none!important;padding:0;display:inline;color:#fff;-webkit-mask:none;mask:none}
 .gi-hd-flat{display:block;text-align:center;text-decoration:none;color:inherit;margin-bottom:8px}
-.gi-hd-flat>h2{margin:0;display:inline}
 .BS1 .BS2.GL_C{translate:0 calc(1px*var(--GL_M));scale:calc(1 - .015*var(--GL_M));box-shadow:inset 0 3px 8px rgba(0,0,0,.4),var(--GL_IN)}`;
 document.head.appendChild(_S);
 const IO=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){IO.unobserve(x.target);_observed.delete(x.target);x.target.__ld&&x.target.__ld()}})},{rootMargin:'300px'});

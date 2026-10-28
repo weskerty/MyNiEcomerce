@@ -1,7 +1,12 @@
 (function(){
 if(window.__CFG)return;
 try{new Function('a?.b')}catch(e){return}
-const r=document.currentScript&&document.currentScript.dataset.r;
+const cs=document.currentScript,r=cs&&cs.dataset.r;
+if(cs&&cs.dataset.a&&!document.head.querySelector('title')){
+ const t=document.createElement('title'),l=document.createElement('link');
+ t.textContent=(cs.dataset.t||cs.dataset.a)+' - Che Agana';l.rel='canonical';l.href='https://cheagana.com/A/'+cs.dataset.a;
+ document.head.append(t,l);
+}
 let p=r?encodeURI(r):location.pathname.slice(1);
 if(!/\.html$/i.test(p))p+='.html';
 history.replaceState(null,'','/#'+p+location.hash);

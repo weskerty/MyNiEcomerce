@@ -1,0 +1,444 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Grupos y Actividades - Che Agana</title>
+<meta name="description" content="Grupos, canales y actividades de la comunidad Che Agana para participar.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Che Agana">
+<meta property="og:title" content="Grupos y Actividades">
+<meta property="og:description" content="Grupos, canales y actividades de la comunidad Che Agana para participar.">
+
+<meta property="og:url" content="https://cheagana.com/A/Actividades">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Grupos y Actividades">
+<meta name="twitter:description" content="Grupos, canales y actividades de la comunidad Che Agana para participar.">
+
+<link rel="canonical" href="https://cheagana.com/A/Actividades">
+<base href="/">
+<script src="/web/scripts/Otros/HTMLCoreInyector.js" data-r="web/otros/Archivos/HTML/Grupos.html"></script>
+</head><body><div class="markdown-content"><div id="rv-hd2">
+  <h2>📰 Novedades</h2>
+  <a id="rv-rss-btn" class="lk lk-rss" href="/api/rss?url=telegram%2Fchannel%2Fcheagana" target="_blank" rel="noopener noreferrer" title="Suscribirse al feed RSS">RSS</a>
+</div>
+<div id="rv-c"></div>
+<button id="rv-btn" style="display:none" onclick="rvOpen()">Ver todas →</button>
+
+<dialog id="rv-ov">
+  <button id="rv-x" onclick="rvClose()">✕</button>
+  <div id="rv-f"></div>
+  <div id="rv-sentinel"></div>
+</dialog>
+
+<style>
+*{box-sizing:border-box}
+
+.links{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+
+#rv-hd2{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px}
+#rv-hd2 h2{margin:0;font-size:1.1em;font-weight:700;color:#fff}
+.lk-rss{border-color:rgba(255,140,0,.35);background:rgba(255,140,0,.08);color:#ffaa33}
+.lk-rss:hover{background:rgba(255,140,0,.18)}
+.lk-rss::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z'/%3E%3C/svg%3E")}
+
+#rv-c{display:flex;flex-direction:column;gap:8px}
+
+.rv-ci{
+  display:flex;align-items:center;gap:11px;
+  padding:10px;border-radius:14px;
+  text-decoration:none;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  transition:background .18s,transform .15s;
+}
+.rv-ci:hover{background:rgba(255,255,255,.07);transform:translateY(-1px)}
+.rv-ci-thumb{
+  width:50px;height:50px;
+  border-radius:12px;object-fit:cover;flex-shrink:0;
+  background:rgba(255,255,255,.06);
+}
+.rv-ci-thumb.rv-no{
+  display:flex;align-items:center;justify-content:center;font-size:1.2em;
+}
+.rv-ci-info{flex:1;min-width:0}
+.rv-ci-title{
+  font-size:.88em;line-height:1.35;color:#fff;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.rv-ci-meta{margin-top:4px;font-size:.72em;color:rgba(255,255,255,.4)}
+
+#rv-btn{
+  margin-top:10px;width:100%;padding:11px;
+  border:1px solid rgba(255,255,255,.08);border-radius:14px;
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.8);font-size:.9em;cursor:pointer;
+  transition:background .18s,transform .15s;
+}
+#rv-btn:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
+
+#rv-ov{max-height:calc(100vh - 40px);overflow-y:auto;position:relative}
+
+#rv-x{
+  position:sticky;top:10px;float:right;z-index:2;
+  width:34px;height:34px;border:none;border-radius:10px;
+  background:rgba(255,255,255,.09);color:#fff;font-size:.95em;cursor:pointer;
+  transition:background .18s,transform .15s;
+  margin-bottom:-44px;
+}
+#rv-x:hover{background:rgba(255,255,255,.18);transform:scale(1.06)}
+
+#rv-f{display:flex;flex-direction:column;gap:10px}
+
+.rv-it{
+  border-radius:18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+}
+.rv-it-meta{padding:12px 14px 2px;font-size:.72em;color:rgba(255,255,255,.4)}
+.rv-it-title{
+  padding:2px 14px 10px;font-size:.97rem;
+  font-weight:700;line-height:1.4;
+}
+.rv-it-title a{color:#fff;text-decoration:none}
+.rv-it-title a:hover{opacity:.8}
+.rv-it-body img,.rv-it-body video{width:100%;height:auto;display:block}
+.rv-it-body audio{width:100%;display:block;padding:8px 12px;box-sizing:border-box}
+.rv-it-body p{margin:0;padding:6px 14px;font-size:.9em;line-height:1.6;color:rgba(255,255,255,.82)}
+.rv-it-body div{padding:4px 14px 10px;font-size:.83em;line-height:1.55;color:rgba(255,255,255,.68)}
+.rv-it-body a{color:#9fd3ff;text-decoration:none}
+.rv-it-body a:hover{text-decoration:underline}
+
+.rv-skeleton{
+  height:66px;border-radius:14px;
+  background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);
+  background-size:200%;
+  animation:rv-sh 1.4s infinite;
+}
+@keyframes rv-sh{0%{background-position:200%}100%{background-position:-200%}}
+
+@media(max-width:700px){
+  .rv-ci{padding:9px;border-radius:12px}
+  .rv-ci-thumb{width:44px;height:44px;border-radius:10px}
+  .rv-it{border-radius:15px}
+}
+</style>
+
+<script>
+(function(){
+const RSS_PATH='telegram/channel/cheagana';
+const RSS_URL='/api/rss?url='+encodeURIComponent(RSS_PATH);
+const cEl=document.getElementById('rv-c');
+const fEl=document.getElementById('rv-f');
+const btn=document.getElementById('rv-btn');
+const ovEl=document.getElementById('rv-ov');
+const sentinel=document.getElementById('rv-sentinel');
+let items=[],_populated=false,_chunkIdx=0;
+const PREVIEW=4,CHUNK=8;
+
+const LD=document.createElement('link');
+LD.rel='alternate';LD.type='application/rss+xml';
+LD.title='Actividades Paraguay';LD.href=RSS_URL;
+document.head.appendChild(LD);
+
+function lk(href,type,label){
+  return`<a class="lk lk-${type}" href="${href}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+}
+
+function gT(el,tag){return el.getElementsByTagName(tag)[0]?.textContent||'';}
+function gH(el,tag){
+  const n=el.getElementsByTagName(tag)[0];
+  if(!n)return'';
+  const c=n.firstChild;
+  return(c&&c.nodeType===4)?c.data:n.textContent;
+}
+function fI(html){
+  return new DOMParser().parseFromString(html,'text/html').querySelector('img')?.src||null;
+}
+
+function mkItem(item,full){
+  const title=gT(item,'title'),link=gT(item,'link'),
+        desc=gH(item,'description'),date=gT(item,'pubDate'),
+        d=date?new Date(date).toLocaleString('es-PY',full?undefined:{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+  if(!full){
+    const img=fI(desc),a=document.createElement('a');
+    a.className='rv-ci';
+    a.href=link;a.target='_blank';a.rel='noopener noreferrer';
+    a.innerHTML=(img?`<img class="rv-ci-thumb" src="${img}" loading="lazy">`:`<div class="rv-ci-thumb rv-no">📌</div>`)
+      +`<div class="rv-ci-info"><div class="rv-ci-title">${title}</div><div class="rv-ci-meta">${d}</div></div>`;
+    return a;
+  }
+  const author=gT(item,'author'),div=document.createElement('div');
+  div.className='rv-it';
+  div.innerHTML=`<div class="rv-it-meta">${[author,d].filter(Boolean).join(' · ')}</div>
+    <div class="rv-it-title"><a href="${link}" target="_blank" rel="noopener noreferrer">${title}</a></div>
+    <div class="rv-it-body">${desc}</div>`;
+  return div;
+}
+
+function appendChunk(){
+  if(_chunkIdx>=items.length)return;
+  const end=Math.min(_chunkIdx+CHUNK,items.length);
+  const frag=document.createDocumentFragment();
+  for(let i=_chunkIdx;i<end;i++)frag.appendChild(mkItem(items[i],true));
+  fEl.appendChild(frag);
+  _chunkIdx=end;
+}
+
+let _io=null;
+function setupIO(){
+  if(_io)_io.disconnect();
+  _io=new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting)appendChunk();
+  },{root:ovEl,rootMargin:'200px'});
+  _io.observe(sentinel);
+}
+
+const OPFS_S=`return(async()=>{
+const R=await fetch('/api/rss?url=${encodeURIComponent(RSS_PATH)}',{cache:'no-store'});
+if(!R.ok)return notify(null);
+const x=await R.text();
+const gM=x.match(/<item>[\\s\\S]*?<guid[^>]*>([^<]+)<\\/guid>/);
+if(!gM)return notify(null);
+const guid=gM[1];
+const root=await self.navigator.storage.getDirectory();
+const dir=await root.getDirectoryHandle('notify',{create:true});
+let prev=null;
+try{prev=await(await(await dir.getFileHandle('rss.state')).getFile()).text();}catch{}
+const wh=await(await dir.getFileHandle('rss.state',{create:true})).createWritable();
+await wh.write(guid);await wh.close();
+if(prev===null||guid===prev)return notify(null);
+const tM=x.match(/<item>[\\s\\S]*?<title>([^<]+)<\\/title>/);
+const title=(tM?tM[1]:'Nueva actividad').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+const iM=x.match(/poster=&quot;(https:\\/\\/[^&]+)&quot;/)||x.match(/src=&quot;(https:\\/\\/[^&\\s]+)&quot;/);
+const lM=x.match(/<item>[\\s\\S]*?<link>([^<]+)<\\/link>/);
+notify({title:'Nueva actividad \\uD83D\\uDCC5',body:title,...(iM?{image:iM[1]}:{}),tag:'rss-'+guid,url:lM?lM[1]:'${location.origin}'});
+})();`;
+
+async function wOPFS(){
+  try{
+    const root=await navigator.storage.getDirectory();
+    const dir=await root.getDirectoryHandle('notify',{create:true});
+    const fh=await dir.getFileHandle('rss.js',{create:true});
+    const wt=await fh.createWritable();
+    await wt.write(OPFS_S);
+    await wt.close();
+  }catch{}
+}
+
+async function load(){
+  try{
+    const sk=document.createDocumentFragment();
+    for(let i=0;i<PREVIEW;i++){const d=document.createElement('div');d.className='rv-skeleton';sk.appendChild(d);}
+    cEl.appendChild(sk);
+    const res=await fetch(RSS_URL);
+    cEl.innerHTML='';
+    if(!res.ok)return;
+    const doc=new DOMParser().parseFromString(await res.text(),'text/xml');
+    if(doc.querySelector('parseerror'))return;
+    items=[...doc.querySelectorAll('item')];
+    if(!items.length)return;
+    const frag=document.createDocumentFragment();
+    items.slice(0,PREVIEW).forEach(i=>frag.appendChild(mkItem(i,false)));
+    cEl.appendChild(frag);
+    btn.style.display='';
+  }catch{cEl.innerHTML='';}
+}
+
+window.rvOpen=function(){
+  if(!_populated){
+    _populated=true;
+    _chunkIdx=0;
+    fEl.innerHTML='';
+    appendChunk();
+    setupIO();
+  }
+  ovEl.showModal();
+  document.body.style.overflow='hidden';
+};
+window.rvClose=function(){ovEl.close();document.body.style.overflow='';};
+ovEl.addEventListener('close',()=>{document.body.style.overflow='';});
+
+document.addEventListener('contentUnload',function(){
+  if(ovEl.open)ovEl.close();
+  document.body.style.overflow='';
+  if(_io){_io.disconnect();_io=null;}
+  LD.remove();
+  delete window.rvOpen;
+  delete window.rvClose;
+},{once:true});
+
+load();
+wOPFS();
+})();
+</script>
+
+<p>En estas plataformas tambien se Notificara sobre Eventos, Nadie Excluido 🤗</p>
+
+<div class="BOTON-M1">
+
+  <a href="https://whatsapp.com/channel/0029Va8x68H0lwglgVgI0f38" class="BOTON-M2" title="WhatsApp">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg" alt="WhatsAppChannel">
+      </div>
+      <p class="BOTON-M5">WhatsApp</p>
+    </div>
+  </a>
+
+ <a href="https://t.me/cheagana" class="BOTON-M2" title="Telegram">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg" alt="TelegramChannel">
+      </div>
+      <p class="BOTON-M5">Telegram</p>
+    </div>
+  </a>
+
+    <a href="https://www.instagram.com/cheagana" class="BOTON-M2" title="Instagram">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/instagram-2016-logo-svgrepo-com.svg" alt="Instagram">
+      </div>
+      <p class="BOTON-M5">Instagram</p>
+    </div>
+  </a>
+
+  <a href="https://www.facebook.com/yoganopy" class="BOTON-M2" title="Facebook">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/facebook-1-svgrepo-com.svg" alt="GitHub">
+      </div>
+      <p class="BOTON-M5">Facebook</p>
+    </div>
+  </a>
+
+
+  <a href="https://www.tiktok.com/@cheagana" class="BOTON-M2" title="TikTok">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/tiktok-svgrepo-com.svg" alt="Tiktok">
+      </div>
+      <p class="BOTON-M5">Tiktok</p>
+    </div>
+  </a>
+
+  <a href="https://bsky.app/profile/cheagana.com" class="BOTON-M2" title="BlueSky">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Bluesky_Logo.svg/250px-Bluesky_Logo.svg.png?utm_source=es.wikipedia.org&utm_campaign=parser&utm_content=thumbnail" alt="BlueSky">
+      </div>
+      <p class="BOTON-M5">BlueSky</p>
+    </div>
+  </a>
+
+
+  <a href="https://www.threads.com/@cheagana" class="BOTON-M2" title="Threads">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e6/Threads_2026_logo.svg/330px-Threads_2026_logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=parser&utm_content=thumbnail" alt="Threads">
+      </div>
+      <p class="BOTON-M5">Threads</p>
+    </div>
+  </a>
+
+  <a href="https://mastodon.social/@cheAgana" class="BOTON-M2" title="Mastodon">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Mastodon_logotype_%28simple%29_new_hue.svg/250px-Mastodon_logotype_%28simple%29_new_hue.svg.png?utm_source=es.wikipedia.org&utm_campaign=parser&utm_content=thumbnail" alt="Mastodon">
+      </div>
+      <p class="BOTON-M5">Mastodon</p>
+    </div>
+  </a>
+
+  <a href="https://nostr.com/profile/f2a74c77e7f2ef8d553edc5b941b618afa6d15d276d94b645e48275102d6985c" class="BOTON-M2" title="Nostr">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://tchncs.de/images/logos/nostr.png" alt="Nostr">
+      </div>
+      <p class="BOTON-M5">Nostr</p>
+    </div>
+  </a>
+
+  <a href="https://www.youtube.com/@cheAgana" class="BOTON-M2" title="YouTube">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Youtube_logo.png?utm_source=es.wikipedia.org&utm_campaign=index&utm_content=original" alt="YouTube">
+      </div>
+      <p class="BOTON-M5">YouTube</p>
+    </div>
+  </a>
+
+              
+</div>
+
+<h1 style="margin:24px 0 14px;font-size:1.5em;font-weight:700;color:#fff">Grupos</h1> Lugares para Socializar
+
+
+
+<div class="BOTON-M1">
+
+
+  <a href="https://chat.whatsapp.com/FUCooyRJivk6CTbhEEwvf4" class="BOTON-M2" title="WhatsApp">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg" alt="WhatsAppChannel">
+      </div>
+      <p class="BOTON-M5">WhatsApp</p>
+    </div>
+  </a>
+
+ <a href="https://t.me/+mqC7FGO7GOAzY2Qx" class="BOTON-M2" title="Telegram">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg" alt="TelegramChannel">
+      </div>
+      <p class="BOTON-M5">Telegram</p>
+    </div>
+  </a>
+
+
+  <a href="https://matrix.to/#/#cheagana:matrix.org" class="BOTON-M2" title="Matrix">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/Element_%28software%29_logo_%282020%29.svg" alt="Matrix">
+      </div>
+      <p class="BOTON-M5">Matrix</p>
+    </div>
+  </a>
+
+  <a href="https://discord.gg/4VWVKz8qTv" class="BOTON-M2" title="Discord">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="https://www.svgrepo.com/show/353655/discord-icon.svg" alt="Discord">
+      </div>
+      <p class="BOTON-M5">Discord</p>
+    </div>
+  </a>
+
+  <a href="https://fluxer.gg/C5FZp3D6" class="BOTON-M2" title="Fluxer">
+    <div class="BOTON-M3">
+      <div class="BOTON-M4">
+        <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/fluxer.svg" alt="Fluxer">
+      </div>
+      <p class="BOTON-M5">Fluxer</p>
+    </div>
+  </a>
+
+  <a href="https://stt.gg/6GDXDahB" class="BOTON-M2" title="Stoat">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/stoat.png" alt="Stoat">
+      </div>
+      <p class="BOTON-M5">Stoat</p>
+    </div>
+  </a>
+
+  <a href="xmpp:pylibre@conference.07f.de?join" class="BOTON-M2" title="XMPP">
+    <div class="BOTON-M3">  
+      <div class="BOTON-M4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/56/XMPP_logo_%28without_text%29.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original" alt="XMPP">
+      </div>
+      <p class="BOTON-M5">XMPP</p>
+    </div>
+  </a>
+              
+</div>
+
+</div></body></html>

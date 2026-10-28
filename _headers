@@ -12,9 +12,6 @@
 /web/LiteMode/*
   X-Robots-Tag: noindex
 
-/web/otros/Privado/*
-  X-Robots-Tag: noindex
-
 /web/Pruebas/*
   X-Robots-Tag: noindex
 
