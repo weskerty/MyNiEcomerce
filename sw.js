@@ -1,4 +1,4 @@
-const V='v142';
+const V='v143';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -344,26 +344,7 @@ self.addEventListener('fetch',e=>{
 
   if(url.origin!==self.location.origin)return;
 
-  if(DJ.test(url.pathname)){
-    const djHref=url.href;
-    e.respondWith((async()=>{
-      const c=await caches.open(V);
-      try{
-        const r=await fetchWithMirrors(djHref,{cache:'no-store'});
-        if(r?.ok){
-          const txt=await r.text();
-          await c.put(djHref,new Response(txt,{status:200,headers:new Headers(r.headers)}));
-          return new Response(txt,{headers:{'Content-Type':'application/json'}});
-        }
-      }catch{}
-      const cc=await c.match(djHref);
-      if(cc)return cc;
-      return new Response('{}',{status:503});
-    })());
-    return;
-  }
-
-  if(url.pathname.endsWith('.md')||url.pathname.endsWith('.html')||e.request.mode==='navigate'){
+  if(url.pathname.endsWith('.md')||url.pathname.endsWith('.html')||DJ.test(url.pathname)||e.request.mode==='navigate'){
     e.respondWith((async()=>{
       const c=await caches.open(V);
       const cc=await c.match(e.request);
