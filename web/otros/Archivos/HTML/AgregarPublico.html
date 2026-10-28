@@ -53,8 +53,8 @@
       <div class="fg"><label>Numero de telefono</label><input id="pb-ru" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
       <div class="fg">
         <label>Contrasena</label>
-        <input id="pb-rp" type="password" placeholder="minimo 10 chars, 1 simbolo" autocomplete="new-password" oninput="PB_checkPwStrength()">
-        <div class="fg-hint" id="pb-rp-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
+        <input id="pb-rp" type="password" placeholder="minimo 10 caracteres" autocomplete="new-password" oninput="PB_checkPwStrength()">
+        <div class="fg-hint" id="pb-rp-hint">Minimo 10 caracteres</div>
       </div>
       <div class="fg"><label>Confirmar</label><input id="pb-rp2" type="password" placeholder="••••••" autocomplete="new-password"></div>
       <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_registro()">Crear Cuenta</button></div>
@@ -157,8 +157,8 @@
         <div class="fg"><label>Contrasena Actual</label><input id="pb-cpa" type="password" placeholder="••••••" autocomplete="current-password"></div>
         <div class="fg">
           <label>Nueva Contrasena</label>
-          <input id="pb-cpn" type="password" placeholder="minimo 10 chars, 1 simbolo" autocomplete="new-password" oninput="PB_checkPwStrength('pb-cpn','pb-cpn-hint')">
-          <div class="fg-hint" id="pb-cpn-hint">Minimo 10 caracteres, incluyendo al menos 1 simbolo</div>
+          <input id="pb-cpn" type="password" placeholder="minimo 10 caracteres" autocomplete="new-password" oninput="PB_checkPwStrength('pb-cpn','pb-cpn-hint')">
+          <div class="fg-hint" id="pb-cpn-hint">Minimo 10 caracteres</div>
         </div>
         <div class="fg"><label>Confirmar Nueva</label><input id="pb-cpn2" type="password" placeholder="••••••" autocomplete="new-password"></div>
         <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_cambiarPass()">Guardar Nueva Contrasena</button></div>
@@ -180,7 +180,6 @@ const PB_PUBLICO_BASE=(()=>{
 })();
 const PB_MAX_SIZE=200*1024;
 const PB_NB_MAX=100;
-const PB_PW_SYMBOLS=/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~`]/;
 const PB_CATS=['minecraft','localizador','jugadores'];
 const PB_CAT_LABEL={minecraft:'Servidor Minecraft',localizador:'Lugar',jugadores:'Encuentra Jugadores'};
 const PB_TIPO_LABEL={banos:'Baño',agua:'Agua','carga-electrica':'Carga Electrica',lavanderia:'Lavanderia',reciclaje:'Punto de Reciclaje'};
@@ -228,10 +227,10 @@ window.PB_showTab=function(t){
 window.PB_checkPwStrength=function(inputId='pb-rp',hintId='pb-rp-hint'){
   const v=document.getElementById(inputId).value;
   const hint=document.getElementById(hintId);
-  const okLen=v.length>=10,okSym=PB_PW_SYMBOLS.test(v);
-  if(!v){hint.className='fg-hint';hint.textContent='Minimo 10 caracteres, incluyendo al menos 1 simbolo';return;}
-  if(okLen&&okSym){hint.className='fg-hint ok';hint.textContent='Contrasena segura';}
-  else{hint.className='fg-hint err';hint.textContent=`Falta: ${!okLen?'largo (10+)':''}${!okLen&&!okSym?', ':''}${!okSym?'un simbolo':''}`;}
+  const okLen=v.length>=10;
+  if(!v){hint.className='fg-hint';hint.textContent='Minimo 10 caracteres';return;}
+  if(okLen){hint.className='fg-hint ok';hint.textContent='Contrasena segura';}
+  else{hint.className='fg-hint err';hint.textContent='Falta: largo (10+)';}
 };
 
 window.PB_mainTab=function(t){
@@ -344,7 +343,7 @@ window.PB_registro=async function(){
   const p2=document.getElementById('pb-rp2').value;
   if(!tel||!p)return PB_toast('Completa los campos','warn');
   if(p!==p2)return PB_toast('Las contrasenas no coinciden','warn');
-  if(p.length<10||!PB_PW_SYMBOLS.test(p))return PB_toast('La contrasena necesita 10+ chars y 1 simbolo','warn');
+  if(p.length<10)return PB_toast('La contrasena necesita 10+ caracteres','warn');
   const{ok,data}=await PB_fetch('registro',{method:'POST',body:JSON.stringify({telefono:tel,password:p})});
   if(!ok)return PB_toast(data.error||'Error','err');
   PB_toast('Cuenta creada! Iniciando sesion...');
@@ -359,7 +358,7 @@ window.PB_cambiarPass=async function(){
   const pn2=document.getElementById('pb-cpn2').value;
   if(!pa||!pn)return PB_toast('Completa los campos','warn');
   if(pn!==pn2)return PB_toast('Las contrasenas nuevas no coinciden','warn');
-  if(pn.length<10||!PB_PW_SYMBOLS.test(pn))return PB_toast('La nueva contrasena necesita 10+ chars y 1 simbolo','warn');
+  if(pn.length<10)return PB_toast('La nueva contrasena necesita 10+ caracteres','warn');
   const{ok,data}=await PB_fetch('cambiarPass',{method:'POST',body:JSON.stringify({password:pa,passwordNuevo:pn})});
   if(!ok)return PB_toast(data.error||'Error','err');
   _PB_tk=data.token;PB_sck('ap_tk',_PB_tk);

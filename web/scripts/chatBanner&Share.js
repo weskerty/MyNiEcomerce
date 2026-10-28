@@ -23,7 +23,7 @@ function isHidden(){
   return HIDE_PATHS.some(p=>CB_H1().includes(p));
 }
 function getRouteWA(){
-  const mNM=CB_H1().match(/NM=([^-\s]+)/);
+  const mNM=CB_H1().match(/NM=(\d+)-/);
   return mNM?mNM[1]:null;
 }
 
