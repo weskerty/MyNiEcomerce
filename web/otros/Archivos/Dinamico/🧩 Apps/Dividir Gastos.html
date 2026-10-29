@@ -1,0 +1,152 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Dividir Gastos - Che Agana</title>
+<meta name="description" content="💸 Dividir Gastos Anota quien pago que en una salida y te dice quien le paga a quien. Todo viaja dentro del link: mandalo al grupo y cada uno ve lo mismo. ">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Che Agana">
+<meta property="og:title" content="Dividir Gastos">
+<meta property="og:description" content="💸 Dividir Gastos Anota quien pago que en una salida y te dice quien le paga a quien. Todo viaja dentro del link: mandalo al grupo y cada uno ve lo mismo. ">
+
+<meta property="og:url" content="https://cheagana.com/A/ncj00r2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Dividir Gastos">
+<meta name="twitter:description" content="💸 Dividir Gastos Anota quien pago que en una salida y te dice quien le paga a quien. Todo viaja dentro del link: mandalo al grupo y cada uno ve lo mismo. ">
+
+<link rel="canonical" href="https://cheagana.com/A/ncj00r2">
+<base href="/">
+<script src="/web/scripts/Otros/HTMLCoreInyector.js"></script>
+</head><body><div class="markdown-content"><div style="text-align:center;position:relative;padding-top:0;margin-top:0">
+<style>
+.dg-st{color:rgba(255,255,255,.75);font-size:1.3em;font-weight:600;margin:10px 0 6px}
+.dg-nt{color:rgba(255,255,255,.45);font-size:.8em;max-width:440px;margin:0 auto 14px;line-height:1.5}
+.dg-bx{border-radius:14px;padding:12px 14px;margin:10px auto;max-width:560px;text-align:left;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06)}
+.dg-h{font-size:.72em;letter-spacing:.08em;color:rgba(255,255,255,.45);margin:0 0 8px;text-transform:uppercase}
+.dg-rw{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.dg-bx input[type=text]{flex:1;min-width:120px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;padding:8px 10px;font-family:inherit;font-size:.9em}
+.dg-bx select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;padding:7px 8px;font-family:inherit}
+.dg-ch{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border-radius:16px;padding:4px 10px;font-size:.85em;color:#fff}
+.dg-ch b{cursor:pointer;opacity:.6;font-weight:400}
+.dg-ck{display:inline-flex;align-items:center;gap:4px;font-size:.85em;color:rgba(255,255,255,.8)}
+.dg-it{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-top:1px solid rgba(255,255,255,.08);font-size:.88em;color:#fff}
+.dg-it span{flex:1;min-width:0;word-break:break-word}
+.dg-it small{display:block;color:rgba(255,255,255,.5)}
+.dg-it b{cursor:pointer;opacity:.6;font-weight:400}
+.dg-pg{color:var(--ok)}
+.dg-dv{color:var(--warn)}
+.dg-tr{font-size:.95em;color:#fff;padding:4px 0}
+.dg-ac{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px auto}
+.dg-ms{color:var(--warn);font-size:.82em;min-height:1.2em}
+</style>
+<div style="font-size:2.8rem;margin:0 auto 4px;line-height:1.2">💸</div>
+<div class="dg-st">Dividir Gastos</div>
+<div class="dg-nt">Anota quien pago que en una salida y te dice quien le paga a quien. Todo viaja dentro del link: mandalo al grupo y cada uno ve lo mismo.</div>
+<div class="dg-bx">
+  <div class="dg-h">Salida</div>
+  <div class="dg-rw"><input type="text" id="dg-ti" placeholder="Ej: Asado del sabado" maxlength="60"></div>
+  <div class="dg-h">Personas</div>
+  <div class="dg-rw"><input type="text" id="dg-pn" placeholder="Nombre" maxlength="30"><button id="dg-pa">Agregar</button></div>
+  <div class="dg-rw" id="dg-pl"></div>
+</div>
+<div class="dg-bx">
+  <div class="dg-h">Nuevo gasto</div>
+  <div class="dg-rw"><input type="text" id="dg-gd" placeholder="Que se compro" maxlength="60"><input type="text" id="dg-gm" placeholder="Monto Gs" inputmode="numeric"></div>
+  <div class="dg-rw">Pago <select id="dg-gp"></select></div>
+  <div class="dg-rw" id="dg-ge"></div>
+  <div class="dg-rw"><button id="dg-ga">Agregar gasto</button></div>
+  <div class="dg-ms" id="dg-ms"></div>
+  <div id="dg-gl"></div>
+</div>
+<div class="dg-bx" id="dg-rs"></div>
+<div class="dg-ac" id="dg-ac"></div>
+<script>
+(function(){
+const $=i=>document.getElementById(i);
+let S={t:'',n:[],g:[]};
+const DG_K='DG_L1',DG_RX=/#G1\.([A-Za-z0-9_-]+)$/;
+const DG_M=n=>Math.round(n).toLocaleString('es-PY')+' Gs';
+const DG_EL=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+async function DG_E(o){
+  const b=new Uint8Array(await new Response(new Blob([JSON.stringify(o)]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer());
+  let s='';for(const x of b)s+=String.fromCharCode(x);
+  return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+async function DG_DE(t){
+  const s=atob(t.replace(/-/g,'+').replace(/_/g,'/'));
+  const b=Uint8Array.from(s,c=>c.charCodeAt(0));
+  const o=JSON.parse(await new Response(new Blob([b]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text());
+  if(!Array.isArray(o.n)||!Array.isArray(o.g))throw 0;
+  return{t:String(o.t||'').slice(0,60),n:o.n.map(x=>String(x).slice(0,30)),g:o.g.filter(g=>Array.isArray(g)&&g[2]<o.n.length).map(g=>[String(g[0]).slice(0,60),Math.max(0,Math.round(+g[1]||0)),g[2]|0,Array.isArray(g[3])?g[3].filter(i=>i<o.n.length):[]])};
+}
+async function DG_SV(){
+  const d=await DG_E(S);
+  history.replaceState(history.state,'',location.pathname+location.search+location.hash.replace(/#G1\.[A-Za-z0-9_-]*$/,'')+'#G1.'+d);
+  try{localStorage.setItem(DG_K,d)}catch{}
+}
+function DG_CA(){
+  const n=S.n.length,b=new Array(n).fill(0);let tot=0;
+  for(const[,m,p,e]of S.g){
+    const q=e.length?e:S.n.map((_,i)=>i);if(!q.length)continue;
+    tot+=m;b[p]+=m;const base=Math.floor(m/q.length);let r=m-base*q.length;
+    for(const i of q){b[i]-=base+(r>0?1:0);r--}
+  }
+  const cr=b.map((v,i)=>[i,v]).filter(x=>x[1]>0).sort((a,z)=>z[1]-a[1]),de=b.map((v,i)=>[i,-v]).filter(x=>x[1]>0).sort((a,z)=>z[1]-a[1]),tr=[];
+  let i=0,j=0;
+  while(i<de.length&&j<cr.length){const v=Math.min(de[i][1],cr[j][1]);if(v>0)tr.push([de[i][0],cr[j][0],v]);de[i][1]-=v;cr[j][1]-=v;if(!de[i][1])i++;if(!cr[j][1])j++}
+  return{b,tot,tr};
+}
+function DG_TX(){
+  const{tot,tr}=DG_CA();
+  return(S.t?S.t+'\n':'')+'Total '+DG_M(tot)+'\n'+(tr.length?tr.map(([d,c,v])=>`${S.n[d]} le paga a ${S.n[c]}: ${DG_M(v)}`).join('\n'):'Nadie le debe a nadie');
+}
+function DG_R(){
+  $('dg-ti').value=S.t;
+  const pl=$('dg-pl');pl.textContent='';
+  S.n.forEach((p,i)=>{const c=DG_EL('span','dg-ch',p);const x=DG_EL('b',0,'✕');x.onclick=()=>{if(S.g.some(g=>g[2]===i||g[3].includes(i))){$('dg-ms').textContent=p+' tiene gastos, borralos primero';return}S.n.splice(i,1);S.g.forEach(g=>{if(g[2]>i)g[2]--;g[3]=g[3].map(k=>k>i?k-1:k)});DG_U()};c.append(x);pl.append(c)});
+  const gp=$('dg-gp'),sv=gp.value;gp.textContent='';S.n.forEach((p,i)=>gp.append(new Option(p,i)));if(sv<S.n.length)gp.value=sv;
+  const ge=$('dg-ge');ge.textContent='';if(S.n.length)ge.append('Entre: ');
+  S.n.forEach((p,i)=>{const l=DG_EL('label','dg-ck');const c=document.createElement('input');c.type='checkbox';c.checked=true;c.value=i;l.append(c,p);ge.append(l)});
+  const gl=$('dg-gl');gl.textContent='';
+  S.g.forEach(([d,m,p,e],i)=>{const r=DG_EL('div','dg-it');const s=DG_EL('span',0,d+' · '+DG_M(m));s.append(DG_EL('small',0,'Pago '+S.n[p]+' · entre '+(e.length?e.map(k=>S.n[k]).join(', '):'todos')));const x=DG_EL('b',0,'✕');x.onclick=()=>{S.g.splice(i,1);DG_U()};r.append(s,x);gl.append(r)});
+  const rs=$('dg-rs'),ac=$('dg-ac');rs.textContent='';ac.textContent='';
+  if(!S.g.length){rs.style.display='none';return}
+  rs.style.display='';
+  const{b,tot,tr}=DG_CA();
+  rs.append(DG_EL('div','dg-h','Resultado · total '+DG_M(tot)));
+  S.n.forEach((p,i)=>{const r=DG_EL('div','dg-it');r.append(DG_EL('span',0,p),DG_EL('span',b[i]>0?'dg-pg':b[i]<0?'dg-dv':0,b[i]>0?'recibe '+DG_M(b[i]):b[i]<0?'debe '+DG_M(-b[i]):'esta a mano'));rs.append(r)});
+  rs.append(DG_EL('div','dg-h','Pagos'));
+  if(!tr.length)rs.append(DG_EL('div','dg-tr','Nadie le debe a nadie'));
+  tr.forEach(([d,c,v])=>rs.append(DG_EL('div','dg-tr',`👉 ${S.n[d]} le paga a ${S.n[c]}: ${DG_M(v)}`)));
+  const B=(t,f)=>{const x=DG_EL('button',0,t);x.onclick=f;ac.append(x)};
+  B('🔗 Copiar link',async e=>{try{await navigator.clipboard.writeText(location.href);e.target.textContent='✅ Link copiado'}catch{}});
+  if(navigator.share)B('📤 Compartir',()=>navigator.share({title:S.t||'Dividir Gastos',text:DG_TX(),url:location.href}).catch(()=>{}));
+  B('📋 Copiar resumen',async e=>{try{await navigator.clipboard.writeText(DG_TX()+'\n'+location.href);e.target.textContent='✅ Copiado'}catch{}});
+  B('🗑️ Nueva salida',()=>{if(confirm('Borrar esta salida?')){S={t:'',n:[],g:[]};DG_U()}});
+}
+function DG_U(){$('dg-ms').textContent='';DG_R();DG_SV()}
+$('dg-ti').onchange=e=>{S.t=e.target.value.trim().slice(0,60);DG_U()};
+const DG_PA=()=>{const v=$('dg-pn').value.trim().slice(0,30);if(!v)return;if(S.n.includes(v)){$('dg-ms').textContent=v+' ya esta';return}S.n.push(v);$('dg-pn').value='';DG_U();$('dg-pn').focus()};
+$('dg-pa').onclick=DG_PA;
+$('dg-pn').onkeydown=e=>{if(e.key==='Enter')DG_PA()};
+$('dg-gm').oninput=e=>{const v=e.target.value.replace(/\D/g,'');e.target.value=v?(+v).toLocaleString('es-PY'):''};
+$('dg-ga').onclick=()=>{
+  const d=$('dg-gd').value.trim().slice(0,60)||'Gasto',m=+$('dg-gm').value.replace(/\D/g,''),p=+$('dg-gp').value;
+  const ck=[...$('dg-ge').querySelectorAll('input')],e=ck.filter(c=>c.checked).map(c=>+c.value);
+  if(S.n.length<2){$('dg-ms').textContent='Agrega al menos 2 personas';return}
+  if(!m){$('dg-ms').textContent='Falta el monto';return}
+  if(!e.length){$('dg-ms').textContent='Elegi entre quienes se divide';return}
+  S.g.push([d,m,p,e.length===ck.length?[]:e]);$('dg-gd').value='';$('dg-gm').value='';DG_U();
+};
+async function DG_L(w){
+  for(let i=0;w&&i<20&&!DG_RX.test(location.hash);i++)await new Promise(r=>setTimeout(r,50));
+  const h=location.hash.match(DG_RX);let t=h&&h[1];
+  if(!t)try{t=localStorage.getItem(DG_K)}catch{}
+  if(t)try{S=await DG_DE(t)}catch{$('dg-ms').textContent='Link danado'}
+  DG_R();if(S.n.length)DG_SV();
+}
+const DG_HC=()=>{if(DG_RX.test(location.hash))DG_L()};
+window.addEventListener('hashchange',DG_HC);
+document.addEventListener('contentUnload',()=>window.removeEventListener('hashchange',DG_HC),{once:true});
+DG_R();DG_L(1);
+})();
+</script>
+</div>
+</div></body></html>
