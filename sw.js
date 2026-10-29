@@ -1,4 +1,4 @@
-const V='v162';
+const V='v163';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -58,7 +58,8 @@ N_BANNER
 
 const TEMP_ROUTES=[{match:'/api/chat/',ttl:2000},{match:'/api/',ttl:1800000,off:86400000}];
 const EXT_CACHE=[
-  {origin:'cdn.jsdelivr.net',ttl:0,re:/@\d+\.\d+\.\d+/}
+  {origin:'esm.unpkg.com',ttl:0},
+  {origin:'unpkg.com',ttl:0}
 ];
 const MIRRORS=['https://weskerty.github.io/MyNiEcomerce','https://lawiskapy.codeberg.page/kore.js','https://cheagana.netlify.app','https://mc.cheagana.com'];
 const MIRROR_TIMEOUT=2000;
@@ -318,7 +319,7 @@ self.addEventListener('fetch',e=>{
 
   if(e.request.headers.get('range'))return;
 
-  const extEntry=EXT_CACHE.find(x=>url.hostname===x.origin&&(!x.re||x.re.test(url.pathname)));
+  const extEntry=EXT_CACHE.find(x=>url.hostname===x.origin);
   if(extEntry){
     e.respondWith((async()=>{
       const c=await caches.open(EXT_C);
