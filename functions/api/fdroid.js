@@ -1,5 +1,5 @@
 const RH={'content-type':'application/json','cache-control':'public,max-age=86400,stale-while-revalidate=604800'};
-const RA={'content-type':'application/vnd.android.package-archive','cache-control':'public,max-age=86400,stale-while-revalidate=604800'};
+const RA={'content-type':'application/vnd.android.package-archive','cache-control':'no-store'};
 const RE={'content-type':'application/json','cache-control':'no-store'};
 const TO=8000;
 const FS='https://search.f-droid.org/api/search_apps?q=';

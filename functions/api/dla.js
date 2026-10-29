@@ -1,16 +1,24 @@
 const URL_RE=/https?:\/\/[^\s"'<>]+/;
-const RH_JSON={'content-type':'application/json'};
+const RH_JSON={'content-type':'application/json','cache-control':'no-store'};
 
 export async function onRequestGet(context){
  const{request,env}=context;
  const q=new URL(request.url).searchParams.get('q')||'';
  if(!q.trim()) return new Response('[]',{status:200,headers:RH_JSON});
+ const DC1=caches.default,DK1=new Request(`${new URL(request.url).origin}/api/dla?q=${encodeURIComponent(q.trim().toLowerCase().replace(/\s+/g,' '))}`);
+ const hit=await DC1.match(DK1);
+ if(hit) return hit;
  try{
   const res=await fetch(`${env.SERVER_URL}/dla?q=${encodeURIComponent(q.trim())}`,{
    headers:{'x-bridge-key':env.BRIDGE_KEY,'x-fwip':request.headers.get('cf-connecting-ip')||''}
   });
   if(!res.ok) return new Response('[]',{status:200,headers:RH_JSON});
-  return new Response(res.body,{status:200,headers:RH_JSON});
+  const t=await res.text();
+  let n=0;try{n=JSON.parse(t).length}catch{}
+  if(n<2) return new Response(t,{status:200,headers:RH_JSON});
+  const out=new Response(t,{status:200,headers:{...RH_JSON,'cache-control':'public,max-age=604800'}});
+  context.waitUntil(DC1.put(DK1,out.clone()));
+  return out;
  }catch{
   return new Response('[]',{status:200,headers:RH_JSON});
  }

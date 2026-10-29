@@ -36,8 +36,9 @@ css.textContent=`
 @keyframes cb-fzo{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.3)}100%{transform:scale(1);opacity:1}}
 @keyframes cb-fb{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(12px)}}
 :root{--CB_SF:rgba(255,255,255,.08)}
-@media(prefers-reduced-motion:reduce){:root{--CB_SF:#2B2B2A}}
-body.low-perf{--CB_SF:#2B2B2A}
+@media(prefers-reduced-motion:reduce){:root{--CB_SF:#1E395B}html #cs{--GL_SF:var(--CB_SF)}}
+body.low-perf{--CB_SF:#1E395B}
+body.low-perf #cs{--GL_SF:var(--CB_SF)}
 #cs,.cb-nb,.cb-bl{border:var(--GL_BW) solid var(--GL_BC);background-color:#0000;background-image:var(--GL_RS),linear-gradient(var(--GL_SF),var(--GL_SF));background-clip:var(--GL_CL);background-origin:border-box}
 .cb-d{width:520px;padding:0}
 .cb-d[open]{display:flex;flex-direction:column;max-height:calc(100dvh - 40px);overflow:hidden}

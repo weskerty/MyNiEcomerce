@@ -82,6 +82,9 @@ export async function onRequestGet(context){
   const q=u.searchParams.get('q')||'nature landscape';
   const pg=Math.max(1,Math.min(500,parseInt(u.searchParams.get('page')||'1')));
   const ori=u.searchParams.get('ori')||'h';
+  const WC1=caches.default,WK1=new Request(`${u.origin}${u.pathname}?q=${encodeURIComponent(q.trim().toLowerCase())}&page=${pg}&ori=${ori}`);
+  const hit=await WC1.match(WK1);
+  if(hit)return hit;
 
   const[a,b,c]=await Promise.all([
     fromUnsplash(env.UNSPLASH_KEY,q,pg,ori),
@@ -92,7 +95,9 @@ export async function onRequestGet(context){
   const results=[...a.items,...b.items,...c.items];
   const tp=Math.min(Math.max(a.tp,b.tp,c.tp,1),500);
 
-  return new Response(JSON.stringify({results,total_pages:tp,total:results.length}),{
-    headers:{...RH,'cache-control':'public,max-age=86400,stale-while-revalidate=604800'}
+  const out=new Response(JSON.stringify({results,total_pages:tp,total:results.length}),{
+    headers:{...RH,'cache-control':results.length?'public,max-age=86400':'no-store'}
   });
+  if(results.length)context.waitUntil(WC1.put(WK1,out.clone()));
+  return out;
 }

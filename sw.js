@@ -1,4 +1,4 @@
-const V='v157';
+const V='v161';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -56,7 +56,7 @@ N_ICO,
 N_BANNER
 ];
 
-const TEMP_ROUTES=[{match:'/api/chat/',ttl:2000},{match:'/api/',ttl:18000000}];
+const TEMP_ROUTES=[{match:'/api/chat/',ttl:2000},{match:'/api/',ttl:1800000,off:86400000}];
 const EXT_CACHE=[
   {origin:'esm.unpkg.com',ttl:0},
   {origin:'unpkg.com',ttl:0}
@@ -162,11 +162,13 @@ async function wtHandle(e){
 }
 // SW WebTorrent fin
 
-async function tmpGet(req){
+async function tmpGet(req,off=0){
   const c=await caches.open(TEMP_C);
   const r=await c.match(req);
   if(!r)return null;
-  if(Date.now()>parseInt(r.headers.get('X-Expires')||0)){await c.delete(req);return null;}
+  const x=parseInt(r.headers.get('X-Expires')||0);
+  if(Date.now()>x+off){await c.delete(req);return null;}
+  r.v=Date.now()<=x;
   return r;
 }
 async function tmpPut(req,res,ttl){
@@ -371,11 +373,13 @@ self.addEventListener('fetch',e=>{
   const tmpRoute=TEMP_ROUTES.find(r=>url.pathname.startsWith(r.match));
   if(tmpRoute){
     e.respondWith((async()=>{
-      const cached=await tmpGet(e.request);
-      if(cached)return cached;
-      const r=await fetch(e.request);
-      if(r?.ok)await tmpPut(e.request,r,tmpRoute.ttl);
-      return r;
+      const cached=await tmpGet(e.request,tmpRoute.off);
+      if(cached?.v)return cached;
+      try{
+        const r=await fetch(e.request);
+        if(r?.ok&&!/no-store/i.test(r.headers.get('cache-control')||''))await tmpPut(e.request,r,tmpRoute.ttl);
+        return r;
+      }catch(er){if(cached)return cached;throw er;}
     })());
     return;
   }
