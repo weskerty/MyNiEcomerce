@@ -112,6 +112,14 @@ $('da-in').onchange=e=>{DA_F(e.target.files);e.target.value=''};
 dz.ondragover=e=>{e.preventDefault();dz.classList.add('on')};
 dz.ondragleave=()=>dz.classList.remove('on');
 dz.ondrop=e=>{e.preventDefault();dz.classList.remove('on');DA_F(e.dataTransfer.files)};
+(async()=>{
+  try{
+    const d=await fetch('/_share_pending').then(r=>r.json());
+    if(!d?.blobs?.length)return;
+    await fetch('/_share_clear',{method:'POST'});
+    DA_F(d.blobs.map(b=>new File([new Uint8Array(b.data)],b.name||'archivo',{type:b.type||''})));
+  }catch{}
+})();
 })();
 </script>
 </div>
