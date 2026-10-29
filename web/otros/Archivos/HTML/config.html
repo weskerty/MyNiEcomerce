@@ -20,6 +20,10 @@
 
 <div id="ST_W">
 <label class="ST_CI ST_SW"><span class="nm">Desactivar Transparencia y Animaciones</span><input type="checkbox" id="ST_SW"><i></i></label>
+<details id="ST_FV" hidden>
+<summary>⭐ Favoritos</summary>
+<div class="ST_CACHES" id="ST_FL"></div>
+</details>
 <details id="ST_D" hidden>
 <summary>🧹 Liberar espacio</summary>
 <section>
@@ -89,6 +93,23 @@
     localStorage.setItem('perf',swEl.checked?'low':'high');
     document.body.classList.toggle('low-perf',swEl.checked);
   };
+
+  const FK='⭐ Favoritos';
+  function fv(){
+    let l=[];
+    try{l=JSON.parse(localStorage.getItem('FAV')).galleries[FK]||[]}catch{}
+    $('ST_FV').hidden=!l.length;
+    $('ST_FL').replaceChildren(...l.map((p,i)=>{
+      const r=document.createElement('div');r.className='ST_CI';
+      r.append(S('nm',p.split('/').pop().replace(/\.[^.]+$/,'')),B('🗑️',()=>{
+        l.splice(i,1);
+        try{localStorage.setItem('FAV',JSON.stringify({galleries:{[FK]:l}}))}catch{}
+        fv();
+      }));
+      return r;
+    }));
+  }
+  fv();
 
   dEl.ontoggle=()=>{if(dEl.open)load()};
   navigator.storage?.estimate?.().then(e=>{if(typeof e.usage==='number'){dEl.hidden=false;upd(e)}}).catch(()=>{});

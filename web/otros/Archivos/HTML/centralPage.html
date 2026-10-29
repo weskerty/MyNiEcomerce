@@ -129,6 +129,16 @@ opacity:.5;
 cursor:default
 }
 
+.FV_ON{min-height:0}
+.FV_ON .pc-hd{display:none}
+.FV_ON .pc-ml{display:flex;flex-wrap:wrap;justify-content:center}
+.FV_ON .pc-mi{width:80px;height:80px;min-height:0;padding:6px 4px}
+.FV_ON .pc-mc p{display:none}
+.FV_ON .pc-mc h3{font-size:.74rem;font-weight:500;border:none}
+.pc-mc h3{-webkit-mask:none;mask:none}
+.pc-mc h3 span{margin-right:.3em}
+.FV_ON .pc-mc h3 span{display:block;font-size:36px;line-height:1;margin:0 0 6px}
+
 </style>
 
 <div class="pc-wrap">
@@ -259,7 +269,7 @@ navigator.serviceWorker.ready.then(rs);
   <div class="pc-ml">
     <a href="web/es.html" class="pc-mi">
       <div class="pc-mc">
-        <h3>🏪 Tienda Virtual</h3>
+        <h3><span>🏪</span>Tienda Virtual</h3>
         <p>Compras de todo tipo; boletos, alimentos, utensilios, etc.</p>
       </div>
     </a>
@@ -267,13 +277,13 @@ navigator.serviceWorker.ready.then(rs);
     
     <a href="web/otros/Archivos/HTML/Grupos.html" class="pc-mi" >
       <div class="pc-mc">
-        <h3>🫂 Actividades </h3>
+        <h3><span>🫂</span>Actividades </h3>
         <p>Juntadas, Lectura, Reciclaje etc. Todos son libres de Participar 🤗</p>
       </div>
     </a>
 <a href="web/otros/Archivos/HTML/apps.html" class="pc-mi">
   <div class="pc-mc">
-    <h3>🧩 Juegos y Apps</h3>
+    <h3><span>🧩</span>Juegos y Apps</h3>
     <p>Monton de Juegos y Aplicaciones 😻</p>
   </div>
 </a>
@@ -281,7 +291,7 @@ navigator.serviceWorker.ready.then(rs);
     
     <a href="web/otros/Archivos/Dinamico/🧩 Apps/Localizador.html" class="pc-mi" >
       <div class="pc-mc">
-        <h3>📍 Donde Hay? </h3>
+        <h3><span>📍</span>Donde Hay? </h3>
         <p>Busca puntos de reciclaje y mas.</p>
       </div>
     </a> 
@@ -291,7 +301,7 @@ navigator.serviceWorker.ready.then(rs);
 
 <a href="web/otros/Archivos/MarkDowns/Install.html" class="pc-mi" id="INS" style="display:none">
   <div class="pc-mc">
-    <h3>📱 Instala la App</h3>
+    <h3><span>📱</span>Instala la App</h3>
     <p>Ahorra Saldo y Recibe Ofertas</p>
   </div>
 </a>
@@ -300,8 +310,15 @@ navigator.serviceWorker.ready.then(rs);
   </div>
 </div>
 
+<div style="padding:0 16px 16px"><div class="grid-gallery FV1" data-title="" data-gallery-key="⭐ Favoritos"></div></div>
+
 <script>
 (function(){
+try{
+const f=localStorage.getItem('FAV');
+document.querySelector('.FV1').dataset.jsonPath=URL.createObjectURL(new Blob([f||'{}']));
+if(JSON.parse(f).galleries['⭐ Favoritos'].length)document.querySelector('.pc-wrap').classList.add('FV_ON');
+}catch(e){}
 const i=document.getElementById('INS');
 function show(){i.style.display='';}
 if(window._PWA)show();

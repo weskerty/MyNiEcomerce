@@ -48,7 +48,7 @@ body.low-perf .gallery-item::after{display:none}
 .gi-hd-flat{display:block;text-align:center;text-decoration:none;color:inherit;margin-bottom:8px}
 .BS1 .BS2.GL_C{translate:0 calc(1px*var(--GL_M));scale:calc(1 - .015*var(--GL_M));box-shadow:inset 0 3px 8px rgba(0,0,0,.4),var(--GL_IN)}`;
 document.head.appendChild(_S);
-const IO=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){IO.unobserve(x.target);_observed.delete(x.target);x.target.__ld&&x.target.__ld()}})},{rootMargin:'300px'});
+const IO=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){IO.unobserve(x.target);x.target.__ld&&x.target.__ld()}})},{rootMargin:'300px'});
 let _hidden=false;document.addEventListener('visibilitychange',()=>{_hidden=document.hidden});
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 const _CD0=/CD=0(?!\d)/;
@@ -130,7 +130,7 @@ function reqGeo(cb){
       _geoCbs=[];
     },
     ()=>{},
-    {}
+    {maximumAge:600000}
   );
 }
 window.__reqGeo=reqGeo;
@@ -432,15 +432,17 @@ function decorate(c){
   c.dataset.decorated='1';
   const title=c.dataset.title||c.id.replace(/-gallery$|-grid$/,'');
   const href=c.dataset.href;
-  if(!title)return c;
+  if(!title&&c.dataset.title!=='')return c;
   const sec=document.createElement('div');sec.className='gi-section';
   c.parentNode.insertBefore(sec,c);
+  sec.appendChild(c);
+  if(!title)return c;
   const hd=document.createElement(href?'a':'div');
   hd.className='gi-hd';
   if(href)hd.href=href;
   const h2=document.createElement('h2');h2.textContent=title+' ➡️';
   hd.appendChild(h2);
-  sec.appendChild(hd);sec.appendChild(c);
+  sec.insertBefore(hd,c);
   c._h2=h2;c._baseTitle=title;
   return c;
 }
@@ -547,7 +549,7 @@ m.forEach(c=>{c.dataset.gi=1;decorate(c);c.__ld=()=>cMD(c);IO.observe(c);_observ
 
 document.addEventListener('contentLoaded',()=>{
 _observed.forEach(c=>{
-if(!document.contains(c)){
+if(!c.isConnected&&c.getRootNode().nodeType!==11){
 if(c.__stop){c.__stop();c.__stop=null}
 IO.unobserve(c);_observed.delete(c)
 }});

@@ -26,7 +26,7 @@
 const a=document.getElementById('TW_C'),c=a.getContext('2d');
 const RG=(s,n)=>Array.from({length:n},(_,i)=>String.fromCodePoint(s+i));
 const EM=[...RG(0x1F345,59),...RG(0x1F400,63)];
-let W=0,E,h,p,L,Y0,Gv,B=[],bl=null,PY=0,cy=0,sg=1,go=0,sc=0,SP=[],id=0,lt=performance.now(),best=+localStorage.getItem('TW_B')||0;
+let W=0,DR=1,E,h,p,L,Y0,Gv,B=[],bl=null,PY=0,cy=0,sg=1,go=0,sc=0,SP=[],id=0,lt=performance.now(),best=+localStorage.getItem('TW_B')||0;
 const vb=n=>navigator.vibrate&&navigator.vibrate(n);
 const RE=()=>{let e;do e=EM[Math.random()*EM.length|0];while(B.length&&e==B[B.length-1].e);return e};
 const MG=()=>Math.max(h*.28,h*.6-sc*.012*h);
@@ -135,8 +135,10 @@ D();
 }
 function RS(){
 const ch=innerWidth!=W;
-a.width=W=innerWidth;
-a.height=E=innerHeight;
+DR=Math.min(2,devicePixelRatio||1);
+a.width=(W=innerWidth)*DR;
+a.height=(E=innerHeight)*DR;
+c.setTransform(DR,0,0,DR,0,0);
 h=Math.max(34,Math.min(56,Math.min(W,E)*.09))|0;
 p=h*.92;
 L=E*.2;
