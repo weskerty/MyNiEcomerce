@@ -153,10 +153,10 @@ button:not([class]):disabled::after{display:none}
 .BOTON-M5{margin:0;font-size:.74rem;font-weight:500;letter-spacing:.02em;color:rgba(255,255,255,.85);line-height:1.15;overflow-wrap:anywhere}
 
 .BS1{display:flex;flex-wrap:wrap;justify-content:center}
-.BS2{width:64px;height:64px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;padding:4px;border-radius:var(--r-sm);margin:4px;--GL_Z:.05}
+.BS2{width:64px;height:64px;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;border-radius:var(--r-sm);margin:4px;--GL_Z:.05}
 .BS3{text-align:center}
-.BS4{font-size:3em;line-height:1;display:inline-block}
-.BS5{margin:0;font-size:.7rem;white-space:nowrap}
+.BS4{font-size:2.5em;line-height:1;display:inline-block}
+.BS5{margin:0;font-size:.7rem;line-height:1.15;white-space:nowrap}
 
 .BMD1{display:flex;align-items:center;border-radius:var(--r-md);margin-bottom:8px;--GL_R:var(--GL_RS);--GL_F:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03) 50%,rgba(255,255,255,.02));--GL_FH:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.06) 50%,rgba(255,255,255,.04))}
 .BMD1:hover{--GL_R:var(--GL_RC)}
@@ -168,6 +168,7 @@ button:not([class]):disabled::after{display:none}
 .BMD1-CN p{margin:0;font-size:.85rem;color:var(--TX3);line-height:1.3;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 
 .GL_C{--GL_R:var(--GL_RC)}
+:is(.gallery-item,.bl-card):active{border-color:var(--GL_BC);background-image:var(--GL_RC),var(--GL_PF);background-clip:border-area,padding-box;background-origin:border-box}
 
 :where(.content,#disqus-container,dialog,details,table){
 border:var(--GL_BW) solid var(--GL_BC);
@@ -253,9 +254,10 @@ ins.adsbygoogle[data-ad-status=unfilled]{display:none!important}
 details:not([open]):has(>summary:focus-visible){box-shadow:var(--FRH),var(--GL_IN)}
 details[open]>summary:focus-visible{background:var(--GL_RC) border-box,var(--rdm-bg) padding-box;background-clip:border-area,padding-box;box-shadow:var(--FRH)}
 details:not([open])>summary:focus-visible{outline:none}
+#content:focus,#content :is(h1,h2):focus{outline:none}
 .PL1:focus-visible{box-shadow:var(--FRH)}
 @media(prefers-reduced-motion:no-preference){
-body:not(.low-perf) :is(.GL_C,.PL1_A,.PL1:active,.PL1:focus-visible,.BMD1:hover,:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.BMD1):active,:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.BMD1):focus-visible,details:not([open]):has(>summary:focus-visible),details[open]>summary:focus-visible){--GL_RC:conic-gradient(from var(--a),var(--GL_CS));animation:FR1 3s linear infinite}
+body:not(.low-perf) :is(.GL_C,.gallery-item:active,.bl-card:active,.PL1_A,.PL1:active,.PL1:focus-visible,.BMD1:hover,:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.BMD1):active,:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.BMD1):focus-visible,details:not([open]):has(>summary:focus-visible),details[open]>summary:focus-visible){--GL_RC:conic-gradient(from var(--a),var(--GL_CS));animation:FR1 3s linear infinite}
 }
 }
 

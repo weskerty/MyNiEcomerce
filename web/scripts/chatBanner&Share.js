@@ -152,7 +152,7 @@ function openExt(url){
 }
 
 const _nb=document.createElement('div');
-_nb.className='cb-nb cb-nh';
+_nb.className='cb-nb cb-nh';_nb.setAttribute('role','navigation');_nb.setAttribute('aria-label','Menu');
 const _nbCt=_nb;
 
 const pk=document.createElement("div");pk.className="cb-pk";pk.innerHTML="📦";
