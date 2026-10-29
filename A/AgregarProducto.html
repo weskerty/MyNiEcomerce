@@ -130,7 +130,7 @@
             </div>
             <div class="ap-img-fields">
               <div class="fg"><label>Nombre</label><input id="ap-nb" type="text" placeholder="Nombre del producto" maxlength="100" autocomplete="off"></div>
-              <div class="fg"><label>Codigo ID</label><input id="ap-id" type="text" placeholder="SKU123" maxlength="50" autocomplete="off"></div>
+              <div class="fg"><label>Codigo ID</label><input id="ap-id" type="text" placeholder="Vacio = aleatorio" maxlength="50" autocomplete="off"></div>
             </div>
           </div>
           <div class="fg-hint" id="ap-imgnm"></div>
@@ -168,6 +168,13 @@
         <div class="fg"><label>Confirmar Nueva</label><input id="ap-cpn2" type="password" placeholder="••••••" autocomplete="new-password"></div>
         <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();AP_cambiarPass()">Guardar Nueva Contrasena</button></div>
         <div class="PG1"><button type="button" onclick="AP_logout()">Cerrar Sesion</button></div>
+      </form>
+      <form>
+        <h2>Cambiar Numero</h2>
+        <div class="fg"><label>Numero Nuevo</label><input id="ap-ctn" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="off"></div>
+        <div class="fg"><label>Contrasena Actual</label><input id="ap-cta" type="password" placeholder="••••••" autocomplete="current-password"></div>
+        <div class="fg-hint">Te escribimos por WhatsApp al numero nuevo para confirmar</div>
+        <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();AP_cambiarTel()">Solicitar Cambio</button></div>
       </form>
     </div>
   </div>
@@ -532,6 +539,16 @@ window.AP_cambiarPass=async function(){
   AP_toast('Contrasena actualizada');
 };
 
+window.AP_cambiarTel=async function(){
+  const tn=document.getElementById('ap-ctn').value.replace(/\D/g,'');
+  const pa=document.getElementById('ap-cta').value;
+  if(!tn||!pa)return AP_toast('Completa los campos','warn');
+  const{ok,data}=await AP_fetch('cambiarTel',{method:'POST',body:JSON.stringify({password:pa,telefonoNuevo:tn})});
+  if(!ok)return AP_toast(data.error||'Error','err');
+  ['ap-ctn','ap-cta'].forEach(i=>document.getElementById(i).value='');
+  AP_toast('Cambio solicitado');
+};
+
 window.AP_logout=async function(){
   await AP_fetch('logout',{method:'POST',body:JSON.stringify({})});
   AP_dck('ap_tel');AP_dck('ap_tk');AP_dck('ap_al');
@@ -543,7 +560,7 @@ window.AP_enviar=async function(){
   const cat=document.getElementById('ap-cat').value;
   const sub=document.getElementById('ap-sub').value;
   const ch=document.getElementById('ap-ch').value;
-  const id=document.getElementById('ap-id').value.trim();
+  let id=document.getElementById('ap-id').value.trim();
   const nb=document.getElementById('ap-nb').value.trim();
   const pcRaw=document.getElementById('ap-pc').value.replace(/\D/g,'');
   const cm=document.getElementById('ap-cm').value.replace(/\D/g,'');
@@ -552,7 +569,10 @@ window.AP_enviar=async function(){
   const imgEl=document.getElementById('ap-img');
   const imgBlob=imgEl._blob;
   const imgExt=imgEl._ext||'.webp';
-  if(!id)return AP_flagField('ap-id');
+  if(!id){
+    do id=Math.random().toString(36).slice(2,10).toUpperCase();while(_AP_idsEnUso.has(id));
+    document.getElementById('ap-id').value=id;
+  }
   if(!nb)return AP_flagField('ap-nb');
   if(!pcRaw&&!tipo)return AP_flagField('ap-pc');
   if(!imgBlob)return AP_flagField('ap-img-thumb');
@@ -694,8 +714,9 @@ window.AP_loadSolicitudes=async function(){
   const{ok,data}=await AP_fetch('historial',{method:'POST',body:JSON.stringify({})});
   if(!ok){lst.innerHTML=`<div class="fg-hint err">${data.error||'Error'}</div>`;return;}
   const entries=data.entries||[];
-  if(!entries.length){lst.innerHTML='<div class="fg-hint ap-c">Sin solicitudes pendientes</div>';return;}
-  lst.innerHTML='';
+  const tp=data.telPend?`<div class="fg-hint ok ap-c">Cambio de numero pendiente: ${AP_esc(data.telPend)}</div>`:'';
+  if(!entries.length){lst.innerHTML=tp+'<div class="fg-hint ap-c">Sin solicitudes pendientes</div>';return;}
+  lst.innerHTML=tp;
   const badges={
     pendiente:'<span class="ap-badge pend">Pendiente</span>',
     rechazado:'<span class="ap-badge rej">Rechazado</span>'

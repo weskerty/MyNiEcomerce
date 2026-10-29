@@ -170,6 +170,13 @@
         <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_cambiarPass()">Guardar Nueva Contrasena</button></div>
         <div class="PG1"><button type="button" onclick="PB_logout()">Cerrar Sesion</button></div>
       </form>
+      <form>
+        <h2>Cambiar Numero</h2>
+        <div class="fg"><label>Numero Nuevo</label><input id="pb-ctn" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="off"></div>
+        <div class="fg"><label>Contrasena Actual</label><input id="pb-cta" type="password" placeholder="••••••" autocomplete="current-password"></div>
+        <div class="fg-hint">Te escribimos por WhatsApp al numero nuevo para confirmar</div>
+        <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_cambiarTel()">Solicitar Cambio</button></div>
+      </form>
     </div>
   </div>
 </div>
@@ -379,6 +386,16 @@ window.PB_cambiarPass=async function(){
   PB_toast('Contrasena actualizada');
 };
 
+window.PB_cambiarTel=async function(){
+  const tn=document.getElementById('pb-ctn').value.replace(/\D/g,'');
+  const pa=document.getElementById('pb-cta').value;
+  if(!tn||!pa)return PB_toast('Completa los campos','warn');
+  const{ok,data}=await PB_fetch('cambiarTel',{method:'POST',body:JSON.stringify({password:pa,telefonoNuevo:tn})});
+  if(!ok)return PB_toast(data.error||'Error','err');
+  ['pb-ctn','pb-cta'].forEach(i=>document.getElementById(i).value='');
+  PB_toast('Cambio solicitado');
+};
+
 window.PB_logout=async function(){
   await PB_fetch('logout',{method:'POST',body:JSON.stringify({})});
   PB_dck('ap_tel');PB_dck('ap_tk');
@@ -525,8 +542,9 @@ window.PB_loadSolicitudes=async function(){
   const{ok,data}=await PB_fetch('historial',{method:'POST',body:JSON.stringify({})});
   if(!ok){lst.innerHTML=`<div class="fg-hint err">${data.error||'Error'}</div>`;return;}
   const entries=(data.entries||[]).filter(e=>PB_CATS.includes(e.categoria));
-  if(!entries.length){lst.innerHTML='<div class="fg-hint pb-c">Sin solicitudes pendientes</div>';return;}
-  lst.innerHTML='';
+  const tp=data.telPend?`<div class="fg-hint ok pb-c">Cambio de numero pendiente: ${PB_esc(data.telPend)}</div>`:'';
+  if(!entries.length){lst.innerHTML=tp+'<div class="fg-hint pb-c">Sin solicitudes pendientes</div>';return;}
+  lst.innerHTML=tp;
   const badges={pendiente:'<span class="pb-badge pend">Pendiente</span>',rechazado:'<span class="pb-badge rej">Rechazado</span>'};
   entries.forEach(e=>{
     const div=document.createElement('div');div.className='pb-sol-item';
