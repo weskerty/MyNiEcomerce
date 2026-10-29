@@ -24,7 +24,11 @@
 .pb-badge.pend{color:var(--accent-2)}
 .pb-badge.apr{color:var(--ok)}
 .pb-badge.rej{color:var(--err)}
-.pb-msg{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);max-width:88vw;padding:10px 22px;border:1px solid var(--rdm-border);border-radius:var(--r-xl);background:var(--rdm-bg);box-shadow:var(--GL_E);z-index:9999;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pb-msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:88vw;padding:10px 22px;border:1px solid var(--rdm-border);border-radius:var(--r-xl);background:var(--rdm-bg);box-shadow:var(--GL_E);z-index:9999;pointer-events:none;text-align:center}
+#PB_DG1{width:auto;max-width:min(420px,calc(100vw - 40px));text-align:center}
+#PB_DG1 p.err{color:var(--err)}
+#PB_DG1 p.warn{color:var(--warn)}
+#PB_DG1 div{display:flex;gap:10px;justify-content:center;margin-top:16px}
 .pb-msg:is(.ok,.err,.warn){border-color:currentColor}
 .pb-msg.ok{color:var(--ok)}
 .pb-msg.err{color:var(--err)}
@@ -32,6 +36,8 @@
 @keyframes pb-shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 .pb-shake{animation:pb-shake .4s ease 3;border-color:var(--err)!important}
 </style>
+
+<dialog id="PB_DG1"><form method="dialog"><p></p><div><button>Aceptar</button><button type="button">Ayuda</button></div></form></dialog>
 
 <div id="pb-wrap">
 <h1>📍 Agregar Lugar</h1>
@@ -199,6 +205,13 @@ let _PB_msg=null,_PB_gpsCT=null;
 
 function PB_esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
 function PB_toast(t,tp='ok',d=3000){
+  if(tp!=='ok'){
+    const g=document.getElementById('PB_DG1'),p=g.querySelector('p');
+    p.textContent=t;p.className=tp;
+    g.querySelector('button[type=button]').onclick=()=>open('https://wa.me/595972184435?text='+encodeURIComponent('Ayuda: '+t),'_blank','noopener');
+    if(!g.open)g.showModal();
+    return;
+  }
   if(_PB_msg)_PB_msg.remove();
   _PB_msg=document.createElement('div');
   _PB_msg.className='pb-msg '+tp;

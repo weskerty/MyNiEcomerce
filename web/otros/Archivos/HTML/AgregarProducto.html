@@ -25,7 +25,11 @@
 .ap-badge.pend{color:var(--accent-2)}
 .ap-badge.apr{color:var(--ok)}
 .ap-badge.rej{color:var(--err)}
-.ap-msg{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);max-width:88vw;padding:10px 22px;border:1px solid var(--rdm-border);border-radius:var(--r-xl);background:var(--rdm-bg);box-shadow:var(--GL_E);z-index:9999;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ap-msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:88vw;padding:10px 22px;border:1px solid var(--rdm-border);border-radius:var(--r-xl);background:var(--rdm-bg);box-shadow:var(--GL_E);z-index:9999;pointer-events:none;text-align:center}
+#AP_DG1{width:auto;max-width:min(420px,calc(100vw - 40px));text-align:center}
+#AP_DG1 p.err{color:var(--err)}
+#AP_DG1 p.warn{color:var(--warn)}
+#AP_DG1 div{display:flex;gap:10px;justify-content:center;margin-top:16px}
 .ap-msg:is(.ok,.err,.warn){border-color:currentColor}
 .ap-msg.ok{color:var(--ok)}
 .ap-msg.err{color:var(--err)}
@@ -39,6 +43,8 @@
 #ap-mde .editor-toolbar button:is(:hover,.active){background:rgba(255,255,255,.1)!important;border-color:rgba(255,255,255,.15)!important}
 #ap-mde .editor-toolbar i.separator{border-color:rgba(255,255,255,.15)!important}
 </style>
+
+<dialog id="AP_DG1"><form method="dialog"><p></p><div><button>Aceptar</button><button type="button">Ayuda</button></div></form></dialog>
 
 <div id="ap-wrap">
 <h1>🏪 Agregar Producto</h1>
@@ -204,6 +210,13 @@ let _AP_msg=null;
 function AP_esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
 
 function AP_toast(t,tp='ok',d=3000){
+  if(tp!=='ok'){
+    const g=document.getElementById('AP_DG1'),p=g.querySelector('p');
+    p.textContent=t;p.className=tp;
+    g.querySelector('button[type=button]').onclick=()=>open('https://wa.me/595972184435?text='+encodeURIComponent('Ayuda: '+t),'_blank','noopener');
+    if(!g.open)g.showModal();
+    return;
+  }
   if(_AP_msg)_AP_msg.remove();
   _AP_msg=document.createElement('div');
   _AP_msg.className='ap-msg '+tp;
