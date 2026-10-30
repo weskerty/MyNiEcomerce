@@ -136,15 +136,15 @@
 const CTE=document.getElementById('ctw');
 if(!CTE)return;
 const $=i=>document.getElementById(i);
-const API='/api/chat',PING=10000,CT_RT=20000,CT_MB=209715200;
-const M_PEER='https://cdn.jsdelivr.net/npm/peerjs@1.5.5/+esm';
+const CT_RT=20000,CT_MB=209715200;
+const M_PEER='https://cdn.jsdelivr.net/npm/peerjs@1.5.5/+esm',M_SL='/web/scripts/Otros/Salas.js';
 const M_WT='https://cdn.jsdelivr.net/npm/webtorrent@3.0.16/dist/webtorrent.min.js';
 const M_HCS='https://cdn.jsdelivr.net/npm/hybrid-chunk-store@1.2.6/+esm';
 const M_QR='https://cdn.jsdelivr.net/npm/qr-creator@1.0.0/+esm';
 const M_H5Q='https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js';
 const M_HLS='https://cdn.jsdelivr.net/npm/hls.js@1.7.1/dist/hls.min.mjs';
 const M_DASH='https://cdn.jsdelivr.net/npm/dashjs@5.2.1/dist/modern/esm/dash.all.min.js';
-let peer=null,pid=null,room=null,token=null,pingIv=null,conns={},wl=null;
+let peer=null,pid=null,room=null,R=null,conns={},wl=null;
 let wt=null,HCS=null,curTorrent=null,qrCam=null,scrStream=null,curCall=null;
 let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null,linked=false,joinTo=null;
 let cSince={},curURL=null,lastProg=-1,hls=null,wasLinked=false,localOn=false;
@@ -153,14 +153,6 @@ let rec=null,recCh=[],recIv=null,recT0=0;
 const HP=location.hash.replace(/^#/,'').split('#');
 const PRE=(HP[1]||'').trim().toUpperCase();
 
-async function api(m,p,b){
-  const o={method:m,headers:{'Content-Type':'application/json'}};
-  if(b)o.body=JSON.stringify(b);
-  const r=await fetch(API+p,o);
-  const d=await r.json().catch(()=>({}));
-  if(!r.ok)throw Object.assign(new Error(d.error||String(r.status)),{status:r.status});
-  return d;
-}
 function msg(t,err){
   const e=$('ct-msg');
   e.textContent=t;
@@ -574,8 +566,14 @@ async function initPeer(){
     });
     peer.once('open',id=>{
       pid=id;
-      peer.on('connection',c=>hookConn(c));
-      peer.on('call',call=>{
+      peer.on('connection',async c=>{
+        const b=R&&await R.acc(c);
+        if(!b)return;
+        hookConn(c);
+        b.forEach(d=>onData(d,c.peer));
+      });
+      peer.on('call',async call=>{
+        if(!R||!await R.ok(call.peer)){try{call.close();}catch(e){}return;}
         call.answer();
         call.on('stream',s=>playStream(s));
         curCall=call;
@@ -589,7 +587,7 @@ async function initPeer(){
 function hookConn(c){
   conns[c.peer]=c;
   miss[c.peer]=0;
-  c.on('open',()=>{
+  const op=()=>{
     linked=true;wasLinked=true;
     delete cSince[c.peer];
     clearTimeout(joinTo);
@@ -603,7 +601,8 @@ function hookConn(c){
     wtOff();
     if(!isHost){shareSend();pasteIn();}
     startHB();
-  });
+  };
+  if(c.open)op();else c.on('open',op);
   c.on('data',d=>onData(d,c.peer));
   c.on('close',()=>dropPeer(c.peer));
   c.on('error',()=>dropPeer(c.peer));
@@ -661,12 +660,12 @@ async function resetPair(txt){
 
 async function joinRoom(rid,noConn){
   await initPeer();
+  if(!R)R=(await import(M_SL)).SL1({nick:'cast',on:connectMissing});
   let d;
-  try{d=await api('POST','/rooms/'+rid+'/join',{pw:'',pid,nick:'cast'});}
+  try{d=await R.join(rid,pid);}
   catch(e){msg(e.status===429?'Demasiados intentos, espera un rato':'Error al unirse',true);return false;}
-  room=rid;token=d.token;
+  room=rid;
   if(!noConn)connectMissing(d.peers);
-  startPing();
   return d;
 }
 async function newRoom(){
@@ -692,21 +691,9 @@ function connectMissing(peers){
     if(nc)hookConn(nc);
   });
 }
-function startPing(){
-  stopPing();
-  pingIv=setInterval(async()=>{
-    if(!room)return;
-    try{
-      const d=await api('POST','/rooms/'+room+'/ping',{pid,token});
-      connectMissing(d.peers);
-    }catch(e){}
-  },PING);
-}
-function stopPing(){if(pingIv){clearInterval(pingIv);pingIv=null;}}
 function leaveRoom(){
-  if(room&&pid)api('DELETE','/rooms/'+room+'/leave',{pid,token}).catch(()=>{});
-  stopPing();
-  room=null;token=null;
+  if(R)R.leave();
+  room=null;
 }
 
 async function showQR(code){
