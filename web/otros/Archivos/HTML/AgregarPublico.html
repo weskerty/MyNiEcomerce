@@ -126,7 +126,8 @@
         </select></div>
         <div class="fg"><label>Nombre</label><input id="pb-lz-nm" placeholder="Nombre del lugar" maxlength="60"></div>
         <div class="fg"><label>Horario</label><input id="pb-lz-hr" placeholder="Lun - Vie: 8:00 - 18:00" maxlength="60"></div>
-        <div class="fg"><label>Ubicacion</label><button type="button" id="pb-gps-btn-lz" onclick="PB_pedirGPS('pb-gps-hint-lz')">Usar mi ubicacion</button></div>
+        <div class="fg"><label>Ubicacion</label><input id="pb-lz-ct" placeholder="-25.3349, -57.5206" autocomplete="off" oninput="PB_ctIn()"></div>
+        <div class="fg"><button type="button" id="pb-gps-btn-lz" onclick="PB_pedirGPS()">📍 Usar mi ubicacion</button></div>
         <div class="fg-hint" id="pb-gps-hint-lz"></div>
         <div class="fg"><label>Canal de contacto</label>
           <select id="pb-lz-ch">
@@ -277,21 +278,40 @@ window.PB_lzTipoChange=function(){
   document.getElementById('pb-lz-mat-wrap').style.display=t==='reciclaje'?'':'none';
 };
 
-let _PB_gpsTarget=null;
-window.PB_pedirGPS=function(hintId){
+const PB_CTH='En Google Maps mantene presionado el lugar y pega aca los numeros, o usa tu ubicacion';
+document.getElementById('pb-gps-hint-lz').textContent=PB_CTH;
+window.PB_pedirGPS=function(){
   if(!navigator.geolocation)return PB_toast('Tu navegador no soporta ubicacion','err');
-  _PB_gpsTarget=hintId;
-  const hint=document.getElementById(hintId);
+  const hint=document.getElementById('pb-gps-hint-lz');
   hint.className='fg-hint';hint.textContent='Obteniendo...';
   navigator.geolocation.getCurrentPosition(pos=>{
-    const lat=pos.coords.latitude,lon=pos.coords.longitude;
-    const ns=lat<0?'S':'N',we=lon<0?'W':'E';
-    _PB_gpsCT=`${ns}${Math.abs(lat).toFixed(4)}${we}${Math.abs(lon).toFixed(4)}`;
-    hint.className='fg-hint ok';hint.textContent='Ubicacion obtenida';
-  },err=>{
+    document.getElementById('pb-lz-ct').value=pos.coords.latitude.toFixed(5)+', '+pos.coords.longitude.toFixed(5);
+    PB_ctIn();
+  },()=>{
     hint.className='fg-hint err';hint.textContent='No se pudo obtener ubicacion';
-  });
+  },{timeout:10000});
 };
+
+window.PB_ctIn=function(){
+  const v=document.getElementById('pb-lz-ct').value,hint=document.getElementById('pb-gps-hint-lz');
+  const m=v.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/)||v.match(/(-?\d{1,2}\.\d+)\s*,\s*\+?(-?\d{1,3}\.\d+)/);
+  const la=m?+m[1]:0,lo=m?+m[2]:0;
+  _PB_gpsCT=m&&Math.abs(la)<=90&&Math.abs(lo)<=180?`${la<0?'S':'N'}${Math.abs(la).toFixed(4)}${lo<0?'W':'E'}${Math.abs(lo).toFixed(4)}`:null;
+  hint.textContent='';
+  if(!v.trim()){hint.className='fg-hint';hint.textContent=PB_CTH;return;}
+  if(!_PB_gpsCT){hint.className='fg-hint err';hint.textContent=/goo\.gl|share\.google/.test(v)?'Ese link no trae coordenadas, pega los numeros':'Formato: -25.3349, -57.5206';return;}
+  const a=document.createElement('a');
+  a.href=`https://www.google.com/maps?q=${la},${lo}`;a.target='_blank';a.rel='noopener noreferrer';a.textContent='ver en el mapa';
+  hint.className='fg-hint ok';hint.append('Ubicacion valida, ',a);
+};
+
+function PB_cl(s){return s.replace(/[;\/\\<>"`|\x00-\x1f]/g,'').replace(/'/g,'’').replace(/-(?=[A-Z]{2}=)/g,'- ');}
+document.getElementById('pb-tab-nuevo').addEventListener('input',e=>{
+  const t=e.target;
+  if(!t.matches('textarea,input:not(#pb-lz-ct):not([type=number]):not([type=file])'))return;
+  const c=PB_cl(t.value);
+  if(c!==t.value)t.value=c;
+});
 
 async function PB_processImg(file){
   const isAnimatable=file.type==='image/avif'||file.type==='image/webp';
@@ -342,6 +362,8 @@ async function PB_blobToB64(blob){
 function PB_showMain(){
   document.getElementById('pb-auth').style.display='none';
   document.getElementById('pb-main').style.display='block';
+  const h=decodeURIComponent(location.hash.split('#')[2]||'');
+  if(PB_CATS.includes(h))document.getElementById('pb-cat').value=h;
   PB_catChange();
 }
 
@@ -406,27 +428,28 @@ window.PB_logout=async function(){
 function PB_genID(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 
 function PB_buildNB(cat){
+  const G=id=>PB_cl(document.getElementById(id).value).trim();
   if(cat==='minecraft'){
-    const nm=document.getElementById('pb-mc-nm').value.trim();
-    const desc=document.getElementById('pb-mc-desc').value.trim();
-    const host=document.getElementById('pb-mc-host').value.trim();
+    const nm=G('pb-mc-nm');
+    const desc=G('pb-mc-desc');
+    const host=G('pb-mc-host');
     const port=document.getElementById('pb-mc-port').value.trim();
     const tipo=document.getElementById('pb-mc-tipo').value;
     if(!nm||!host||!port)return null;
     return{NB:`${nm};${desc};${host};${port};${tipo}`,CH:'',CT:''};
   }
   if(cat==='localizador'){
-    const nm=document.getElementById('pb-lz-nm').value.trim();
+    const nm=G('pb-lz-nm');
     const tipo=document.getElementById('pb-lz-tipo').value;
-    const hr=document.getElementById('pb-lz-hr').value.trim();
+    const hr=G('pb-lz-hr');
     const ch=document.getElementById('pb-lz-ch').value;
-    if(!nm)return null;
+    if(!nm||!_PB_gpsCT)return null;
     const tipoTag=tipo==='reciclaje'?`reciclaje-${document.getElementById('pb-lz-mat').value}`:tipo;
     return{NB:`${nm};${tipoTag};${hr}`,CH:ch,CT:_PB_gpsCT||''};
   }
   if(cat==='jugadores'){
-    const jg=document.getElementById('pb-jg-nm').value.trim().replace(/;/g,' ');
-    const desc=document.getElementById('pb-jg-desc').value.trim().replace(/;/g,' ');
+    const jg=G('pb-jg-nm');
+    const desc=G('pb-jg-desc');
     const ch=document.getElementById('pb-jg-ch').value;
     if(!jg)return null;
     return{NB:`${jg};${desc}`,CH:ch,CT:''};
@@ -436,6 +459,7 @@ function PB_buildNB(cat){
 
 window.PB_enviar=async function(){
   const cat=document.getElementById('pb-cat').value;
+  if(cat==='localizador'&&!_PB_gpsCT){PB_flagField('pb-lz-ct');return PB_toast('Falta la ubicacion','warn');}
   const packed=PB_buildNB(cat);
   if(!packed)return PB_toast('Completa los campos requeridos','warn');
   if(packed.NB.length>PB_NB_MAX)return PB_toast('Muy Largo','warn');
@@ -465,8 +489,9 @@ function PB_flagField(elId){
 }
 
 function PB_resetForm(){
-  ['pb-mc-nm','pb-mc-desc','pb-mc-host','pb-mc-port','pb-lz-nm','pb-lz-hr','pb-jg-nm','pb-jg-desc'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('pb-gps-hint-lz').textContent='';
+  ['pb-mc-nm','pb-mc-desc','pb-mc-host','pb-mc-port','pb-lz-nm','pb-lz-hr','pb-lz-ct','pb-jg-nm','pb-jg-desc'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('pb-gps-hint-lz').className='fg-hint';
+  document.getElementById('pb-gps-hint-lz').textContent=PB_CTH;
   document.getElementById('pb-imgnm').textContent='Toca para subir';
   _PB_gpsCT=null;
   const prev=document.getElementById('pb-imgprev');
