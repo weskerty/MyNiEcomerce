@@ -156,6 +156,7 @@
       <button class="qr-btn" id="qg-pn">⬇️ PNG</button>
       <button class="qr-btn" id="qg-sv">⬇️ SVG</button>
       <button class="qr-btn" id="qg-mv" style="display:none">⬇️ MP4</button>
+      <button class="qr-btn" id="qg-gf" style="display:none">⬇️ GIF</button>
       <button class="qr-btn" id="qg-bk">↩ Volver</button>
     </div>
   </div>
@@ -192,10 +193,11 @@
   const QGU='https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode_UTF8.js';
   const BWL='https://cdn.jsdelivr.net/npm/bwip-js@4.11.4/dist/bwip-js-min.js';
   const MBL='https://cdn.jsdelivr.net/npm/mediabunny@1.62.1/dist/bundles/mediabunny.min.mjs';
+  const GFL='https://cdn.jsdelivr.net/npm/gifenc@1.0.3/dist/gifenc.esm.js';
   const QG_HOME='https://cheagana.com',QG_AU='cheagana.com';
 
   let _cam=null,_cp=null,_pf=null,_res='',_tt=null,_blobUrl=null;
-  let QG_I=null,QG_IU=null,QG_TO=null,QG_M=null,QG_PD=null,QG_K=0,QG_VF=null,QG_VC=null,QG_CT=null;
+  let QG_I=null,QG_IU=null,QG_TO=null,QG_M=null,QG_PD=null,QG_K=0,QG_VF=null,QG_VC=null,QG_CT=null,QG_AD=null;
   const _ld={};
 
   const $=id=>document.getElementById(id);
@@ -546,7 +548,7 @@
     const grid=im?QG_G1(im,n*sd,P):null,gridM=im?(sd>1?QG_G1(im,n,P):grid):null;
     for(let r=0;r<n;r++)for(let c=0;c<n;c++){
       const cx=(c+q+.5)*cell,cy=(r+q+.5)*cell,crit=M.cr(r,c),dark=M.dk(r,c);
-      if(dark&&crit){sp(cx,cy,maxR*.98,'#111');continue;}
+      if(dark&&crit){sp(cx,cy,maxR+.3,'#111','sq');continue;}
       if(dark){
         const p=gridM?QG_P1(gridM,c,r):null,has=!!p&&p.a>60;
         const L=has?(.299*p.r+.587*p.g+.114*p.b)/255:0;
@@ -562,16 +564,16 @@
     qgc.width=qgc.height=P.px;
     const x=qgc.getContext('2d');
     x.fillStyle='#fff';x.fillRect(0,0,P.px,P.px);
-    QG_RD((cx,cy,rad,col)=>QG_D1(x,cx,cy,rad,P.sh,col),P,QG_M);
+    QG_RD((cx,cy,rad,col,s)=>QG_D1(x,cx,cy,rad,s||P.sh,col),P,QG_M);
   }
 
   function QG_SV1(){
     if(!QG_M)return '';
     const P=QG_PR(),px=P.px;
     const o=['<svg xmlns="http://www.w3.org/2000/svg" width="'+px+'" height="'+px+'" viewBox="0 0 '+px+' '+px+'"><metadata><rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/"><rdf:Description><dc:creator>'+QG_AU+'</dc:creator></rdf:Description></rdf:RDF></metadata><rect width="'+px+'" height="'+px+'" fill="#fff"/>'];
-    const sp=(cx,cy,rad,col)=>{
-      if(P.sh==='ci')o.push('<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rad.toFixed(1)+'" fill="'+col+'"/>');
-      else o.push('<rect x="'+(cx-rad).toFixed(1)+'" y="'+(cy-rad).toFixed(1)+'" width="'+(rad*2).toFixed(1)+'" height="'+(rad*2).toFixed(1)+'"'+(P.sh==='rd'?' rx="'+(rad*.5).toFixed(1)+'"':'')+' fill="'+col+'"/>');
+    const sp=(cx,cy,rad,col,s=P.sh)=>{
+      if(s==='ci')o.push('<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rad.toFixed(1)+'" fill="'+col+'"/>');
+      else o.push('<rect x="'+(cx-rad).toFixed(1)+'" y="'+(cy-rad).toFixed(1)+'" width="'+(rad*2).toFixed(1)+'" height="'+(rad*2).toFixed(1)+'"'+(s==='rd'?' rx="'+(rad*.5).toFixed(1)+'"':'')+' fill="'+col+'"/>');
     };
     QG_RD(sp,P,QG_M);
     o.push('</svg>');
@@ -689,7 +691,8 @@
     if(!f||(!vd&&!f.type.startsWith('image/'))){QS_T('Solo imagen o video');return;}
     if(QG_IU)URL.revokeObjectURL(QG_IU);
     QG_IU=URL.createObjectURL(f);
-    const ok=el=>{QG_I=el;QG_VF=vd?f:null;$('qg-rb').style.display='';$('qg-mv').style.display=vd?'':'none';QG_U1();};
+    if(QG_AD){QG_AD.close();QG_AD=null;}
+    const ok=el=>{QG_I=el;QG_VF=vd?f:null;$('qg-rb').style.display='';$('qg-mv').style.display=vd?'':'none';$('qg-gf').style.display='none';QG_U1();};
     if(vd){
       const v=document.createElement('video');
       v.muted=true;v.playsInline=true;v.preload='auto';
@@ -700,9 +703,34 @@
       return;
     }
     const im=new Image();
-    im.onload=()=>ok(im);
+    im.onload=async()=>{
+      ok(im);
+      const d=await QG_AI(f);
+      if(QG_I!==im){d?.close();return;}
+      QG_AD?.close();QG_AD=d;
+      $('qg-mv').style.display=$('qg-gf').style.display=d?'':'none';
+    };
     im.onerror=()=>{QS_T('Imagen invalida');};
     im.src=QG_IU;
+  }
+
+  async function QG_AI(f){
+    try{
+      if(!window.ImageDecoder||!await ImageDecoder.isTypeSupported(f.type))return null;
+      const d=new ImageDecoder({data:await f.arrayBuffer(),type:f.type});
+      await d.completed;await d.tracks.ready;
+      if(d.tracks.selectedTrack?.frameCount>1)return d;
+      d.close();
+    }catch{}
+    return null;
+  }
+
+  async function QG_AF(fn){
+    const d=QG_AD,k=d.tracks.selectedTrack.frameCount;
+    for(let i=0;i<k;i++){
+      const{image}=await d.decode({frameIndex:i});
+      try{await fn(image,i,k);}finally{image.close();}
+    }
   }
 
   function QG_CR(b){
@@ -719,40 +747,65 @@
     return new Blob([a.subarray(0,33),ch,a.subarray(33)],{type:'image/png'});
   }
 
-  async function QG_VX(){
-    if(!QG_M||!QG_VF)return;
-    const b=$('qg-mv');b.disabled=true;
-    QD_CL();st.scrollIntoView({behavior:'smooth',block:'start'});
+  async function QG_VX(gf){
+    if(!QG_M||!(gf?QG_AD:QG_VF||QG_AD))return;
+    const b=$(gf?'qg-gf':'qg-mv'),nm=gf?'GIF':'Video';b.disabled=true;
+    QD_CL();st.previousElementSibling.scrollIntoView({behavior:'smooth',block:'start'});
     QS_ST('Cargando conversor...','act');
     try{
-      const MB=await import(MBL);
-      const P=QG_PR(),M=QG_M,px=Math.min(P.px,1024),Q={...P,px};
+      const MB=await import(gf?GFL:MBL);
+      const P=QG_PR(),M=QG_M,px=Math.min(P.px,gf?512:1024),Q={...P,px};
       const c=document.createElement('canvas');c.width=c.height=px;
       const x=c.getContext('2d',{willReadFrequently:true});
-      const sp=(cx,cy,rad,col)=>QG_D1(x,cx,cy,rad,Q.sh,col),pv=qgc.getContext('2d');
-      const out=new MB.Output({format:new MB.Mp4OutputFormat(),target:new MB.BufferTarget()});
-      let n=0,t=0,ok=0;
-      const cv=await MB.Conversion.init({
-        input:new MB.Input({source:new MB.BlobSource(QG_VF),formats:MB.ALL_FORMATS}),output:out,tags:{artist:QG_AU},
-        video:{forceTranscode:true,processedWidth:px,processedHeight:px,process:async s=>{
-          x.fillStyle='#fff';x.fillRect(0,0,px,px);
-          QG_RD(sp,Q,M,s.toCanvasImageSource());
-          pv.drawImage(c,0,0,qgc.width,qgc.height);
-          if(n++%10===0){t++;try{if(await QS_DC(x.getImageData(0,0,px,px),true))ok++;}catch{}}
-          return c;
-        }}
-      });
-      if(!cv.isValid)throw new Error('formato no soportado');
-      cv.onProgress=p=>QS_ST('Video '+Math.round(p*100)+'%','act');
-      QG_VC=cv;
-      await cv.execute();
-      QG_VC=null;
-      dg.textContent='Video: lee '+ok+' de '+t+' cuadros muestreados';
+      const sp=(cx,cy,rad,col,s)=>QG_D1(x,cx,cy,rad,s||Q.sh,col),pv=qgc.getContext('2d');
+      let n=0,t=0,ok=0,r;
+      const rd=async im=>{
+        x.fillStyle='#fff';x.fillRect(0,0,px,px);
+        QG_RD(sp,Q,M,im);
+        pv.drawImage(c,0,0,qgc.width,qgc.height);
+        if(n++%10===0){t++;try{if(await QS_DC(x.getImageData(0,0,px,px),true))ok++;}catch{}}
+        return c;
+      };
+      const pg=(i,k)=>QS_ST(nm+' '+Math.round((i+1)/k*100)+'%','act');
+      if(gf){
+        const g=MB.GIFEncoder();
+        await QG_AF(async(im,i,k)=>{
+          await rd(im);
+          const d=x.getImageData(0,0,px,px).data,pl=MB.quantize(d,256);
+          g.writeFrame(MB.applyPalette(d,pl),px,px,{palette:pl,delay:(im.duration||1e5)/1e3});
+          pg(i,k);
+        });
+        g.finish();
+        r=[new Blob([g.bytes()],{type:'image/gif'}),'qr.gif','image/gif'];
+      }else{
+        const out=new MB.Output({format:new MB.Mp4OutputFormat(),target:new MB.BufferTarget()});
+        if(QG_AD){
+          const cs=new MB.CanvasSource(c,{codec:await MB.getFirstEncodableVideoCodec(out.format.getSupportedVideoCodecs(),{width:px,height:px}),bitrate:MB.QUALITY_HIGH});
+          out.addVideoTrack(cs);out.setMetadataTags({artist:QG_AU});
+          await out.start();
+          let s=0;
+          do await QG_AF(async(im,i,k)=>{const d=(im.duration||1e5)/1e6;await rd(im);await cs.add(s,d);s+=d;pg(i,k);});
+          while(s<3);
+          await out.finalize();
+        }else{
+          const cv=await MB.Conversion.init({
+            input:new MB.Input({source:new MB.BlobSource(QG_VF),formats:MB.ALL_FORMATS}),output:out,tags:{artist:QG_AU},
+            video:{forceTranscode:true,processedWidth:px,processedHeight:px,process:s=>rd(s.toCanvasImageSource())}
+          });
+          if(!cv.isValid)throw new Error('formato no soportado');
+          cv.onProgress=p=>QS_ST('Video '+Math.round(p*100)+'%','act');
+          QG_VC=cv;
+          await cv.execute();
+          QG_VC=null;
+        }
+        r=[new Blob([out.target.buffer],{type:'video/mp4'}),'qr.mp4','video/mp4'];
+      }
+      dg.textContent=nm+': lee '+ok+' de '+t+' cuadros muestreados';
       QS_ST('Crear QR','ok');
-      await QG_OUT(new Blob([out.target.buffer],{type:'video/mp4'}),'qr.mp4','video/mp4');
+      await QG_OUT(...r);
     }catch(e){
       QG_VC=null;
-      if(e&&e.name!=='ConversionCanceledError'){QS_T('Error Video: '+(e.message||e));QS_ST('Crear QR');}
+      if(e&&e.name!=='ConversionCanceledError'&&e.name!=='AbortError'){QS_T('Error '+nm+': '+(e.message||e));QS_ST('Crear QR');}
     }
     QG_R1();
     b.disabled=false;
@@ -820,8 +873,9 @@
   $('qg-if').onchange=e=>{const f=e.target.files[0];e.target.value='';QG_IM1(f);};
   $('qg-rb').onclick=()=>{
     QG_I=null;QG_VF=null;
+    if(QG_AD){QG_AD.close();QG_AD=null;}
     if(QG_IU){URL.revokeObjectURL(QG_IU);QG_IU=null;}
-    $('qg-rb').style.display='none';$('qg-mv').style.display='none';QG_U1();
+    $('qg-rb').style.display='none';$('qg-mv').style.display='none';$('qg-gf').style.display='none';QG_U1();
   };
   $('qg-pn').onclick=()=>{
     if(!QG_M){QS_T('Escribi algo primero');return;}
@@ -832,7 +886,8 @@
     QG_OUT(new Blob([QG_SV1()],{type:'image/svg+xml'}),'qr.svg','image/svg+xml');
   };
   $('qg-tb').onclick=QD_RUN;
-  $('qg-mv').onclick=QG_VX;
+  $('qg-mv').onclick=()=>QG_VX();
+  $('qg-gf').onclick=()=>QG_VX(1);
   mp.onclick=()=>{qgo.style.display=qgo.style.display==='none'?'':'none';};
 
   document.addEventListener('paste',QG_PV);
@@ -841,6 +896,7 @@
   if(cont)cont.addEventListener('contentUnload',()=>{
     QS_KK();QS_CX();
     if(QG_VC)QG_VC.cancel().catch(()=>{});
+    if(QG_AD){QG_AD.close();QG_AD=null;}
     document.removeEventListener('paste',QG_PV);
     if(QG_IU){URL.revokeObjectURL(QG_IU);QG_IU=null;}
     clearTimeout(_tt);clearTimeout(QG_TO);
