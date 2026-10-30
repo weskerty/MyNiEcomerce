@@ -186,7 +186,23 @@ const AG=document.getElementById('AG1'),AG_C=document.getElementById('AG_C1'),AG
 const AG_MS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'];
 const LF_L='web/scripts/Otros/Leaflet/',LF_C='https://cdn.jsdelivr.net/npm/leaflet@1/dist/';
 const EVM=new Map();
-let AY=0,AM=0,MP=null,MK=null,LP=null,GR=[],PC=null,_ls=[];
+let AY=0,AM=0,MP=null,MK=null,LP=null,GR=[],PC=null,_ls=[],MY=null,MM=null;
+
+const AG_IC=(t,n)=>L.divIcon({html:`<div class="AG_PN1">${t}${n>1?`<b>${n}</b>`:''}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,26]});
+
+function AG_ME(){
+  if(!MP||!MY||MM)return;
+  MM=L.marker(MY,{icon:AG_IC('📍'),zIndexOffset:1000}).addTo(MP).bindTooltip('Tu ubicacion');
+}
+
+function AG_GL(){
+  if(!navigator.geolocation)return;
+  navigator.geolocation.getCurrentPosition(p=>{
+    MY=[p.coords.latitude,p.coords.longitude];
+    try{localStorage.setItem('UBI','1');}catch{}
+    AG_ME();
+  },()=>{},{timeout:10000,maximumAge:60000});
+}
 
 function AG_LF(){
   return LP??=window.L?Promise.resolve():new Promise((ok,ko)=>{
@@ -244,9 +260,12 @@ function AG_MR(){
       MK=L.layerGroup().addTo(MP);
     }
     MK.clearLayers();
-    for(const g of GR)L.marker(g.p,{icon:L.divIcon({html:`<div class="AG_PN1">📍${g.its.length>1?`<b>${g.its.length}</b>`:''}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,26]})}).on('click',()=>AG_NB(g)).addTo(MK);
+    for(const g of GR)L.marker(g.p,{icon:AG_IC('📅',g.its.length)}).on('click',()=>AG_NB(g)).addTo(MK);
+    AG_ME();
     MP.invalidateSize();
-    if(PC){MP.setView(PC,17);PC=null;}else if(GR.length>1)MP.fitBounds(GR.map(g=>g.p),{padding:[30,30],maxZoom:16});else MP.setView(GR[0].p,15);
+    const pts=GR.map(g=>g.p);
+    if(MY)pts.push(MY);
+    if(PC){MP.setView(PC,17);PC=null;}else if(pts.length>1)MP.fitBounds(pts,{padding:[30,30],maxZoom:16});else MP.setView(pts[0],15);
   }).catch(()=>{AG_M.hidden=true;});
 }
 
@@ -284,6 +303,7 @@ function AG_P(its){
   AY=nx.dt.getFullYear();AM=nx.dt.getMonth();
   AG.hidden=false;
   AG_R();
+  if(GR.length)AG_GL();
 }
 
 function mkItem(item,full){
@@ -403,7 +423,7 @@ document.addEventListener('contentUnload',function(){
   if(ovEl.open)ovEl.close();
   document.body.style.overflow='';
   if(_io){_io.disconnect();_io=null;}
-  if(MP){MP.remove();MP=null;}
+  if(MP){MP.remove();MP=null;MM=null;}
   LD.remove();
   delete window.rvOpen;
   delete window.rvClose;
