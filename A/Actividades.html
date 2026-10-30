@@ -31,6 +31,7 @@
     <div id="AG_M1" hidden></div>
   </div>
 </div>
+<a href="#web/otros/Archivos/HTML/AgregarPublico.html#evento" class="view-all-button" id="AG_SP1">➕ Se parte, publica tu evento</a>
 
 <dialog id="rv-ov">
   <button id="rv-x" onclick="rvClose()">✕</button>
@@ -123,6 +124,7 @@
 @keyframes rv-sh{0%{background-position:200%}100%{background-position:-200%}}
 
 #AG1{margin:22px 0 6px}
+#AG_SP1{display:block;text-align:center;margin-top:14px}
 #AG_T1{display:inline-block;min-width:120px;text-align:center;font-size:.9em}
 #AG_B1{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start}
 #AG_C1{display:grid;grid-template-columns:repeat(7,30px);gap:3px;margin:0 auto;text-align:center;font-size:.8em;line-height:30px;color:rgba(255,255,255,.3)}
@@ -323,7 +325,6 @@ function mkItem(item,full){
   const ta=div.querySelector('.rv-it-title a');
   ta.href=link;ta.textContent=title;
   ta.parentNode.after(AG_K(item));
-  div.querySelectorAll('.rv-it-body a').forEach(a=>{if(AG_MU.test(a.href))a.remove();});
   return div;
 }
 
