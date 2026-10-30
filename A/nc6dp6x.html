@@ -93,7 +93,6 @@ const M=[
 ['Simbolos','Runas',...BN(RG(0x16A0,75)),0],
 ['Simbolos','Braille',...BN(RG(0x2800,256)),0],
 ['Simbolos','Domino',...BN(RG(0x1F030,100)),0],
-['Simbolos','Texto invisible',...BN(['\u200B','\u200C','\u200D','\u2060']),0],
 ['Hash (solo cifrar)','SHA-1',...HS('SHA-1')],
 ['Hash (solo cifrar)','SHA-256',...HS('SHA-256')],
 ['Hash (solo cifrar)','SHA-512',...HS('SHA-512')],
@@ -110,7 +109,6 @@ try{O.value=await M[S.value][d?3:2](I.value,K.value);T.textContent=''}
 catch(e){O.value='Error '+(d?'Descifrar ':'Cifrar ')+(typeof e=='string'?e:'Formato')}
 }
 RO();
-S.value=M.findIndex(m=>m[1]=='Texto invisible');
 SK();
 S.onchange=SK;
 $('EN_E').onclick=()=>RN(0);
