@@ -26,6 +26,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://cheagana.com/A/InfusorTe</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://cheagana.com/A/7798162143347</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
