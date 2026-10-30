@@ -159,11 +159,12 @@
           <div class="fg"><label>Fecha</label><input id="pb-ev-fe" type="date"></div>
           <div class="fg"><label>Hora</label><input id="pb-ev-hr" type="time"></div>
         </div>
-        <div class="fg"><label>Ubicacion</label><input id="pb-ev-ct" data-raw placeholder="-25.3349, -57.5206" autocomplete="off" oninput="PB_ctIn(this.id)"></div>
+        <div class="fg"><label>Ubicacion (link de Google Maps o coordenadas)</label><input id="pb-ev-ct" data-raw placeholder="https://maps.app.goo.gl/..." autocomplete="off" oninput="PB_ctIn(this.id)"></div>
         <div class="fg"><button type="button" onclick="PB_pedirGPS('pb-ev-ct')">📍 Usar mi ubicacion</button></div>
         <div class="fg-hint" id="pb-ev-ct-h"></div>
         <div class="fg"><label>Link de red social (opcional)</label><input id="pb-ev-lk" data-raw type="url" placeholder="https://www.instagram.com/p/..."></div>
         <div class="fg-hint" id="pb-ev-cnt">Flyer obligatorio. Maximo 1024 letras en total</div>
+        <div class="fg-hint">Solo se admiten eventos abiertos a todos y sin fines de lucro:<br>* Gratuitos o a voluntad<br>* Comunitarios, como talleres, charlas, ferias o limpiezas etc<br>* Beneficos para una causa colectiva: comedor, refugio, escuela<br><br>No se admiten colectas para una persona o familia (polladas, rifas)</div>
       </div>
       <div class="PG1"><button class="view-all-button" id="pb-submit" onclick="PB_enviar()">Enviar Solicitud</button></div>
     </div>
@@ -296,7 +297,10 @@ window.PB_lzTipoChange=function(){
 };
 
 const PB_CTH='En Google Maps mantene presionado el lugar y pega aca los numeros, o usa tu ubicacion';
-['pb-lz-ct-h','pb-ev-ct-h'].forEach(h=>{document.getElementById(h).textContent=PB_CTH;});
+const PB_CTE='En la app Google Maps: Compartir, Copiar enlace. O pega los numeros, o usa tu ubicacion';
+const PB_MU=/^https?:\/\/(?:maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.[a-z.]+|(?:www\.)?google\.[a-z.]+\/maps)\S*$/i;
+const PB_HT=id=>id==='pb-ev-ct'?PB_CTE:PB_CTH;
+['pb-lz-ct','pb-ev-ct'].forEach(i=>{document.getElementById(i+'-h').textContent=PB_HT(i);});
 function PB_ctP(v){
   const m=v.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/)||v.match(/(-?\d{1,2}\.\d+)\s*,\s*\+?(-?\d{1,3}\.\d+)/);
   if(!m)return null;
@@ -319,24 +323,27 @@ window.PB_pedirGPS=function(id){
 };
 
 window.PB_ctIn=function(id){
-  const v=document.getElementById(id).value,hint=document.getElementById(id+'-h'),p=PB_ctP(v);
+  const v=document.getElementById(id).value,hint=document.getElementById(id+'-h'),p=PB_ctP(v),ev=id==='pb-ev-ct';
   hint.textContent='';
-  if(!v.trim()){hint.className='fg-hint';hint.textContent=PB_CTH;return;}
-  if(!p){hint.className='fg-hint err';hint.textContent=/goo\.gl|share\.google/.test(v)?'Ese link no trae coordenadas, pega los numeros':'Formato: -25.3349, -57.5206';return;}
+  if(!v.trim()){hint.className='fg-hint';hint.textContent=PB_HT(id);return;}
+  if(/share\.google/.test(v)){hint.className='fg-hint err';hint.textContent='Ese link es del buscador de Google, no de Maps. Abri el lugar en la app Google Maps y usa Compartir';return;}
+  if(ev&&!p&&PB_MU.test(v.trim())){hint.className='fg-hint ok';hint.textContent='Link de Google Maps valido';return;}
+  if(!p){hint.className='fg-hint err';hint.textContent=ev?'Pega un link de Google Maps o -25.3349, -57.5206':/goo\.gl/.test(v)?'Ese link no trae coordenadas, pega los numeros':'Formato: -25.3349, -57.5206';return;}
   const a=document.createElement('a');
   a.href=`https://www.google.com/maps?q=${p[0]},${p[1]}`;a.target='_blank';a.rel='noopener noreferrer';a.textContent='ver en el mapa';
   hint.className='fg-hint ok';hint.append('Ubicacion valida, ',a);
 };
 
 function PB_evTx(){
-  const nm=PB_cl(PB_V('pb-ev-nm')).trim(),ds=PB_V('pb-ev-desc'),fe=PB_V('pb-ev-fe'),hr=PB_V('pb-ev-hr'),p=PB_ctP(PB_V('pb-ev-ct')),lk=PB_V('pb-ev-lk');
+  const nm=PB_cl(PB_V('pb-ev-nm')).trim(),ds=PB_V('pb-ev-desc'),fe=PB_V('pb-ev-fe'),hr=PB_V('pb-ev-hr'),lv=PB_V('pb-ev-ct'),p=PB_ctP(lv),lk=PB_V('pb-ev-lk');
+  const ml=p?`https://maps.google.com/?q=${p.join(',')}`:PB_MU.test(lv)&&!/share\.google/.test(lv)?lv:'';
   let fx='';
   if(fe&&hr){
     const[y,m,d]=fe.split('-'),[H,M]=hr.split(':').map(Number);
     fx=`${d}/${m}/${y.slice(2)} ${H%12||12}${M?':'+String(M).padStart(2,'0'):''}${H<12?'AM':'PM'}`;
   }
-  const t=`${nm}\n${ds}\n\n🗓️ ${fx}\n📍 https://maps.google.com/?q=${p?p.join(','):''}${/^https?:\/\/\S+$/.test(lk)?'\n'+lk:''}`;
-  return{t,nm,p,ok:!!(nm&&ds&&fx&&p)};
+  const t=`${nm}\n${ds}\n\n🗓️ ${fx}\n📍 ${ml}${/^https?:\/\/\S+$/.test(lk)?'\n'+lk:''}`;
+  return{t,nm,p,ml,ok:!!(nm&&ds&&fx&&ml)};
 }
 document.getElementById('pb-f-evento').addEventListener('input',()=>{
   const n=PB_evTx().t.length,c=document.getElementById('pb-ev-cnt');
@@ -505,7 +512,7 @@ function PB_buildNB(cat){
   if(cat==='evento'){
     const r=PB_evTx();
     if(!r.ok)return null;
-    return{NB:r.nm,CH:'',CT:PB_CT(r.p),md:r.t};
+    return{NB:r.nm,CH:'',CT:r.p?PB_CT(r.p):'',md:r.t};
   }
   if(cat==='jugadores'){
     const jg=G('pb-jg-nm');
@@ -519,10 +526,10 @@ function PB_buildNB(cat){
 
 window.PB_enviar=async function(){
   const cat=document.getElementById('pb-cat').value;
-  const ctId={localizador:'pb-lz-ct',evento:'pb-ev-ct'}[cat];
-  if(ctId&&!PB_ctP(PB_V(ctId))){PB_flagField(ctId);return PB_toast('Falta la ubicacion','warn');}
+  if(cat==='localizador'&&!PB_ctP(PB_V('pb-lz-ct'))){PB_flagField('pb-lz-ct');return PB_toast('Falta la ubicacion','warn');}
   if(cat==='evento'){
     const r=PB_evTx();
+    if(!r.ml){PB_flagField('pb-ev-ct');return PB_toast('Falta el link de Google Maps','warn');}
     if(!r.ok)return PB_toast('Completa titulo, descripcion, fecha y hora','warn');
     if(r.t.length>1024)return PB_toast(`Texto muy largo: ${r.t.length}/1024 letras`,'warn');
   }
@@ -557,7 +564,7 @@ function PB_flagField(elId){
 
 function PB_resetForm(){
   ['pb-mc-nm','pb-mc-desc','pb-mc-host','pb-mc-port','pb-lz-nm','pb-lz-hr','pb-lz-ct','pb-jg-nm','pb-jg-desc','pb-ev-nm','pb-ev-desc','pb-ev-fe','pb-ev-hr','pb-ev-ct','pb-ev-lk'].forEach(i=>document.getElementById(i).value='');
-  ['pb-lz-ct-h','pb-ev-ct-h'].forEach(h=>{const e=document.getElementById(h);e.className='fg-hint';e.textContent=PB_CTH;});
+  ['pb-lz-ct','pb-ev-ct'].forEach(i=>{const e=document.getElementById(i+'-h');e.className='fg-hint';e.textContent=PB_HT(i);});
   document.getElementById('pb-imgnm').textContent='Toca para subir';
   document.getElementById('pb-img')._file=null;
   const prev=document.getElementById('pb-imgprev');
