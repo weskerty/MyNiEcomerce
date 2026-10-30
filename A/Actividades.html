@@ -21,6 +21,16 @@
 <div id="rv-c"></div>
 <button id="rv-btn" style="display:none" onclick="rvOpen()">Ver todas →</button>
 
+<div id="AG1" hidden>
+  <div id="AG_H1">
+    <h2>📅 Agenda</h2>
+    <div><button id="AG_P1" aria-label="Mes anterior">‹</button><span id="AG_T1"></span><button id="AG_N1" aria-label="Mes siguiente">›</button></div>
+  </div>
+  <div id="AG_C1"></div>
+  <div id="AG_L1"></div>
+  <div id="AG_M1" hidden></div>
+</div>
+
 <dialog id="rv-ov">
   <button id="rv-x" onclick="rvClose()">✕</button>
   <div id="rv-f"></div>
@@ -113,6 +123,28 @@
 }
 @keyframes rv-sh{0%{background-position:200%}100%{background-position:-200%}}
 
+#AG1{margin:22px 0 6px}
+#AG_H1{display:flex;align-items:center;justify-content:space-between;margin:0 0 10px}
+#AG_H1 h2{margin:0;font-size:1.1em;font-weight:700;color:#fff}
+#AG_H1 button{width:32px;height:32px;border:1px solid rgba(255,255,255,.08);border-radius:10px;background:rgba(255,255,255,.04);color:#fff;cursor:pointer}
+#AG_T1{display:inline-block;min-width:130px;text-align:center;font-size:.9em;color:rgba(255,255,255,.8)}
+#AG_C1{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+#AG_C1 b{font-size:.72em;font-weight:600;color:rgba(255,255,255,.4)}
+#AG_C1 button{aspect-ratio:1;border:1px solid transparent;border-radius:10px;background:rgba(255,255,255,.03);color:rgba(255,255,255,.35);font-size:.85em}
+#AG_C1 .AG_E1{border-color:rgba(255,140,0,.35);background:rgba(255,140,0,.12);color:#ffaa33;font-weight:700;cursor:pointer}
+#AG_C1 .AG_S1{background:rgba(255,140,0,.4);color:#fff}
+#AG_C1 .AG_H2{border-color:rgba(255,255,255,.45)}
+#AG_L1{display:flex;flex-direction:column;gap:8px;margin-top:10px;font-size:.88em;color:rgba(255,255,255,.5)}
+.AG_I1{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:10px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
+.AG_I1 .rv-ci-meta{width:100%;margin:0}
+.AG_I1 .lk{cursor:pointer;font-family:inherit}
+.AG_I1 .lk::before{display:none}
+.AG_T2{flex:1 1 100%;font-size:1.05em;line-height:1.35;color:#fff;text-decoration:none}
+#AG_M1{height:300px;margin-top:10px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}
+#AG_M1.leaflet-container{background:#1a1f2e}
+#AG_M1 .leaflet-control-attribution{background:rgba(10,12,20,.75)!important;color:rgba(255,255,255,.45)!important;font-size:.6em!important}
+#AG_M1 .leaflet-control-attribution a{color:rgba(255,255,255,.55)!important}
+
 @media(max-width:700px){
   .rv-ci{padding:9px;border-radius:12px}
   .rv-ci-thumb{width:44px;height:44px;border-radius:10px}
@@ -152,23 +184,129 @@ function fI(html){
   return new DOMParser().parseFromString(html,'text/html').querySelector('img')?.src||null;
 }
 
+function AG_X(tag,cls,txt){const e=document.createElement(tag);e.className=cls;e.textContent=txt;return e;}
+
+const AG=document.getElementById('AG1'),AG_C=document.getElementById('AG_C1'),AG_L=document.getElementById('AG_L1'),AG_T=document.getElementById('AG_T1'),AG_M=document.getElementById('AG_M1');
+const AG_MS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'];
+const LF_L='web/scripts/Otros/Leaflet/',LF_C='https://cdn.jsdelivr.net/npm/leaflet@1/dist/';
+let EV=[],AY=0,AM=0,AD=null,MP=null,MK=null,LP=null;
+
+function AG_LF(){
+  return LP??=window.L?Promise.resolve():new Promise((ok,ko)=>{
+    const css=document.createElement('link');
+    css.rel='stylesheet';css.href=LF_L+'leaflet.css';
+    css.onerror=()=>{css.href=LF_C+'leaflet.css'};
+    document.head.appendChild(css);
+    const add=(src,fb)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=fb;document.head.appendChild(s);};
+    add(LF_L+'leaflet.js',()=>add(LF_C+'leaflet.js',ko));
+  });
+}
+
+function AG_G(e){
+  const z=n=>String(n).padStart(2,'0'),F=x=>`${x.getFullYear()}${z(x.getMonth()+1)}${z(x.getDate())}`,U=x=>`${F(x)}T${z(x.getHours())}${z(x.getMinutes())}00`;
+  const n=new Date(e.dt);n.setDate(n.getDate()+1);
+  const q={action:'TEMPLATE',text:e.t,dates:e.ad?`${F(e.dt)}/${F(n)}`:`${U(e.dt)}/${U(new Date(+e.dt+72e5))}`,ctz:'America/Asuncion',details:e.l};
+  if(e.p)q.location=e.p.join(',');
+  return'https://calendar.google.com/calendar/render?'+new URLSearchParams(q);
+}
+
+function AG_I(e){
+  const o=document.createElement('div'),t=AG_X('a','AG_T2',e.t),c=AG_X('a','lk','🗓️ Agendar');
+  o.className='AG_I1';
+  t.href=e.l;t.target=c.target='_blank';t.rel=c.rel='noopener noreferrer';
+  c.href=AG_G(e);
+  o.append(AG_X('div','rv-ci-meta',e.dt.toLocaleString('es-PY',e.ad?{weekday:'short',day:'2-digit',month:'2-digit'}:{weekday:'short',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})),t,c);
+  if(e.p){
+    const m=AG_X('button','lk','📍 Mapa');
+    m.onclick=()=>{if(!MP)return;MP.setView(e.p,16);e.mk?.openPopup();AG_M.scrollIntoView({block:'nearest',behavior:'smooth'});};
+    o.append(m);
+  }
+  return o;
+}
+
+function AG_MR(ps){
+  AG_M.hidden=!ps.length;
+  if(!ps.length)return;
+  AG_LF().then(()=>{
+    if(!AG.isConnected)return;
+    if(!MP){
+      MP=L.map(AG_M,{scrollWheelZoom:false});
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',maxZoom:19}).addTo(MP);
+      MK=L.layerGroup().addTo(MP);
+    }
+    MK.clearLayers();
+    const ic=L.divIcon({html:'<div style="font-size:24px;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))">📍</div>',className:'',iconSize:[28,28],iconAnchor:[14,26],popupAnchor:[0,-24]});
+    ps.forEach(e=>{
+      const pp=document.createElement('div'),a=AG_X('a','',e.t);
+      a.href=e.l;a.target='_blank';a.rel='noopener noreferrer';
+      pp.append(a,document.createElement('br'),e.dt.toLocaleString('es-PY',e.ad?{day:'2-digit',month:'2-digit'}:{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}));
+      e.mk=L.marker(e.p,{icon:ic}).bindPopup(pp).addTo(MK);
+    });
+    MP.invalidateSize();
+    if(ps.length>1)MP.fitBounds(ps.map(e=>e.p),{padding:[30,30],maxZoom:16});else MP.setView(ps[0].p,15);
+  }).catch(()=>{AG_M.hidden=true;});
+}
+
+function AG_R(){
+  AG_T.textContent=AG_MS[AM]+' '+AY;
+  const off=(new Date(AY,AM,1).getDay()+6)%7,n=new Date(AY,AM+1,0).getDate(),hy=new Date();
+  const me=EV.filter(e=>e.dt.getFullYear()===AY&&e.dt.getMonth()===AM),ds=new Set(me.map(e=>e.dt.getDate()));
+  AG_C.textContent='';
+  for(const c of 'LMMJVSD')AG_C.append(AG_X('b','',c));
+  for(let i=0;i<off;i++)AG_C.append(document.createElement('span'));
+  for(let d=1;d<=n;d++){
+    const b=AG_X('button',[ds.has(d)&&'AG_E1',d===AD&&'AG_S1',AY===hy.getFullYear()&&AM===hy.getMonth()&&d===hy.getDate()&&'AG_H2'].filter(Boolean).join(' '),d);
+    b.disabled=!ds.has(d);
+    b.onclick=()=>{AD=AD===d?null:d;AG_R();};
+    AG_C.append(b);
+  }
+  const ls=AD?me.filter(e=>e.dt.getDate()===AD):me;
+  AG_L.textContent=ls.length?'':'Sin actividades este mes';
+  ls.forEach(e=>AG_L.append(AG_I(e)));
+  AG_MR(ls.filter(e=>e.p));
+}
+
+function AG_V(k){AM+=k;if(AM<0){AM=11;AY--;}else if(AM>11){AM=0;AY++;}AD=null;AG_R();}
+document.getElementById('AG_P1').onclick=()=>AG_V(-1);
+document.getElementById('AG_N1').onclick=()=>AG_V(1);
+
+function AG_P(its){
+  EV=its.map(i=>{
+    const s=gT(i,'ev:startdate').trim();
+    if(!/^\d{4}-\d\d-\d\d/.test(s))return null;
+    const [y,m,d,h=0,mi=0]=s.match(/\d+/g).map(Number),ad=s.length===10,dt=new Date(y,m-1,d,h,mi);
+    const g=gT(i,'georss:point').trim().split(/\s+/).map(Number);
+    return{t:gT(i,'title'),l:gT(i,'link'),dt,ad,p:g.length===2&&g.every(isFinite)?g:null};
+  }).filter(Boolean).sort((a,b)=>a.dt-b.dt);
+  if(!EV.length)return;
+  const hy=new Date();hy.setHours(0,0,0,0);
+  const nx=EV.find(e=>e.dt>=hy)||EV[EV.length-1];
+  AY=nx.dt.getFullYear();AM=nx.dt.getMonth();
+  AG.hidden=false;
+  AG_R();
+}
+
 function mkItem(item,full){
   const title=gT(item,'title'),link=gT(item,'link'),
         desc=gH(item,'description'),date=gT(item,'pubDate'),
         d=date?new Date(date).toLocaleString('es-PY',full?undefined:{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
   if(!full){
-    const img=fI(desc),a=document.createElement('a');
+    const img=fI(desc),a=document.createElement('a'),th=document.createElement(img?'img':'div'),inf=document.createElement('div');
     a.className='rv-ci';
     a.href=link;a.target='_blank';a.rel='noopener noreferrer';
-    a.innerHTML=(img?`<img class="rv-ci-thumb" src="${img}" loading="lazy">`:`<div class="rv-ci-thumb rv-no">📌</div>`)
-      +`<div class="rv-ci-info"><div class="rv-ci-title">${title}</div><div class="rv-ci-meta">${d}</div></div>`;
+    th.className='rv-ci-thumb'+(img?'':' rv-no');
+    if(img){th.src=img;th.loading='lazy';}else th.textContent='📌';
+    inf.className='rv-ci-info';
+    inf.append(AG_X('div','rv-ci-title',title),AG_X('div','rv-ci-meta',d));
+    a.append(th,inf);
     return a;
   }
   const author=gT(item,'author'),div=document.createElement('div');
   div.className='rv-it';
-  div.innerHTML=`<div class="rv-it-meta">${[author,d].filter(Boolean).join(' · ')}</div>
-    <div class="rv-it-title"><a href="${link}" target="_blank" rel="noopener noreferrer">${title}</a></div>
-    <div class="rv-it-body">${desc}</div>`;
+  div.innerHTML=`<div class="rv-it-meta"></div><div class="rv-it-title"><a target="_blank" rel="noopener noreferrer"></a></div><div class="rv-it-body">${desc}</div>`;
+  div.firstChild.textContent=[author,d].filter(Boolean).join(' · ');
+  const ta=div.querySelector('.rv-it-title a');
+  ta.href=link;ta.textContent=title;
   return div;
 }
 
@@ -234,6 +372,7 @@ async function load(){
     if(doc.querySelector('parseerror'))return;
     items=[...doc.querySelectorAll('item')];
     if(!items.length)return;
+    AG_P(items);
     const frag=document.createDocumentFragment();
     items.slice(0,PREVIEW).forEach(i=>frag.appendChild(mkItem(i,false)));
     cEl.appendChild(frag);
@@ -259,6 +398,7 @@ document.addEventListener('contentUnload',function(){
   if(ovEl.open)ovEl.close();
   document.body.style.overflow='';
   if(_io){_io.disconnect();_io=null;}
+  if(MP){MP.remove();MP=null;}
   LD.remove();
   delete window.rvOpen;
   delete window.rvClose;
