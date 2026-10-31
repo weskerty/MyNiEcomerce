@@ -257,7 +257,7 @@ function AG_MR(){
       MK=L.layerGroup().addTo(MP);
     }
     MK.clearLayers();
-    for(const g of GR)L.marker(g.p,{icon:AG_IC('📅',g.its.length)}).on('click',()=>AG_NB(g)).addTo(MK);
+    for(const g of GR)L.marker(g.p,{icon:AG_IC('🥳',g.its.length)}).on('click',()=>AG_NB(g)).addTo(MK);
     AG_ME();
     MP.invalidateSize();
     const pts=GR.map(g=>g.p);
