@@ -77,12 +77,13 @@
 <dialog id="adbRepDlg">
 <h3>Reparar acceso ADB (pantalla rota + TWRP)</h3>
 <div id="adbRepStep1">
-<p>Esto sirve si tu pantalla esta rota y <strong>Ya tenias TWRP custom recovery</strong> instalado. No funciona con el recovery de fabrica de Android.</p>
+<p>Esto sirve si tu pantalla esta rota y <strong>Ya tenias TWRP u OrangeFox</strong> instalado (requiere bootloader desbloqueado). No funciona con el recovery de fabrica de Android.</p>
 <ol>
 <li>Apaga el telefono.</li>
 <li>Mantene presionado Volumen abajo + Power hasta entrar al recovery.</li>
 <li>Conecta el cable USB a la computadora.</li>
 <li>Presiona "Probar conexion" abajo.</li>
+<li>Opcional en el paso siguiente: formatear data y desactivar el cifrado con <a href="https://github.com/leegarchat/dfe-neo-v2/releases/download/2.6.0b1/arm64-v8a-en-DFE-NEO-2.6.0-beta-1-lite.zip" target="_blank">DFE.zip</a>.</li>
 </ol>
 <p style="font-family: monospace; white-space: pre; margin: 0;">             Boton Encendido</p>
 <p style="font-family: monospace; white-space: pre; margin: 0;">⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ⬇️</p>
@@ -100,7 +101,10 @@
 <p id="adbRepMsg"></p>
 </div>
 <div id="adbRepStep2" style="display:none">
-<p id="adbRepPlan"></p>
+<p id="adbRepPlan" style="white-space:pre-line"></p>
+<p><label><input type="checkbox" id="adbRepFmt"> Formatear data (borra TODO, IRREVERSIBLE)</label></p>
+<p><a class="back-button" id="adbBtnRepDfe">Elegir DFE.zip (opcional)</a> <span id="adbRepDfeN"></span></p>
+<input type="file" id="adbRepDfe" accept=".zip" style="display:none">
 <a class="view-all-button" id="adbBtnRepRun">Ejecutar reparacion</a>
 </div>
 <div id="adbRepStep3" style="display:none">
@@ -126,13 +130,13 @@ const[
 {AdbDaemonWebUsbDeviceManager},
 {default:AdbWebCredentialStore},
 {DefaultServerPath,AndroidMotionEventAction,ScrcpyPointerId,clamp},
-{AdbScrcpyClient,AdbScrcpyOptions2_1},
+{AdbScrcpyClient,AdbScrcpyOptions3_3_3},
 {WebCodecsVideoDecoder,WebGLVideoFrameRenderer,BitmapVideoFrameRenderer}
 ]=await Promise.all([
-import("https://cdn.jsdelivr.net/npm/@yume-chan/adb@2.6.0/+esm"),
-import("https://cdn.jsdelivr.net/npm/@yume-chan/adb-daemon-webusb@2.1.0/+esm"),
-import("https://cdn.jsdelivr.net/npm/@yume-chan/adb-credential-web@2.0.1/+esm"),
-import("https://cdn.jsdelivr.net/npm/@yume-chan/scrcpy@2.2.0/+esm"),
+import("https://cdn.jsdelivr.net/npm/@yume-chan/adb@2.6.4/+esm"),
+import("https://cdn.jsdelivr.net/npm/@yume-chan/adb-daemon-webusb@2.3.2/+esm"),
+import("https://cdn.jsdelivr.net/npm/@yume-chan/adb-credential-web@2.1.0/+esm"),
+import("https://cdn.jsdelivr.net/npm/@yume-chan/scrcpy@2.3.0/+esm"),
 import("https://cdn.jsdelivr.net/npm/@yume-chan/adb-scrcpy@2.3.2/+esm"),
 import("https://cdn.jsdelivr.net/npm/@yume-chan/scrcpy-decoder-webcodecs@2.5.3/+esm")
 ]);
@@ -255,9 +259,11 @@ lstEl.appendChild(bq);
 async function ldUad(){
 setSt("Actualizando lista desde Universal-Debloater-Alliance...");
 try{
-const r=await fetch(U1,{cache:"no-store"});
+if(!D1){
+const r=await fetch(U1);
 if(!r.ok)throw new Error("HTTP "+r.status);
 D1=await r.json();
+}
 const raw=await runSh("pm list packages");
 const pk=parsePkgs(raw);
 renderUad(grp(pk));
@@ -316,7 +322,7 @@ const rd=await fetch(FN1+"?action=apk&pkg="+encodeURIComponent(app.pkg)+"&vc="+e
 if(!rd.ok)throw new Error("HTTP "+rd.status);
 const buf=await rd.arrayBuffer();
 p.textContent="Instalando...";
-await pushInstall(new Uint8Array(buf),app.pkg+".apk");
+await pushInstall(new Uint8Array(buf));
 p.textContent="Instalado";
 }catch(e){
 p.textContent="Error: "+e.message;
@@ -372,16 +378,21 @@ clearTimeout(stDbt);
 doStoreSearch();
 });
 
-async function pushInstall(bytes,name){
-const tmp="/data/local/tmp/"+name;
-const sync=await A1.sync();
+async function push1(a,path,bytes){
+const sync=await a.sync();
 try{
-await sync.write({filename:tmp,file:new ReadableStream({start(c){c.enqueue(bytes);c.close()}})});
+await sync.write({filename:path,file:new ReadableStream({start(c){c.enqueue(bytes);c.close()}})});
 }finally{
 await sync.dispose();
 }
-await runSh("pm install "+tmp);
+}
+
+async function pushInstall(bytes){
+const tmp="/data/local/tmp/_i.apk";
+await push1(A1,tmp,bytes);
+const out=await runSh("pm install "+tmp);
 await runSh("rm "+tmp);
+if(!/Success/.test(out))throw new Error(out.trim()||"pm install");
 }
 
 btnIns.addEventListener("click",()=>{if(A1)fileInp.click()});
@@ -391,7 +402,7 @@ if(!f)return;
 setSt("Instalando "+f.name+"...");
 try{
 const buf=await f.arrayBuffer();
-await pushInstall(new Uint8Array(buf),f.name);
+await pushInstall(new Uint8Array(buf));
 setSt("Instalado: "+f.name);
 }catch(e){
 setSt("Error al instalar: "+e.message);
@@ -451,7 +462,7 @@ if(!rs.ok)throw new Error("HTTP "+rs.status+" al obtener jar");
 scrSt.textContent="Subiendo servidor al dispositivo...";
 await AdbScrcpyClient.pushServer(A1,rs.body);
 scrSt.textContent="Iniciando scrcpy...";
-scrCli=await AdbScrcpyClient.start(A1,DefaultServerPath,new AdbScrcpyOptions2_1({control:true,audio:false,video:true,videoBitRate:4000000,maxSize:720},{version:"3.3.4"}));
+scrCli=await AdbScrcpyClient.start(A1,DefaultServerPath,new AdbScrcpyOptions3_3_3({control:true,audio:false,video:true,videoBitRate:4000000,maxSize:720},{version:"3.3.4"}));
 let rend;
 if(WebGLVideoFrameRenderer.isSupported)rend=new WebGLVideoFrameRenderer();
 else rend=new BitmapVideoFrameRenderer();
@@ -504,7 +515,7 @@ scrHold.removeEventListener("pointermove",scrPtr);
 scrHold.removeEventListener("pointerup",scrPtr);
 scrHold.removeEventListener("pointercancel",scrPtr);
 if(scrCli){try{await scrCli.close()}catch(e){} scrCli=null}
-scrDec=null;scrVw=0;scrVh=0;
+scrDec?.dispose();scrDec=null;scrVw=0;scrVh=0;
 scrHold.innerHTML="";
 scrSt.textContent="Presiona Pantalla para iniciar";
 }
@@ -526,7 +537,16 @@ if(!dv){setSt("No elegiste ningun dispositivo.");return}
 const cn=await dv.connect();
 setSt("Autenticando (revisa el telefono si pide confirmar)...");
 const tr=await AdbDaemonTransport.authenticate({serial:dv.serial,connection:cn,credentialStore:CS1});
-A1=new Adb(tr);
+const a=new Adb(tr);
+A1=a;
+a.disconnected.then(()=>{
+if(A1!==a)return;
+setView("store");
+A1=null;
+for(const b of [btnIns,btnUn,btnCmd,btnScr]){b.style.opacity=".5";b.style.pointerEvents="none"}
+howTo.style.display="";
+setSt("Telefono desconectado.");
+});
 abi1=(await runSh("getprop ro.product.cpu.abi")).trim();
 enable(btnIns);enable(btnUn);enable(btnCmd);enable(btnScr);
 howTo.style.display="none";
@@ -541,6 +561,26 @@ console.error(e);
 const RPARTS1=["system","system_root","vendor","vendor_dlkm","odm","odm_dlkm","product","system_ext"];
 const RCAND1=["/build.prop","/system/build.prop","/default.prop"];
 async function runShR(cmd){return await AR1.subprocess.noneProtocol.spawnWaitText(cmd)}
+const SL1=ms=>new Promise(r=>setTimeout(r,ms));
+const repFmt=el("adbRepFmt"),repDfeIn=el("adbRepDfe"),repDfeN=el("adbRepDfeN");
+let repDfe=null;
+el("adbBtnRepDfe").addEventListener("click",()=>repDfeIn.click());
+repDfeIn.addEventListener("change",()=>{repDfe=repDfeIn.files[0]||null;repDfeN.textContent=repDfe?repDfe.name:""});
+
+async function repScan(){
+const bl=(await runShR("ls /dev/block/mapper 2>/dev/null | grep -v control || ls /dev/block/by-name 2>/dev/null || ls /dev/block/bootdevice/by-name 2>/dev/null")).split(/\s+/).filter(Boolean).join(" ");
+const out=await runShR("for p in "+RPARTS1.join(" ")+"; do [ -d /$p ] || continue; twrp mount /$p >/dev/null 2>&1; mount /$p >/dev/null 2>&1; mount -o rw,remount /$p >/dev/null 2>&1; m=$(grep \" /$p \" /proc/mounts | head -n1); if [ -z \"$m\" ]; then echo \"P $p no\"; elif echo \"$m\" | grep -q ' rw,'; then echo \"P $p rw\"; else echo \"P $p ro\"; fi; done");
+const pt=[...out.matchAll(/^P (\S+) (\S+)\s*$/gm)].map(m=>({p:m[1],s:m[2]}));
+const fl=[];
+for(const x of pt){
+if(x.s!=="rw")continue;
+for(const c of RCAND1){
+const path="/"+x.p+c;
+if((await runShR("[ -f "+path+" ] && echo si || echo no")).trim()==="si")fl.push(path);
+}
+}
+return{bl,pt,fl};
+}
 
 async function pubKeyLine(){
 for await(const k of CS1.iterateKeys()){
@@ -560,6 +600,8 @@ repStep2.style.display="none";
 repStep3.style.display="none";
 repMsg.textContent="";
 btnRepTest.style.pointerEvents="";btnRepTest.style.opacity="";
+btnRepRun.style.pointerEvents="";btnRepRun.style.opacity="";
+repFmt.checked=false;repDfe=null;repDfeIn.value="";repDfeN.textContent="";
 }
 
 function openRep(){resetRepUi();repDlg.showModal()}
@@ -585,7 +627,7 @@ const out=await runShR("twrp 2>&1; echo EXIT:$?");
 const low=out.toLowerCase();
 
 if(low.includes("not appear to be running")||low.includes("waiting for twrp")){
-repMsg.textContent="TWRP ? 'Probar conexion' de nuevo.";
+repMsg.textContent="TWRP no responde, presiona 'Probar conexion' de nuevo.";
 btnRepTest.style.pointerEvents="";btnRepTest.style.opacity="";
 return;
 }
@@ -595,10 +637,14 @@ btnRepTest.style.pointerEvents="";btnRepTest.style.opacity="";
 return;
 }
 
-repMsg.textContent="TWRP respondio correctamente.";
+repMsg.textContent="TWRP respondio correctamente. Montando particiones...";
+const sc=await repScan();
 repStep1.style.display="none";
 repStep2.style.display="";
-repPlan.textContent="Se copiara tu clave ADB publica y se habilitara ADB inseguro en las particiones de sistema disponibles. Al finalizar el telefono se reiniciara a Android normal, de esta manera poder usar scrcpy para poder controlar el dispositivo con el boton pantalla que encontraras en el menu.";
+repPlan.textContent="Particiones: "+(sc.bl||"?")+
+"\nMontadas: "+(sc.pt.map(x=>x.p+" ("+x.s+")").join(", ")||"ninguna")+
+"\nArchivos a modificar: "+(sc.fl.join(", ")||"ninguno, se usara /default.prop")+
+"\n\nSe copiara tu clave ADB publica y se habilitara ADB inseguro en las particiones de sistema disponibles. Al finalizar el telefono se reiniciara a Android normal, de esta manera poder usar scrcpy para poder controlar el dispositivo con el boton pantalla que encontraras en el menu.";
 }catch(e){
 repMsg.textContent="Error de conexion: "+e.message;
 btnRepTest.style.pointerEvents="";btnRepTest.style.opacity="";
@@ -607,41 +653,36 @@ console.error(e);
 });
 
 btnRepRun.addEventListener("click",async()=>{
+if(repFmt.checked&&!confirm("Formatear data borra TODO el telefono. Continuar?"))return;
 btnRepRun.style.pointerEvents="none";btnRepRun.style.opacity=".5";
-repPlan.textContent="Ejecutando...";
 const done=[];
 try{
+if(repFmt.checked){
+repPlan.textContent="Formateando data...";
+await Promise.race([runShR("twrp format data"),SL1(120000)]);
+done.push("data formateada");
+}
+if(repDfe){
+repPlan.textContent="Instalando "+repDfe.name+"...";
+await push1(AR1,"/tmp/DFE.zip",new Uint8Array(await repDfe.arrayBuffer()));
+await Promise.race([runShR("twrp install /tmp/DFE.zip"),SL1(120000)]);
+done.push("DFE instalado");
+}
+repPlan.textContent="Ejecutando...";
 const key=await pubKeyLine();
 const keySafe=key.replace(/'/g,"'\\''");
-await runShR("mkdir -p /data/misc/adb");
+await runShR("twrp mount /data >/dev/null 2>&1; mount /data >/dev/null 2>&1; mkdir -p /data/misc/adb");
 await runShR("echo '"+keySafe+"' > /data/misc/adb/adb_keys");
 await runShR("chmod 600 /data/misc/adb/adb_keys");
 await runShR("chown 2000:2000 /data/misc/adb/adb_keys");
 done.push("/data/misc/adb/adb_keys (clave copiada)");
 
-const rw=[];
-for(const p of RPARTS1){
-await runShR("mount /"+p+" 2>/dev/null; mount -o rw,remount /"+p+" 2>/dev/null; true");
-const chk=(await runShR("mount | grep -q ' /"+p+" ' && echo si || echo no")).trim();
-if(chk==="si")rw.push(p);
-}
-if(!rw.length){
-repPlan.textContent="Error: ninguna particion pudo montarse. Verifica dm-verity/AVB o revisa el estado del recovery.";
-btnRepRun.style.pointerEvents="";btnRepRun.style.opacity="";
-return;
-}
-
-let found=false;
-for(const p of rw){
-for(const c of RCAND1){
-const path="/"+p+c;
-const ex=(await runShR("ls "+path+" >/dev/null 2>&1 && echo si || echo no")).trim();
-if(ex!=="si")continue;
-found=true;
+const sc=await repScan();
+const found=sc.fl.length>0;
+for(const path of sc.fl){
 done.push(path);
 await runShR("grep -q '^ro.adb.secure=' "+path+" && sed -i 's/^ro.adb.secure=.*/ro.adb.secure=0/' "+path+" || echo 'ro.adb.secure=0' >> "+path);
 await runShR("grep -q '^persist.sys.usb.config=' "+path+" && sed -i 's/^persist.sys.usb.config=.*/persist.sys.usb.config=adb/' "+path+" || echo 'persist.sys.usb.config=adb' >> "+path);
-}
 }
 if(!found){
 await runShR("echo 'ro.adb.secure=0' >> /default.prop");

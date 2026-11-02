@@ -98,8 +98,8 @@ const ovEl=document.getElementById("gsiStOv"),ovImg=document.getElementById("gsi
 function ovShow1(t){const wa=window.__CFG?.waitAnim;if(wa)ovImg.src=wa;ovTxt.textContent=t||"Cargando...";ovEl.style.display="flex"}
 function ovHide1(){ovEl.style.display="none"}
 ovShow1("Iniciando...");
-const { FastbootDevice } = await import("https://cdn.jsdelivr.net/npm/android-fastboot@1.1.3/+esm");
-const { ZipReader, BlobReader, BlobWriter } = await import("https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.8.36/+esm");
+const { FastbootDevice } = await import("/web/scripts/Otros/Fastboot/fastboot.mjs");
+const { ZipReader, BlobReader } = await import("https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.24.0/+esm");
 
 const VPARTS1=["vbmeta","vbmeta_system","vbmeta_vendor","vbmeta_boot"];
 const OPARTS1=["boot","vendor_boot","recovery"];
@@ -271,32 +271,51 @@ function renderOptParts1(){
   });
 }
 
+const OPN1=["gsi_dl","gsi_img"];
+async function opfsW1(n){
+  const h=await (await navigator.storage.getDirectory()).getFileHandle(n,{create:true});
+  return{h,w:await h.createWritable()};
+}
+async function opfsClr1(){
+  try{const d=await navigator.storage.getDirectory();for(const n of OPN1)await d.removeEntry(n).catch(()=>{})}catch(e){}
+}
+
 async function extractImgFromZip1(blob,onProg){
   const zr=new ZipReader(new BlobReader(blob));
   const entries=await zr.getEntries();
   const entry=entries.find(e=>!e.directory&&/\.img$/i.test(e.filename));
   if(!entry){await zr.close();throw new Error("No se encontro un .img dentro del zip")}
-  const out=await entry.getData(new BlobWriter("application/octet-stream"),{
+  const{h,w}=await opfsW1("gsi_img");
+  await entry.getData(w,{
     onprogress:(p,t)=>onProg&&t&&onProg(p/t)
   });
   await zr.close();
-  return{blob:out,name:entry.filename.split("/").pop()};
+  return{blob:await h.getFile(),name:entry.filename.split("/").pop()};
 }
 
 async function fetchWithProgress1(url,onProg){
   const res=await fetch(url);
   if(!res.ok)throw new Error("HTTP "+res.status);
   const len=+res.headers.get("content-length")||0;
-  if(!res.body||!len)return await res.blob();
+  const{h,w}=await opfsW1("gsi_dl");
   const reader=res.body.getReader();
-  const chunks=[];let got=0;
+  let got=0;
   for(;;){
     const{done,value}=await reader.read();
     if(done)break;
-    chunks.push(value);got+=value.length;
-    onProg&&onProg(got/len);
+    await w.write(value);got+=value.length;
+    len&&onProg&&onProg(got/len);
   }
-  return new Blob(chunks);
+  await w.close();
+  return await h.getFile();
+}
+
+async function vbOff1(f){
+  const b=new Uint8Array(await f.slice(0,128).arrayBuffer());
+  if(b.length<128||String.fromCharCode(...b.subarray(0,4))!=="AVB0")return f;
+  b[123]|=3;
+  log1("vbmeta: verity y verificacion desactivadas");
+  return new Blob([b,f.slice(128)]);
 }
 
 function updFlashReady1(){setEn1(E1("gsiBtnPlan"),!!GSI1)}
@@ -348,23 +367,24 @@ async function runManualCmd1(){
 E1("gsiCmdRun").addEventListener("click",runManualCmd1);
 E1("gsiCmdInp").addEventListener("keydown",ev=>{if(ev.key==="Enter")runManualCmd1()});
 
-function buildPlanHtml1(){
-  let h="<p>GSI -&gt; system_"+SLOT1+": "+GSINAME1+" ("+(GSISIZE1/1024/1024/1024).toFixed(2)+" GB)</p>";
+function buildPlan1(){
+  const b=E1("gsiPlanBody");b.textContent="";
+  const add=(t,w)=>{const p=document.createElement("p");p.textContent=t;if(w)p.className="gsi-warn";b.appendChild(p)};
+  add("GSI -> system_"+SLOT1+": "+GSINAME1+" ("+(GSISIZE1/1024/1024/1024).toFixed(2)+" GB)");
   VPARTS1.forEach(p=>{
     if(!hasPart1(p+"_"+SLOT1))return;
-    h+=FILES1[p]?"<p>"+p+"_"+SLOT1+": "+FILES1[p].name+"</p>":'<p class="gsi-warn">'+p+".img no seleccionado, riesgo de bootloop</p>";
+    if(FILES1[p])add(p+"_"+SLOT1+": "+FILES1[p].name+(p==="vbmeta"?" (sin verity ni verificacion)":""));
+    else add(p+".img no seleccionado, riesgo de bootloop",1);
   });
   OPARTS1.forEach(p=>{
-    if(!hasPart1(p+"_"+SLOT1)||!FILES1[p])return;
-    h+="<p>"+p+"_"+SLOT1+": "+FILES1[p].name+"</p>";
+    if(hasPart1(p+"_"+SLOT1)&&FILES1[p])add(p+"_"+SLOT1+": "+FILES1[p].name);
   });
-  if(WIPE1)h+='<p class="gsi-warn">Se borrara userdata y metadata (IRREVERSIBLE)</p>';
-  return h;
+  if(WIPE1)add("Se borrara userdata y metadata (IRREVERSIBLE)",1);
 }
 
 E1("gsiBtnPlan").addEventListener("click",()=>{
   if(!GSI1)return;
-  E1("gsiPlanBody").innerHTML=buildPlanHtml1();
+  buildPlan1();
   E1("gsiPlanDlg").showModal();
 });
 E1("gsiPlanCancel").addEventListener("click",()=>E1("gsiPlanDlg").close());
@@ -439,7 +459,7 @@ async function doFlash1(){
     for(const p of VPARTS1){
       if(!FILES1[p]||!hasPart1(p+"_"+SLOT1))continue;
       log1("Flasheando "+p+"_"+SLOT1+"...");
-      await D1.flashBlob(p+"_"+SLOT1,FILES1[p],prog1(p));
+      await D1.flashBlob(p+"_"+SLOT1,p==="vbmeta"?await vbOff1(FILES1[p]):FILES1[p],prog1(p));
       log1(p+"_"+SLOT1+" OK");
     }
 
@@ -469,6 +489,7 @@ async function doFlash1(){
     log1("Reiniciando...");
     await D1.reboot();
     log1("Listo. El dispositivo esta reiniciando al slot "+SLOT1);
+    GSI1=null;updFlashReady1();opfsClr1();
   }catch(e){
     log1("Error: "+e.message);
   }finally{
@@ -494,6 +515,7 @@ function afterConnect1(){
 
 E1("gsiBtnUnlock").addEventListener("click",async()=>{
   setEn1(E1("gsiBtnUnlock"),false);
+  try{await toBootloader1()}catch(e){}
   E1("gsiUnlockMsg").textContent="Intentando desbloquear, revisa la pantalla del telefono (volumen para navegar, power para confirmar)...";
   for(const c of ["flashing unlock","oem unlock"]){
     try{await D1.runCommand(c)}catch(e){}
@@ -507,6 +529,7 @@ E1("gsiBtnUnlock").addEventListener("click",async()=>{
   await readAllRetry1(5,1500);
   if(gv1("unlocked")==="yes"){
     E1("gsiUnlockBox").style.display="none";
+    try{await ensureFbd1()}catch(e){setSt1("Error: "+e.message)}
     afterConnect1();
   }else{
     E1("gsiUnlockMsg").innerHTML="No se pudo desbloquear. Depende de la marca: algunos como Xiaomi usan un proceso distinto con autorizacion previa desde su pagina oficial.";
@@ -526,8 +549,7 @@ E1("gsiBtnCnn").addEventListener("click",async()=>{
     setSt1("Conectado, leyendo informacion...");
     ovShow1("Leyendo informacion...");
     await readAllRetry1(5,1000);
-    ovShow1("Entrando a fastbootd...");
-    await ensureFbd1();
+    if(gv1("unlocked")==="yes"){ovShow1("Entrando a fastbootd...");await ensureFbd1()}
     afterConnect1();
   }catch(e){
     setSt1("Error: "+e.message);
@@ -541,8 +563,10 @@ const cont=document.getElementById("content");
 if(cont)cont.addEventListener("contentUnload",()=>{
   window.removeEventListener("beforeunload",beforeUnload1);
   if(WAKE1){WAKE1.release().catch(()=>{});WAKE1=null}
+  opfsClr1();
 },{once:true});
 
+await opfsClr1();
 const ok=await chkQuota1();
 if(ok){E1("gsiConnBox").style.display="";setSt1("Listo para conectar")}
 ovHide1();
