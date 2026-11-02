@@ -3,7 +3,6 @@
 #pb-wrap button{font-family:inherit;margin:0}
 #pb-wrap button:disabled{opacity:.4;cursor:not-allowed}
 #pb-wrap .PG1{margin-bottom:12px}
-#pb-wrap .act{--GL_R:var(--GL_RC);--GL_F:var(--GL_FH)}
 .fg{margin-bottom:12px}
 .fg label{display:block;margin-bottom:4px;font-size:.85em;opacity:.6}
 .fg :is(input,select,textarea,button){width:100%}
@@ -37,6 +36,7 @@
 .pb-shake{animation:pb-shake .4s ease 3;border-color:var(--err)!important}
 </style>
 
+<script src="/web/scripts/Otros/Verif.js"></script>
 <dialog id="PB_DG1"><form method="dialog"><p></p><div><button>Aceptar</button><button type="button">Ayuda</button></div></form></dialog>
 
 <div id="pb-wrap">
@@ -52,7 +52,7 @@
       <div class="fg"><label>Numero de telefono</label><input id="pb-lu" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
       <div class="fg"><label>Contrasena</label><input id="pb-lp" type="password" placeholder="••••••" autocomplete="current-password"></div>
       <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_login()">Entrar</button></div>
-      <p class="fg-hint pb-c">Sin cuenta? <a onclick="PB_showTab('reg')">Registrate aqui</a></p>
+      <p class="fg-hint pb-c">Sin cuenta? <a onclick="PB_showTab('reg')">Registrate aqui</a> · <a onclick="PB_showTab('rst')">Olvide mi contrasena</a></p>
     </form>
     <form id="pb-reg-box" style="display:none">
       <h2>Nuevo Usuario</h2>
@@ -63,7 +63,7 @@
         <div class="fg-hint" id="pb-rp-hint">Minimo 10 caracteres</div>
       </div>
       <div class="fg"><label>Confirmar</label><input id="pb-rp2" type="password" placeholder="••••••" autocomplete="new-password"></div>
-      <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_registro()">Crear Cuenta</button></div>
+      <div class="PG1"><button type="submit" class="view-all-button" id="pb-rbtn" onclick="event.preventDefault();PB_registro()">Crear Cuenta</button></div>
       <p class="fg-hint pb-c">Ya tenes cuenta? <a onclick="PB_showTab('login')">Inicia sesion</a></p>
     </form>
     <p class="fg-hint pb-c">Es la misma cuenta que usas para agregar productos</p>
@@ -191,7 +191,7 @@
         <h2>Cambiar Numero</h2>
         <div class="fg"><label>Numero Nuevo</label><input id="pb-ctn" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="off"></div>
         <div class="fg"><label>Contrasena Actual</label><input id="pb-cta" type="password" placeholder="••••••" autocomplete="current-password"></div>
-        <div class="fg-hint">Te escribimos por WhatsApp al numero nuevo para confirmar</div>
+        <div class="fg-hint">Confirmas enviando un mensaje desde el numero nuevo</div>
         <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_cambiarTel()">Solicitar Cambio</button></div>
       </form>
     </div>
@@ -254,11 +254,16 @@ async function PB_fetch(action,opts={}){
   return{ok:res.ok,status:res.status,data};
 }
 
+let _PB_rt='alta';
 window.PB_showTab=function(t){
+  const rs=t==='rst';
   document.getElementById('pb-login-box').style.display=t==='login'?'block':'none';
-  document.getElementById('pb-reg-box').style.display=t==='reg'?'block':'none';
+  document.getElementById('pb-reg-box').style.display=t==='login'?'none':'block';
   document.getElementById('pb-tlogin').classList.toggle('act',t==='login');
   document.getElementById('pb-treg').classList.toggle('act',t==='reg');
+  _PB_rt=rs?'clave':'alta';
+  document.querySelector('#pb-reg-box h2').textContent=rs?'Recuperar Cuenta':'Nuevo Usuario';
+  document.getElementById('pb-rbtn').textContent=rs?'Cambiar Contrasena':'Crear Cuenta';
 };
 
 window.PB_checkPwStrength=function(inputId='pb-rp',hintId='pb-rp-hint'){
@@ -434,11 +439,16 @@ window.PB_login=async function(){
   if(!tel||!p)return PB_toast('Completa los campos','warn');
   const{ok,data}=await PB_fetch('login',{method:'POST',body:JSON.stringify({telefono:tel,password:p})});
   if(!ok)return PB_toast(data.error||'Error','err');
-  _PB_tel=tel;_PB_tk=data.token;
+  PB_in(tel,data);
+};
+
+function PB_in(tel,d){
+  _PB_tel=tel;_PB_tk=d.token;
   PB_sck('ap_tel',tel);PB_sck('ap_tk',_PB_tk);
+  if(d.alias)PB_sck('ap_al',d.alias);
   PB_toast('Bienvenido');
   PB_showMain();
-};
+}
 
 window.PB_registro=async function(){
   const tel=document.getElementById('pb-ru').value.replace(/\D/g,'');
@@ -447,12 +457,8 @@ window.PB_registro=async function(){
   if(!tel||!p)return PB_toast('Completa los campos','warn');
   if(p!==p2)return PB_toast('Las contrasenas no coinciden','warn');
   if(p.length<10)return PB_toast('La contrasena necesita 10+ caracteres','warn');
-  const{ok,data}=await PB_fetch('registro',{method:'POST',body:JSON.stringify({telefono:tel,password:p})});
-  if(!ok)return PB_toast(data.error||'Error','err');
-  PB_toast('Cuenta creada! Iniciando sesion...');
-  document.getElementById('pb-lu').value=tel;
-  document.getElementById('pb-lp').value=p;
-  await PB_login();
+  const r=await VF1({tipo:_PB_rt,telefono:tel,password:p},PB_toast);
+  if(r)PB_in(tel,r);
 };
 
 window.PB_cambiarPass=async function(){
@@ -473,8 +479,7 @@ window.PB_cambiarTel=async function(){
   const tn=document.getElementById('pb-ctn').value.replace(/\D/g,'');
   const pa=document.getElementById('pb-cta').value;
   if(!tn||!pa)return PB_toast('Completa los campos','warn');
-  const{ok,data}=await PB_fetch('cambiarTel',{method:'POST',body:JSON.stringify({password:pa,telefonoNuevo:tn})});
-  if(!ok)return PB_toast(data.error||'Error','err');
+  if(!await VF1({tipo:'numero',token:_PB_tk,password:pa,telefonoNuevo:tn},PB_toast))return;
   ['pb-ctn','pb-cta'].forEach(i=>document.getElementById(i).value='');
   PB_toast('Cambio solicitado');
 };

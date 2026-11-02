@@ -1,10 +1,10 @@
 <script src="/web/scripts/Otros/HTMLCoreInyector.js" data-a="AgregarProducto" data-t="Publica tu Producto" data-d="Envia tu producto, propuesta o caso para publicarlo en Che Agana."></script>
+<script src="/web/scripts/Otros/Verif.js"></script>
 <style>
 #ap-wrap{padding-bottom:90px}
 #ap-wrap button{font-family:inherit;margin:0}
 #ap-wrap button:disabled{opacity:.4;cursor:not-allowed}
 #ap-wrap .PG1{margin-bottom:12px}
-#ap-wrap .act{--GL_R:var(--GL_RC);--GL_F:var(--GL_FH)}
 .fg{margin-bottom:12px}
 .fg label{display:block;margin-bottom:4px;font-size:.85em;opacity:.6}
 .fg :is(input,select,textarea,button){width:100%}
@@ -65,7 +65,7 @@
       <div class="fg"><label>Numero de telefono</label><input id="ap-lu" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
       <div class="fg"><label>Contrasena</label><input id="ap-lp" type="password" placeholder="••••••" autocomplete="current-password"></div>
       <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();AP_login()">Entrar</button></div>
-      <p class="fg-hint ap-c">Sin cuenta? <a onclick="AP_showTab('reg')">Registrate aqui</a></p>
+      <p class="fg-hint ap-c">Sin cuenta? <a onclick="AP_showTab('reg')">Registrate aqui</a> · <a onclick="AP_showTab('rst')">Olvide mi contrasena</a></p>
     </form>
     <form id="ap-reg-box" style="display:none">
       <h2>Nuevo Usuario</h2>
@@ -76,7 +76,7 @@
         <div class="fg-hint" id="ap-rp-hint">Minimo 10 caracteres</div>
       </div>
       <div class="fg"><label>Confirmar</label><input id="ap-rp2" type="password" placeholder="••••••" autocomplete="new-password"></div>
-      <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();AP_registro()">Crear Cuenta</button></div>
+      <div class="PG1"><button type="submit" class="view-all-button" id="ap-rbtn" onclick="event.preventDefault();AP_registro()">Crear Cuenta</button></div>
       <p class="fg-hint ap-c">Ya tenes cuenta? <a onclick="AP_showTab('login')">Inicia sesion</a></p>
     </form>
     <p class="fg-hint ap-c">Tu numero de Telefono es tu Identidad</p>
@@ -167,7 +167,7 @@
         <h2>Cambiar Numero</h2>
         <div class="fg"><label>Numero Nuevo</label><input id="ap-ctn" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="off"></div>
         <div class="fg"><label>Contrasena Actual</label><input id="ap-cta" type="password" placeholder="••••••" autocomplete="current-password"></div>
-        <div class="fg-hint">Te escribimos por WhatsApp al numero nuevo para confirmar</div>
+        <div class="fg-hint">Confirmas enviando un mensaje desde el numero nuevo</div>
         <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();AP_cambiarTel()">Solicitar Cambio</button></div>
       </form>
     </div>
@@ -260,11 +260,16 @@ async function AP_fetch(action,opts={}){
   return{ok:res.ok,status:res.status,data};
 }
 
+let _AP_rt='alta';
 window.AP_showTab=function(t){
+  const rs=t==='rst';
   document.getElementById('ap-login-box').style.display=t==='login'?'block':'none';
-  document.getElementById('ap-reg-box').style.display=t==='reg'?'block':'none';
+  document.getElementById('ap-reg-box').style.display=t==='login'?'none':'block';
   document.getElementById('ap-tlogin').classList.toggle('act',t==='login');
   document.getElementById('ap-treg').classList.toggle('act',t==='reg');
+  _AP_rt=rs?'clave':'alta';
+  document.querySelector('#ap-reg-box h2').textContent=rs?'Recuperar Cuenta':'Nuevo Usuario';
+  document.getElementById('ap-rbtn').textContent=rs?'Cambiar Contrasena':'Crear Cuenta';
 };
 
 window.AP_checkPwStrength=function(inputId='ap-rp',hintId='ap-rp-hint'){
@@ -548,11 +553,16 @@ window.AP_login=async function(){
   if(!tel||!p)return AP_toast('Completa los campos','warn');
   const{ok,data}=await AP_fetch('login',{method:'POST',body:JSON.stringify({telefono:tel,password:p})});
   if(!ok)return AP_toast(data.error||'Error','err');
-  _AP_tel=tel;_AP_tk=data.token;
+  AP_in(tel,data);
+};
+
+function AP_in(tel,d){
+  _AP_tel=tel;_AP_tk=d.token;
   AP_sck('ap_tel',tel);AP_sck('ap_tk',_AP_tk);
+  if(d.alias){_AP_al=d.alias;AP_sck('ap_al',_AP_al);}
   AP_toast('Bienvenido');
   AP_showMain();
-};
+}
 
 window.AP_registro=async function(){
   const tel=document.getElementById('ap-ru').value.replace(/\D/g,'');
@@ -561,12 +571,8 @@ window.AP_registro=async function(){
   if(!tel||!p)return AP_toast('Completa los campos','warn');
   if(p!==p2)return AP_toast('Las contrasenas no coinciden','warn');
   if(p.length<10)return AP_toast('La contrasena necesita 10+ caracteres','warn');
-  const{ok,data}=await AP_fetch('registro',{method:'POST',body:JSON.stringify({telefono:tel,password:p})});
-  if(!ok)return AP_toast(data.error||'Error','err');
-  AP_toast('Cuenta creada! Iniciando sesion...');
-  document.getElementById('ap-lu').value=tel;
-  document.getElementById('ap-lp').value=p;
-  await AP_login();
+  const r=await VF1({tipo:_AP_rt,telefono:tel,password:p},AP_toast);
+  if(r)AP_in(tel,r);
 };
 
 window.AP_cambiarPass=async function(){
@@ -587,8 +593,7 @@ window.AP_cambiarTel=async function(){
   const tn=document.getElementById('ap-ctn').value.replace(/\D/g,'');
   const pa=document.getElementById('ap-cta').value;
   if(!tn||!pa)return AP_toast('Completa los campos','warn');
-  const{ok,data}=await AP_fetch('cambiarTel',{method:'POST',body:JSON.stringify({password:pa,telefonoNuevo:tn})});
-  if(!ok)return AP_toast(data.error||'Error','err');
+  if(!await VF1({tipo:'numero',token:_AP_tk,password:pa,telefonoNuevo:tn},AP_toast))return;
   ['ap-ctn','ap-cta'].forEach(i=>document.getElementById(i).value='');
   AP_toast('Cambio solicitado');
 };

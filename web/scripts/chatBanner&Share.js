@@ -692,7 +692,7 @@ function initShare(){
   const a=document.getElementById("compartir-btn");
   if(!a||!navigator.share)return;
   a.removeAttribute("href");a.style.cursor="pointer";
-  function onSh(e){e.preventDefault();navigator.share({title:"😻 Compartir",text:"😻 Comparte para ser mas Amigos cada Dia 😻",url:location.href});}
+  function onSh(e){e.preventDefault();const t=el.dataset.t;navigator.share(t?{text:t,url:location.href}:{url:location.href});}
   a.addEventListener("click",onSh);
   document.addEventListener("contentUnload",()=>a.removeEventListener("click",onSh),{once:true});
 }
