@@ -666,10 +666,10 @@ function AP_misF(){
   if(!(_AP_mt in c))_AP_mt='*';
   const nm=Object.fromEntries([...document.getElementById('ap-tipo').options].map(o=>[o.value,o.textContent]));
   f.hidden=Object.keys(c).length<2;
-  f.replaceChildren(...[['*','Todos',_AP_mis.length],...Object.keys(c).map(t=>[t,nm[t]||t,c[t]])].map(([t,n,k])=>{
+  f.replaceChildren(...Object.keys(c).map(t=>[t,nm[t]||t,c[t]]).map(([t,n,k])=>{
     const b=document.createElement('button');
     b.className='PL1'+(t===_AP_mt?' PL1_A':'');b.textContent=`${n} (${k})`;
-    b.onclick=()=>{_AP_mt=t;AP_misF();AP_misR();};
+    b.onclick=()=>{_AP_mt=_AP_mt===t?'*':t;AP_misF();AP_misR();};
     return b;
   }));
 }
