@@ -74,7 +74,7 @@ const clr=document.getElementById('sh-clr');
 const r=document.getElementById('sh-r');
 
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
-function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1].trim():n}
+function nN(n){const m=n.match(/NB=(.+)/);return m?m[1].trim():n}
 function mL(p){return p.replace(/\.[^.]+$/,'.html')}
 const _PC=/PC=(\d+)/,_ID=/ID=(.*?)(?=-[A-Z]{2}=|$)/;
 function fPC(n){const m=n.match(_PC);return m?m[1].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+' Gs':''}

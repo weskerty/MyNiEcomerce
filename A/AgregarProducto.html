@@ -44,7 +44,10 @@
 #AP_DG1{width:auto;max-width:min(420px,calc(100vw - 40px));text-align:center}
 #AP_DG1 p.err{color:var(--err)}
 #AP_DG1 p.warn{color:var(--warn)}
-#AP_DG1 div{display:flex;gap:10px;justify-content:center;margin-top:16px}
+#AP_DG1 div,#AP_CR1>div+div{display:flex;gap:10px;justify-content:center;margin-top:16px}
+#AP_CR1{width:auto;padding:12px}
+#AP_CR1 .AP_CR2{position:relative;max-width:min(90vw,420px);max-height:60vh;overflow:hidden}
+#AP_CR1 .AP_CR2 img{display:block;max-width:100%;max-height:60vh}
 .ap-msg:is(.ok,.err,.warn){border-color:currentColor}
 .ap-msg.ok{color:var(--ok)}
 .ap-msg.err{color:var(--err)}
@@ -60,6 +63,7 @@
 </style>
 
 <dialog id="AP_DG1"><form method="dialog"><p></p><div><button>Aceptar</button><button type="button">Ayuda</button></div></form></dialog>
+<dialog id="AP_CR1"><div class="AP_CR2"><img id="AP_CR3" alt=""></div><div><button id="AP_CR4">Recortar</button><button id="AP_CR5">Saltar</button></div></dialog>
 
 <div id="ap-wrap">
 <h1>🏪 Agregar Producto</h1>
@@ -100,8 +104,9 @@
     <div id="ap-tab-nuevo">
       <div>
         <h2>Datos del Producto</h2>
-        <div class="fg"><label>Tipo</label><select id="ap-tipo" onchange="AP_tipo()"><option value="">Producto</option><option value="Propuestas">Propuesta</option><option value="Ejemplos de Corrupcion">Caso de Corrupcion</option></select></div>
+        <div class="fg"><label>Tipo</label><select id="ap-tipo" onchange="AP_tipo(1)"><option value="">Producto</option><option value="Propuestas">Propuesta</option><option value="Ejemplos de Corrupcion">Caso de Corrupcion</option><option value="Blogs">Blog</option></select></div>
         <div class="fg-hint" id="ap-tipo-hint" style="display:none">Se publica sin tu numero de telefono</div>
+        <div class="fg" id="ap-blog" style="display:none"><label>Seccion</label><select id="ap-bsec"></select></div>
         <div class="ap-row ap-prod">
           <div class="fg"><label>Categoria</label><select id="ap-cat" onchange="AP_updSub()"></select></div>
           <div class="fg"><label>Subcategoria</label><select id="ap-sub"></select></div>
@@ -191,7 +196,12 @@ const AP_DINAMICO_BASE=(()=>{
   return base||'/web/Dinamico';
 })();
 const AP_DD_BASE='/web/otros/Archivos/Dinamico/DemoDire';
+const AP_BL_BASE='/web/otros/Archivos/Dinamico/Blogs';
 const AP_MAX_SIZE=200*1024;
+const AP_CR_LIBS=[
+  {k:'css',local:'web/scripts/Otros/Cropper/cropper.min.css',cdn:'https://cdn.jsdelivr.net/npm/cropperjs@1.7.0/dist/cropper.min.css'},
+  {k:'js',local:'web/scripts/Otros/Cropper/cropper.min.js',cdn:'https://cdn.jsdelivr.net/npm/cropperjs@1.7.0/dist/cropper.min.js',check:()=>window.Cropper}
+];
 const AP_LIBS=[
   {k:'css',local:'web/scripts/Otros/EasyMDE/easymde.min.css',cdn:'https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.css'},
   {k:'js',local:'web/scripts/Otros/EasyMDE/easymde.min.js',cdn:'https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.js',check:()=>window.EasyMDE}
@@ -307,11 +317,20 @@ async function AP_loadCats(){
   AP_updSub();
 }
 
-window.AP_tipo=function(){
-  const dd=!!document.getElementById('ap-tipo').value;
+window.AP_tipo=function(re){
+  const t=document.getElementById('ap-tipo').value,dd=!!t;
   document.querySelectorAll('#ap-tab-nuevo .ap-prod').forEach(el=>el.style.display=dd?'none':'');
   document.getElementById('ap-tipo-hint').style.display=dd?'':'none';
+  document.getElementById('ap-blog').style.display=t==='Blogs'?'':'none';
+  const f=document.getElementById('ap-img')._file;
+  if(re&&f)AP_img(f);
 };
+
+function AP_setTipo(c,s){
+  document.getElementById('ap-tipo').value=c==='DemoDire'?s:c==='Blogs'?c:'';
+  if(c==='Blogs')document.getElementById('ap-bsec').value=s;
+  AP_tipo();
+}
 
 window.AP_updSub=function(){
   const c=document.getElementById('ap-cat').value;
@@ -354,7 +373,15 @@ async function AP_scanAllProductos(force){
   const dj=await AP_fetchDataJsonGeneral(force);
   const all=[];
   if(dj)Object.entries(dj).forEach(([cat,v])=>AP_extractEntries(v,cat,'',all));
-  try{const r=await fetch(`${AP_DD_BASE}/data.json`);if(r.ok)AP_extractEntries((await r.json()).galleries?.DemoDire||{},'DemoDire','',all);}catch{}
+  for(const[c,b]of[['DemoDire',AP_DD_BASE],['Blogs',AP_BL_BASE]]){
+    try{
+      const r=await fetch(`${b}/data.json`);if(!r.ok)continue;
+      const g=(await r.json()).galleries?.[c]||{};
+      const s=document.getElementById('ap-bsec');
+      if(c==='Blogs'&&!s.options.length)Object.keys(g).forEach(k=>s.add(new Option(k,k)));
+      AP_extractEntries(g,c,'',all);
+    }catch{}
+  }
   return all;
 }
 
@@ -412,14 +439,44 @@ async function AP_processImg(file){
   const url=URL.createObjectURL(file);
   const img=new Image();
   await new Promise(r=>{img.onload=r;img.src=url;});
+  const BL=document.getElementById('ap-tipo').value==='Blogs';
+  const s=await AP_crop(url,BL?16/9:NaN)||{x:0,y:0,width:img.width,height:img.height};
   URL.revokeObjectURL(url);
   const cv=document.createElement('canvas');
-  cv.width=256;cv.height=256;
-  cv.getContext('2d').drawImage(img,0,0,256,256);
+  const dw=(w,h)=>{cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,s.x,s.y,s.width,s.height,0,0,w,h);};
+  if(BL){
+    for(const m of[1280,1024,800,640,480]){
+      const k=Math.min(1,m/Math.max(s.width,s.height));
+      dw(Math.round(s.width*k),Math.round(s.height*k));
+      for(const q of[.8,.6,.4]){
+        const b=await new Promise(r=>cv.toBlob(r,'image/webp',q));
+        if(b&&b.size<=AP_MAX_SIZE)return{blob:b,ext:'.webp',size:b.size};
+      }
+    }
+    return{error:'Imagen muy pesada'};
+  }
+  dw(256,256);
   let q=0.85,blob=null,tries=0;
   do{blob=await new Promise(r=>cv.toBlob(r,'image/webp',q));q=Math.max(0.05,q-0.1);tries++;}
   while(blob&&blob.size>AP_MAX_SIZE&&tries<12);
   return{blob,ext:'.webp',size:blob.size};
+}
+
+async function AP_crop(url,ar){
+  await Promise.all(AP_CR_LIBS.map(AP_loadLib));
+  if(!window.Cropper)return null;
+  const g=document.getElementById('AP_CR1'),ci=document.getElementById('AP_CR3');
+  g.showModal();
+  await new Promise(r=>{ci.onload=r;ci.src=url;});
+  const cp=new Cropper(ci,{viewMode:1,dragMode:'move',background:false,autoCropArea:.9,aspectRatio:ar});
+  const ok=await new Promise(r=>{
+    document.getElementById('AP_CR4').onclick=()=>r(1);
+    document.getElementById('AP_CR5').onclick=()=>r(0);
+    g.oncancel=()=>r(0);
+  });
+  const d=ok?cp.getData(true):null;
+  cp.destroy();g.close();ci.removeAttribute('src');
+  return d;
 }
 
 function AP_setThumb(blob){
@@ -430,15 +487,19 @@ function AP_setThumb(blob){
   icon.style.display='none';
 }
 
-document.getElementById('ap-img').onchange=async function(e){
-  const f=e.target.files[0];if(!f)return;
+async function AP_img(f){
   const result=await AP_processImg(f);
   if(result.error)return AP_toast(result.error,'err');
+  const el=document.getElementById('ap-img');
   AP_setThumb(result.blob);
   document.getElementById('ap-imgnm').textContent=`${(result.size/1024).toFixed(0)} KB`;
-  document.getElementById('ap-img')._blob=result.blob;
-  document.getElementById('ap-img')._ext=result.ext;
+  el._blob=result.blob;el._ext=result.ext;el._file=f;
   AP_toast('Imagen cargada','ok');
+}
+
+document.getElementById('ap-img').onchange=function(e){
+  const f=e.target.files[0];if(f)AP_img(f);
+  this.value='';
 };
 
 document.addEventListener('paste',async function(e){
@@ -449,14 +510,7 @@ document.addEventListener('paste',async function(e){
   const imgItem=items.find(i=>i.type.startsWith('image/'));
   if(!imgItem)return;
   e.preventDefault();
-  const f=imgItem.getAsFile();if(!f)return;
-  const result=await AP_processImg(f);
-  if(result.error)return AP_toast(result.error,'err');
-  AP_setThumb(result.blob);
-  document.getElementById('ap-imgnm').textContent=`${(result.size/1024).toFixed(0)} KB`;
-  document.getElementById('ap-img')._blob=result.blob;
-  document.getElementById('ap-img')._ext=result.ext;
-  AP_toast('Imagen pegada','ok');
+  const f=imgItem.getAsFile();if(f)AP_img(f);
 });
 
 async function AP_blobToB64(blob){
@@ -582,7 +636,8 @@ window.AP_enviar=async function(){
     return AP_flagField('ap-id');
   }
   const md=_AP_mde?_AP_mde.value():'';
-  const body=tipo?{categoria:'DemoDire',subcategoria:tipo,ID:id,NB:nb,PC:'0',md}:{categoria:cat,subcategoria:sub,ID:id,NB:nb,PC:parseInt(pcRaw),
+  const BL=tipo==='Blogs';
+  const body=tipo?{categoria:BL?tipo:'DemoDire',subcategoria:BL?document.getElementById('ap-bsec').value:tipo,ID:id,NB:nb,PC:'0',md}:{categoria:cat,subcategoria:sub,ID:id,NB:nb,PC:parseInt(pcRaw),
     CM:cm||null,TM:tm||null,CH:ch,CT:_AP_gpsCT||null,md};
   body.imgData=await AP_blobToB64(imgBlob);body.imgExt=imgExt;
   const btn=document.getElementById('ap-submit');
@@ -606,6 +661,7 @@ function AP_resetForm(){
   document.getElementById('ap-img-icon').style.display='';
   document.getElementById('ap-img')._blob=null;
   document.getElementById('ap-img')._ext=null;
+  document.getElementById('ap-img')._file=null;
   _AP_editando=null;
   if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;AP_libsReady.then(AP_initMDE);}
   document.getElementById('ap-submit').textContent='Enviar Solicitud';
@@ -622,7 +678,7 @@ window.AP_loadMisProductos=async function(){
     const div=document.createElement('div');div.className='ap-sol-item';
     div.innerHTML=`<div class="ap-sol-info">
       <div class="nm">${AP_esc(e.NB||e.ID)} <span class="ap-badge apr">Publicado</span></div>
-      <div class="fg-hint">ID: ${AP_esc(e.ID)} · ${AP_esc(e.categoria)}${e.sub?'/'+AP_esc(e.sub):''}${e.categoria==='DemoDire'?'':' · '+AP_FP(e.PC)+' Gs'}</div>
+      <div class="fg-hint">ID: ${AP_esc(e.ID)} · ${AP_esc(e.categoria)}${e.sub?'/'+AP_esc(e.sub):''}${['DemoDire','Blogs'].includes(e.categoria)?'':' · '+AP_FP(e.PC)+' Gs'}</div>
       <div class="ap-sol-acts">
         <button onclick='AP_editarPublicado(${JSON.stringify(e).replace(/'/g,"&apos;")})'>Editar</button>
         <button onclick="AP_solicitarBorrado('${AP_esc(e.ID)}')">Solicitar Borrado</button>
@@ -663,7 +719,7 @@ function AP_H2M(n){
 
 window.AP_editarPublicado=async function(e){
   AP_mainTab('nuevo');
-  document.getElementById('ap-tipo').value=e.categoria==='DemoDire'?e.sub:'';AP_tipo();
+  AP_setTipo(e.categoria,e.sub);
   document.getElementById('ap-ch').value=e.CH||'WA.TG';
   document.getElementById('ap-id').value=e.ID||'';
   document.getElementById('ap-nb').value=e.NB||'';
@@ -690,7 +746,7 @@ window.AP_editarRechazado=async function(ID){
   const{ok,data}=await AP_fetch('pendienteDetalle',{method:'POST',body:JSON.stringify({ID})});
   if(!ok)return AP_toast(data.error||'Error','err');
   AP_mainTab('nuevo');
-  document.getElementById('ap-tipo').value=data.categoria==='DemoDire'?data.sub:'';AP_tipo();
+  AP_setTipo(data.categoria,data.sub);
   document.getElementById('ap-ch').value=data.CH||'WA.TG';
   document.getElementById('ap-id').value=data.ID||'';
   document.getElementById('ap-nb').value=data.NB||'';

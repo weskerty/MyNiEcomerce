@@ -92,7 +92,7 @@ let curList=[],curPg=0,imgIO=null,fetchAC=null,rssAC=null,_ini=false,_lst=[],_ca
 
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 function mL(p){return p.replace(/\.[^.]+$/,'.html')}
-function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1].trim():n.replace(/-/g,' ')}
+function nN(n){const m=n.match(/NB=(.+)/);return m?m[1].trim():n.replace(/-/g,' ')}
 
 function parseBlogs(galleries){
   const bl=galleries.Blogs;
@@ -354,7 +354,9 @@ window.__KP1?.();
 init();
 function BN_ON(){
 if(!document.getElementById('bl-gr'))return;
-const OPFS_S=`return(async()=>{
+const OPFS_S=`const RUN=true;
+if(!RUN)return;
+return(async()=>{
 const R=await fetch('web/otros/Archivos/Dinamico/Blogs/data.json',{cache:'no-store'});
 if(!R.ok)return notify(null);
 const txt=await R.text();
@@ -372,14 +374,15 @@ const EP=dj=>{
   return Object.values(sub).flat();
 };
 const fN=p=>p.split('/').pop().replace(/\.[^.]+$/,'');
-const nN=n=>{const m=n.match(/NB=([^.]+)/);return m?m[1].trim():n.replace(/-/g,' ')};
+const nN=n=>{const m=n.match(/NB=(.+)/);return m?m[1].trim():n.replace(/-/g,' ')};
+const eID=p=>{const f=fN(p),m=f.match(/ID=([^-]+)/);return m?m[1]:f};
 let nA,oA;
 try{nA=EP(JSON.parse(txt));oA=EP(JSON.parse(prev));}catch{return notify(null);}
-const oIDs=new Set(oA.map(fN));
-const nP=nA.filter(p=>!oIDs.has(fN(p)));
+const oIDs=new Set(oA.map(eID));
+const nP=nA.filter(p=>!oIDs.has(eID(p)));
 for(const p of nP){
   const url=self.location.origin+'/#'+p.replace(/\.[^.]+$/,'.html').replace(/ /g,'%20');
-  notify({title:'Nuevo Blog \uD83D\uDCDD',body:nN(fN(p)),image:p,tag:fN(p),url});
+  notify({title:'Nuevo Blog \uD83D\uDCDD',body:nN(fN(p)),image:p,tag:eID(p),url});
 }
 })();`;
 
@@ -388,6 +391,7 @@ async function wOPFS(){
     const root=await navigator.storage.getDirectory();
     const dir=await root.getDirectoryHandle('notify',{create:true});
     const fh=await dir.getFileHandle('blogs.js',{create:true});
+    if(/RUN\s*=\s*false/.test(await(await fh.getFile()).text()))return;
     const wt=await fh.createWritable();
     await wt.write(OPFS_S);
     await wt.close();

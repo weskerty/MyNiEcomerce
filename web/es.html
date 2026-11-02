@@ -131,7 +131,9 @@ transform:scale(1.7);
 <script>
 (function(){
 window.__KP1?.();
-const OPFS_S=`return(async()=>{
+const OPFS_S=`const RUN=true;
+if(!RUN)return;
+return(async()=>{
 const R=await fetch('web/Dinamico/data.json',{cache:'no-store'});
 if(!R.ok)return notify(null);
 const txt=await R.text();
@@ -158,7 +160,7 @@ const eID=p=>{
 };
 const eNM=p=>{
   const f=p.split('/').pop().replace(/\.[^.]+$/,'');
-  const m=f.match(/NB=([^.]+)$/);
+  const m=f.match(/NB=(.+)$/);
   return m?m[1]:f;
 };
 const NTL={blog:'Nuevo Blog \uD83D\uDCDD',app:'Nueva App \uD83D\uDCF1',game:'Nuevo Juego \uD83C\uDFAE',product:'Nuevo Producto \uD83D\uDED2'};
@@ -178,6 +180,7 @@ async function wOPFS(){
     const root=await navigator.storage.getDirectory();
     const dir=await root.getDirectoryHandle('notify',{create:true});
     const fh=await dir.getFileHandle('productos.js',{create:true});
+    if(/RUN\s*=\s*false/.test(await(await fh.getFile()).text()))return;
     const wt=await fh.createWritable();
     await wt.write(OPFS_S);
     await wt.close();
