@@ -46,6 +46,8 @@
 #AP_DG1 p.warn{color:var(--warn)}
 #AP_DG1 div,#AP_CR1>div+div{display:flex;gap:10px;justify-content:center;margin-top:16px}
 #AP_CR1{width:auto;padding:12px}
+#ap-mis-f{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:12px}
+#ap-mis-f[hidden]{display:none}
 #AP_CR1 .AP_CR2{position:relative;max-width:min(90vw,420px);max-height:60vh;overflow:hidden}
 #AP_CR1 .AP_CR2 img{display:block;max-width:100%;max-height:60vh}
 .ap-msg:is(.ok,.err,.warn){border-color:currentColor}
@@ -156,6 +158,8 @@
       <div class="PG1"><button class="view-all-button" id="ap-submit" onclick="AP_enviar()">Enviar Solicitud</button></div>
     </div>
     <div id="ap-tab-mis" style="display:none">
+      <div class="fg" id="ap-mis-qd" hidden><input id="ap-mis-q" type="search" placeholder="Buscar por nombre o ID" autocomplete="off"></div>
+      <div id="ap-mis-f" hidden></div>
       <div id="ap-mis-list"><div class="fg-hint ap-c">Cargando...</div></div>
     </div>
     <div id="ap-tab-pend" style="display:none">
@@ -202,6 +206,7 @@ const AP_CR_LIBS=[
   {k:'css',local:'web/scripts/Otros/Cropper/cropper.min.css',cdn:'https://cdn.jsdelivr.net/npm/cropperjs@1/dist/cropper.min.css'},
   {k:'js',local:'web/scripts/Otros/Cropper/cropper.min.js',cdn:'https://cdn.jsdelivr.net/npm/cropperjs@1/dist/cropper.min.js',check:()=>window.Cropper}
 ];
+const AP_MS_LIB={k:'js',local:'web/scripts/Otros/MiniSearch/index.js',cdn:'https://cdn.jsdelivr.net/npm/minisearch@7/dist/umd/index.js',check:()=>window.MiniSearch};
 const AP_LIBS=[
   {k:'css',local:'web/scripts/Otros/EasyMDE/easymde.min.css',cdn:'https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.css'},
   {k:'js',local:'web/scripts/Otros/EasyMDE/easymde.min.js',cdn:'https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.js',check:()=>window.EasyMDE}
@@ -667,14 +672,54 @@ function AP_resetForm(){
   document.getElementById('ap-submit').textContent='Enviar Solicitud';
 }
 
+let _AP_mis=[],_AP_mt='*',_AP_ms=null;
+const AP_tp=e=>e.categoria==='Blogs'?'Blogs':e.categoria==='DemoDire'?e.sub:'';
+
+function AP_misF(){
+  const f=document.getElementById('ap-mis-f'),c={};
+  _AP_mis.forEach(e=>{const t=AP_tp(e);c[t]=(c[t]||0)+1;});
+  if(!(_AP_mt in c))_AP_mt='*';
+  const nm=Object.fromEntries([...document.getElementById('ap-tipo').options].map(o=>[o.value,o.textContent]));
+  f.hidden=Object.keys(c).length<2;
+  f.replaceChildren(...[['*','Todos',_AP_mis.length],...Object.keys(c).map(t=>[t,nm[t]||t,c[t]])].map(([t,n,k])=>{
+    const b=document.createElement('button');
+    b.className='PL1'+(t===_AP_mt?' PL1_A':'');b.textContent=`${n} (${k})`;
+    b.onclick=()=>{_AP_mt=t;AP_misF();AP_misR();};
+    return b;
+  }));
+}
+
+function AP_misR(){
+  const lst=document.getElementById('ap-mis-list'),q=document.getElementById('ap-mis-q').value.trim();
+  let l=_AP_mis;
+  if(q){
+    if(_AP_ms){const ids=new Set(_AP_ms.search(q,{prefix:true,fuzzy:.2}).map(r=>r.id));l=l.filter((e,i)=>ids.has(i));}
+    else l=l.filter(e=>(e.NB+' '+e.ID).toLowerCase().includes(q.toLowerCase()));
+  }
+  if(_AP_mt!=='*')l=l.filter(e=>AP_tp(e)===_AP_mt);
+  if(!l.length){lst.innerHTML='<div class="fg-hint ap-c">Sin resultados</div>';return;}
+  lst.replaceChildren(...l.map(AP_misI));
+}
+document.getElementById('ap-mis-q').oninput=AP_misR;
+
 window.AP_loadMisProductos=async function(){
   const lst=document.getElementById('ap-mis-list');
   lst.innerHTML='<div class="fg-hint ap-c">Cargando...</div>';
   const all=await AP_scanAllProductos();
-  const mios=all.filter(e=>e.telefono===_AP_tel||(_AP_al&&e.telefono===_AP_al));
-  if(!mios.length){lst.innerHTML='<div class="fg-hint ap-c">Sin productos publicados aun</div>';return;}
-  lst.innerHTML='';
-  mios.forEach(e=>{
+  _AP_mis=all.filter(e=>e.telefono===_AP_tel||(_AP_al&&e.telefono===_AP_al));
+  _AP_ms=null;
+  if(!_AP_mis.length){lst.innerHTML='<div class="fg-hint ap-c">Sin productos publicados aun</div>';return;}
+  const qd=document.getElementById('ap-mis-qd');
+  qd.hidden=_AP_mis.length<=8;
+  if(!qd.hidden)AP_loadLib(AP_MS_LIB).then(()=>{
+    if(!window.MiniSearch)return;
+    _AP_ms=new MiniSearch({fields:['NB','ID']});
+    _AP_ms.addAll(_AP_mis.map((e,i)=>({id:i,NB:e.NB||'',ID:e.ID})));
+  });
+  AP_misF();AP_misR();
+};
+
+function AP_misI(e){
     const div=document.createElement('div');div.className='ap-sol-item';
     div.innerHTML=`<div class="ap-sol-info">
       <div class="nm">${AP_esc(e.NB||e.ID)} <span class="ap-badge apr">Publicado</span></div>
@@ -684,9 +729,8 @@ window.AP_loadMisProductos=async function(){
         <button onclick="AP_solicitarBorrado('${AP_esc(e.ID)}')">Solicitar Borrado</button>
       </div>
     </div>`;
-    lst.appendChild(div);
-  });
-};
+    return div;
+}
 
 window.AP_solicitarBorrado=async function(ID){
   if(!confirm(`Solicitar el borrado de "${ID}"? Un admin debe confirmarlo.`))return;
