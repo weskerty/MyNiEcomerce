@@ -331,7 +331,9 @@ function setupIO(){
   _io.observe(sentinel);
 }
 
-const OPFS_S=`return(async()=>{
+const OPFS_S=`const RUN=true;
+if(!RUN)return;
+return(async()=>{
 const R=await fetch('/api/rss?url=${encodeURIComponent(RSS_PATH)}',{cache:'no-store'});
 if(!R.ok)return notify(null);
 const x=await R.text();
@@ -357,6 +359,7 @@ async function wOPFS(){
     const root=await navigator.storage.getDirectory();
     const dir=await root.getDirectoryHandle('notify',{create:true});
     const fh=await dir.getFileHandle('rss.js',{create:true});
+    if(/RUN\s*=\s*false/.test(await(await fh.getFile()).text()))return;
     const wt=await fh.createWritable();
     await wt.write(OPFS_S);
     await wt.close();

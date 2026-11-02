@@ -20,6 +20,7 @@
 
 <div id="ST_W">
 <label class="ST_CI ST_SW"><span class="nm">Desactivar Transparencia y Animaciones</span><input type="checkbox" id="ST_SW"><i></i></label>
+<div class="ST_CACHES" id="ST_NT"></div>
 <details id="ST_FV" hidden>
 <summary>⭐ Favoritos</summary>
 <div class="ST_CACHES" id="ST_FL"></div>
@@ -45,7 +46,7 @@
 
   async function walk(d,p,o){
     for await(const[n,h]of d.entries()){
-      if(h.kind==='directory')await walk(h,p+n+'/',o);
+      if(h.kind==='directory'){if(p||n!=='notify')await walk(h,p+n+'/',o)}
       else try{o.push({l:'📄 '+p+n,s:(await h.getFile()).size,n,g:()=>h.getFile(),x:()=>d.removeEntry(n)})}catch{}
     }
   }
@@ -93,6 +94,26 @@
     localStorage.setItem('perf',swEl.checked?'low':'high');
     document.body.classList.toggle('low-perf',swEl.checked);
   };
+
+  async function nt(){
+    let d;try{d=await(await navigator.storage.getDirectory()).getDirectoryHandle('notify')}catch{return}
+    const l=[];
+    for await(const[n,h]of d.entries())if(h.kind==='file'&&n.endsWith('.js'))l.push([n,h]);
+    $('ST_NT').replaceChildren(...await Promise.all(l.sort().map(async([n,h])=>{
+      const r=document.createElement('label'),c=document.createElement('input');
+      r.className='ST_CI ST_SW';c.type='checkbox';
+      c.checked=!/RUN\s*=\s*false/.test(await(await h.getFile()).text());
+      c.onchange=async()=>{
+        const t=await(await h.getFile()).text(),v=c.checked?'RUN=true':'RUN=false';
+        const w=await h.createWritable();
+        await w.write(/RUN\s*=\s*(true|false)/.test(t)?t.replace(/RUN\s*=\s*(true|false)/,v):`const ${v};if(!RUN)return;\n`+t);
+        await w.close();
+      };
+      r.append(S('nm','Notificaciones '+n.slice(0,-3).replace(/^./,x=>x.toUpperCase())),c,document.createElement('i'));
+      return r;
+    })));
+  }
+  nt();
 
   const FK='⭐ Favoritos';
   function fv(){
