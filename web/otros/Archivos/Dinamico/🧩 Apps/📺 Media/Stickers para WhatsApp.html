@@ -391,8 +391,10 @@
   function loadCropperJS(){
     return new Promise((res,rej)=>{
       if(window.Cropper){res();return;}
-      const l=document.createElement('link');l.rel='stylesheet';l.href='https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css';document.head.appendChild(l);
-      const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js';s.onload=res;s.onerror=rej;document.head.appendChild(s);
+      const l=document.createElement('link');l.rel='stylesheet';l.href='web/scripts/Otros/Cropper/cropper.min.css';l.onerror=()=>{l.onerror=null;l.href='https://cdn.jsdelivr.net/npm/cropperjs@1/dist/cropper.min.css';};document.head.appendChild(l);
+      const s=document.createElement('script');s.src='web/scripts/Otros/Cropper/cropper.min.js';s.onload=res;
+      s.onerror=()=>{const c=document.createElement('script');c.src='https://cdn.jsdelivr.net/npm/cropperjs@1/dist/cropper.min.js';c.onload=res;c.onerror=rej;document.head.appendChild(c);};
+      document.head.appendChild(s);
     });
   }
 

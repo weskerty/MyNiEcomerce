@@ -187,8 +187,8 @@
 <script>
 (function(){
   const ZXW='https://cdn.jsdelivr.net/npm/zxing-wasm@3.1.4/dist/iife/reader/index.js';
-  const CJS='https://cdn.jsdelivr.net/npm/cropperjs@1.6.3/dist/cropper.min.js';
-  const CCS='https://cdn.jsdelivr.net/npm/cropperjs@1.6.3/dist/cropper.min.css';
+  const CJS='web/scripts/Otros/Cropper/cropper.min.js',CJF='https://cdn.jsdelivr.net/npm/cropperjs@1/dist/cropper.min.js';
+  const CCS='web/scripts/Otros/Cropper/cropper.min.css',CCF='https://cdn.jsdelivr.net/npm/cropperjs@1/dist/cropper.min.css';
   const QGL='https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode.js';
   const QGU='https://cdn.jsdelivr.net/npm/qrcode-generator@2.0.4/dist/qrcode_UTF8.js';
   const BWL='https://cdn.jsdelivr.net/npm/bwip-js@4.11.4/dist/bwip-js-min.js';
@@ -252,8 +252,8 @@
 
   async function QS_LC(){
     if(window.Cropper)return;
-    const l=document.createElement('link');l.rel='stylesheet';l.href=CCS;document.head.appendChild(l);
-    await QS_LS(CJS);
+    const l=document.createElement('link');l.rel='stylesheet';l.href=CCS;l.onerror=()=>{l.onerror=null;l.href=CCF;};document.head.appendChild(l);
+    await QS_LS(CJS).catch(()=>QS_LS(CJF));
   }
 
   async function QS_LZ(){if(!window.ZXingWASM)await QS_LS(ZXW);}

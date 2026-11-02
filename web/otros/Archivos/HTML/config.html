@@ -8,19 +8,16 @@
 .ST_CACHES .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ST_CI .ct{font-size:.75em;color:rgba(255,255,255,.5);flex-shrink:0}
 .ST_CI button{min-width:0;padding:4px 10px}
-.ST_SW{position:relative;cursor:pointer}
-.ST_SW input{position:absolute;opacity:0}
-.ST_SW i{position:relative;flex:none;width:48px;height:28px;border-radius:14px;background:rgba(255,255,255,.2);transition:background .2s}
-.ST_SW i::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:translate .2s}
-.ST_SW input:checked+i{background:var(--ok)}
-.ST_SW input:checked+i::after{translate:20px 0}
-.ST_SW input:focus-visible+i{outline:2px solid #fff;outline-offset:2px}
+label.ST_CI{cursor:pointer}
 .ST_MSG{text-align:center;color:rgba(255,255,255,.5);padding:24px;font-size:.9em}
 </style>
 
 <div id="ST_W">
-<label class="ST_CI ST_SW"><span class="nm">Desactivar Transparencia y Animaciones</span><input type="checkbox" id="ST_SW"><i></i></label>
+<label class="ST_CI"><span class="nm">Desactivar Transparencia y Animaciones</span><input type="checkbox" id="ST_SW"></label>
+<details id="ST_ND" hidden>
+<summary>🔔 Notificaciones</summary>
 <div class="ST_CACHES" id="ST_NT"></div>
+</details>
 <details id="ST_FV" hidden>
 <summary>⭐ Favoritos</summary>
 <div class="ST_CACHES" id="ST_FL"></div>
@@ -99,9 +96,10 @@
     let d;try{d=await(await navigator.storage.getDirectory()).getDirectoryHandle('notify')}catch{return}
     const l=[];
     for await(const[n,h]of d.entries())if(h.kind==='file'&&n.endsWith('.js'))l.push([n,h]);
+    $('ST_ND').hidden=!l.length;
     $('ST_NT').replaceChildren(...await Promise.all(l.sort().map(async([n,h])=>{
       const r=document.createElement('label'),c=document.createElement('input');
-      r.className='ST_CI ST_SW';c.type='checkbox';
+      r.className='ST_CI';c.type='checkbox';
       c.checked=!/RUN\s*=\s*false/.test(await(await h.getFile()).text());
       c.onchange=async()=>{
         const t=await(await h.getFile()).text(),v=c.checked?'RUN=true':'RUN=false';
@@ -109,7 +107,7 @@
         await w.write(/RUN\s*=\s*(true|false)/.test(t)?t.replace(/RUN\s*=\s*(true|false)/,v):`const ${v};if(!RUN)return;\n`+t);
         await w.close();
       };
-      r.append(S('nm','Notificaciones '+n.slice(0,-3).replace(/^./,x=>x.toUpperCase())),c,document.createElement('i'));
+      r.append(S('nm',n.slice(0,-3).replace(/^./,x=>x.toUpperCase())),c);
       return r;
     })));
   }
