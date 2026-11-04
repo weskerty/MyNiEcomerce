@@ -147,6 +147,7 @@ button:not([class]):disabled::after{display:none}
 .PG1 button{display:inline-flex;align-items:center;justify-content:center;min-height:48px;min-width:120px;padding:0 22px;border-radius:var(--r-xs);font-size:.95em}
 @media(max-width:480px){.PG1 button{flex:1;min-width:0;padding:0 10px}}
 .PG1.PG2{gap:6px}
+.PG1:empty{display:none}
 .PG1.PG2 button{min-width:44px;padding:0 8px;font-variant-numeric:tabular-nums}
 @media(max-width:480px){.PG1.PG2 button{min-width:0;padding:0 4px}}
 

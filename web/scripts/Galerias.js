@@ -25,8 +25,6 @@ _S.textContent=`
 .gi-strip{position:absolute;inset:0}
 .gi-node{position:absolute;top:0;left:0;width:${ITEM}px;display:flex;flex-direction:column;gap:${GAP}px}
 .gi-grid-inner{width:100%;overflow:hidden}
-.gi-gv{position:relative;touch-action:pan-y}
-.gi-gh{position:absolute;top:0;left:0;right:0}
 .gi-grid-row{display:grid;grid-template-columns:repeat(auto-fill,${ITEM}px);gap:${GAP}px;justify-content:center;margin-bottom:${GAP}px}
 .gi-skeleton{display:flex;flex-direction:column;gap:8px;padding:8px 0}
 .gi-sk-item{height:${IH}px;border-radius:20px;background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 100%);background-size:200% 100%;animation:gi-shimmer 1.4s infinite}
@@ -158,37 +156,8 @@ function sortAllLoaded(){
 }
 loadGU().then(()=>reqGeo(sortAllLoaded));
 
-const FL=.25,_wm=new Set();
+const _wm=new Set();
 function wm(s){if(!s||_wm.has(s))return;_wm.add(s);const i=new Image();i.decoding='async';i.src=s}
-function DR1(el,sig,o){
-  let sx=0,sy=0,lx=0,lt=0,vx=0,dr=false,lk=false,pid=null,ms=false,nc=false;
-  const rel=()=>{if(pid!==null){try{el.releasePointerCapture(pid)}catch{}}pid=null;dr=false;lk=false};
-  el.addEventListener('click',e=>{if(nc){nc=false;e.preventDefault();e.stopPropagation()}},{capture:true,signal:sig});
-  el.addEventListener('pointerdown',e=>{
-    if(pid!==null||(e.pointerType==='mouse'&&e.button!==0)||(o.ok&&!o.ok()))return;
-    pid=e.pointerId;ms=e.pointerType==='mouse';nc=false;sx=lx=e.clientX;sy=e.clientY;lt=e.timeStamp;vx=0;
-    if(o.down)o.down();
-  },{signal:sig});
-  el.addEventListener('pointermove',e=>{
-    if(e.pointerId!==pid)return;
-    const x=e.clientX;
-    if(!lk){
-      const dx=Math.abs(x-sx),dy=Math.abs(e.clientY-sy);
-      if(dx<5&&dy<5)return;
-      lk=true;
-      if(!ms&&dx<=dy*1.5){rel();o.up(false,0);return}
-      dr=true;nc=true;try{el.setPointerCapture(pid)}catch{}
-      o.lock();
-    }
-    if(!dr)return;
-    const dt=e.timeStamp-lt;
-    if(dt>0){const iv=(x-lx)/dt;vx=vx?vx*.6+iv*.4:iv}
-    const d=x-lx;lx=x;lt=e.timeStamp;o.move(d);
-  },{signal:sig});
-  el.addEventListener('pointerup',e=>{if(e.pointerId!==pid)return;const w=dr;if(e.timeStamp-lt>100)vx=0;rel();o.up(w,vx)},{signal:sig});
-  el.addEventListener('pointercancel',e=>{if(e.pointerId!==pid)return;const w=dr;rel();o.up(w,0,1)},{signal:sig});
-}
-
 function mkCarousel(c,imgs,isMD,altMap){
   const total=imgs.length;if(!total)return;
   const getAlt=i=>altMap?altMap[i%altMap.length]?.alt||null:null;
@@ -248,12 +217,12 @@ function mkCarousel(c,imgs,isMD,altMap){
 
   let held=false;
   const ac=new AbortController(),sig=ac.signal;
-  DR1(track,sig,{
+  loadGF().then(g=>{if(g)g.DR1(track,sig,{
     down(){held=true;stopTimer()},
     lock(){halt();strip.style.willChange='transform'},
     move(d){off+=d;while(off<-STRIDE)sh(true);while(off>STRIDE)sh(false);mv(0)},
-    up(w,vx,k){held=false;strip.style.willChange='';if(!w){if(!anim)startTimer();return}go(k?0:off<-STRIDE/3||vx<-FL?1:off>STRIDE/3||vx>FL?-1:0)}
-  });
+    up(w,vx,k){held=false;strip.style.willChange='';if(!w){if(!anim)startTimer();return}go(k?0:off<-STRIDE/3||vx<-g.FL?1:off>STRIDE/3||vx>g.FL?-1:0)}
+  })});
 
   document.addEventListener('visibilitychange',()=>{
     if(document.hidden)stopTimer();else if(visibleNow)startTimer();
@@ -311,10 +280,9 @@ function splitEmoji(name){
 function mkGrid(c,imgs){
   if(!imgs.length)return;
   const inner=document.createElement('div');inner.className='gi-grid-inner';c.appendChild(inner);
-  const view=document.createElement('div');view.className='gi-gv';inner.appendChild(view);
-  const mkR=()=>{const r=document.createElement('div');r.className='gi-grid-row';view.appendChild(r);return r};
-  let row=mkR(),gh=mkR();gh.classList.add('gi-gh');gh.hidden=true;
-  let nav=null,bP=null,bN=null,pg=0,gp=-1,off=0,W=0,anim=false,aT=null,pageSize=PAGE,pages=buildPages(imgs,pageSize);
+  const row=document.createElement('div');row.className='gi-grid-row';inner.appendChild(row);
+  const nav=document.createElement('nav');inner.appendChild(nav);
+  let pg=0,pageSize=PAGE,pages=buildPages(imgs,pageSize),sw=null;
   function applyPageSize(n){
     if(n===pageSize)return;
     const f=pages[pg]?pages[pg].start:0;
@@ -322,9 +290,12 @@ function mkGrid(c,imgs){
   }
   let ro=null,destroyed=false,pending=false;
   const ac=new AbortController();
-  function stop(){destroyed=true;clearTimeout(aT);ac.abort();if(ro){ro.disconnect();ro=null}}
+  function stop(){destroyed=true;ac.abort();if(ro){ro.disconnect();ro=null}}
   loadGF().then(gf=>{
     if(!gf||destroyed)return;
+    sw=gf.SW1(row,{sig:ac.signal,n:()=>pages.length,p:()=>pg,go:i=>{const d=i>pg?1:-1;pg=i;renderPage(pg,false,d,1)},
+      fill:(el,i)=>{for(let k=pages[i].start;k<pages[i].end;k++)el.appendChild(mkNode(imgs[k],null,null,true))}});
+    nv();sw.pre();
     const scheduleCompute=()=>{
       if(pending)return;pending=true;
       _ric(()=>{pending=false;if(destroyed)return;
@@ -340,66 +311,19 @@ function mkGrid(c,imgs){
     if(!el){el=mkNode(p);row.appendChild(el);return el}
     patchNode(el,p);return el;
   }
-  function fillG(p){
-    if(gp===p)return;gp=p;
-    const{start,end}=pages[p];let s=0;
-    for(let i=start;i<end;i++,s++){let el=gh.children[s];if(!el){gh.appendChild(mkNode(imgs[i],null,null,true));continue}el._img.loading='eager';patchNode(el,imgs[i])}
-    while(gh.children.length>s)gh.lastChild.remove();
-  }
-  function tx(d){
-    const t=(off>0&&pg===0)||(off<0&&pg===pages.length-1)?off/3:off,v=d?'transform '+d+'ms ease':'';
-    row.style.transition=gh.style.transition=v;
-    row.style.transform='translate3d('+t+'px,0,0)';
-    if(!gh.hidden)gh.style.transform='translate3d('+(t+(gp>pg?W:-W))+'px,0,0)';
-  }
-  const lp=()=>document.body.classList.contains('low-perf');
-  DR1(view,ac.signal,{
-    ok:()=>!anim&&pages.length>1,
-    lock(){W=view.offsetWidth+GAP;off=0;row.classList.remove('AN1');gh.classList.remove('AN1')},
-    move(d){
-      off+=d;if(lp())return;
-      const n=off<0?pg+1:pg-1;
-      if(n>=0&&n<pages.length){fillG(n);gh.hidden=false}else gh.hidden=true;
-      tx(0);
-    },
-    up(w,vx,k){
-      if(!w)return;
-      const n=k?0:(off<-W/3||vx<-FL)&&pg<pages.length-1?1:(off>W/3||vx>FL)&&pg>0?-1:0;
-      if(lp()){off=0;if(n)n>0?goNext():goPrev();return}
-      if(n&&gp!==pg+n){fillG(pg+n);gh.hidden=false}
-      anim=true;off=-n*W;tx(250);
-      aT=setTimeout(()=>{
-        anim=false;
-        if(n){const t=row;row=gh;gh=t;row.classList.remove('gi-gh');gh.classList.add('gi-gh');gp=pg;pg+=n;renderPage(pg,c.getBoundingClientRect().top<0,0,1)}
-        off=0;gh.hidden=true;tx(0);
-      },270);
-    }
-  });
-  function goPrev(ev){if(ev)ev.preventDefault();if(pg>0){pg--;renderPage(pg,true,-1)}}
-  function goNext(ev){if(ev)ev.preventDefault();if(pg<pages.length-1){pg++;renderPage(pg,true,1)}}
-  function jump(n){if(n!==pg){const d=n>pg?1:-1;pg=n;renderPage(pg,true,d)}}
-  function mkB(t,l,f){const b=document.createElement('button');b.textContent=t;b.setAttribute('aria-label',l);b.onclick=f;return b}
-  function renderPage(p,scroll,dir,sw){
+  function jump(n){const d=n>pg?1:-1;pg=n;renderPage(pg,true,d)}
+  function nv(){if(_GF)_GF.PN1(nav,pg,pages.length,jump)}
+  function renderPage(p,scroll,dir,sw1){
     const{start,end}=pages[p];
     let slot=0;
     for(let i=start;i<end;i++,slot++)cell(slot,imgs[i]);
     while(row.children.length>slot)row.lastChild.remove();
-    if(pages.length>1){
-      if(!nav){nav=document.createElement('nav');nav.className='PG1 PG2';nav.setAttribute('aria-label','Paginas');
-        bP=mkB('◀️','Anterior',goPrev);bN=mkB('▶️','Siguiente',goNext);nav.append(bP,bN);inner.appendChild(nav)}
-      const k=Math.min(pages.length,c.offsetWidth<480?5:7),s=Math.max(0,Math.min(p-(k>>1),pages.length-k));
-      while(nav.children.length-2>k)nav.children[1].remove();
-      while(nav.children.length-2<k){const b=mkB('','',()=>jump(+b.dataset.p));nav.insertBefore(b,bN)}
-      for(let i=0;i<k;i++){const b=nav.children[i+1],n=s+i;b.textContent=n+1;b.dataset.p=n;b.setAttribute('aria-label','Pagina '+(n+1));n===p?b.setAttribute('aria-current','page'):b.removeAttribute('aria-current')}
-      bP.disabled=p===0;bN.disabled=p===pages.length-1;nav.style.display=''}
-    else if(nav)nav.style.display='none';
-    if(!sw){
-      gp=-1;
+    nv();
+    if(!sw1){
       row.style.setProperty('--d',dir?(dir>0?'24px':'-24px'):'0px');
       row.classList.remove('AN1');void row.offsetWidth;row.classList.add('AN1');
+      if(sw)sw.pre();
     }
-    const q=pages[p+1];
-    if(q)_ric(()=>{for(let i=q.start;i<q.end;i++)wm(imgs[i])});
     if(scroll&&c.scrollIntoView)c.scrollIntoView({behavior:'smooth',block:'start'})}
   renderPage(0,false);
   return{setImgs(ni){imgs=ni;pg=0;pages=buildPages(imgs,pageSize);renderPage(0,false)},stop};

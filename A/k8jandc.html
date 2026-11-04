@@ -1,15 +1,15 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Gestor Android - Apps&amp;+ - Che Agana</title>
-<meta name="description" content="Gestor Android Iniciando... Como Activar ADB VideoFuturo 🔌 Conectar 🩹 Rep. pantalla 📥 Instalar 🧹 Desinstalar 📟 Comandos 📱 Pantalla 🔍 Anterior Siguie">
+<meta name="description" content="Gestor Android Iniciando... Como Activar ADB VideoFuturo 🔌 Conectar 🩹 Rep. pantalla 📥 Instalar 🧹 Desinstalar 📟 Comandos 📱 Pantalla 🔍 Ejecutar Presio">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Che Agana">
 <meta property="og:title" content="Gestor Android - Apps&amp;+">
-<meta property="og:description" content="Gestor Android Iniciando... Como Activar ADB VideoFuturo 🔌 Conectar 🩹 Rep. pantalla 📥 Instalar 🧹 Desinstalar 📟 Comandos 📱 Pantalla 🔍 Anterior Siguie">
+<meta property="og:description" content="Gestor Android Iniciando... Como Activar ADB VideoFuturo 🔌 Conectar 🩹 Rep. pantalla 📥 Instalar 🧹 Desinstalar 📟 Comandos 📱 Pantalla 🔍 Ejecutar Presio">
 <meta property="og:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/%F0%9F%92%9A%20Android/Gestor%20Android%20-%20Apps%26%2B.webp">
 <meta property="og:url" content="https://cheagana.com/A/k8jandc">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Gestor Android - Apps&amp;+">
-<meta name="twitter:description" content="Gestor Android Iniciando... Como Activar ADB VideoFuturo 🔌 Conectar 🩹 Rep. pantalla 📥 Instalar 🧹 Desinstalar 📟 Comandos 📱 Pantalla 🔍 Anterior Siguie">
+<meta name="twitter:description" content="Gestor Android Iniciando... Como Activar ADB VideoFuturo 🔌 Conectar 🩹 Rep. pantalla 📥 Instalar 🧹 Desinstalar 📟 Comandos 📱 Pantalla 🔍 Ejecutar Presio">
 <meta name="twitter:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/%F0%9F%92%9A%20Android/Gestor%20Android%20-%20Apps%26%2B.webp">
 <link rel="canonical" href="https://cheagana.com/A/k8jandc">
 <base href="/">
@@ -54,10 +54,7 @@
 <input id="adbSearchInp" type="search" placeholder="Buscar Nuevas Apps..." autocomplete="off" style="flex:1;background:none;border:none;outline:none;color:#fff;font-size:1rem;font-family:inherit">
 </div>
 <div id="adbStoreGrid"></div>
-<div id="adbStorePg" class="PG1" style="display:none">
-<button id="adbStorePrev">Anterior</button>
-<button id="adbStoreNext">Siguiente</button>
-</div>
+<div id="adbStorePg" class="PG1" style="display:none"></div>
 </div>
 <div id="adbLst" style="display:none"></div>
 <div id="adbCmdPnl" style="display:none">
@@ -157,7 +154,7 @@ const btnRep=el("adbBtnRep"),repDlg=el("adbRepDlg"),repMsg=el("adbRepMsg");
 const repStep1=el("adbRepStep1"),repStep2=el("adbRepStep2"),repStep3=el("adbRepStep3");
 const repPlan=el("adbRepPlan"),repDone=el("adbRepDone");
 const btnRepTest=el("adbBtnRepTest"),btnRepRun=el("adbBtnRepRun"),btnRepClose=el("adbBtnRepClose");
-const storeEl=el("adbStore"),gridEl=el("adbStoreGrid"),pgEl=el("adbStorePg"),pgPrev=el("adbStorePrev"),pgNext=el("adbStoreNext");
+const storeEl=el("adbStore"),gridEl=el("adbStoreGrid"),pgEl=el("adbStorePg");
 const searchInp=el("adbSearchInp"),fileInp=el("adbFileApk");
 const btnCmd=el("adbBtnCmd"),cmdPnl=el("adbCmdPnl"),cmdGrid=el("adbCmdGrid"),cmdLog=el("adbCmdLog"),cmdInp=el("adbCmdInp"),cmdRun=el("adbCmdRun");
 const howTo=el("adbHowTo");
@@ -335,21 +332,28 @@ setTimeout(()=>p.textContent=app.summary||"",2000);
 return a;
 }
 
-function renderStorePage(dir){
+let SW=null,gfP=null;
+const GF1=()=>window.GridFit?Promise.resolve(window.GridFit):gfP||(gfP=new Promise(r=>{const s=document.createElement("script");s.src="web/scripts/Otros/GridFit.js";s.onload=s.onerror=()=>r(window.GridFit);document.head.appendChild(s)}));
+function storeNav(){
+if(!window.GridFit){GF1().then(g=>{if(g)storeNav()});return}
+if(!SW){SW=GridFit.SW1(gridEl,{n:()=>Math.ceil(stCur.length/20),p:()=>stPg,go:i=>{stPg=i;renderStorePage(0,1)},
+fill:(el,i)=>stCur.slice(i*20,i*20+20).forEach(app=>{const c=mkStoreCard(app);c.querySelector("img").loading="eager";el.appendChild(c)})});SW.pre()}
+GridFit.PN1(pgEl,stPg,Math.ceil(stCur.length/20),i=>{const d=i>stPg?1:-1;stPg=i;renderStorePage(d);gridEl.scrollIntoView({behavior:"smooth",block:"start"})});
+}
+function renderStorePage(dir,sw){
 gridEl.innerHTML="";
 const s=stPg*20,slice=stCur.slice(s,s+20);
 slice.forEach(app=>gridEl.appendChild(mkStoreCard(app)));
-const maxPg=Math.ceil(stCur.length/20)-1;
 if(stCur.length>20){
 pgEl.style.display="";
-pgPrev.disabled=stPg===0;pgNext.disabled=stPg>=maxPg;
+storeNav();
 }else pgEl.style.display="none";
+if(sw)return;
+if(SW)SW.pre();
 gridEl.style.setProperty("--d",dir?(dir>0?"24px":"-24px"):"0px");
 gridEl.classList.remove("AN1");void gridEl.offsetWidth;gridEl.classList.add("AN1");
 }
 
-pgPrev.addEventListener("click",()=>{stPg--;renderStorePage(-1);gridEl.scrollIntoView({behavior:"smooth",block:"start"})});
-pgNext.addEventListener("click",()=>{stPg++;renderStorePage(1);gridEl.scrollIntoView({behavior:"smooth",block:"start"})});
 
 async function doStoreSearch(){
 const q=searchInp.value.trim();

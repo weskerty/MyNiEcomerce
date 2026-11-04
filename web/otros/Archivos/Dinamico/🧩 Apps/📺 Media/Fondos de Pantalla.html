@@ -88,6 +88,8 @@
 
   const gEl=document.getElementById('wp-grid');
   const pgEl=document.getElementById('wp-pg');
+  let SW=null,gfP=null;
+  const GF1=()=>window.GridFit?Promise.resolve(window.GridFit):gfP||(gfP=new Promise(r=>{const s=document.createElement('script');s.src='web/scripts/Otros/GridFit.js';s.onload=s.onerror=()=>r(window.GridFit);document.head.appendChild(s)}));
   const stEl=document.getElementById('wp-st');
   const qEl=document.getElementById('wp-q');
   const tEl=document.getElementById('wp-toast');
@@ -125,17 +127,9 @@
   }
 
   function renderPG(){
-    pgEl.innerHTML='';
-    if(TP<=1)return;
-    const bP=document.createElement('button');
-    bP.textContent='Anterior';bP.disabled=pg<=1;
-    bP.onclick=()=>doSearch(CQ,pg-1);
-    const sp=document.createElement('span');
-    sp.textContent=pg+' / '+TP;
-    const bN=document.createElement('button');
-    bN.textContent='Siguiente';bN.disabled=pg>=TP;
-    bN.onclick=()=>doSearch(CQ,pg+1);
-    pgEl.append(bP,sp,bN);
+    if(!window.GridFit){GF1().then(g=>{if(g)renderPG()});return}
+    if(!SW)SW=GridFit.SW1(gEl,{n:()=>TP,p:()=>pg-1,go:i=>doSearch(CQ,i+1)});
+    GridFit.PN1(pgEl,pg-1,TP,i=>doSearch(CQ,i+1));
   }
 
   function render(items){

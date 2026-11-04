@@ -162,7 +162,7 @@
   const cfEl=document.getElementById('sk-cf'),waBtn=document.getElementById('wa-btn');
   const scCf=document.getElementById('sc-cf');
   const inEl=document.getElementById('sc-in');
-  let _GF=window.GridFit||null,_GFp=null;
+  let _GF=window.GridFit||null,_GFp=null,SW=null;
   function loadGF(){
     if(_GF)return Promise.resolve(_GF);
     if(_GFp)return _GFp;
@@ -241,7 +241,7 @@
     cfEl.disabled=true;cfEl.style.display='';
   }
 
-  function renderPage(p){
+  function renderPage(p,sw){
     const dir=p>pg?1:p<pg?-1:0;
     pg=p;const sl=p*PG,chunk=R.slice(sl,sl+PG);gEl.innerHTML='';
     chunk.forEach(item=>{
@@ -265,17 +265,18 @@
       gEl.appendChild(d);
     });
     renderPg();
+    if(sw)return;
+    if(SW)SW.pre();
     gEl.style.setProperty('--d',dir?(dir>0?'24px':'-24px'):'0px');
     gEl.classList.remove('AN1');void gEl.offsetWidth;gEl.classList.add('AN1');
     document.getElementById('sk-search').scrollIntoView({behavior:'smooth',block:'start'});
   }
 
   function renderPg(){
-    pgEl.innerHTML='';const total=Math.ceil(R.length/PG);if(total<=1)return;
-    const bP=document.createElement('button');bP.textContent='Anterior';bP.disabled=pg===0;bP.onclick=()=>renderPage(pg-1);
-    const bN=document.createElement('button');bN.textContent='Siguiente';bN.disabled=pg>=total-1;bN.onclick=()=>renderPage(pg+1);
-    const sp=document.createElement('span');sp.textContent=(pg+1)+'/'+total;
-    pgEl.appendChild(bP);pgEl.appendChild(sp);pgEl.appendChild(bN);
+    if(!_GF){loadGF().then(g=>{if(g)renderPg()});return}
+    if(!SW){SW=_GF.SW1(gEl,{n:()=>Math.ceil(R.length/PG),p:()=>pg,ok:()=>mode==='search',go:i=>renderPage(i,1),
+      fill:(el,i)=>R.slice(i*PG,i*PG+PG).forEach(it=>{if(it.type==='ad'?!(it.content&&ADS):!it.url)return;const d=document.createElement('div');d.className='sk-it'+(S.has(it.url)?' sk-on':'');if(it.type!=='ad'){const m=document.createElement('img');m.src=it.url;d.appendChild(m)}el.appendChild(d)})});SW.pre()}
+    _GF.PN1(pgEl,pg,Math.ceil(R.length/PG),renderPage);
   }
 
   async function doFetch(q){
