@@ -84,7 +84,7 @@ const RSS=window.__CFG?.rss||[];
 const BN_NOTITLE=true;
 const RU=p=>'/api/rss?url='+encodeURIComponent(p);
 let PAGE=20;
-let SW=null,curList=[],curPg=0,imgIO=null,fetchAC=null,rssAC=null,_ini=false,_lst=[],_cat=null;
+let SW=null,curList=[],curPg=0,fetchAC=null,rssAC=null,_ini=false,_lst=[],_cat=null;
 
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 function mL(p){return p.replace(/\.[^.]+$/,'.html')}
@@ -249,16 +249,6 @@ function mkCard(item){
   return a;
 }
 
-function setupImgIO(){
-  if(imgIO)imgIO.disconnect();
-  imgIO=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{
-      if(!e.isIntersecting)return;
-      LB1(e.target);
-      imgIO.unobserve(e.target);
-    });
-  },{rootMargin:'100px'});
-}
 function LB1(bg){
   const url=bg.dataset.bg;
   if(!url)return;
@@ -297,12 +287,11 @@ function renderPage(gr,list,p,animate,dir,sw){
   }
   const maxPg=Math.ceil(list.length/PAGE)-1;
   const s=p*PAGE,slice=list.slice(s,s+PAGE);
-  setupImgIO();
   slice.forEach(item=>{
     const card=mkCard(item);
     gr.appendChild(card);
     const bg=card.querySelector('[data-bg]');
-    if(bg)imgIO.observe(bg);
+    if(bg)LB1(bg);
   });
   if(list.length>PAGE){
     const nav=document.createElement('nav');
