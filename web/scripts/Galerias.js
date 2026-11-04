@@ -3,7 +3,7 @@ document.addEventListener('contextmenu',ev=>{
   if(ev.target.closest('.gallery-item,.gi-track,.gi-grid-inner,.gi-section,.gi-hd-flat,.BS1'))ev.preventDefault();
 });
 const DJ='web/Dinamico/data.json',JC={},IDX={},ITEM=150,IH=ITEM,GAP=8,STRIDE=ITEM+GAP,PAGE=6,_observed=new Set();
-const SP=!!window.__CFG?.showPrice;
+const SP=!!window.__CFG?.showPrice,CR=Math.max(1,parseInt(window.__CFG?.carouselRows)||1);
 let _GU=window.GeoUtils||null,_GUp=null;
 function loadGU(){
   if(_GU)return Promise.resolve(_GU);
@@ -22,7 +22,8 @@ _S.textContent=`
 .contenedor-imagenes-animado{width:100%;position:relative;overflow:hidden}
 .gi-track{position:relative;height:${IH}px;cursor:grab;overflow:hidden;touch-action:pan-y}
 .gi-track:active{cursor:grabbing}
-.gi-node{position:absolute;top:0;left:0;width:${ITEM}px;height:${IH}px}
+.gi-strip{position:absolute;inset:0}
+.gi-node{position:absolute;top:0;left:0;width:${ITEM}px;display:flex;flex-direction:column;gap:${GAP}px}
 .gi-grid-inner{width:100%;overflow:hidden}
 .gi-grid-row{display:grid;grid-template-columns:repeat(auto-fill,${ITEM}px);gap:${GAP}px;justify-content:center;margin-bottom:${GAP}px}
 .gi-skeleton{display:flex;flex-direction:column;gap:8px;padding:8px 0}
@@ -158,94 +159,51 @@ loadGU().then(()=>reqGeo(sortAllLoaded));
 function mkCarousel(c,imgs,isMD,altMap){
   const total=imgs.length;if(!total)return;
   const getAlt=i=>altMap?altMap[i%altMap.length]?.alt||null:null;
-  const loop=total>=5;
-  if(!loop){const row=document.createElement('div');row.style.cssText='display:flex;gap:'+GAP+'px;overflow-x:auto;height:'+IH+'px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch';imgs.forEach((p,i)=>{const a=mkNode(p,isMD?p:null,getAlt(i));if(isMD)a.target='_blank';a.style.scrollSnapAlign='start';row.appendChild(a);});c.appendChild(row);return;}
-  const DUR=380,TICK=5000;
-
-  const track=document.createElement('div');track.className='gi-track';c.appendChild(track);
-
+  const R=isMD?1:Math.max(1,parseInt(c.dataset.rows)||CR),H=R*IH+(R-1)*GAP;
+  if(Math.ceil(total/R)<5){const row=document.createElement('div');row.style.cssText='display:grid;grid-auto-flow:column;grid-template-rows:repeat('+R+','+IH+'px);grid-auto-columns:'+ITEM+'px;gap:'+GAP+'px;overflow-x:auto;height:'+H+'px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch';imgs.forEach((p,i)=>{const a=mkNode(p,isMD?p:null,getAlt(i));if(isMD)a.target='_blank';a.style.scrollSnapAlign='start';row.appendChild(a);});c.appendChild(row);return;}
+  const DUR=380,TICK=5000,B=2,FLICK=.25;
+  const track=document.createElement('div');track.className='gi-track';track.style.height=H+'px';
+  const strip=document.createElement('div');strip.className='gi-strip';track.appendChild(strip);c.appendChild(track);
   let vw=c.offsetWidth||320;
   const calcVis=()=>Math.max(1,Math.floor((vw+GAP)/STRIDE));
-  let vis=calcVis(),cur=0,busy=false,visibleNow=false;
-  const nodes=[],pos=[];
-  let timer=null;
+  let vis=calcVis(),cur=0,off=0,pn=0,anim=false,fT=null,visibleNow=false,timer=null;
+  const nodes=[],_wm=new Set(),md=i=>((i%total)+total)%total;
 
-  const _wm=new Set();
-  function warm(i){
-    const s=imgs[((i%total)+total)%total];
-    if(!s||_wm.has(s))return;
-    _wm.add(s);
-    const im=new Image();im.decoding='async';im.src=s;
-  }
+  function warm(k){for(let r=0;r<R;r++){const s=imgs[md(k*R+r)];if(_wm.has(s))continue;_wm.add(s);const im=new Image();im.decoding='async';im.src=s}}
+  function fill(w,k){for(let r=0;r<R;r++){const i=md(k*R+r),s=imgs[i];patchNode(w.children[r],s,isMD?s:null,getAlt(i))}}
+  function lay(){nodes.forEach((w,j)=>{w.style.transform='translate3d('+(j-B)*STRIDE+'px,0,0)'})}
+  function mv(d){strip.style.transition=d?'transform '+d+'ms ease':'';strip.style.transform='translate3d('+off+'px,0,0)'}
 
   function build(){
-    track.innerHTML='';nodes.length=0;pos.length=0;
-    for(let i=0;i<=vis;i++){
+    strip.innerHTML='';nodes.length=0;
+    for(let j=0;j<vis+1+2*B;j++){
       const w=document.createElement('div');w.className='gi-node';
-      const src=imgs[(cur+i)%total];
-      const n=mkNode(src,isMD?src:null,getAlt((cur+i)%total),true);
-      if(isMD)n.target='_blank';
-      w.appendChild(n);
-      pos.push(i*STRIDE);
-      w.style.transform='translate3d('+(i*STRIDE)+'px,0,0)';
-      track.appendChild(w);nodes.push(w);
+      for(let r=0;r<R;r++){const i=md((cur-B+j)*R+r),s=imgs[i],n=mkNode(s,isMD?s:null,getAlt(i),true);if(isMD)n.target='_blank';w.appendChild(n)}
+      strip.appendChild(w);nodes.push(w);
     }
-    warm(cur+vis+1);warm(cur-1);
+    lay();off=0;mv(0);warm(cur-B-1);warm(cur+vis+B+1);
   }
-
-  function applyTx(dur){
-    nodes.forEach((n,i)=>{
-      n.style.transition=dur?'transform '+dur+'ms ease':'';
-      n.style.transform='translate3d('+pos[i]+'px,0,0)';
-    });
+  function sh(f){
+    if(f){const w=nodes.shift();nodes.push(w);cur++;off+=STRIDE;fill(w,cur+vis+B);warm(cur+vis+B+1)}
+    else{const w=nodes.pop();nodes.unshift(w);cur--;off-=STRIDE;fill(w,cur-B);warm(cur-B-1)}
+    lay();
   }
-
-  function doAdvance(animated,cb){
-    if(busy)return;busy=true;
-    const dur=animated?DUR:0;
-    for(let i=0;i<=vis;i++)pos[i]-=STRIDE;
-    applyTx(dur);
-    const finish=()=>{
-      nodes.forEach(n=>n.style.transition='');
-      const recycled=nodes.shift();pos.shift();
-      cur=(cur+1)%total;
-      const src=imgs[(cur+vis)%total];
-      patchNode(recycled.firstChild,src,isMD?src:null,getAlt((cur+vis)%total));
-      recycled.style.transform='translate3d('+(vis*STRIDE)+'px,0,0)';
-      nodes.push(recycled);pos.push(vis*STRIDE);
-      for(let i=0;i<vis;i++)pos[i]=i*STRIDE;
-      warm(cur+vis+1);
-      busy=false;if(cb)cb();
-    };
-    if(dur)nodes[0].addEventListener('transitionend',finish,{once:true});
-    else finish();
+  function end(){anim=false;if(pn)sh(pn>0);pn=0;mv(0)}
+  function go(n){
+    pn=n;anim=true;off=-n*STRIDE;mv(DUR);
+    fT=setTimeout(()=>{end();if(pid===null)startTimer()},DUR+20);
   }
-
-  function doRetreat(animated,cb){
-    if(busy)return;busy=true;
-    const dur=animated?DUR:0;
-    for(let i=0;i<=vis;i++)pos[i]+=STRIDE;
-    applyTx(dur);
-    const finish=()=>{
-      nodes.forEach(n=>n.style.transition='');
-      const recycled=nodes.pop();pos.pop();
-      cur=(cur-1+total)%total;
-      const src=imgs[cur];
-      patchNode(recycled.firstChild,src,isMD?src:null,getAlt(cur));
-      recycled.style.transform='translate3d(0px,0,0)';
-      nodes.unshift(recycled);pos.unshift(0);
-      for(let i=0;i<=vis;i++)pos[i]=i*STRIDE;
-      warm(cur-1);
-      busy=false;if(cb)cb();
-    };
-    if(dur)nodes[nodes.length-1].addEventListener('transitionend',finish,{once:true});
-    else finish();
+  function halt(){
+    if(!anim)return;
+    clearTimeout(fT);
+    off=new DOMMatrix(getComputedStyle(strip).transform).m41;
+    end();
   }
 
   function startTimer(){
     clearTimeout(timer);timer=null;
     if(_hidden||!visibleNow)return;
-    timer=setTimeout(()=>doAdvance(true,startTimer),TICK);
+    timer=setTimeout(()=>go(1),TICK);
   }
   function stopTimer(){clearTimeout(timer);timer=null;}
 
@@ -255,26 +213,20 @@ function mkCarousel(c,imgs,isMD,altMap){
   },{threshold:0});
   visIO.observe(c);
 
-  const FLICK=.25;
-  let sxStart=0,syStart=0,sx=0,lastX=0,lastT=0,vx=0,dragging=false,dirLocked=false,pid=null,isMs=false,noClick=false;
+  let sxStart=0,syStart=0,lastX=0,lastT=0,vx=0,dragging=false,dirLocked=false,pid=null,isMs=false,noClick=false;
   const ac=new AbortController(),sig=ac.signal;
 
   function endDrag(){
     if(pid!==null){try{track.releasePointerCapture(pid)}catch{}}
-    pid=null;dragging=false;dirLocked=false;
-  }
-  function snapBack(){
-    nodes.forEach((n,i)=>{n.style.transition='transform '+DUR+'ms ease';n.style.transform='translate3d('+pos[i]+'px,0,0)';});
-    setTimeout(startTimer,DUR);
+    pid=null;dragging=false;dirLocked=false;strip.style.willChange='';
   }
 
   function onDown(e){
-    if(busy||pid!==null)return;
+    if(pid!==null)return;
     if(e.pointerType==='mouse'&&e.button!==0)return;
     pid=e.pointerId;isMs=e.pointerType==='mouse';noClick=false;
-    sx=sxStart=lastX=e.clientX;syStart=e.clientY;lastT=e.timeStamp;vx=0;
+    sxStart=lastX=e.clientX;syStart=e.clientY;lastT=e.timeStamp;vx=0;
     stopTimer();
-    nodes.forEach(n=>n.style.transition='');
   }
   function onMove(e){
     if(e.pointerId!==pid)return;
@@ -283,36 +235,31 @@ function mkCarousel(c,imgs,isMD,altMap){
       const dx=Math.abs(x-sxStart),dy=Math.abs(e.clientY-syStart);
       if(dx<5&&dy<5)return;
       dirLocked=true;
-      if(!isMs&&dx<=dy*1.5){endDrag();startTimer();return;}
-      dragging=true;noClick=true;
+      if(!isMs&&dx<=dy*1.5){endDrag();if(!anim)startTimer();return;}
+      dragging=true;noClick=true;halt();strip.style.willChange='transform';
       try{track.setPointerCapture(pid)}catch{}
     }
     if(!dragging)return;
     const dt=e.timeStamp-lastT;
     if(dt>0){const iv=(x-lastX)/dt;vx=vx?vx*.6+iv*.4:iv}
-    lastX=x;lastT=e.timeStamp;sx=x;
-    const delta=x-sxStart;
-    if(Math.abs(delta)>STRIDE/3){
-      dragging=false;
-      delta<0?doAdvance(true,startTimer):doRetreat(true,startTimer);
-      return;
-    }
-    nodes.forEach((n,i)=>n.style.transform='translate3d('+(pos[i]+delta)+'px,0,0)');
+    off+=x-lastX;lastX=x;lastT=e.timeStamp;
+    while(off<-STRIDE)sh(true);
+    while(off>STRIDE)sh(false);
+    mv(0);
   }
   function onUp(e){
     if(e.pointerId!==pid)return;
-    const was=dragging,delta=sx-sxStart;
+    const was=dragging;
+    if(e.timeStamp-lastT>100)vx=0;
     endDrag();
-    if(!was){startTimer();return;}
-    if(delta<-STRIDE/3||vx<-FLICK)doAdvance(true,startTimer);
-    else if(delta>STRIDE/3||vx>FLICK)doRetreat(true,startTimer);
-    else snapBack();
+    if(!was){if(!anim)startTimer();return;}
+    go(off<-STRIDE/3||vx<-FLICK?1:off>STRIDE/3||vx>FLICK?-1:0);
   }
   function onCancel(e){
     if(e.pointerId!==pid)return;
     const was=dragging;
     endDrag();
-    was?snapBack():startTimer();
+    was?go(0):startTimer();
   }
 
   document.addEventListener('visibilitychange',()=>{
@@ -322,7 +269,7 @@ function mkCarousel(c,imgs,isMD,altMap){
   const ro=new ResizeObserver(()=>_ric(()=>{
     vw=c.offsetWidth||320;const nv=calcVis();
     if(nv===vis)return;
-    vis=nv;stopTimer();build();
+    vis=nv;stopTimer();halt();build();
     if(visibleNow)startTimer();
   }));
   ro.observe(c);
@@ -336,8 +283,8 @@ function mkCarousel(c,imgs,isMD,altMap){
   build();
 
   c.__stop=()=>{
-    stopTimer();ro.disconnect();visIO.disconnect();ac.abort();
-    track.innerHTML='';nodes.length=0;pos.length=0;
+    stopTimer();clearTimeout(fT);ro.disconnect();visIO.disconnect();ac.abort();
+    strip.innerHTML='';nodes.length=0;
   }
 }
 

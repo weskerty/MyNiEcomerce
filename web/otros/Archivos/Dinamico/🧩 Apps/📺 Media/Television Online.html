@@ -27,7 +27,7 @@
 .ct-b:disabled{opacity:.4;cursor:not-allowed}
 .ct-b.rec{background:rgba(248,113,113,.4);color:#fff;font-weight:600}
 .ct-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-#ct-qr{width:190px;height:190px;background:#fff;border-radius:var(--ct-r);padding:8px;display:flex;align-items:center;justify-content:center;margin:0 auto}
+#ct-qr{text-align:center}
 #ct-code{text-align:center;font-size:1.6rem;font-weight:700;letter-spacing:.09em;margin:10px 0 2px}
 #ct-hint{text-align:center;font-size:.76rem;color:rgba(255,255,255,.55);margin-bottom:12px}
 #ct-join{flex:1;min-width:150px;padding:10px;border-radius:var(--ct-r);border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.25);color:#fff;font-size:.9rem}
@@ -140,7 +140,6 @@ const CT_RT=20000,CT_MB=209715200;
 const M_PEER='https://cdn.jsdelivr.net/npm/peerjs@1.5.5/+esm',M_SL='/web/scripts/Otros/Salas.js';
 const M_WT='https://cdn.jsdelivr.net/npm/webtorrent@3.0.16/dist/webtorrent.min.js';
 const M_HCS='https://cdn.jsdelivr.net/npm/hybrid-chunk-store@1.2.6/+esm';
-const M_QR='https://cdn.jsdelivr.net/npm/qr-creator@1.0.0/+esm';
 const M_H5Q='https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js';
 const M_HLS='https://cdn.jsdelivr.net/npm/hls.js@1.7.1/dist/hls.min.mjs';
 const M_DASH='https://cdn.jsdelivr.net/npm/dashjs@5.2.1/dist/modern/esm/dash.all.min.js';
@@ -150,8 +149,7 @@ let dead=false,isHost=true,myCode='',hbIv=null,miss={},seedT=null,linked=false,j
 let cSince={},curURL=null,lastProg=-1,hls=null,wasLinked=false,localOn=false;
 let stIv=null,rst={p:true,ct:0,d:0},rcDrag=false,dsh=null;
 let rec=null,recCh=[],recIv=null,recT0=0;
-const HP=location.hash.replace(/^#/,'').split('#');
-const PRE=(HP[1]||'').trim().toUpperCase();
+const PRE=String(window.__AN1||'').trim().toUpperCase();
 
 function msg(t,err){
   const e=$('ct-msg');
@@ -698,12 +696,8 @@ function leaveRoom(){
 
 async function showQR(code){
   $('ct-code').textContent=code;
-  try{
-    const QR=(await import(M_QR)).default;
-    const box=$('ct-qr');
-    box.innerHTML='';
-    QR.render({text:code,radius:.4,ecLevel:'M',size:174,quiet:2,fill:'#000',background:'#fff'},box);
-  }catch(e){$('ct-qr').textContent='QR no disponible';}
+  try{await (await import(M_SL)).SL_Q1($('ct-qr'),code,174);}
+  catch(e){$('ct-qr').textContent='QR no disponible';}
 }
 
 function loadJS(u){
@@ -772,8 +766,9 @@ async function localGo(v){
   await playLink(v);
 }
 async function doJoin(){
-  const raw=($('ct-join').value||'').trim();
+  let raw=($('ct-join').value||'').trim();
   if(!raw)return;
+  if(isPin(raw.split('#').pop()))raw=raw.split('#').pop();
   if(!isPin(raw)){
     if(!okURL(raw)&&!isMag(raw)){msg('No parece un codigo ni un enlace',true);return;}
     $('ct-join').value='';

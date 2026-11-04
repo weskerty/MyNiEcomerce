@@ -44,3 +44,16 @@ export function SL1(o){
   };
   return S;
 }
+
+export function SL_U1(c){const p=location.pathname;return location.origin+(p.startsWith('/A/')?p:'/#'+encodeURI(decodeURI(window.__RUTA||'')))+'#'+c;}
+
+export async function SL_Q1(b,c,s){
+  const u=SL_U1(c),q=document.createElement('div'),k=document.createElement('button');
+  q.style.cssText='background:#fff;padding:8px;border-radius:12px;width:fit-content;margin:0 auto;line-height:0';
+  k.type='button';k.textContent=u;
+  k.style.cssText='display:block;margin:8px auto 0;max-width:100%;background:none;border:none;color:inherit;opacity:.7;font-size:.72rem;text-decoration:underline;word-break:break-all;cursor:pointer';
+  k.onclick=async()=>{try{await navigator.clipboard.writeText(u);k.textContent='Copiado al portapapeles';}catch(e){k.textContent='Error Portapapeles';}setTimeout(()=>{k.textContent=u;},2000);};
+  b.replaceChildren(q,k);
+  try{(await import('https://cdn.jsdelivr.net/npm/qr-creator@1.0.0/+esm')).default.render({text:u,radius:.4,ecLevel:'M',size:s||150,quiet:2,fill:'#000',background:'#fff'},q);}
+  catch(e){q.replaceWith('QR no disponible');}
+}
