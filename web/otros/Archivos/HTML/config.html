@@ -14,6 +14,7 @@ label.ST_CI{cursor:pointer}
 
 <div id="ST_W">
 <label class="ST_CI"><span class="nm">Desactivar Transparencia y Animaciones</span><input type="checkbox" id="ST_SW"></label>
+<div class="ST_CI"><span class="nm">🖼️ Fondo de pantalla</span><button id="FD_B1">Elegir</button><button id="FD_R1">Restaurar</button><input type="file" id="FD_I1" accept="image/*" hidden></div>
 <details id="ST_ND" hidden>
 <summary>🔔 Notificaciones</summary>
 <div class="ST_CACHES" id="ST_NT"></div>
@@ -90,6 +91,25 @@ label.ST_CI{cursor:pointer}
   swEl.onchange=()=>{
     localStorage.setItem('perf',swEl.checked?'low':'high');
     document.body.classList.toggle('low-perf',swEl.checked);
+  };
+
+  const FD_U='web/otros/Archivos/Imagenes/wallpaper.webp';
+  async function FD_C1(){for(const k of await caches.keys()){const c=await caches.open(k);if(await c.match(FD_U))return c}throw 0}
+  const FD_F1=async r=>{await(await FD_C1()).put(FD_U,r);await fetch(FD_U,{cache:'reload'});location.reload()};
+  $('FD_B1').onclick=()=>$('FD_I1').click();
+  $('FD_I1').onchange=async e=>{
+    const f=e.target.files[0];if(!f)return;
+    try{
+      const b=await createImageBitmap(f,{imageOrientation:'from-image'}),k=Math.min(1,2560/Math.max(b.width,b.height)),c=document.createElement('canvas'),x=c.getContext('2d');
+      c.width=Math.round(b.width*k);c.height=Math.round(b.height*k);
+      x.fillStyle='#111';x.fillRect(0,0,c.width,c.height);x.drawImage(b,0,0,c.width,c.height);
+      const T=t=>new Promise(r=>c.toBlob(r,t,.85));
+      let o=await T('image/webp');if(o?.type!=='image/webp')o=await T('image/jpeg');
+      await FD_F1(new Response(o));
+    }catch{alert('Error Fondo')}
+  };
+  $('FD_R1').onclick=async()=>{
+    try{const r=await fetch(FD_U+'?r='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;await FD_F1(r)}catch{alert('Error Fondo')}
   };
 
   async function nt(){
