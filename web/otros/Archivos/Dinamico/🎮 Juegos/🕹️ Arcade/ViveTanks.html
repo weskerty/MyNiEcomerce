@@ -1812,7 +1812,7 @@ function onVisChange(){
 }
 
 let trysteroP=null;
-function loadTrystero(){ if(!trysteroP) trysteroP=import('https://cdn.jsdelivr.net/npm/trystero@0.25.3/+esm'); return trysteroP; }
+function loadTrystero(){ if(!trysteroP) trysteroP=import('https://cdn.jsdelivr.net/npm/trystero@0.26.0/+esm'); return trysteroP; }
 const NET_APP='cheagana-vivetanks', NET_ROOM='arena';
 let room=null, selfId=null, tsAction=null, hitAction=null, spawnAction=null, isHost=true, netInterval=null;
 
@@ -1904,9 +1904,9 @@ async function initNet(){
     tsAction=room.makeAction('ts');
     hitAction=room.makeAction('hit');
     spawnAction=room.makeAction('spawn');
-    tsAction.onMessage=(d,peerId)=>applyRemoteState(peerId,d);
-    hitAction.onMessage=(d,peerId)=>applyRemoteHit(peerId,d);
-    spawnAction.onMessage=(d,peerId)=>{
+    tsAction.onMessage=(d,{peerId})=>applyRemoteState(peerId,d);
+    hitAction.onMessage=(d,{peerId})=>applyRemoteHit(peerId,d);
+    spawnAction.onMessage=(d,{peerId})=>{
       if (isHost) return;
       if (d.t==='obs') applyObstacleList(d.list);
       else if (d.t==='oa') applyObsAdd(d.o);

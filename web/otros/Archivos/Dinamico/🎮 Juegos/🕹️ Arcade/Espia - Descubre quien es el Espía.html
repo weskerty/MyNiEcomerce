@@ -278,7 +278,11 @@ const TURN_SECS=60;
 const VOTE_SECS=60;
 const WORD_SHRINK_MS=10000;
 
-const MY_ID=Math.random().toString(36).slice(2,8).toUpperCase();
+let MY_ID=Math.random().toString(36).slice(2,8).toUpperCase();
+const ES_U1='https://cdn.jsdelivr.net/npm/trystero@0.26.0/+esm';
+const ES_A1=(r,n)=>{const a=r.makeAction(n);return[(d,t)=>a.send(d,t?{target:t}:undefined).catch(()=>{}),f=>{a.onMessage=(d,{peerId})=>f(d||{},peerId);}];};
+const ES_N1=id=>String(id).slice(0,6).toUpperCase();
+const ES_E1=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;e.textContent=x;return e;};
 
 const $=id=>document.getElementById(id);
 
@@ -340,7 +344,7 @@ async function loadWords(){
 let lobbyRoom=null,gameRoom=null;
 let lobbyPeers={};
 let knownRooms={};
-let _sendAnn=null;
+let _sendAnn=null,_sendBye=null;
 
 let roomId=null,roomName=null,isHost=false;
 let gamePlayers={};
@@ -353,19 +357,21 @@ let gameActive=false;
 async function initLobby(){
   EL.status.textContent='Conectando...';
   try{
-    const{joinRoom}=await import('https://cdn.jsdelivr.net/npm/trystero@0.22.0/+esm');
+    const{joinRoom,selfId}=await import(ES_U1);
+    MY_ID=selfId;
     lobbyRoom=joinRoom(APP_ID,LOBBY_ROOM);
 
-    let[sendAnn,getAnn]=lobbyRoom.makeAction('ann');
-    let[sendBye,getBye]=lobbyRoom.makeAction('bye');
-    _sendAnn=sendAnn;
+    let[sendAnn,getAnn]=ES_A1(lobbyRoom,'ann');
+    let[sendBye,getBye]=ES_A1(lobbyRoom,'bye');
+    _sendAnn=sendAnn;_sendBye=sendBye;
 
-    lobbyRoom.onPeerJoin(id=>{
+    lobbyRoom.onPeerJoin=id=>{
       lobbyPeers[id]=true;
       if(roomId&&isHost)_sendAnn({roomId,roomName,count:Object.keys(gamePlayers).length});
-    });
-    lobbyRoom.onPeerLeave(id=>delete lobbyPeers[id]);
+    };
+    lobbyRoom.onPeerLeave=id=>delete lobbyPeers[id];
     getAnn(({roomId:rid,roomName:rn,count},from)=>{
+      if(typeof rid!=='string')return;
       knownRooms[rid]={name:rn,count,host:from,ts:Date.now()};
       renderLobbies();
     });
@@ -395,7 +401,7 @@ function renderLobbies(){
   entries.forEach(([rid,info])=>{
     const d=document.createElement('div');
     d.className='ES_lobby_item';
-    d.innerHTML=`<span class="ES_lobby_name">${info.name}</span><span class="ES_lobby_count">${info.count}/${MAX_PLAYERS}</span>`;
+    d.append(ES_E1('span','ES_lobby_name',String(info.name)),ES_E1('span','ES_lobby_count',(+info.count||0)+'/'+MAX_PLAYERS));
     d.onclick=()=>joinRoom(rid,info.name);
     EL.lobbies.appendChild(d);
   });
@@ -432,25 +438,25 @@ async function joinRoom(rid,rname){
 async function joinGameRoom(){
   const voicePromise=initVoice();
   try{
-    const{joinRoom:jr}=await import('https://cdn.jsdelivr.net/npm/trystero@0.22.0/+esm');
+    const{joinRoom:jr}=await import(ES_U1);
     gameRoom=jr(APP_ID,roomId);
 
-    let[sendJoin,getJoin]=gameRoom.makeAction('join');
-    let[sendStart,getStart]=gameRoom.makeAction('start');
-    let[sendTurnNext,getTurnNext]=gameRoom.makeAction('turn');
-    let[sendVote,getVote]=gameRoom.makeAction('vote');
-    let[sendMute,getMute]=gameRoom.makeAction('mute');
+    let[sendJoin,getJoin]=ES_A1(gameRoom,'join');
+    let[sendStart,getStart]=ES_A1(gameRoom,'start');
+    let[sendTurnNext,getTurnNext]=ES_A1(gameRoom,'turn');
+    let[sendVote,getVote]=ES_A1(gameRoom,'vote');
+    let[sendMute,getMute]=ES_A1(gameRoom,'mute');
 
-    gameRoom.onPeerJoin(id=>{
+    gameRoom.onPeerJoin=id=>{
       gamePlayers[id]={id,host:false};
       const allKnown=Object.values(gamePlayers).map(p=>({id:p.id,host:p.host}));
       sendJoin({id:MY_ID,host:isHost,all:allKnown});
       renderRoomPlayers();
       if(isHost&&_sendAnn)_sendAnn({roomId,roomName,count:Object.keys(gamePlayers).length});
-      voicePromise.then(()=>{if(myStream)gameRoom.addStream(myStream,id);});
-    });
+      voicePromise.then(()=>{if(myStream&&gameRoom)gameRoom.addStream(myStream,{target:id});});
+    };
 
-    gameRoom.onPeerLeave(id=>{
+    gameRoom.onPeerLeave=id=>{
       delete gamePlayers[id];
       delete peerStreams[id];
       const el=document.getElementById('ES_audio_'+id);
@@ -462,11 +468,11 @@ async function joinGameRoom(){
         if(wasIdx>=0&&wasIdx<=turnIdx&&turnIdx>0)turnIdx--;
         if(turnOrder[turnIdx]===id||!turnOrder[turnIdx])advanceTurn();
       }
-    });
+    };
 
     getJoin(({id,host,all},from)=>{
       if(all&&Array.isArray(all)){
-        all.forEach(p=>{if(!gamePlayers[p.id])gamePlayers[p.id]={id:p.id,host:p.host};});
+        all.forEach(p=>{if(p&&typeof p.id==='string'&&!gamePlayers[p.id])gamePlayers[p.id]={id:p.id,host:p.host};});
       }else{
         gamePlayers[from]={id:from,host};
       }
@@ -474,8 +480,8 @@ async function joinGameRoom(){
     });
 
     getStart(({order,spyIdx,word,hint},from)=>{
-      if(!isHost){
-        turnOrder=order;
+      if(!isHost&&Array.isArray(order)){
+        turnOrder=order.map(String);
         spyId=order[spyIdx];
         chosenWord=word;
         chosenHint=hint;
@@ -500,10 +506,10 @@ async function joinGameRoom(){
       renderRoomPlayers();
     });
 
-    gameRoom.onPeerStream((stream,id)=>{
+    gameRoom.onPeerStream=(stream,id)=>{
       peerStreams[id]=stream;
       playStream(id,stream);
-    });
+    };
 
     window._ES_sendTurnNext=(data)=>sendTurnNext({...data,from:MY_ID});
     window._ES_sendVote=sendVote;
@@ -555,8 +561,8 @@ function renderRoomPlayers(){
     const d=document.createElement('div');
     const isMe=p.id===MY_ID;
     d.className='ES_player_row'+(isMe?' ES_player_me':'');
-    const muteBtn=isMe?'':`<button class="ES_mute_btn" data-id="${p.id}">${mutedPeers[p.id]?'🔇':'🔊'}</button>`;
-    d.innerHTML=`<span>${p.id}${p.host?' ★':''}</span>${muteBtn}`;
+    d.append(ES_E1('span','',ES_N1(p.id)+(isMe?' (yo)':'')+(p.host?' ★':'')));
+    if(!isMe){const b=ES_E1('button','ES_mute_btn',mutedPeers[p.id]?'🔇':'🔊');b.dataset.id=p.id;d.append(b);}
     EL.players.appendChild(d);
   });
   EL.players.querySelectorAll('.ES_mute_btn').forEach(btn=>{
@@ -615,7 +621,8 @@ function renderGamePlayers(){
     const d=document.createElement('div');
     d.className='ES_player_row';
     d.id='ES_gp_'+id;
-    d.innerHTML=`<span>${id}${id===MY_ID?' (yo)':''}</span><span style="font-size:.7rem;color:#ffffff33">#${i+1}</span>`;
+    const n=ES_E1('span','','#'+(i+1));n.style.cssText='font-size:.7rem;color:#ffffff33';
+    d.append(ES_E1('span','',ES_N1(id)+(id===MY_ID?' (yo)':'')),n);
     EL.playersGame.appendChild(d);
   });
 }
@@ -623,7 +630,7 @@ function renderGamePlayers(){
 function renderTurn(){
   const activeId=turnOrder[turnIdx];
   if(!activeId){startVote();return;}
-  EL.turnName.textContent=activeId+(activeId===MY_ID?' (TU TURNO)':'');
+  EL.turnName.textContent=ES_N1(activeId)+(activeId===MY_ID?' (TU TURNO)':'');
   EL.passBtn.style.display=(activeId===MY_ID)?'':'none';
   document.querySelectorAll('.ES_player_row[id^="ES_gp_"]').forEach(el=>{
     el.style.borderColor=el.id==='ES_gp_'+activeId?'var(--e-acc)':'';
@@ -686,7 +693,8 @@ function renderVoteList(){
     if(id===MY_ID)return;
     const d=document.createElement('div');
     d.className='ES_vote_item'+(myVote===id?' ES_voted_for':'');
-    d.innerHTML=`<span>${id}</span><span class="ES_vote_count" id="ES_vc_${id}">0 votos</span>`;
+    const c=ES_E1('span','ES_vote_count','0 votos');c.id='ES_vc_'+id;
+    d.append(ES_E1('span','',ES_N1(id)),c);
     d.onclick=()=>{
       if(myVote)return;
       myVote=id;
@@ -722,8 +730,8 @@ function resolveVote(){
   EL.resultTitle.textContent=isSpy?(majority?'ESPIA ATRAPADO':'EMPATE'):('INOCENTE VOTADO');
   EL.resultTitle.className='ES_result_title '+(isSpy&&majority?'ES_win':'ES_lose');
   EL.resultDetail.textContent=
-    'Mas votado: '+maxId+'\n'+
-    'El espia era: '+spyId+'\n'+
+    'Mas votado: '+ES_N1(maxId)+'\n'+
+    'El espia era: '+ES_N1(spyId)+'\n'+
     'La palabra era: '+chosenWord+'\n'+
     (isSpy&&majority?'Los jugadores ganaron!':isSpy?'Empate — el espia sobrevive':'El espia gana — votaron a un inocente');
   gameActive=false;
@@ -734,7 +742,7 @@ function leaveRoom(){
   clearInterval(turnTimer);
   clearInterval(voteTimer);
   if(gameRoom){
-    if(isHost&&lobbyRoom)lobbyRoom.makeAction('bye')[0]({roomId});
+    if(isHost&&_sendBye)_sendBye({roomId});
     try{gameRoom.leave();}catch(e){}
     gameRoom=null;
   }
