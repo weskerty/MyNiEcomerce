@@ -1,15 +1,15 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Secret Chat - Che Agana</title>
-<meta name="description" content="Chats 🗺️ + Seleccionar chat para enviar Sin chats guardados. Toca + para agregar uno. Enviar Descartar ← 🔗 🔊 🧠 🎤 📷 👥 Prestar mi IA Instrucciones Apl">
+<meta name="description" content="Chats 🗺️ 📷 + Seleccionar chat para enviar Sin chats guardados. Toca + para agregar uno. Enviar Descartar ← 🔗 🔊 🧠 🎤 📷 👥 Prestar mi IA Instrucciones ">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Che Agana">
 <meta property="og:title" content="Secret Chat">
-<meta property="og:description" content="Chats 🗺️ + Seleccionar chat para enviar Sin chats guardados. Toca + para agregar uno. Enviar Descartar ← 🔗 🔊 🧠 🎤 📷 👥 Prestar mi IA Instrucciones Apl">
+<meta property="og:description" content="Chats 🗺️ 📷 + Seleccionar chat para enviar Sin chats guardados. Toca + para agregar uno. Enviar Descartar ← 🔗 🔊 🧠 🎤 📷 👥 Prestar mi IA Instrucciones ">
 <meta property="og:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/%F0%9F%AB%82%20Social/Secret%20Chat.avif">
 <meta property="og:url" content="https://cheagana.com/A/zti312e">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Secret Chat">
-<meta name="twitter:description" content="Chats 🗺️ + Seleccionar chat para enviar Sin chats guardados. Toca + para agregar uno. Enviar Descartar ← 🔗 🔊 🧠 🎤 📷 👥 Prestar mi IA Instrucciones Apl">
+<meta name="twitter:description" content="Chats 🗺️ 📷 + Seleccionar chat para enviar Sin chats guardados. Toca + para agregar uno. Enviar Descartar ← 🔗 🔊 🧠 🎤 📷 👥 Prestar mi IA Instrucciones ">
 <meta name="twitter:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/%F0%9F%AB%82%20Social/Secret%20Chat.avif">
 <link rel="canonical" href="https://cheagana.com/A/zti312e">
 <base href="/">
@@ -118,7 +118,7 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
 #cw-ia.on{display:flex}
 #cw-ia textarea{width:100%;font-family:inherit;font-size:.86em}
 #cw-ia-st{font-size:.75rem;color:rgba(255,255,255,.7)}
-#cw-iw{display:none}
+#cw-iaw{display:none}
 #cw-iv{display:none;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.1)}
 #cw-iv.on{display:block}
 #cw-sc{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:998;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
@@ -135,11 +135,12 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
     <div id="cw-lb-h">
       <h2>Chats</h2>
       <button class="B Bi" id="cw-near" title="Cerca de mi" style="background:rgba(255,255,255,.08);border:none;color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer">🗺️</button>
+      <button class="B Bi" id="cw-qr" title="Escanear QR" style="background:rgba(255,255,255,.08);border:none;color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer">📷</button>
       <button class="B Bi" id="cw-new" title="Agregar chat" style="background:rgba(255,255,255,.08);border:none;color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer">+</button>
     </div>
     <div id="cw-share-banner">Seleccionar chat para enviar</div>
     <div id="cw-search">
-      <input id="cw-si" placeholder="Buscar chats..." type="search">
+      <input id="cw-si" placeholder="Buscar chats..." type="search" autocomplete="off">
     </div>
     <div id="cw-list"><div id="cw-empty">Sin chats guardados. Toca + para agregar uno.</div></div>
     <div id="cw-near-list"></div>
@@ -173,7 +174,7 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
     <div id="cw-iv"></div>
     <div id="cw-vg"><div id="cw-vl" style="display:flex;gap:8px"></div></div>
     <div id="cw-msgs"></div>
-    <div class="cw-sys" id="cw-iw">IA escribiendo...</div>
+    <div class="cw-sys" id="cw-iaw">IA escribiendo...</div>
     <div id="cw-participants"></div>
     <div id="cw-sp"></div>
     <div id="cw-wait"><div id="cw-wq"></div><img id="cw-wait-img" alt=""><div id="cw-wait-tx">Conectando...</div></div>
@@ -198,7 +199,7 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
   <h3>Tu nombre</h3>
   <div>
     <div class="cw-lbl">Como te ven los demas</div>
-    <input class="MI" id="cw-pf-nk" placeholder="Tu nombre..." maxlength="24">
+    <input class="MI" id="cw-pf-nk" placeholder="Tu nombre..." maxlength="24" autocomplete="off">
   </div>
   <div class="cw-row">
     <button class="B Bp Bac view-all-button" id="cw-pf-ok">Continuar</button>
@@ -210,14 +211,14 @@ dialog.cw-dlg h3{margin:0 0 4px;font-size:1rem;border:none!important}
   <div class="cw-row">
     <div style="flex:1">
       <div class="cw-lbl">ID de sala (compartila para invitar)</div>
-      <input class="MI" id="cw-ad-rid" placeholder="sala-xxxxxxxx">
+      <input class="MI" id="cw-ad-rid" placeholder="sala-xxxxxxxx" autocomplete="off">
     </div>
     <button class="B Bi" id="cw-ad-rid-gen" title="Generar ID nueva" style="align-self:flex-end;background:rgba(255,255,255,.08);border:none;color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer">🎲</button>
     <button class="B Bi" id="cw-ad-sc" title="Escanear QR" style="align-self:flex-end;background:rgba(255,255,255,.08);border:none;color:#fff;width:38px;height:38px;border-radius:50%;cursor:pointer">📷</button>
   </div>
   <div>
     <div class="cw-lbl">Contrasena (opcional)</div>
-    <input class="MI" id="cw-ad-rpw" type="password" placeholder="...">
+    <input class="MI" id="cw-ad-rpw" type="password" placeholder="..." autocomplete="new-password">
   </div>
   <div class="cw-row">
     <button class="B Bp Bac view-all-button" id="cw-ad-ok">Guardar</button>
@@ -472,6 +473,7 @@ $('cw-new').onclick=()=>{
   $('cw-ad-rid').value=genRoomId();$('cw-ad-rpw').value='';
   showModal('cw-m-add');setTimeout(()=>$('cw-ad-rid').focus(),80);
 };
+$('cw-qr').onclick=()=>{$('cw-new').onclick();$('cw-ad-sc').onclick();};
 $('cw-ad-rid-gen').onclick=()=>{$('cw-ad-rid').value=genRoomId();};
 $('cw-ad-cx').onclick=()=>hideModal('cw-m-add');
 $('cw-ad-ok').onclick=()=>{
@@ -497,7 +499,7 @@ $('cw-ad-sc').onclick=async()=>{
     $('cw-rd').innerHTML='';
     const i=new Html5Qrcode('cw-rd');QR_C=i;
     await i.start({facingMode:'environment'},{fps:10,qrbox:{width:240,height:240}},raw=>{
-      const t=String(raw||'').trim();
+      const t=String(raw||'').trim().split('#').pop();
       if(!/^[A-Za-z0-9_-]{1,64}$/.test(t))return;
       $('cw-ad-rid').value=t;QR_X1();
     },()=>{});
@@ -860,7 +862,7 @@ function IA_UI1(){
   $('cw-bs').style.display=IAS1.size&&self.speechSynthesis?'':'none';
   $('cw-bs').style.opacity=IA_VO?1:.4;
   $('cw-ia-on').textContent=IA1.on?'Dejar de prestar mi IA':'Prestar mi IA';
-  $('cw-iw').style.display=IAW1?'block':'none';
+  $('cw-iaw').style.display=IAW1?'block':'none';
   if(curView==='participants')renderPeers();
   IA_CX1();
 }
