@@ -346,8 +346,7 @@ if(prev===null||guid===prev)return notify(null);
 const tM=x.match(/<item>[\\s\\S]*?<title>([^<]+)<\\/title>/);
 const title=(tM?tM[1]:'Nueva actividad').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
 const iM=x.match(/poster=&quot;(https:\\/\\/[^&]+)&quot;/)||x.match(/src=&quot;(https:\\/\\/[^&\\s]+)&quot;/);
-const lM=x.match(/<item>[\\s\\S]*?<link>([^<]+)<\\/link>/);
-notify({title:'Nueva actividad \\uD83D\\uDCC5',body:title,...(iM?{image:iM[1]}:{}),tag:'rss-'+guid,url:lM?lM[1]:'${location.origin}'});
+notify({title:'Nueva actividad \\uD83D\\uDCC5',body:title,...(iM?{image:iM[1]}:{}),tag:'rss-'+guid,url:'${location.origin}/#web/otros/Archivos/HTML/Grupos.html'});
 })();`;
 
 async function wOPFS(){

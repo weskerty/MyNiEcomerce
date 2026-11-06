@@ -1,4 +1,4 @@
-const V='v178';
+const V='v179';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -408,6 +408,16 @@ async function notifyCycle(){
 
 self.addEventListener('push',e=>{
   e.waitUntil(notifyCycle());
+});
+
+self.addEventListener('pushsubscriptionchange',e=>{
+  const P=(p,b)=>fetch('https://yoganopy-push.marcoygor0.workers.dev'+p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});
+  e.waitUntil((async()=>{
+    const o=e.oldSubscription;
+    if(o)await P('/unsubscribe',{endpoint:o.endpoint}).catch(()=>{});
+    const n=e.newSubscription||(o&&await self.registration.pushManager.subscribe(o.options));
+    if(n)await P('/subscribe',n.toJSON());
+  })().catch(()=>{}));
 });
 
 self.addEventListener('periodicsync',e=>{
