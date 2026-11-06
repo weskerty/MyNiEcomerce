@@ -1,3 +1,5 @@
+export const SL_ICE1={iceServers:[{urls:['stun:stun.cloudflare.com:3478','stun:stun.l.google.com:19302']}]};
+
 export async function SL_A1(m,p,b){
   const r=await fetch('/api/chat'+p,{method:m,headers:{'Content-Type':'application/json'},body:b?JSON.stringify(b):undefined});
   const d=await r.json().catch(()=>({}));

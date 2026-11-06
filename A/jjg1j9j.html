@@ -552,10 +552,10 @@ async function rejoin(){
 
 async function initPeer(){
   if(peer&&!peer.destroyed&&pid)return;
-  const pm=await import(M_PEER);
+  const [pm,sm]=await Promise.all([import(M_PEER),import(M_SL)]);
   const Peer=pm.Peer||pm.default;
   await new Promise((res,rej)=>{
-    peer=new Peer();
+    peer=new Peer({config:sm.SL_ICE1});
     peer.on('error',e=>{
       const t=e&&e.type;
       if(t==='peer-unavailable')return;
@@ -780,11 +780,12 @@ async function doJoin(){
   msg('Conectando...');
   leaveRoom();
   isHost=false;
-  if(!await joinRoom('cast-'+code)){wtOff();return;}
+  const d=await joinRoom('cast-'+code);
+  if(!d){wtOff();return;}
   clearTimeout(joinTo);
   joinTo=setTimeout(()=>{
     wtOff();
-    if(!linked)resetPair('No se encontro ese codigo');
+    if(!linked)resetPair(d.peers&&d.peers.length?'No se pudo conectar':'No se encontro ese codigo');
   },15000);
 }
 
