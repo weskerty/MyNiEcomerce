@@ -102,17 +102,20 @@ function bIdx(g){
 async function lGD(j){
   if(JC[j]!==undefined)return JC[j];
   if(JC[j+'_p'])return JC[j+'_p'];
-  JC[j+'_p']=fetch(j).then(r=>r.json()).then(d=>{
-    JC[j]=d.galleries;
+  const aG=g=>{
+    JC[j]=g;
     IDX[j]=bIdx(JC[j]||{});
     window.__GIDX=IDX;
     (window.__DJ=window.__DJ||{})[j]=JC[j];
     delete JC[j+'_p'];
     if(_geo)sortIdxByCT(IDX[j]);
     return JC[j];
-  }).catch(()=>{JC[j]=null;IDX[j]=null;delete JC[j+'_p'];return null});
+  };
+  if(window.__DJ?.[j])return aG(window.__DJ[j]);
+  JC[j+'_p']=fetch(j).then(r=>r.json()).then(d=>aG(d.galleries)).catch(()=>{JC[j]=null;IDX[j]=null;delete JC[j+'_p'];return null});
   return JC[j+'_p'];
 }
+window.__GLD=lGD;
 const _ric=window.requestIdleCallback||(cb=>setTimeout(cb,1));
 
 let _geo=null,_geoReq=false,_geoCbs=[];

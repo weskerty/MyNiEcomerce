@@ -67,7 +67,7 @@ const MS_CDN='https://cdn.jsdelivr.net/npm/minisearch@7/dist/umd/index.js';
 const MS_LOCAL='web/scripts/Otros/MiniSearch/index.js';
 const PAGE=40;
 
-let ms,allItems=[],ready=false,curList=[],curPg=0,dbt=null,fetchAC=null,_idc=0,curFlat=false;
+let ms,allItems=[],ready=false,curList=[],curPg=0,dbt=null,_idc=0,curFlat=false;
 
 const inp=document.getElementById('sh-inp');
 const clr=document.getElementById('sh-clr');
@@ -89,12 +89,13 @@ function gHA(){
 
 let gfP=null;
 const GF1=()=>window.GridFit?Promise.resolve(window.GridFit):gfP||(gfP=new Promise(r=>{const s=document.createElement('script');s.src='web/scripts/Otros/GridFit.js';s.onload=s.onerror=()=>r(window.GridFit);document.head.appendChild(s)}));
-function loadMS(cb){
-  if(window.MiniSearch)return cb();
-  const s=document.createElement('script');
-  s.src=MS_LOCAL;s.onload=cb;
-  s.onerror=()=>{const f=document.createElement('script');f.src=MS_CDN;f.onload=cb;document.head.appendChild(f)};
-  document.head.appendChild(s);
+function loadMS(){
+  return window.MiniSearch?Promise.resolve():new Promise(res=>{
+    const s=document.createElement('script');
+    s.src=MS_LOCAL;s.onload=res;
+    s.onerror=()=>{const f=document.createElement('script');f.src=MS_CDN;f.onload=f.onerror=res;document.head.appendChild(f)};
+    document.head.appendChild(s);
+  });
 }
 
 function addIt(p,cat,sub,ex){const f=fN(p);allItems.push({id:_idc++,name:nN(f),pid:fID(f),cat,sub,img:p,ex,hasNB:/NB=/.test(f),soldOut:/CD=0(?!\d)/.test(f)})}
@@ -223,7 +224,7 @@ function initMS(){
   ms=new MiniSearch({fields:['name','cat','sub','pid'],searchOptions:{prefix:true,fuzzy:.3,combineWith:'OR'}});
   ms.addAll(allItems);
   ready=true;
-  const q0=gHA();
+  const q0=inp.value.trim()||gHA();
   if(q0&&!document.getElementById(q0)){
     inp.value=q0;
     clr.classList.add('sh-vis');
@@ -246,56 +247,35 @@ function fetchExtra(j){
   }).catch(()=>null);
 }
 
-function heavyWork(){
-  return new Promise((res,rej)=>{
-    try{
-      const finish=()=>{
-        Promise.all(EXTRA_DJ.map(fetchExtra)).then(()=>{addEx();res()});
-      };
-      const gidx=window.__GIDX?.[DJ];
-      if(gidx){
-        buildItemsFromIdx(gidx);
-        finish();
-        return;
-      }
-      let g=window.__DJ?.[DJ]||null;
-      const go=g2=>{buildItems(g2);finish()};
-      if(g){go(g);return}
-      if(fetchAC)fetchAC.abort();
-      fetchAC=new AbortController();
-      fetch(DJ,{signal:fetchAC.signal}).then(r=>r.json()).then(d=>{
-        fetchAC=null;
-        (window.__DJ=window.__DJ||{})[DJ]=d.galleries;
-        go(d.galleries);
-      }).catch(e=>{if(e.name==='AbortError')return;rej(e)});
-    }catch(e){rej(e)}
-  });
+async function heavyWork(){
+  const gidx=window.__GIDX?.[DJ];
+  if(gidx)buildItemsFromIdx(gidx);
+  else{
+    let g=window.__DJ?.[DJ];
+    if(!g){g=(await(await fetch(DJ)).json()).galleries;(window.__DJ=window.__DJ||{})[DJ]=g}
+    buildItems(g);
+  }
+  await Promise.all(EXTRA_DJ.map(fetchExtra));
+  addEx();
 }
 
-let _initTok=0;
 async function init(){
-  const tok=++_initTok;
   showSkeleton();
-  paintThen(async()=>{
-    if(tok!==_initTok)return;
-    try{
-      await Promise.all([heavyWork(),GF1()]);
-    }catch(e){
-      if(tok===_initTok)r.innerHTML='<div class="sh-mt"><span>⚠️</span>Error cargando datos</div>';
-      return;
-    }
-    if(tok!==_initTok)return;
-    loadMS(initMS);
-    if(!window.__GIDX?.[DJ]&&window.__reqGeo){
-      window.__reqGeo(()=>{
-        if(tok!==_initTok||!ready)return;
-        const gidx=window.__GIDX?.[DJ];
-        if(!gidx)return;
-        allItems=[];_idc=0;buildItemsFromIdx(gidx);addEx();
-        ms.removeAll();ms.addAll(allItems);
-        doSearch();
-      });
-    }
+  await new Promise(paintThen);
+  try{
+    await Promise.all([heavyWork(),GF1(),loadMS()]);
+    initMS();
+  }catch(e){
+    r.innerHTML='<div class="sh-mt"><span>⚠️</span>Error cargando datos</div>';
+    return;
+  }
+  if(!window.__GIDX?.[DJ])window.__reqGeo?.(async()=>{
+    await window.__GLD?.(DJ);
+    const gidx=window.__GIDX?.[DJ];
+    if(!gidx)return;
+    allItems=[];_idc=0;buildItemsFromIdx(gidx);addEx();
+    ms.removeAll();ms.addAll(allItems);
+    doSearch();
   });
 }
 
@@ -311,18 +291,9 @@ clr.addEventListener('click',()=>{
   if(ready){curFlat=false;curList=mV();curPg=0;renderPage(curList,0,false);}
 });
 
-function onCL(){
-  if(!document.getElementById('sh-w'))return;
-  allItems=[];ready=false;ms=null;curList=[];curPg=0;_idc=0;curFlat=false;
-  document.addEventListener('contentUnload',onCU,{once:true});
-  init();
-  inp.focus();
-  try{navigator.virtualKeyboard?.show()}catch(e){}
-}
-function onCU(){if(fetchAC)fetchAC.abort();document.removeEventListener('contentLoaded',onCL);}
-document.addEventListener('contentLoaded',onCL);
-document.addEventListener('contentUnload',onCU,{once:true});
-
+window.__KP1?.();
 init();
+inp.focus();
+try{navigator.virtualKeyboard?.show()}catch(e){}
 })();
 </script>
