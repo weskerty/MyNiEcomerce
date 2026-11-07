@@ -1,0 +1,301 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MarkInstruccion - Che Agana</title>
+<meta name="description" content="✍️ Como escribir tu publicacion En el cuadro de descripcion se escribe texto simple con algunos simbolos. En cada ejemplo esta lo que se escribe y abajo co">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Che Agana">
+<meta property="og:title" content="MarkInstruccion">
+<meta property="og:description" content="✍️ Como escribir tu publicacion En el cuadro de descripcion se escribe texto simple con algunos simbolos. En cada ejemplo esta lo que se escribe y abajo co">
+
+<meta property="og:url" content="https://cheagana.com/A/tpaxaqq">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="MarkInstruccion">
+<meta name="twitter:description" content="✍️ Como escribir tu publicacion En el cuadro de descripcion se escribe texto simple con algunos simbolos. En cada ejemplo esta lo que se escribe y abajo co">
+
+<link rel="canonical" href="https://cheagana.com/A/tpaxaqq">
+<base href="/">
+<script src="/web/scripts/Otros/HTMLCoreInyector.js"></script>
+</head><body><div class="markdown-content"><h2 id="-como-escribir-tu-publicacion" tabindex="-1"><a class="header-anchor" href="#-como-escribir-tu-publicacion">✍️ Como escribir tu publicacion</a></h2>
+<p>En el cuadro de descripcion se escribe texto simple con algunos simbolos. En cada ejemplo esta <strong>lo que se escribe</strong> y abajo <strong>como queda</strong>.</p>
+<p>Imagenes y videos: solo enlaces externos (que empiecen con https://).</p>
+<hr>
+<h2 id="-lo-basico" tabindex="-1"><a class="header-anchor" href="#-lo-basico">🔤 Lo basico</a></h2>
+<p>Una linea que empieza con ## es un titulo.</p>
+<p>Se escribe:</p>
+<pre><code>**negrita** y *cursiva*
+
+- un item
+- otro item
+
+[texto del enlace](https://cheagana.com)
+</code></pre>
+<p>Queda:</p>
+<p><strong>negrita</strong> y <em>cursiva</em></p>
+<ul>
+<li>un item</li>
+<li>otro item</li>
+</ul>
+<p><a href="https://cheagana.com">texto del enlace</a></p>
+<hr>
+<h2 id="-tamano-de-imagen" tabindex="-1"><a class="header-anchor" href="#-tamano-de-imagen">📏 Tamano de imagen</a></h2>
+<p>Despues de la descripcion de la foto: un espacio y <strong>=ANCHOx</strong> (la x va siempre). Ancho en pixeles o en %. Sin tamano, la foto ocupa lo que mide.</p>
+<p>Se escribe:</p>
+<pre><code>![Adaptador =150x](https://link-de-la-foto.jpg)
+
+![Adaptador =50%x](https://link-de-la-foto.jpg)
+</code></pre>
+<p>Queda:</p>
+<p><img src="web/otros/Archivos/Imagenes/USBOTGSA/90757.avif" alt="Adaptador" width="150"></p>
+<p><img src="web/otros/Archivos/Imagenes/USBOTGSA/90757.avif" alt="Adaptador" width="50%"></p>
+<hr>
+<h2 id="-galeria-automatica" tabindex="-1"><a class="header-anchor" href="#-galeria-automatica">🖼️ Galeria automatica</a></h2>
+<p>3 o mas fotos pegadas, o una debajo de otra sin linea en blanco, se convierten solas en una galeria que se desliza.</p>
+<p>Se escribe:</p>
+<pre><code>![Foto 1](https://link-1.jpg)
+![Foto 2](https://link-2.jpg)
+![Foto 3](https://link-3.jpg)
+</code></pre>
+<p>Queda:</p>
+<div class="galeriaMD"><img src="web/otros/Archivos/Imagenes/USBOTGSA/90757.avif" alt="Ejemplo"><br>
+<img src="web/otros/Archivos/Imagenes/USBOTGSA/104954.avif" alt="Conectando hub, teclado y raton"><br>
+<img src="web/otros/Archivos/Imagenes/USBOTGSA/104964.avif" alt="Ejemplo de uso"></div>
+<p>Si alguna foto lleva tamano o enlace no se arma la galeria. Para dejarlas sueltas, una linea en blanco entre foto y foto.</p>
+<hr>
+<h2 id="-foto-al-lado-del-texto" tabindex="-1"><a class="header-anchor" href="#-foto-al-lado-del-texto">🧱 Foto al lado del texto</a></h2>
+<p>Dos columnas iguales. En celular siguen una al lado de la otra.</p>
+<p>Se escribe:</p>
+<pre><code>@grids grid-cols-2 gap-4 items-center
+@grid
+![Adaptador](https://link-de-la-foto.jpg)
+@grid
+**Adaptador USB-C**
+Conecta un pendrive o mouse al celular.
+@end
+</code></pre>
+<p>Queda:</p>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;align-items:center">
+<div>
+<p><img src="web/otros/Archivos/Imagenes/USBOTGSA/90757.avif" alt="Adaptador"></p>
+</div>
+<div>
+<p><strong>Adaptador USB-C</strong><br>
+Conecta un pendrive o mouse al celular.</p>
+</div>
+</div>
+<p>Foto chica fija y el texto ocupa el resto:</p>
+<p>Se escribe:</p>
+<pre><code>@flexs gap-4 items-center
+@flex shrink-0
+![Adaptador =120x](https://link-de-la-foto.jpg)
+@flex flex-1
+**Adaptador USB-C**
+Texto al lado de una foto chica.
+@end
+</code></pre>
+<p>Queda:</p>
+<div style="display:flex;gap:1rem;align-items:center">
+<div style="flex-shrink:0">
+<p><img src="web/otros/Archivos/Imagenes/USBOTGSA/104964.avif" alt="Adaptador" width="120"></p>
+</div>
+<div style="flex:1 1 0%">
+<p><strong>Adaptador USB-C</strong><br>
+Texto al lado de una foto chica.</p>
+</div>
+</div>
+<p>Fila de fotos (grid-cols-3 = 3 por fila):</p>
+<p>Se escribe:</p>
+<pre><code>@grids grid-cols-3 gap-2
+@grid
+![Foto 1](https://link-1.jpg)
+@grid
+![Foto 2](https://link-2.jpg)
+@grid
+![Foto 3](https://link-3.jpg)
+@end
+</code></pre>
+<p>Queda:</p>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0.5rem">
+<div>
+<p><img src="web/otros/Archivos/Imagenes/USBOTGSA/90757.avif" alt="Ejemplo"></p>
+</div>
+<div>
+<p><img src="web/otros/Archivos/Imagenes/USBOTGSA/104954.avif" alt="Conectando hub, teclado y raton"></p>
+</div>
+<div>
+<p><img src="web/otros/Archivos/Imagenes/USBOTGSA/104964.avif" alt="Ejemplo de uso"></p>
+</div>
+</div>
+<hr>
+<h2 id="-resaltar" tabindex="-1"><a class="header-anchor" href="#-resaltar">🖍️ Resaltar</a></h2>
+<p>Se escribe:</p>
+<pre><code>Precio normal 50.000 Gs, hoy ==35.000 Gs==
+</code></pre>
+<p>Queda:</p>
+<p>Precio normal 50.000 Gs, hoy <mark>35.000 Gs</mark></p>
+<hr>
+<h2 id="-lista-con-casillas" tabindex="-1"><a class="header-anchor" href="#-lista-con-casillas">✅ Lista con casillas</a></h2>
+<p>Se escribe:</p>
+<pre><code>- [x] Pagado
+- [x] Empaquetado
+- [ ] Enviado
+</code></pre>
+<p>Queda:</p>
+<ul class="task-list-container">
+<li class="task-list-item">✅ Pagado</li>
+<li class="task-list-item">✅ Empaquetado</li>
+<li class="task-list-item">⬜ Enviado</li>
+</ul>
+<hr>
+<h2 id="-carteles" tabindex="-1"><a class="header-anchor" href="#-carteles">🪧 Carteles</a></h2>
+<p>Primera linea <strong>&gt; [!TIPO]</strong> y el texto en las lineas siguientes, cada una empezando con <strong>&gt;</strong>. Tipos: CONSEJO, NOTA, AVISO, PELIGRO. Una cita comun queda sin icono.</p>
+<p>Se escribe:</p>
+<pre><code>&gt; [!CONSEJO]
+&gt; Guarda la caja para la garantia.
+
+&gt; [!NOTA]
+&gt; Envios los martes y viernes.
+
+&gt; [!AVISO]
+&gt; Solo envios dentro de Asuncion.
+
+&gt; [!PELIGRO]
+&gt; No usar cerca del fuego.
+
+&gt; Cita comun.
+</code></pre>
+<p>Queda:</p>
+<blockquote data-al="consejo">
+<p><strong>Consejo</strong></p>
+<p>Guarda la caja para la garantia.</p>
+</blockquote>
+<blockquote data-al="nota">
+<p><strong>Nota</strong></p>
+<p>Envios los martes y viernes.</p>
+</blockquote>
+<blockquote data-al="aviso">
+<p><strong>Aviso</strong></p>
+<p>Solo envios dentro de Asuncion.</p>
+</blockquote>
+<blockquote data-al="peligro" class="red">
+<p><strong>Peligro</strong></p>
+<p>No usar cerca del fuego.</p>
+</blockquote>
+<blockquote>
+<p>Cita comun.</p>
+</blockquote>
+<hr>
+<h2 id="-alinear" tabindex="-1"><a class="header-anchor" href="#-alinear">↔️ Alinear</a></h2>
+<p>Entre <strong>::: center</strong> (o right, left, justify) y <strong>:::</strong>.</p>
+<p>Se escribe:</p>
+<pre><code>::: center
+**Envio gratis**
+desde 100.000 Gs
+:::
+
+::: right
+Precios con IVA incluido
+:::
+</code></pre>
+<p>Queda:</p>
+<div style="text-align:center">
+<p><strong>Envio gratis</strong><br>
+desde 100.000 Gs</p>
+</div>
+<div style="text-align:right">
+<p>Precios con IVA incluido</p>
+</div>
+<hr>
+<h2 id="-texto-oculto" tabindex="-1"><a class="header-anchor" href="#-texto-oculto">🙈 Texto oculto</a></h2>
+<p>Entre <strong>!!</strong> y <strong>!!</strong>. Se ve al pasar el mouse o tocarlo.</p>
+<p>Se escribe:</p>
+<pre><code>Adivina la capital: !!Asuncion!!
+</code></pre>
+<p>Queda:</p>
+<p>Adivina la capital: <span class="spoiler" tabindex="-1">Asuncion</span></p>
+<p>Ojo: dos signos de exclamacion pegados a lo que sigue (letra o signo) ocultan todo hasta los proximos dos. Esto no se ve:</p>
+<pre><code>!!NUEVO!!
+</code></pre>
+<p>Para exclamar deja siempre un espacio despues de los signos, asi: Oferta!! Solo hoy!!</p>
+<hr>
+<h2 id="-notas-al-pie" tabindex="-1"><a class="header-anchor" href="#-notas-al-pie">📌 Notas al pie</a></h2>
+<p>Las notas aparecen al final de la pagina. El numero lleva a la nota y la flecha vuelve.</p>
+<p>Se escribe:</p>
+<pre><code>Garantia de 6 meses[^1].
+
+[^1]: Solo defectos de fabrica, no golpes ni agua.
+</code></pre>
+<p>Queda:</p>
+<p>Garantia de 6 meses<sup class="footnote-ref"><a href="#footnote1">[1]</a><a class="footnote-anchor" id="footnote-ref1"></a></sup>.</p>
+<hr>
+<h2 id="-ficha-tecnica" tabindex="-1"><a class="header-anchor" href="#-ficha-tecnica">📋 Ficha tecnica</a></h2>
+<p>El dato en una linea y abajo <strong>:</strong> con el valor. Una linea en blanco entre dato y dato.</p>
+<p>Se escribe:</p>
+<pre><code>Material
+: Vidrio templado
+
+Cantidad
+: 6 vasos
+
+Capacidad
+: 350 ml
+</code></pre>
+<p>Queda:</p>
+<dl>
+<dt>Material</dt>
+<dd>Vidrio templado</dd>
+<dt>Cantidad</dt>
+<dd>6 vasos</dd>
+<dt>Capacidad</dt>
+<dd>350 ml</dd>
+</dl>
+<hr>
+<h2 id="-desplegable" tabindex="-1"><a class="header-anchor" href="#-desplegable">🔽 Desplegable</a></h2>
+<p>Entre <strong>::: details Titulo</strong> y <strong>:::</strong>. Se abre al tocar el titulo.</p>
+<p>Se escribe:</p>
+<pre><code>::: details Compatibilidad
+Celulares con USB-C y OTG.
+:::
+
+::: details Envio
+En el dia dentro de Asuncion.
+:::
+</code></pre>
+<p>Queda:</p>
+<details><summary>Compatibilidad</summary>
+<p>Celulares con USB-C y OTG.</p>
+</details>
+<details><summary>Envio</summary>
+<p>En el dia dentro de Asuncion.</p>
+</details>
+<hr>
+<h2 id="-pestanas" tabindex="-1"><a class="header-anchor" href="#-pestanas">🗂️ Pestanas</a></h2>
+<p>Entre <strong>::: tabs</strong> y <strong>:::</strong>, cada pestana empieza con <strong>@tab Titulo</strong>. Con <strong>@tab:active</strong> esa queda abierta al entrar; si no, la primera.</p>
+<p>Se escribe:</p>
+<pre><code>::: tabs
+@tab Descripcion
+Adaptador de USB-C a USB-A.
+@tab Compatibilidad
+Celulares con USB-C y OTG.
+@tab Envio
+En el dia dentro de Asuncion.
+:::
+</code></pre>
+<p>Queda:</p>
+<div class="TB1">
+<input type="radio" name="TB_384" id="TB_384_0" checked="checked"><label for="TB_384_0">Descripcion</label><div>
+<p>Adaptador de USB-C a USB-A.</p>
+</div>
+<input type="radio" name="TB_384" id="TB_384_1"><label for="TB_384_1">Compatibilidad</label><div>
+<p>Celulares con USB-C y OTG.</p>
+</div>
+<input type="radio" name="TB_384" id="TB_384_2"><label for="TB_384_2">Envio</label><div>
+<p>En el dia dentro de Asuncion.</p>
+</div>
+</div>
+<hr class="footnotes-sep">
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="footnote1" class="footnote-item"><p>Solo defectos de fabrica, no golpes ni agua. <a href="#footnote-ref1" class="footnote-backref">↩︎</a></p>
+</li>
+</ol>
+</section>
+</div></body></html>
