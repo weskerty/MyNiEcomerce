@@ -1,0 +1,245 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Localizador - Che Agana</title>
+<meta name="description" content="📍 Localizador 🗺️ Todos 🚻 Baños 💧 Agua 🔌 Carga Eléctrica 👕 Lavandería ♻️ Reciclaje Todos 🔌 Electronicos 🧴 Plastico 📄 Papel 🍶 Vidrio 🔩 Metal 📍 Se">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Che Agana">
+<meta property="og:title" content="Localizador">
+<meta property="og:description" content="📍 Localizador 🗺️ Todos 🚻 Baños 💧 Agua 🔌 Carga Eléctrica 👕 Lavandería ♻️ Reciclaje Todos 🔌 Electronicos 🧴 Plastico 📄 Papel 🍶 Vidrio 🔩 Metal 📍 Se">
+<meta property="og:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/NM%3Du1e73ed63ed-ID%3DLocalizador-NB%3DLocalizador.avif">
+<meta property="og:url" content="https://cheagana.com/A/Localizador">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Localizador">
+<meta name="twitter:description" content="📍 Localizador 🗺️ Todos 🚻 Baños 💧 Agua 🔌 Carga Eléctrica 👕 Lavandería ♻️ Reciclaje Todos 🔌 Electronicos 🧴 Plastico 📄 Papel 🍶 Vidrio 🔩 Metal 📍 Se">
+<meta name="twitter:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/NM%3Du1e73ed63ed-ID%3DLocalizador-NB%3DLocalizador.avif">
+<link rel="canonical" href="https://cheagana.com/A/Localizador">
+<base href="/">
+<script src="/web/scripts/Otros/HTMLCoreInyector.js"></script>
+</head><body><div class="markdown-content"><style>
+#rc-cats,#rc-mats{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:10px}
+#rc-mats:not(.on){display:none}
+#rc-map{height:340px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}
+#rc-map.leaflet-container{background:#1a1f2e}
+#rc-map .leaflet-control-attribution{background:rgba(10,12,20,.75)!important;color:rgba(255,255,255,.45)!important;font-size:.6em!important}
+#rc-map .leaflet-control-attribution a{color:rgba(255,255,255,.55)!important}
+.rc-pn{font:20px/1 var(--font);text-align:center;white-space:nowrap;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));transition:font-size .15s}
+.rc-pn.on{font-size:30px;filter:drop-shadow(0 0 6px rgba(74,222,128,.9))}
+#rc-panel{margin-top:12px;padding:14px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
+.rc-e{margin:12px 0;text-align:center;color:rgba(255,255,255,.4)}
+.rc-th{float:right;width:56px;height:56px;margin-left:10px;border-radius:12px;object-fit:cover}
+.rc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.rc-tag{padding:2px 10px;border-radius:12px;font-size:.72em;font-weight:700;background:rgba(74,222,128,.15);color:#86efac;border:1px solid rgba(74,222,128,.3)}
+.rc-nm{margin:0 0 6px;font-size:1.05em}
+.rc-row{font-size:.82em;color:rgba(255,255,255,.65);margin-bottom:4px}
+.rc-acts{clear:both;display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
+.lk-mp{border-color:rgba(234,67,53,.35);color:#ff7b6e;--LK_I:url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z'/%3E%3C/svg%3E")}
+</style>
+<h1>📍 Localizador</h1>
+<div id="rc-cats">
+  <button aria-pressed="true" data-cat="">🗺️ Todos</button>
+  <button aria-pressed="false" data-cat="banos">🚻 Baños</button>
+  <button aria-pressed="false" data-cat="agua">💧 Agua</button>
+  <button aria-pressed="false" data-cat="carga-electrica">🔌 Carga Eléctrica</button>
+  <button aria-pressed="false" data-cat="lavanderia">👕 Lavandería</button>
+  <button aria-pressed="false" data-cat="reciclaje">♻️ Reciclaje</button>
+</div>
+<div id="rc-mats">
+  <button aria-pressed="true" data-mat="">Todos</button>
+  <button aria-pressed="false" data-mat="electronico">🔌 Electronicos</button>
+  <button aria-pressed="false" data-mat="plastico">🧴 Plastico</button>
+  <button aria-pressed="false" data-mat="papel">📄 Papel</button>
+  <button aria-pressed="false" data-mat="vidrio">🍶 Vidrio</button>
+  <button aria-pressed="false" data-mat="metal">🔩 Metal</button>
+</div>
+<div id="rc-map"></div>
+<div id="rc-panel"><p class="rc-e">📍 Selecciona un punto en el mapa</p></div>
+<script>
+(function(){
+const JSON_URL='web/otros/Archivos/Dinamico/Publico/localizador/data.json';
+const CAT_EMOJI={banos:'🚻',agua:'💧','carga-electrica':'🔌',lavanderia:'👕',reciclaje:'♻️'};
+const CAT_LABEL={banos:'Baños',agua:'Agua','carga-electrica':'Carga Electrica',lavanderia:'Lavanderia',reciclaje:'Reciclaje'};
+const MAT_EMOJI={electronico:'🔌',plastico:'🧴',papel:'📄',vidrio:'🍶',metal:'🔩'};
+const MAT_LABEL={electronico:'Electronicos',plastico:'Plastico',papel:'Papel',vidrio:'Vidrio',metal:'Metal'};
+const PNL=document.getElementById('rc-panel');
+
+let GR=[],map=null,MKS=[],SEL=null,_filter='',_matFilter='',_myPos=null,myMarker=null;
+
+function X(t,c,s){const e=document.createElement(t);if(c)e.className=c;if(s!=null)e.textContent=s;return e;}
+function ctToLatLng(ct){
+  const m=ct&&ct.match(/^([SN])([\d.]+)([WE])([\d.]+)$/);
+  if(!m)return null;
+  return{lat:(m[1]==='S'?-1:1)*parseFloat(m[2]),lng:(m[3]==='W'?-1:1)*parseFloat(m[4])};
+}
+function parseEntry(relPath){
+  const fn=relPath.split('/').pop();
+  const mNM=fn.match(/NM=([^-]+)/),mCH=fn.match(/CH=([^-]+)/),mCT=fn.match(/CT=([SN][\d.]+[WE][\d.]+)/),mNB=fn.match(/NB=(.+)\.\w+$/);
+  if(!mNB||!mCT)return null;
+  const ll=ctToLatLng(mCT[1]);
+  if(!ll)return null;
+  const parts=mNB[1].split(';');
+  const catRaw=parts[1]||'';
+  const isRec=catRaw.indexOf('reciclaje')===0;
+  const cat=isRec?'reciclaje':catRaw;
+  const mat=isRec?(catRaw.split('-')[1]||''):'';
+  if(!CAT_EMOJI[cat])return null;
+  const tel=mNM&&/^[1-9]\d{7,14}$/.test(mNM[1])?mNM[1]:null;
+  return{lat:ll.lat,lng:ll.lng,cat,mat,nombre:parts[0]||'Sin nombre',horario:parts[2]||'',tel,ch:mCH?mCH[1]:'',img:relPath};
+}
+function em(p){return p.cat==='reciclaje'&&p.mat?(MAT_EMOJI[p.mat]||'♻️'):CAT_EMOJI[p.cat];}
+function lbl(p){return p.cat==='reciclaje'&&p.mat?`${MAT_EMOJI[p.mat]} ${MAT_LABEL[p.mat]}`:`${CAT_EMOJI[p.cat]} ${CAT_LABEL[p.cat]}`;}
+function match(p){return(!_filter||p.cat===_filter)&&(_filter!=='reciclaje'||!_matFilter||p.mat===_matFilter);}
+function vis(g){return g.its.some(match);}
+
+function mkIcon(g,sel){
+  const e=[...new Set(g.its.filter(match).map(em))].slice(0,3);
+  const w=(sel?30:20)*e.length+4;
+  return L.divIcon({html:`<div class="rc-pn${sel?' on':''}">${e.join('')}</div>`,className:'',iconSize:[w,sel?32:24],iconAnchor:[w/2,sel?16:12]});
+}
+
+function showDetail(g){
+  PNL.textContent='';
+  const its=g.its.filter(match),p=its[0];
+  if(p.img){const im=X('img','rc-th');im.src=encodeURI(p.img);im.alt='';im.onerror=()=>im.remove();PNL.append(im);}
+  const tg=X('div','rc-tags');
+  [...new Set(g.its.map(lbl))].forEach(t=>tg.append(X('span','rc-tag',t)));
+  PNL.append(tg,X('h3','rc-nm',[...new Set(g.its.map(q=>q.nombre))].join(' / ')));
+  [...new Set(g.its.map(q=>q.horario).filter(Boolean))].forEach(h=>PNL.append(X('div','rc-row','🕐 '+h)));
+  const w=g.its.find(q=>q.tel&&q.ch);
+  if(w)PNL.append(X('div','rc-row','📞 +'+w.tel));
+  const q=`${g.lat},${g.lng}`,ac=X('div','rc-acts');
+  const A=(c,h,t,b)=>{const a=X('a','lk '+c,t);a.href=h;if(b){a.target='_blank';a.rel='noopener noreferrer';}ac.append(a);};
+  A('lk-mp',`geo:${q}?q=${q}`,'Abrir en app');
+  A('lk-mp',`https://www.google.com/maps?q=${q}`,'Google Maps',1);
+  A('lk-mp',`https://maps.apple.com/?q=${q}`,'Apple Maps',1);
+  if(w&&w.ch.includes('WA'))A('lk-wa',`https://wa.me/${w.tel}`,'WhatsApp',1);
+  if(w&&w.ch.includes('TG'))A('lk-tg',`https://t.me/+${w.tel}`,'Telegram',1);
+  PNL.append(ac);
+}
+
+function emptyPanel(t){PNL.textContent='';PNL.append(X('p','rc-e',t));}
+
+function selectPin(g){
+  const prev=MKS.find(m=>m.g===SEL);
+  if(prev)prev.m.setIcon(mkIcon(prev.g,false));
+  SEL=g;
+  const cur=MKS.find(m=>m.g===g);
+  if(cur)cur.m.setIcon(mkIcon(g,true));
+  showDetail(g);
+  PNL.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function applyFilter(){
+  SEL=null;
+  emptyPanel('📍 Selecciona un punto en el mapa');
+  const v=[];
+  MKS.forEach(({g,m})=>{
+    if(vis(g)){m.setIcon(mkIcon(g,false));if(!map.hasLayer(m))m.addTo(map);v.push([g.lat,g.lng]);}
+    else if(map.hasLayer(m))m.remove();
+  });
+  if(v.length)map.fitBounds(v,{padding:[32,32],maxZoom:13});
+  else emptyPanel('Sin lugares de este tipo aun');
+}
+
+function mkMyIcon(){
+  return L.divIcon({html:'<div class="rc-pn">📍</div>',className:'',iconSize:[28,28],iconAnchor:[14,26]});
+}
+function addMyMarker(){
+  if(!map||!_myPos||myMarker)return;
+  myMarker=L.marker([_myPos.lat,_myPos.lng],{icon:mkMyIcon(),zIndexOffset:1000}).addTo(map);
+  myMarker.bindTooltip('Tu ubicacion');
+}
+function geoLocate(){
+  if(!navigator.geolocation)return;
+  navigator.geolocation.getCurrentPosition(
+    p=>{
+      _myPos={lat:p.coords.latitude,lng:p.coords.longitude};
+      try{localStorage.setItem('UBI','1');}catch{}
+      addMyMarker();
+    },
+    ()=>{},
+    {timeout:10000,maximumAge:60000}
+  );
+}
+
+function initMap(){
+  if(map)return;
+  if(!GR.length){emptyPanel('Sin lugares publicados aun');return;}
+  map=L.map('rc-map',{scrollWheelZoom:false});
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom:19
+  }).addTo(map);
+  GR.forEach(g=>{
+    const m=L.marker([g.lat,g.lng],{icon:mkIcon(g,false)}).on('click',()=>selectPin(g)).addTo(map);
+    MKS.push({g,m});
+  });
+  addMyMarker();
+  const pts=GR.map(g=>[g.lat,g.lng]);
+  if(_myPos)pts.push([_myPos.lat,_myPos.lng]);
+  map.fitBounds(pts,{padding:[32,32],maxZoom:13});
+}
+
+const LF_L='web/scripts/Otros/Leaflet/',LF_C='https://cdn.jsdelivr.net/npm/leaflet@1/dist/';
+function loadLeaflet(cb){
+  if(window.L){cb();return;}
+  const css=document.createElement('link');
+  css.rel='stylesheet';css.href=LF_L+'leaflet.css';
+  css.onerror=()=>{css.href=LF_C+'leaflet.css'};
+  document.head.appendChild(css);
+  const add=(src,fb)=>{
+    const s=document.createElement('script');
+    s.src=src;s.onload=cb;
+    s.onerror=fb||(()=>emptyPanel('Error Mapa'));
+    document.head.appendChild(s);
+  };
+  add(LF_L+'leaflet.js',()=>add(LF_C+'leaflet.js'));
+}
+
+function selectCat(cat){
+  _filter=cat;_matFilter='';
+  document.querySelectorAll('#rc-cats button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cat===cat));
+  document.querySelectorAll('#rc-mats button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.mat===''));
+  document.getElementById('rc-mats').classList.toggle('on',cat==='reciclaje');
+  if(map)applyFilter();
+}
+
+document.querySelectorAll('#rc-cats button').forEach(b=>{b.onclick=()=>selectCat(b.dataset.cat);});
+document.querySelectorAll('#rc-mats button').forEach(b=>{
+  b.onclick=()=>{
+    _matFilter=b.dataset.mat;
+    document.querySelectorAll('#rc-mats button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    if(map)applyFilter();
+  };
+});
+
+document.addEventListener('contentUnload',function(){
+  if(map){map.remove();map=null;MKS=[];}
+  myMarker=null;_myPos=null;
+},{once:true});
+
+function gHA(){
+  const h=window.location.hash;
+  if(!h)return'';
+  const pts=h.substring(1).split('#');
+  return pts.length>1?decodeURIComponent(pts[1]):'';
+}
+
+geoLocate();
+
+fetch(JSON_URL)
+  .then(r=>r.json())
+  .then(data=>{
+    const G={};
+    ((data.galleries||{}).localizador||[]).map(parseEntry).filter(Boolean).forEach(p=>{(G[p.lat+','+p.lng]??={lat:p.lat,lng:p.lng,its:[]}).its.push(p);});
+    GR=Object.values(G);
+    const initCat=gHA();
+    if(initCat&&CAT_EMOJI[initCat])selectCat(initCat);
+    loadLeaflet(()=>{initMap();if(_filter&&map)applyFilter();});
+  })
+  .catch(()=>emptyPanel('Error Lugares'));
+})();
+</script>
+<h2>Faltan lugares?</h2>
+<p><a href="#web/otros/Archivos/HTML/AgregarPublico.html#localizador" class="view-all-button">➕ Agregar un lugar</a></p>
+<p><a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a></p>
+</div>
+</div></body></html>
