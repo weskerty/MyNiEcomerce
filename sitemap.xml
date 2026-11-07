@@ -666,6 +666,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://cheagana.com/A/hel37o1</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://cheagana.com/A/gtaxtd0</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -692,11 +697,6 @@
   </url>
   <url>
     <loc>https://cheagana.com/A/DondeReciclar</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://cheagana.com/A/Actividades</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
