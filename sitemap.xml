@@ -646,6 +646,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://cheagana.com/A/inv5mem</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://cheagana.com/A/wzqxiyl</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -657,11 +662,6 @@
   </url>
   <url>
     <loc>https://cheagana.com/A/oguhe3q</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://cheagana.com/A/tpaxaqq</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -702,6 +702,11 @@
   </url>
   <url>
     <loc>https://cheagana.com/A/DondeReciclar</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://cheagana.com/A/Actividades</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
