@@ -154,6 +154,9 @@ transition:translate var(--GL_T) ease,scale var(--GL_T) ease,box-shadow var(--GL
 .view-all-button,.back-button{display:inline-block;padding:10px 20px;border-radius:var(--r-lg)}
 .view-all-button{margin-top:20px;--GL_F:linear-gradient(180deg,rgba(var(--accent-rgb),.3),rgba(var(--accent-rgb),.15) 50%,rgba(var(--accent-rgb),.12));--GL_FH:linear-gradient(180deg,rgba(var(--accent-rgb),.42),rgba(var(--accent-rgb),.22) 50%,rgba(var(--accent-rgb),.2))}
 .back-button{margin:20px}
+._nb{position:absolute;top:0;font-size:1.8rem;text-decoration:none;z-index:10}
+._nb.l{left:0}
+._nb.r{right:0}
 
 button:not([class]),.TB1>label{display:inline-block;padding:8px 16px;border-radius:var(--r-xs);font-family:inherit;font-size:.9em;cursor:pointer}
 button:not([class]):disabled{opacity:.4;cursor:not-allowed;translate:0 0;scale:1}

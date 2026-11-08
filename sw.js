@@ -1,4 +1,4 @@
-const V='v188';
+const V='v189';
 const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
 const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
@@ -21,14 +21,6 @@ FRASES_HTML
 
 const PERM_C='9';
 const PRE_PERM=[
-'web/otros/Archivos/Dinamico/🧩 Apps/es.html',
-'web/otros/Archivos/Dinamico/🎮 Juegos/es.html',
-'web/Dinamico/🍰 Alimentos/alimentos.html',
-'web/Dinamico/🍸 Accesorios/accesorios.html',
-'web/Dinamico/📱 Dispositivos/es.html',
-'web/Dinamico/🩳 Prendas/prendas.html',
-'web/Dinamico/🪷 Plantas/Plantas.html',
-'web/Dinamico/🐕‍🦺 Animal/Animales.html',
 'web/otros/Archivos/DataBase/Libros/cuentos.json',
 'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
 'web/scripts/Otros/MarkDownIT/markdownItAnchor.umd.min.js',
