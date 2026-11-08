@@ -418,6 +418,7 @@ function updMHT(){
   el.textContent=st.c.length?"💸 "+fmt(st.c.reduce((a,b)=>a+b.p*b.d,0))+"Gs":"";
 }
 
+const CB_X1=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 function renderCart(){
   if(!st.c.length)return void(modal.querySelector(".cb-mb").innerHTML='<div class="cb-em">🛒 Carrito vacio</div>');
   const groups={};
@@ -425,14 +426,14 @@ function renderCart(){
   const gks=Object.keys(groups),multi=gks.length>1;
   let html=multi?'<div style="text-align:center;margin-bottom:8px"><a href="web/otros/Archivos/MarkDowns/SerParte.html" style="color:var(--warn);font-weight:600;font-size:.85rem">⚠️ Varios Proveedores ❔</a></div>':"";
   gks.forEach(k=>{
-    const g=groups[k];
-    html+=`<div class="cb-cp" data-gk="${k}"><p class="cb-cn">📦 ${g.n}</p>`;
+    const g=groups[k],K=CB_X1(k),N=CB_X1(g.n);
+    html+=`<div class="cb-cp" data-gk="${K}"><p class="cb-cn">📦 ${N}</p>`;
     g.items.forEach(x=>{
-      const sub=x.p*x.d;
-      html+=`<div class="cb-ci" data-key="${x.t}-${x.n}-${x.i}"><span class="cb-ct">${x.b}</span><div class="cb-cr"><span class="cb-cs">💰 ${fmt(sub)}Gs</span><div class="cb-cc"><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="-">−</button><span>${x.d}</span><button data-t="${x.t}" data-n="${x.n}" data-i="${x.i}" data-a="+">+</button></div></div></div>`;
+      const sub=x.p*x.d,T=CB_X1(x.t),Q=CB_X1(x.n),I=CB_X1(x.i);
+      html+=`<div class="cb-ci" data-key="${T}-${Q}-${I}"><span class="cb-ct">${CB_X1(x.b)}</span><div class="cb-cr"><span class="cb-cs">💰 ${fmt(sub)}Gs</span><div class="cb-cc"><button data-t="${T}" data-n="${Q}" data-i="${I}" data-a="-">−</button><span>${CB_X1(x.d)}</span><button data-t="${T}" data-n="${Q}" data-i="${I}" data-a="+">+</button></div></div></div>`;
     });
-    const msg="Hola quiero%0A"+g.items.map(x=>`[${x.d}] de ${encodeURIComponent(x.b)} [ID=${x.i}]`).join("%0A");
-    const CH_BTN={WA:g=>`<button class="lk lk-wa" data-l="https://wa.me/${g.n}?text=${msg}" data-gk="${k}" data-lbl="WhatsApp">WhatsApp</button>`,TG:g=>`<button class="lk lk-tg" data-l="https://t.me/+${g.n}?text=${msg}" data-gk="${k}" data-lbl="Telegram">Telegram</button>`,SM:g=>`<button class="lk cb-sm" data-l="sms:+${g.n}?body=${msg}&body=${msg}" data-gk="${k}" data-lbl="SMS">✉️ SMS</button>`};
+    const msg=CB_X1("Hola quiero%0A"+g.items.map(x=>`[${x.d}] de ${encodeURIComponent(x.b)} [ID=${encodeURIComponent(x.i)}]`).join("%0A"));
+    const CH_BTN={WA:g=>`<button class="lk lk-wa" data-l="https://wa.me/${N}?text=${msg}" data-gk="${K}" data-lbl="WhatsApp">WhatsApp</button>`,TG:g=>`<button class="lk lk-tg" data-l="https://t.me/+${N}?text=${msg}" data-gk="${K}" data-lbl="Telegram">Telegram</button>`,SM:g=>`<button class="lk cb-sm" data-l="sms:+${N}?body=${msg}&body=${msg}" data-gk="${K}" data-lbl="SMS">✉️ SMS</button>`};
     let btns=g.t.split('.').map(c=>CH_BTN[c]?CH_BTN[c](g):"").join("");
     html+=`<div class="cb-cf"><span class="cb-ch">Termina la Compra en</span><div class="cb-ca">${btns}</div></div></div>`;
   });
@@ -630,7 +631,7 @@ modal.addEventListener("click",ev=>{
 });
 
 function initProduct(){
-  const dec=CB_H1();if(!dec)return;
+  const dec=CB_H1();if(!dec||/\?|\.vr\.html$/.test(dec))return;
   const mID=dec.match(/ID=([^-\s]+)/),mPC=dec.match(/PC=([^-\s]+)/),mNB=dec.match(/NB=([^.]+)/),mNM=dec.match(/NM=([^-\s]+)/),mCD=dec.match(/CD=([^-\s]+)/),mCM=dec.match(/CM=([^-\s]+)/),mCH=dec.match(/CH=([^-\s]+)/),mTM=dec.match(/TM=(\d{2}\.\d{2}\.\d{4}\.\d{2}\.\d{2})/);
   if(!(mID&&mPC&&mNB&&mNM))return;
   let cs=document.getElementById("cs");

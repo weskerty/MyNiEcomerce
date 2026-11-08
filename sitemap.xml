@@ -226,11 +226,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://cheagana.com/A/dla</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://cheagana.com/A/Editor_Datos_EXIF</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

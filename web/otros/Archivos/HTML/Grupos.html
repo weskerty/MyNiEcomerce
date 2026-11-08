@@ -141,11 +141,9 @@ LD.rel='alternate';LD.type='application/rss+xml';
 LD.title='Actividades Paraguay';LD.href=RSS_URL;
 document.head.appendChild(LD);
 
-function lk(href,type,label){
-  return`<a class="lk lk-${type}" href="${href}" target="_blank" rel="noopener noreferrer">${label}</a>`;
-}
 
 function gT(el,tag){return el.getElementsByTagName(tag)[0]?.textContent||'';}
+function AG_U1(el){const u=gT(el,'link');return/^https?:\/\//i.test(u)?u:'';}
 function gH(el,tag){
   const n=el.getElementsByTagName(tag)[0];
   if(!n)return'';
@@ -161,6 +159,8 @@ function AG_X(tag,cls,txt){const e=document.createElement(tag);if(cls)e.classNam
 const AG=document.getElementById('AG1'),AG_C=document.getElementById('AG_C1'),AG_T=document.getElementById('AG_T1'),AG_M=document.getElementById('AG_M1'),FH=document.getElementById('rv-fh');
 const AG_MS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'];
 const LF_L='web/scripts/Otros/Leaflet/',LF_C='https://cdn.jsdelivr.net/npm/leaflet@1/dist/';
+const AG_AD=(src,ok,fb)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=fb;document.head.appendChild(s);};
+let PU1;
 const EVM=new Map();
 let AY=0,AM=0,MP=null,MK=null,LP=null,GR=[],_ls=[],MY=null,MM=null,_fd=null;
 const AG_IM=(e,y,m,d)=>e.ds.some(x=>x.dt.getFullYear()===y&&x.dt.getMonth()===m&&(d==null||x.dt.getDate()===d));
@@ -187,10 +187,11 @@ function AG_LF(){
     css.rel='stylesheet';css.href=LF_L+'leaflet.css';
     css.onerror=()=>{css.href=LF_C+'leaflet.css'};
     document.head.appendChild(css);
-    const add=(src,fb)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=fb;document.head.appendChild(s);};
-    add(LF_L+'leaflet.js',()=>add(LF_C+'leaflet.js',ko));
+    AG_AD(LF_L+'leaflet.js',ok,()=>AG_AD(LF_C+'leaflet.js',ok,ko));
   });
 }
+
+function AG_PU(){return PU1??=window.DOMPurify?Promise.resolve():new Promise(ok=>AG_AD('web/scripts/Otros/DOMPurify/purify.min.js',ok,()=>AG_AD('https://cdn.jsdelivr.net/npm/dompurify@3.4.17/dist/purify.min.js',ok,ok)));}
 
 function AG_G(e,x){
   const z=n=>String(n).padStart(2,'0'),F=x=>`${x.getFullYear()}${z(x.getMonth()+1)}${z(x.getDate())}`,U=x=>`${F(x)}T${z(x.getHours())}${z(x.getMinutes())}00`;
@@ -284,14 +285,14 @@ function AG_P(its){
 }
 
 function mkItem(item,full){
-  const title=gT(item,'title'),link=gT(item,'link'),
+  const title=gT(item,'title'),link=AG_U1(item),
         desc=gH(item,'description'),date=gT(item,'pubDate'),e=EVM.get(item),hy=new Date().setHours(0,0,0,0),
         x=e&&((_fd&&e.ds.find(x=>AG_IM({ds:[x]},..._fd)))||e.ds.find(x=>x.dt>=hy)||e.ds[e.ds.length-1]),
         d=x?x.dt.toLocaleString('es-PY',x.ad?{weekday:'short',day:'2-digit',month:'2-digit'}:{weekday:'short',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})+(e.ds.length>1?` (${e.ds.length} fechas)`:'')
           :date?new Date(date).toLocaleString('es-PY',full?undefined:{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
   if(!full){
     const img=fI(desc),o=AG_X('div','rv-ci',''),th=document.createElement(img?'img':'div'),inf=AG_X('div','rv-ci-info',''),t=AG_X('div','rv-ci-title',''),a=AG_X('a','',title);
-    a.href=link;a.target='_blank';a.rel='noopener noreferrer';
+    if(link)a.href=link;a.target='_blank';a.rel='noopener noreferrer';
     t.append(a);
     th.className='rv-ci-thumb'+(img?'':' rv-no');
     if(img){th.src=img;th.loading='lazy';}else th.textContent='📌';
@@ -301,10 +302,11 @@ function mkItem(item,full){
   }
   const author=gT(item,'author'),div=document.createElement('div');
   div.className='rv-it';
-  div.innerHTML=`<div class="rv-it-meta"></div><div class="rv-it-title"><a target="_blank" rel="noopener noreferrer"></a></div><div class="rv-it-body">${desc}</div>`;
+  div.innerHTML=`<div class="rv-it-meta"></div><div class="rv-it-title"><a target="_blank" rel="noopener noreferrer"></a></div><div class="rv-it-body"></div>`;
+  div.lastChild.innerHTML=window.DOMPurify?DOMPurify.sanitize(desc):'';
   div.firstChild.textContent=[author,d].filter(Boolean).join(' · ');
   const ta=div.querySelector('.rv-it-title a');
-  ta.href=link;ta.textContent=title;
+  if(link)ta.href=link;ta.textContent=title;
   ta.parentNode.after(AG_K(item));
   return div;
 }
@@ -381,7 +383,8 @@ async function load(){
   }catch{cEl.innerHTML='';}
 }
 
-window.rvOpen=function(f,lb,dd){
+window.rvOpen=async function(f,lb,dd){
+  await AG_PU();
   if(!_populated||f||_ls!==items){
     _populated=true;
     _fd=dd||null;

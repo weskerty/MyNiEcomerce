@@ -54,8 +54,6 @@ body.low-perf .gallery-item::after{display:none}
 .gi-section>a.gi-hd>h2,.gi-hd-flat>h2{margin:0;border:none!important;padding:0;display:inline;color:#fff;-webkit-mask:none;mask:none}
 .gi-hd-flat{display:block;text-align:center;text-decoration:none;color:inherit;margin-bottom:8px}
 .BS1 .BS2.GL_C{translate:0 calc(1px*var(--GL_M));scale:calc(1 - .015*var(--GL_M));box-shadow:inset 0 3px 8px rgba(0,0,0,.4),var(--GL_IN)}
-.GV1::after{content:'☰'}
-body.LS1 .GV1::after{content:'▦'}
 body.LS1 .gi-grid-row{grid-template-columns:1fr;padding:0 12px}
 body.LS1 .gi-grid-row .gallery-item{width:100%;height:${LH}px}
 body.LS1 .gi-grid-row .gallery-item img{width:${LH}px}

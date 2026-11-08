@@ -104,7 +104,7 @@
     800:'☀️',801:'🌤️',802:'⛅',803:'🌥️',804:'☁️'
   };
   const WA=window.__CFG?.waitAnim||'';
-  let _cdEnd=0,_cdRaf=null,_ac=null,_sac=null,_sugDebounce,_rac=null;
+  let _cdEnd=0,_cdRaf=null,_ac=null,_sac=null,_sugDebounce,_rac=null,_tt;
 
   const mainEl=document.getElementById('wt-main');
   const qEl=document.getElementById('wt-q');
@@ -114,6 +114,7 @@
   function toast(m){tEl.textContent=m;tEl.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>tEl.classList.remove('show'),2800);}
   function wi(id){return WI[id]||'🌡️';}
   function R(n){return Math.round(n);}
+  function ES1(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
   function fmtT(ts,tz){return new Date((ts+tz)*1000).toLocaleTimeString('es-PY',{hour:'2-digit',minute:'2-digit',timeZone:'UTC'});}
   function fmtDay(ts,tz,i){
@@ -200,7 +201,7 @@
     const B=p=>`<div class="wt-bar"><i style="width:${p}%"></i></div>`;
     const hic=w.weather[0].id===800&&w.weather[0].icon.endsWith('n')?'🌙':wi(w.weather[0].id);
 
-    let c1=`<div class="wt-hd"><div class="wt-city">📍 ${w.name}</div><div class="wt-sub">🇵🇾 Paraguay · Actualizado ${now}</div><div class="wt-temp">${R(w.main.temp)}°</div><div class="wt-desc">${hic} ${w.weather[0].description}</div><div class="wt-minmax">↑${hiT}° / ↓${loT}° · Sensacion termica ${R(w.main.feels_like)}°</div></div>`;
+    let c1=`<div class="wt-hd"><div class="wt-city">📍 ${ES1(w.name)}</div><div class="wt-sub">🇵🇾 Paraguay · Actualizado ${now}</div><div class="wt-temp">${R(w.main.temp)}°</div><div class="wt-desc">${hic} ${ES1(w.weather[0].description)}</div><div class="wt-minmax">↑${hiT}° / ↓${loT}° · Sensacion termica ${R(w.main.feels_like)}°</div></div>`;
 
     if(hrItems.length)c1+=`<div class="wt-card"><div class="wt-sec">🕐 Proximas horas</div><div class="wt-hr">${hrItems.map(x=>`<div class="wt-hr-it${x.type==='sun'?' wt-sun-it':''}"><span class="wt-hr-h">${fmtT(x.t,tz)}</span><span class="wt-hr-ic">${x.ic}</span><span class="wt-hr-t">${x.type==='sun'?x.label:x.temp+'°'}</span>${x.type==='sun'?'':`<span class="wt-hr-r">💧${x.pop}%</span>`}</div>`).join('')}</div></div>`;
 
@@ -209,7 +210,7 @@
     const s1=days[1]&&S(days[1]);
     const gu=w.wind.gust?`<div class="wt-tx">Rafaga ${R(w.wind.gust*3.6)} km/h</div>`:'';
     const c2=(s1?`<div class="wt-card"><div class="wt-sec">🔮 Para Mañana: </div><div class="wt-tm"><span>${s1.ic}</span><div>Maxima de <b>${R(s1.hi)}°</b> · Minima de <b>${R(s1.lo)}°</b><small>💧${s1.pp}% de lluvia</small></div></div></div>`:'')
-      +`<div class="wt-grid">${T('💧','Humedad',w.main.humidity+'%',B(w.main.humidity))}${T('☁️','Nubosidad',w.clouds.all+'%',B(w.clouds.all))}<div class="wt-t wt-w2"><div class="wt-cp"><i style="transform:rotate(${w.wind.deg}deg)"></i><b>${R(w.wind.speed*3.6)}</b><small>km/h</small></div><div><div class="wt-tk">💨 Viento</div><div class="wt-tv">Del ${windDir(w.wind.deg)}</div>${gu}</div></div>${T('📊','Presion',w.main.pressure+' hPa')}${T('👁️','Visibilidad',w.visibility?R(w.visibility/1000)+' km':'--')}</div>`
+      +`<div class="wt-grid">${T('💧','Humedad',R(w.main.humidity)+'%',B(R(w.main.humidity)))}${T('☁️','Nubosidad',R(w.clouds.all)+'%',B(R(w.clouds.all)))}<div class="wt-t wt-w2"><div class="wt-cp"><i style="transform:rotate(${R(w.wind.deg)}deg)"></i><b>${R(w.wind.speed*3.6)}</b><small>km/h</small></div><div><div class="wt-tk">💨 Viento</div><div class="wt-tv">Del ${windDir(w.wind.deg)}</div>${gu}</div></div>${T('📊','Presion',R(w.main.pressure)+' hPa')}${T('👁️','Visibilidad',w.visibility?R(w.visibility/1000)+' km':'--')}</div>`
       +`<div class="wt-card" id="wt-recCard"><div class="wt-sec">📊 Record historico</div><div id="wt-recBody" class="wt-rec"></div></div>`;
 
     mainEl.innerHTML=`<div class="wt-cols"><div>${c1}</div><div>${c2}</div></div>`;
@@ -255,7 +256,7 @@
       render(d.weather,d.forecast);
     }catch(e){
       if(e.name==='AbortError')return;
-      mainEl.innerHTML=`<p class="wt-msg">${e.message==='Solo Paraguay'?'📍 Solo ciudades de Paraguay':'⚠️ '+e.message}</p>`;
+      mainEl.innerHTML=`<p class="wt-msg">${e.message==='Solo Paraguay'?'📍 Solo ciudades de Paraguay':'⚠️ '+ES1(e.message)}</p>`;
     }
   }
 
