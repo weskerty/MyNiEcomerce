@@ -9,7 +9,7 @@ document.addEventListener('click',ev=>{
   const L=document.body.classList.toggle('LS1');
   try{L?localStorage.setItem('GL1','1'):localStorage.removeItem('GL1')}catch{}
 });
-const DJ='web/Dinamico/data.json',JC={},IDX={},ITEM=150,IH=ITEM,LH=64,GAP=8,STRIDE=ITEM+GAP,PAGE=6,_observed=new Set();
+const DJ='web/Dinamico/data.json',JC={},IDX={},ITEM=150,IH=ITEM,LH=60,LW=280,GAP=8,STRIDE=ITEM+GAP,PAGE=6,_observed=new Set();
 const SP=!!window.__CFG?.showPrice,CR=Math.max(1,parseInt(window.__CFG?.carouselRows)||1);
 let _GU=window.GeoUtils||null,_GUp=null;
 function loadGU(){
@@ -54,12 +54,12 @@ body.low-perf .gallery-item::after{display:none}
 .gi-section>a.gi-hd>h2,.gi-hd-flat>h2{margin:0;border:none!important;padding:0;display:inline;color:#fff;-webkit-mask:none;mask:none}
 .gi-hd-flat{display:block;text-align:center;text-decoration:none;color:inherit;margin-bottom:8px}
 .BS1 .BS2.GL_C{translate:0 calc(1px*var(--GL_M));scale:calc(1 - .015*var(--GL_M));box-shadow:inset 0 3px 8px rgba(0,0,0,.4),var(--GL_IN)}
-body.LS1 .gi-grid-row{grid-template-columns:1fr;padding:0 12px}
+body.LS1 .gi-section:has(.grid-gallery){padding-left:12px;padding-right:12px}
+body.LS1 .gi-grid-row{grid-template-columns:repeat(auto-fill,minmax(${LW}px,1fr))}
 body.LS1 .gi-grid-row .gallery-item{width:100%;height:${LH}px}
-body.LS1 .gi-grid-row .gallery-item img{width:${LH}px}
-body.LS1 .gi-grid-row .mc{left:${LH}px;top:0;display:flex;align-items:center;padding:0 ${SP?100:12}px 0 12px;background:none}
-body.LS1 .gi-grid-row .mc p{text-align:left;font-size:.9em}
-body.LS1 .gi-grid-row .gi-pc{top:50%;transform:translateY(-50%)}`;
+body.LS1 .gi-grid-row .gallery-item:has(.gi-pc) .mc{padding-bottom:18px}
+body.LS1 .gi-grid-row .gi-txt{font-family:inherit!important}
+body.LS1 .gi-grid-row .gi-pc{top:auto;bottom:7px;left:72px;right:auto;transform:none;background:none;border:0;padding:0;font-size:.82rem;color:var(--accent-2)}`;
 document.head.appendChild(_S);
 const IO=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){IO.unobserve(x.target);x.target.__ld&&x.target.__ld()}})},{rootMargin:'300px'});
 let _hidden=false;document.addEventListener('visibilitychange',()=>{_hidden=document.hidden});
@@ -320,7 +320,7 @@ function mkGrid(c,imgs){
       if(pending)return;pending=true;
       _ric(()=>{pending=false;if(destroyed)return;
         const L=document.body.classList.contains('LS1');
-        applyPageSize(gf.itemsPerPage(c,L?c.offsetWidth:ITEM,L?LH:IH,GAP,120));
+        applyPageSize(gf.itemsPerPage(c,L?LW:ITEM,L?LH:IH,GAP,120));
       });
     };
     scheduleCompute();
