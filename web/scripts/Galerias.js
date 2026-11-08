@@ -9,7 +9,7 @@ document.addEventListener('click',ev=>{
   const L=document.body.classList.toggle('LS1');
   try{L?localStorage.setItem('GL1','1'):localStorage.removeItem('GL1')}catch{}
 });
-const DJ='web/Dinamico/data.json',JC={},IDX={},ITEM=150,IH=ITEM,LH=60,LW=280,GAP=8,STRIDE=ITEM+GAP,PAGE=6,_observed=new Set();
+const DJ='web/Dinamico/data.json',JC={},IDX={},ITEM=150,IH=ITEM,LW=280,GAP=8,STRIDE=ITEM+GAP,PAGE=6,_observed=new Set();
 const SP=!!window.__CFG?.showPrice,CR=Math.max(1,parseInt(window.__CFG?.carouselRows)||1);
 let _GU=window.GeoUtils||null,_GUp=null;
 function loadGU(){
@@ -56,7 +56,7 @@ body.low-perf .gallery-item::after{display:none}
 .BS1 .BS2.GL_C{translate:0 calc(1px*var(--GL_M));scale:calc(1 - .015*var(--GL_M));box-shadow:inset 0 3px 8px rgba(0,0,0,.4),var(--GL_IN)}
 body.LS1 .gi-section:has(.grid-gallery){padding-left:12px;padding-right:12px}
 body.LS1 .gi-grid-row{grid-template-columns:repeat(auto-fill,minmax(${LW}px,1fr))}
-body.LS1 .gi-grid-row .gallery-item{width:100%;height:${LH}px}
+body.LS1 .gi-grid-row .gallery-item{width:100%;height:calc(var(--LR_I) + 2px)}
 body.LS1 .gi-grid-row .gallery-item:has(.gi-pc) .mc{padding-bottom:18px}
 body.LS1 .gi-grid-row .gi-txt{font-family:inherit!important}
 body.LS1 .gi-grid-row .gi-pc{top:auto;bottom:7px;left:calc(var(--LR_I) + var(--LR_P));right:auto;transform:none;background:none;border:0;padding:0;font-size:.82rem;color:var(--accent-2)}`;
@@ -320,7 +320,7 @@ function mkGrid(c,imgs){
       if(pending)return;pending=true;
       _ric(()=>{pending=false;if(destroyed)return;
         const L=document.body.classList.contains('LS1');
-        applyPageSize(gf.itemsPerPage(c,L?LW:ITEM,L?LH:IH,GAP,120));
+        applyPageSize(gf.itemsPerPage(c,L?LW:ITEM,L?parseFloat(getComputedStyle(c).getPropertyValue('--LR_I'))+2:IH,GAP,120));
       });
     };
     scheduleCompute();

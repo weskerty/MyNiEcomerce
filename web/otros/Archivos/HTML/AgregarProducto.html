@@ -176,6 +176,7 @@
 
 <script>
 (function(){
+const AP_AN=(window.__AN1||'').toLowerCase(),AP_TA={producto:'',propuesta:'Propuestas',corrupcion:'Ejemplos de Corrupcion',blog:'Blogs'};
 const AP_URL=(()=>{
   const base=document.querySelector('meta[name=api-base]')?.content||'';
   return base||'/api/productos';
@@ -544,6 +545,7 @@ function AP_initMDE(){
 function AP_showMain(){
   document.getElementById('ap-auth').style.display='none';
   document.getElementById('ap-main').style.display='block';
+  if(Object.hasOwn(AP_TA,AP_AN)){document.getElementById('ap-tipo').value=AP_TA[AP_AN];AP_tipo();}
   AP_loadCats().then(AP_refreshIdsEnUso);
   AP_libsReady.then(AP_initMDE);
 }
