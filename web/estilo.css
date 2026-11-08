@@ -32,6 +32,8 @@ scrollbar-color:rgba(255,255,255,.35) transparent;
 --glass-sweep:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.13),transparent 60%);
 --GL_F:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.05) 50%,rgba(255,255,255,.02));
 --GL_FH:linear-gradient(180deg,rgba(255,255,255,.22),rgba(255,255,255,.09) 50%,rgba(255,255,255,.05));
+--LR_I:58px;
+--LR_P:14px;
 --GL_SF:#0000;
 --GL_RW:linear-gradient(135deg,rgba(255,255,255,.9),rgba(255,255,255,.12) 32%,rgba(255,255,255,.08));
 --GL_RS:linear-gradient(135deg,rgba(255,255,255,.5),rgba(255,255,255,.08) 32%,rgba(255,255,255,.05));
@@ -192,8 +194,8 @@ button:not([class]):disabled::after{display:none}
 .BMD1:hover::before,.sh-it:hover::before,.LS1 .gi-grid-row .gallery-item:hover::before,.LS1 .bl-grid .bl-card:hover::before{opacity:1;transform:translate(0,-50%)}
 :is(.BMD1,.sh-it)::after{content:'';opacity:var(--GL_M);position:absolute;inset:0;z-index:2;background:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.12),transparent 60%);transform:translateX(-120%);transition:.6s;pointer-events:none}
 :is(.BMD1,.sh-it):hover::after{transform:translateX(120%)}
-.BMD1>img,.sh-it>img,.LS1 .gi-grid-row .gallery-item>img{position:static;width:58px;height:58px;object-fit:fill;border-radius:13px 0 0 13px;background:rgba(0,0,0,.25);display:block;flex-shrink:0}
-.BMD1-CN,.sh-it-info,.LS1 .gi-grid-row .mc{position:static;display:flex;flex-direction:column;justify-content:center;flex:1;min-width:0;gap:2px;padding:0 36px 0 14px;background:none;text-align:left}
+.BMD1>img,.sh-it>img,.LS1 .gi-grid-row .gallery-item>img{position:static;width:var(--LR_I);height:var(--LR_I);object-fit:fill;border-radius:13px 0 0 13px;background:rgba(0,0,0,.25);display:block;flex-shrink:0}
+.BMD1-CN,.sh-it-info,.LS1 .gi-grid-row .mc{position:static;display:flex;flex-direction:column;justify-content:center;flex:1;min-width:0;gap:2px;padding:0 36px 0 var(--LR_P);background:none;text-align:left}
 .BMD1-CN h3,.sh-it-name,.LS1 .gi-grid-row .mc p,.LS1 .bl-grid .bl-title{margin:0;-webkit-mask:none;mask:none;font-family:inherit;font-size:.94rem;font-weight:400;line-height:1.34;color:rgba(255,255,255,.92);text-align:left;text-shadow:none;word-break:break-word;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;border:none!important}
 .BMD1-CN p{margin:0;font-size:.85rem;color:var(--TX3);line-height:1.3;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .BMD1{margin-bottom:8px}

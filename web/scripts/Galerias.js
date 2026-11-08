@@ -59,7 +59,7 @@ body.LS1 .gi-grid-row{grid-template-columns:repeat(auto-fill,minmax(${LW}px,1fr)
 body.LS1 .gi-grid-row .gallery-item{width:100%;height:${LH}px}
 body.LS1 .gi-grid-row .gallery-item:has(.gi-pc) .mc{padding-bottom:18px}
 body.LS1 .gi-grid-row .gi-txt{font-family:inherit!important}
-body.LS1 .gi-grid-row .gi-pc{top:auto;bottom:7px;left:72px;right:auto;transform:none;background:none;border:0;padding:0;font-size:.82rem;color:var(--accent-2)}`;
+body.LS1 .gi-grid-row .gi-pc{top:auto;bottom:7px;left:calc(var(--LR_I) + var(--LR_P));right:auto;transform:none;background:none;border:0;padding:0;font-size:.82rem;color:var(--accent-2)}`;
 document.head.appendChild(_S);
 const IO=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){IO.unobserve(x.target);x.target.__ld&&x.target.__ld()}})},{rootMargin:'300px'});
 let _hidden=false;document.addEventListener('visibilitychange',()=>{_hidden=document.hidden});
