@@ -634,9 +634,10 @@ window.PB_loadMisLugares=async function(){
       <div class="nm">${PB_esc(nombre)} <span class="pb-badge apr">Publicado</span></div>
       <div class="fg-hint">${PB_esc(PB_lzLabel(e.categoria,e.NB))}</div>
       <div class="pb-sol-acts">
-        <button onclick="PB_solicitarBorrado('${PB_esc(e.ID)}')">Solicitar Borrado</button>
+        <button>Solicitar Borrado</button>
       </div>
     </div>`;
+    div.querySelector('.pb-sol-acts button').onclick=()=>PB_solicitarBorrado(e.ID);
     lst.appendChild(div);
   });
 };
@@ -652,7 +653,7 @@ window.PB_loadSolicitudes=async function(){
   const lst=document.getElementById('pb-sol-list');
   lst.innerHTML='<div class="fg-hint pb-c">Cargando...</div>';
   const{ok,data}=await PB_fetch('historial',{method:'POST',body:JSON.stringify({})});
-  if(!ok){lst.innerHTML=`<div class="fg-hint err">${data.error||'Error'}</div>`;return;}
+  if(!ok){lst.innerHTML=`<div class="fg-hint err">${PB_esc(data.error||'Error')}</div>`;return;}
   const entries=(data.entries||[]).filter(e=>PB_CATS.includes(e.categoria));
   const tp=data.telPend?`<div class="fg-hint ok pb-c">Cambio de numero pendiente: ${PB_esc(data.telPend)}</div>`:'';
   if(!entries.length){lst.innerHTML=tp+'<div class="fg-hint pb-c">Sin solicitudes pendientes</div>';return;}
