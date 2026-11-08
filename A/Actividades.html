@@ -206,7 +206,7 @@ function AG_LF(){
   });
 }
 
-function AG_PU(){return PU1??=window.DOMPurify?Promise.resolve():new Promise(ok=>AG_AD('web/scripts/Otros/DOMPurify/purify.min.js',ok,()=>AG_AD('https://cdn.jsdelivr.net/npm/dompurify@3.4.17/dist/purify.min.js',ok,ok)));}
+function AG_PU(){return PU1??=window.DOMPurify?Promise.resolve():new Promise(ok=>AG_AD('web/scripts/Otros/DOMPurify/purify.min.js',ok,()=>AG_AD('https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js',ok,ok)));}
 
 function AG_G(e,x){
   const z=n=>String(n).padStart(2,'0'),F=x=>`${x.getFullYear()}${z(x.getMonth()+1)}${z(x.getDate())}`,U=x=>`${F(x)}T${z(x.getHours())}${z(x.getMinutes())}00`;
