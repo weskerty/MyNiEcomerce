@@ -3,7 +3,7 @@ const FL=.25,RI=window.requestIdleCallback||(f=>setTimeout(f,1));
 const LP=()=>document.body.classList.contains('low-perf');
 function DR1(el,sig,o){
   let sx=0,sy=0,lx=0,lt=0,vx=0,dr=false,lk=false,pid=null,ms=false,nc=false;
-  const rel=()=>{if(pid!==null){try{el.releasePointerCapture(pid)}catch{}}pid=null;dr=false;lk=false};
+  const rel=()=>{if(pid!==null){try{el.releasePointerCapture(pid)}catch{}}pid=null;dr=false;lk=false;el.classList.remove('DRG')};
   el.addEventListener('click',e=>{if(nc){nc=false;e.preventDefault();e.stopPropagation()}},{capture:true,signal:sig});
   el.addEventListener('pointerdown',e=>{
     if(pid!==null||(e.pointerType==='mouse'&&e.button!==0)||(o.ok&&!o.ok()))return;
@@ -18,7 +18,7 @@ function DR1(el,sig,o){
       if(dx<5&&dy<5)return;
       lk=true;
       if(!ms&&dx<=dy*1.5){rel();o.up(false,0);return}
-      dr=true;nc=true;try{el.setPointerCapture(pid)}catch{}
+      dr=true;nc=true;el.classList.add('DRG');try{el.setPointerCapture(pid)}catch{}
       o.lock();
     }
     if(!dr)return;
@@ -59,7 +59,7 @@ function SW1(el,o){
   }
   const S={pre(){
     gp=-1;if(!fo())return;
-    RI(()=>{if(anim)return;const i=o.p()+1;if(i<o.n()&&el.isConnected){fl(i);pos();shw(0);gh.style.transition='';gh.style.transform='translate3d('+(el.offsetWidth+16)+'px,0,0)'}});
+    setTimeout(()=>RI(()=>{if(anim)return;const i=o.p()+1;if(i<o.n()&&el.isConnected){fl(i);pos();shw(0);gh.style.transition='';gh.style.transform='translate3d('+(el.offsetWidth+16)+'px,0,0)'}}),700);
   }};
   DR1(el,o.sig,{
     ok:()=>!anim&&o.n()>1&&(!o.ok||o.ok()),
@@ -83,7 +83,7 @@ function SW1(el,o){
         el.style.transition='';el.style.transform='';
         if(el.getBoundingClientRect().top<0)el.scrollIntoView({behavior:'smooth',block:'start'});
         const im=[...el.querySelectorAll('img')].map(i=>i.decode?i.decode().catch(()=>{}):0);
-        Promise.race([Promise.all(im),new Promise(r=>setTimeout(r,300))]).then(()=>requestAnimationFrame(()=>{shw(0);anim=false;S.pre()}));
+        Promise.race([Promise.all(im),new Promise(r=>setTimeout(r,120))]).then(()=>requestAnimationFrame(()=>{shw(0);anim=false;S.pre()}));
       },270);
     }
   });

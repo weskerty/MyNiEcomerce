@@ -37,9 +37,9 @@ _S.textContent=`
 .gi-sk-item{height:${IH}px;border-radius:20px;background:linear-gradient(90deg,rgba(255,255,255,.04) 0%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 100%);background-size:200% 100%;animation:gi-shimmer 1.4s infinite}
 @keyframes gi-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .gallery-item{position:relative;display:block;width:${ITEM}px;height:${IH}px;flex-shrink:0;box-sizing:border-box;--GL_PF:linear-gradient(135deg,rgba(255,255,255,.25) 0%,rgba(255,255,255,.05) 50%,rgba(255,255,255,.15) 100%);background:var(--GL_PF);border:1px solid rgba(255,255,255,.2);border-bottom:1px solid rgba(255,255,255,.05);border-radius:20px;box-shadow:0 6px 24px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(255,255,255,.05);cursor:pointer;overflow:hidden;text-decoration:none;color:white;transition:box-shadow .2s ease}
-.gallery-item:hover{box-shadow:0 10px 32px rgba(0,0,0,.28);text-decoration:none;color:white}
+@media(hover:hover){.gallery-item:hover{box-shadow:0 10px 32px rgba(0,0,0,.28);text-decoration:none;color:white}}
 .gallery-item::after{content:'';position:absolute;inset:0;z-index:2;background:var(--glass-sweep);transform:translateX(-120%);transition:.6s;pointer-events:none}
-.gallery-item:hover::after{transform:translateX(120%)}
+@media(hover:hover){.gallery-item:hover::after{transform:translateX(120%)}}
 @media(prefers-reduced-motion:reduce){.gallery-item::after{display:none}}
 body.low-perf .gallery-item::after{display:none}
 .gallery-item img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill}

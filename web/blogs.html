@@ -7,12 +7,12 @@
 .bl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));grid-auto-flow:dense;grid-auto-rows:4px;gap:16px;align-items:start}
 .bl-card{--GL_PF:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.1));position:relative;border-radius:20px;overflow:hidden;cursor:pointer;text-decoration:none;display:block;min-height:200px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);box-shadow:0 4px 24px rgba(0,0,0,.15),inset 0 1px 0 rgba(255,255,255,.15);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease}
 .bl-card::after{content:'';opacity:var(--GL_M);position:absolute;inset:0;z-index:3;background:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.12),transparent 60%);transform:translateX(-120%);transition:.6s;pointer-events:none}
-.bl-card:hover::after{transform:translateX(120%)}
-.bl-card:hover{will-change:transform;transform:translateY(calc(-5px*var(--GL_M))) scale(calc(1 + .01*var(--GL_M)));box-shadow:0 16px 40px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.2);text-decoration:none}
+@media(hover:hover){.bl-card:hover::after{transform:translateX(120%)}}
+@media(hover:hover){.bl-card:hover{will-change:transform;transform:translateY(calc(-5px*var(--GL_M))) scale(calc(1 + .01*var(--GL_M)));box-shadow:0 16px 40px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.2);text-decoration:none}}
 .bl-card:active{transform:scale(.98)}
 div.bl-card{pointer-events:none}
 .bl-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s cubic-bezier(.2,.8,.2,1),filter .3s ease;filter:brightness(.5) saturate(1.2)}
-.bl-card:hover .bl-bg{transform:scale(calc(1 + .05*var(--GL_M)));filter:brightness(.4) saturate(1.4)}
+@media(hover:hover){.bl-card:hover .bl-bg{transform:scale(calc(1 + .05*var(--GL_M)));filter:brightness(.4) saturate(1.4)}}
 .bl-bg-none{background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.02))}
 .bl-gloss{position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,.1) 0%,transparent 100%);pointer-events:none;border-radius:20px 20px 0 0}
 .bl-body{position:relative;z-index:2;padding:20px 18px 18px;display:flex;flex-direction:column;justify-content:flex-end;min-height:200px}
@@ -34,7 +34,7 @@ div.bl-card{pointer-events:none}
 #nt-btn:disabled{opacity:.5;cursor:default;translate:0 0}
 #BN_LS{font-size:1rem}
 .BN_BG{position:relative;aspect-ratio:16/9;background-size:cover;background-position:center;filter:saturate(1.15);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
-.bl-card:hover .BN_BG{transform:scale(calc(1 + .03*var(--GL_M)))}
+@media(hover:hover){.bl-card:hover .BN_BG{transform:scale(calc(1 + .03*var(--GL_M)))}}
 .BN_BGN{height:auto;aspect-ratio:auto;background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.02))}
 .BN_DS{padding:10px 18px 18px;font-size:.85rem;line-height:1.55;color:rgba(255,255,255,.75)}
 .BN_PL{position:absolute;inset:0;margin:auto;width:64px;height:64px;border:0;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:1.8rem;cursor:pointer;pointer-events:auto}
