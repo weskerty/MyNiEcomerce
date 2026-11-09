@@ -117,6 +117,7 @@
 #AG_C1{display:grid;grid-template-columns:repeat(7,30px);gap:3px;margin:0 auto;text-align:center;font-size:.8em;line-height:30px;color:rgba(255,255,255,.3)}
 #AG_C1 b{color:rgba(255,255,255,.5)}
 .AG_E1{padding:0;border:1px solid rgba(255,140,0,.35);border-radius:8px;background:rgba(255,140,0,.12);color:#ffaa33;font:inherit;font-weight:700;cursor:pointer}
+.AG_E3{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:rgba(255,255,255,.35)}
 .AG_H2{outline:1px solid rgba(255,255,255,.45);border-radius:8px}
 .AG_K1{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .rv-it .AG_K1{margin:0;padding:0 14px 10px}
@@ -178,7 +179,8 @@ const AG_AD=(src,ok,fb)=>{const s=document.createElement('script');s.src=src;s.o
 let PU1;
 const EVM=new Map();
 let AY=0,AM=0,MP=null,MK=null,LP=null,GR=[],_ls=[],MY=null,MM=null,_fd=null;
-const AG_IM=(e,y,m,d)=>e.ds.some(x=>x.dt.getFullYear()===y&&x.dt.getMonth()===m&&(d==null||x.dt.getDate()===d));
+const AG_PS=x=>x.dt<new Date().setHours(0,0,0,0);
+const AG_IM=(e,y,m,d,f)=>e.ds.some(x=>x.dt.getFullYear()===y&&x.dt.getMonth()===m&&(d==null||x.dt.getDate()===d)&&!(f&&AG_PS(x)));
 
 const AG_IC=(t,n)=>L.divIcon({html:`<div class="AG_PN1">${t}${n>1?`<b>${n}</b>`:''}</div>`,className:'',iconSize:[28,28],iconAnchor:[14,26]});
 
@@ -226,7 +228,7 @@ function AG_K(it){
   if(e){
     const N=e.ds.length;
     if(N>3){const b=AG_X('button','lk lk-ag',`Agendar (${N}) ▾`),c=p=AG_X('div','AG_K1','');b.onclick=()=>c.classList.toggle('on');k.append(b);}
-    for(const x of e.ds)A('lk-ag',AG_G(e,x),N>1?`Agendar ${x.dt.getDate()}/${x.dt.getMonth()+1}`:'Agendar',p);
+    for(const x of e.ds)A('lk-ag',AG_G(e,x),'Agendar'+(N>1?` ${x.dt.getDate()}/${x.dt.getMonth()+1}`:'')+(x.ad?'':` ${String(x.dt.getHours()).padStart(2,'0')}:${String(x.dt.getMinutes()).padStart(2,'0')}`),p);
   }
   if(mu)A('lk-mp',mu[0],'Maps');
   if(p!==k)k.append(p);
@@ -241,7 +243,7 @@ function AG_NB(g){
 
 function AG_MR(){
   const G={};
-  for(const [i,e] of EVM)if(e.p&&AG_IM(e,AY,AM))(G[e.p.map(x=>x.toFixed(4))]??={p:e.p,its:[]}).its.push(i);
+  for(const [i,e] of EVM)if(e.p&&AG_IM(e,AY,AM,null,1))(G[e.p.map(x=>x.toFixed(4))]??={p:e.p,its:[]}).its.push(i);
   GR=Object.values(G);
   AG_M.hidden=!GR.length;
   if(!GR.length)return;
@@ -264,15 +266,15 @@ function AG_MR(){
 
 function AG_R(){
   AG_T.textContent=AG_MS[AM]+' '+AY;
-  const y=AY,m=AM,off=(new Date(y,m,1).getDay()+6)%7,n=new Date(y,m+1,0).getDate(),hy=new Date(),ds=new Set();
-  for(const e of EVM.values())for(const x of e.ds)if(x.dt.getFullYear()===y&&x.dt.getMonth()===m)ds.add(x.dt.getDate());
+  const y=AY,m=AM,off=(new Date(y,m,1).getDay()+6)%7,n=new Date(y,m+1,0).getDate(),hy=new Date(),ds=new Map();
+  for(const e of EVM.values())for(const x of e.ds)if(x.dt.getFullYear()===y&&x.dt.getMonth()===m)ds.set(x.dt.getDate(),ds.get(x.dt.getDate())||!AG_PS(x));
   AG_C.textContent='';
   for(const c of 'LMMJVSD')AG_C.append(AG_X('b','',c));
   for(let i=0;i<off;i++)AG_C.append(document.createElement('span'));
   for(let d=1;d<=n;d++){
     const td=y===hy.getFullYear()&&m===hy.getMonth()&&d===hy.getDate()?'AG_H2':'';
     if(!ds.has(d)){AG_C.append(AG_X('span',td,d));continue;}
-    const b=AG_X('button','AG_E1 '+td,d);
+    const b=AG_X('button','AG_E1 '+td+(ds.get(d)?'':' AG_E3'),d);
     b.onclick=()=>rvOpen(i=>{const e=EVM.get(i);return e&&AG_IM(e,y,m,d);},`📅 ${d}/${m+1}/${y}`,[y,m,d]);
     AG_C.append(b);
   }
