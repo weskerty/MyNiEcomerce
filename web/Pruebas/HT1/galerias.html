@@ -1,0 +1,15 @@
+<style>
+body .DRG .gallery-item:active{animation:none!important;transform:none;background:var(--GL_PF);border-color:rgba(255,255,255,.2)}
+body .DRG .bl-card:active{animation:none!important;transform:none;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+@media(hover:none){body .gallery-item:hover{box-shadow:0 6px 24px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.3),inset 0 -1px 0 rgba(255,255,255,.05)}body .gallery-item:hover::after{transform:translateX(-120%)}}
+</style>
+<div id="HT_B" style="text-align:center;font-size:.8em;padding:6px;border:1px dashed #ffaa33;margin-bottom:8px"></div>
+<script>
+(function(){
+if(!window.GridFit?.HT){const x=new XMLHttpRequest();x.open('GET','web/Pruebas/HT1/GridFit.js',false);x.send();if(x.status===200)(0,eval)(x.responseText)}
+const b=document.getElementById('HT_B');let n=0;
+const f=()=>{b.textContent='PRUEBA HT1 Galerias - GridFit: '+(window.GridFit?.HT?'PRUEBA OK':window.GridFit?'ORIGINAL (abre esta URL con F5)':'cargando...');if(window.GridFit?.HT||++n>40)clearInterval(t)};
+const t=setInterval(f,500);f();
+})();
+</script>
+<div style="text-align:center"><div class="grid-gallery" data-title="Apps (prueba)" data-gallery-key="🧩 Apps" data-json-path="web/otros/Archivos/Dinamico/🧩 Apps/data.json"></div></div>
