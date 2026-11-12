@@ -336,6 +336,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://cheagana.com/A/Reportes_Unificados</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://cheagana.com/A/Test_de_Velocidad</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
