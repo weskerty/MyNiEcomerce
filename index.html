@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <base href="/">
-  <script>try{new Function('a?.b')}catch(e){location.replace('web/LiteMode/index.html')}</script>
+  <script>try{new Function('a?.b')}catch(e){location.replace('web/lite/index.html')}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <title>Che Agana 😻 Tienda Facil</title>
@@ -14,13 +14,13 @@
   <meta property="og:title" content="Che Agana | Tienda Facil">
   <meta property="og:description" content="Tienda donde encontrarás de todo y más. Compra facil y seguro en Paraguay.">
   <meta property="og:url" content="https://cheagana.com">
-  <meta property="og:image" content="https://cheagana.com/web/otros/Archivos/Imagenes/Permanente/ICONS/ICON-APP.png">
+  <meta property="og:image" content="https://cheagana.com/web/recursos/iconos/ICON-APP.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:type" content="website">
   <link rel="canonical" href="https://cheagana.com">
-  <link rel="icon" type="image/x-icon" href="web/favicon.ico">
-  <link rel="apple-touch-icon" href="web/otros/Archivos/Imagenes/Permanente/ICONS/ICON-APP.png">
+  <link rel="icon" type="image/x-icon" href="web/recursos/favicon.ico">
+  <link rel="apple-touch-icon" href="web/recursos/iconos/ICON-APP.png">
   <link rel="manifest" href="manifest.json">
 
   <meta name="theme-color" content="#00000000">
@@ -41,7 +41,7 @@
 <body>
 
   <div id="WA1" class="on">
-    <img src="web/otros/Archivos/Imagenes/Permanente/wait.avif" class="wait-anim" alt="">
+    <img src="web/recursos/wait.avif" class="wait-anim" alt="">
   </div>
 
   <div id="bg"></div>
@@ -55,25 +55,24 @@
   <script type="application/json" id="app-config">
   {
     "home": "web/blogs.html",
-    "exit": "web/otros/Archivos/HTML/centralPage.html",
+    "exit": "web/paginas/centralPage.html",
     "404": "web/404.html",
     "historyDepth": 2,
     "cacheSize": 3,
     "videoTimeout": 2000,
     "loadingDelay": 1000,
     "mobBreakpoint": 768,
-    "waitAnim": "web/otros/Archivos/Imagenes/Permanente/wait.avif",
+    "waitAnim": "web/recursos/wait.avif",
     "waitAnimDelay": 180,
     "showPrice": true,
     "carouselRows": 1,
     "rss": ["telegram/channel/paraguayley"],
     "disqus": "amigos-steam",
-    "DATADOWNLOAD": ["web/Dinamico/data.json", "web/otros/Archivos/Dinamico/Blogs/data.json"],
-    "pluginsPath": "web/scripts/",
+    "DATADOWNLOAD": ["web/tienda/data.json", "web/Blogs/data.json"],
+    "pluginsPath": "web/js/plugins/",
     "plugins": ["chatBanner&Share.js", "Galerias.js", "DataDownload.js", "install.js", "perfBench.js", "disqus.js"],
     "bg": [
-      { "month": 0,  "type": "image", "src": "web/otros/Archivos/Imagenes/pexels5834608AñoNuevo.avif" },
-      { "month": 1,  "type": "image", "src": "web/otros/Archivos/Imagenes/pexels-henkephotoart-29775986.jpg" },
+      { "month": 0,  "type": "image", "src": "web/recursos/fondos/pexels5834608AñoNuevo.avif" },
       { "month": 8,  "type": "video", "src": "https://github.com/user-attachments/assets/fd54742d-a7e9-49f4-b268-da16689918c1" },
       { "month": 11, "type": "video", "src": "https://github.com/user-attachments/assets/b746d91d-55ae-4679-add6-fcf71e05dcd4" }
     ]
@@ -86,20 +85,20 @@
 
   <div id="disqus-container"></div>
 
-  <script src="web/scripts/Otros/MarkDownIT/markdown-it.min.js"
+  <script src="web/js/lib/MarkDownIT/markdown-it.min.js"
           onerror="this.src='https://cdn.jsdelivr.net/npm/markdown-it@15/dist/browser/markdown-it.umd.min.js'"></script>
-  <script src="web/scripts/Otros/MarkDownIT/markdownItAnchor.umd.min.js"
+  <script src="web/js/lib/MarkDownIT/markdownItAnchor.umd.min.js"
           onerror="this.src='https://cdn.jsdelivr.net/npm/markdown-it-anchor@10/dist/markdownItAnchor.umd.js'"></script>
 
   <script type="module">
     try{
       await import('https://cdn.jsdelivr.net/npm/@khmyznikov/pwa-install@latest/dist/pwa-install.bundle.js');
     }catch{
-      await import('web/scripts/Otros/PwaInstall/pwa-install.bundle.js');
+      await import('web/js/lib/PwaInstall/pwa-install.bundle.js');
     }
   </script>
 
-  <script src="web/scripts/Otros/core.js"></script>
+  <script src="web/js/core.js"></script>
 
 <script>
     if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').then(r=>r.update()).catch(()=>{});
@@ -140,8 +139,8 @@ if(DW1_EN)(function(){
 
 
   <noscript>
-  <meta http-equiv="refresh" content="0;url=web/LiteMode/index.html">
-  <h1><a href="web/LiteMode/index.html">👉 Presionar para ir a la Web 👈</a></h1>
+  <meta http-equiv="refresh" content="0;url=web/lite/index.html">
+  <h1><a href="web/lite/index.html">👉 Presionar para ir a la Web 👈</a></h1>
  </noscript>
 
 </body>

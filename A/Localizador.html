@@ -5,15 +5,15 @@
 <meta property="og:site_name" content="Che Agana">
 <meta property="og:title" content="Localizador">
 <meta property="og:description" content="📍 Localizador 🗺️ Todos 🚻 Baños 💧 Agua 🔌 Carga Eléctrica 👕 Lavandería ♻️ Reciclaje Todos 🔌 Electronicos 🧴 Plastico 📄 Papel 🍶 Vidrio 🔩 Metal 📍 Se">
-<meta property="og:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/NM%3Du1e73ed63ed-ID%3DLocalizador-NB%3DLocalizador.avif">
+<meta property="og:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/NM%3Du1e73ed63ed-ID%3DLocalizador-NB%3DLocalizador.avif">
 <meta property="og:url" content="https://cheagana.com/A/Localizador">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Localizador">
 <meta name="twitter:description" content="📍 Localizador 🗺️ Todos 🚻 Baños 💧 Agua 🔌 Carga Eléctrica 👕 Lavandería ♻️ Reciclaje Todos 🔌 Electronicos 🧴 Plastico 📄 Papel 🍶 Vidrio 🔩 Metal 📍 Se">
-<meta name="twitter:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/NM%3Du1e73ed63ed-ID%3DLocalizador-NB%3DLocalizador.avif">
+<meta name="twitter:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/NM%3Du1e73ed63ed-ID%3DLocalizador-NB%3DLocalizador.avif">
 <link rel="canonical" href="https://cheagana.com/A/Localizador">
 <base href="/">
-<script src="/web/scripts/Otros/HTMLCoreInyector.js" data-r="web/otros/Archivos/Dinamico/🧩 Apps/NM=u1e73ed63ed-ID=Localizador-NB=Localizador.html"></script>
+<script src="/web/js/HTMLCoreInyector.js" data-r="web/🧩 Apps/NM=u1e73ed63ed-ID=Localizador-NB=Localizador.html"></script>
 </head><body><div class="markdown-content"><style>
 #rc-cats,#rc-mats{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-bottom:10px}
 #rc-mats:not(.on){display:none}
@@ -54,7 +54,7 @@
 <div id="rc-panel"><p class="rc-e">📍 Selecciona un punto en el mapa</p></div>
 <script>
 (function(){
-const JSON_URL='web/otros/Archivos/Dinamico/Publico/localizador/data.json';
+const JSON_URL='web/Publico/localizador/data.json';
 const CAT_EMOJI={banos:'🚻',agua:'💧','carga-electrica':'🔌',lavanderia:'👕',reciclaje:'♻️'};
 const CAT_LABEL={banos:'Baños',agua:'Agua','carga-electrica':'Carga Electrica',lavanderia:'Lavanderia',reciclaje:'Reciclaje'};
 const MAT_EMOJI={electronico:'🔌',plastico:'🧴',papel:'📄',vidrio:'🍶',metal:'🔩'};
@@ -178,7 +178,7 @@ function initMap(){
   map.fitBounds(pts,{padding:[32,32],maxZoom:13});
 }
 
-const LF_L='web/scripts/Otros/Leaflet/',LF_C='https://cdn.jsdelivr.net/npm/leaflet@1/dist/';
+const LF_L='web/js/lib/Leaflet/',LF_C='https://cdn.jsdelivr.net/npm/leaflet@1/dist/';
 function loadLeaflet(cb){
   if(window.L){cb();return;}
   const css=document.createElement('link');
@@ -239,7 +239,7 @@ fetch(JSON_URL)
 })();
 </script>
 <h2>Faltan lugares?</h2>
-<p><a href="#web/otros/Archivos/HTML/AgregarPublico.html#localizador" class="view-all-button">➕ Agregar un lugar</a></p>
-<p><a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a></p>
+<p><a href="#web/paginas/AgregarPublico.html#localizador" class="view-all-button">➕ Agregar un lugar</a></p>
+<p><a href="web/paginas/apps.html" class="back-button">← Volver a Aplicaciones</a></p>
 </div>
 </div></body></html>

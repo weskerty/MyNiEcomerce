@@ -1,0 +1,679 @@
+<style>
+#pb-wrap{padding-bottom:90px}
+#pb-wrap button{font-family:inherit;margin:0}
+#pb-wrap button:disabled{opacity:.4;cursor:not-allowed}
+#pb-wrap .PG1{margin-bottom:12px}
+.fg{margin-bottom:12px}
+.fg label{display:block;margin-bottom:4px;font-size:.85em;opacity:.6}
+.fg :is(input,select,textarea,button){width:100%}
+.fg-hint{font-size:.8em;opacity:.6;margin-top:4px}
+.fg-hint.ok{color:var(--ok);opacity:1}
+.fg-hint.err{color:var(--err);opacity:1}
+.pb-c{text-align:center;margin:20px 0}
+.pb-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pb-img-row{display:flex;gap:12px;align-items:flex-start}
+.pb-img-fields{flex:1}
+#pb-img-thumb{cursor:pointer}
+#pb-img-thumb img{display:none;width:100%;height:100%;object-fit:cover}
+.pb-sol-item{padding:12px;margin-bottom:8px;border:1px solid var(--rdm-border);border-radius:var(--r-sm)}
+.pb-sol-item .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pb-sol-acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pb-sol-neg{margin-top:6px;padding:7px 10px;border-radius:var(--r-sm);font-size:.85em;color:var(--err);background:color-mix(in srgb,var(--err) 10%,transparent)}
+.pb-badge{padding:1px 8px;border:1px solid;border-radius:99px;font-size:.7em;font-weight:700;background:color-mix(in srgb,currentColor 14%,transparent)}
+.pb-badge.pend{color:var(--accent-2)}
+.pb-badge.apr{color:var(--ok)}
+.pb-badge.rej{color:var(--err)}
+.pb-msg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);max-width:88vw;padding:10px 22px;border:1px solid var(--rdm-border);border-radius:var(--r-xl);background:var(--rdm-bg);box-shadow:var(--GL_E);z-index:9999;pointer-events:none;text-align:center}
+#PB_DG1{width:auto;max-width:min(420px,calc(100vw - 40px));text-align:center}
+#PB_DG1 p.err{color:var(--err)}
+#PB_DG1 p.warn{color:var(--warn)}
+#PB_DG1 div{display:flex;gap:10px;justify-content:center;margin-top:16px}
+.pb-msg:is(.ok,.err,.warn){border-color:currentColor}
+.pb-msg.ok{color:var(--ok)}
+.pb-msg.err{color:var(--err)}
+.pb-msg.warn{color:var(--warn)}
+@keyframes pb-shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.pb-shake{animation:pb-shake .4s ease 3;border-color:var(--err)!important}
+</style>
+
+<script src="/web/js/lib/Verif.js"></script>
+<dialog id="PB_DG1"><form method="dialog"><p></p><div><button>Aceptar</button><button type="button">Ayuda</button></div></form></dialog>
+
+<div id="pb-wrap">
+<h1>📍 Agregar Lugar</h1>
+<p class="fg-hint">Envia tu solicitud para publicar en el mapa/lista</p>
+  <div id="pb-auth">
+    <div class="PG1">
+      <button class="back-button act" id="pb-tlogin" onclick="PB_showTab('login')">Iniciar Sesion</button>
+      <button class="back-button" id="pb-treg" onclick="PB_showTab('reg')">Registrarse</button>
+    </div>
+    <form id="pb-login-box">
+      <h2>Acceso</h2>
+      <div class="fg"><label>Numero de telefono</label><input id="pb-lu" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
+      <div class="fg"><label>Contrasena</label><input id="pb-lp" type="password" placeholder="••••••" autocomplete="current-password"></div>
+      <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_login()">Entrar</button></div>
+      <p class="fg-hint pb-c">Sin cuenta? <a onclick="PB_showTab('reg')">Registrate aqui</a> · <a onclick="PB_showTab('rst')">Olvide mi contrasena</a></p>
+    </form>
+    <form id="pb-reg-box" style="display:none">
+      <h2>Nuevo Usuario</h2>
+      <div class="fg"><label>Numero de telefono</label><input id="pb-ru" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="username"></div>
+      <div class="fg">
+        <label>Contrasena</label>
+        <input id="pb-rp" type="password" placeholder="minimo 10 caracteres" autocomplete="new-password" oninput="PB_checkPwStrength()">
+        <div class="fg-hint" id="pb-rp-hint">Minimo 10 caracteres</div>
+      </div>
+      <div class="fg"><label>Confirmar</label><input id="pb-rp2" type="password" placeholder="••••••" autocomplete="new-password"></div>
+      <div class="PG1"><button type="submit" class="view-all-button" id="pb-rbtn" onclick="event.preventDefault();PB_registro()">Crear Cuenta</button></div>
+      <p class="fg-hint pb-c">Ya tenes cuenta? <a onclick="PB_showTab('login')">Inicia sesion</a></p>
+    </form>
+    <p class="fg-hint pb-c">Es la misma cuenta que usas para agregar productos</p>
+  </div>
+  <div id="pb-main" style="display:none">
+    <div class="PG1">
+      <button class="back-button act" id="pb-tnuevo" onclick="PB_mainTab('nuevo')">Nueva Solicitud</button>
+      <button class="back-button" id="pb-tmis" onclick="PB_mainTab('mis')">Mis Lugares</button>
+      <button class="back-button" id="pb-tpend" onclick="PB_mainTab('pend')">Mis Solicitudes</button>
+      <button class="back-button" id="pb-tcuenta" onclick="PB_mainTab('cuenta')">Cuenta</button>
+    </div>
+    <div id="pb-tab-nuevo">
+      <div>
+        <h2>Tipo</h2>
+        <div class="fg"><select id="pb-cat" onchange="PB_catChange()">
+          <option value="minecraft">Servidor Minecraft</option>
+          <option value="localizador">Localizador (baño, agua, lavanderia, reciclaje...)</option>
+          <option value="jugadores">Encuentra Jugadores</option>
+          <option value="evento">Evento (agenda de Actividades)</option>
+        </select></div>
+        <div class="pb-img-row">
+          <div class="BS2" id="pb-img-thumb" onclick="document.getElementById('pb-img').click()">
+            <span id="pb-img-icon" class="BS4">📷</span>
+            <img id="pb-imgprev" alt="">
+          </div>
+          <div class="pb-img-fields">
+            <div class="fg"><label>Imagen / logo</label><div class="fg-hint" id="pb-imgnm">Toca para subir</div></div>
+          </div>
+          <input type="file" id="pb-img" accept="image/avif,image/webp,image/*" style="display:none">
+        </div>
+      </div>
+      <div id="pb-f-minecraft">
+        <h2>Datos del Servidor</h2>
+        <div class="fg"><label>Nombre</label><input id="pb-mc-nm" placeholder="Casita Server" maxlength="40"></div>
+        <div class="fg"><label>Descripcion corta</label><textarea id="pb-mc-desc" rows="2" maxlength="90" placeholder="Bedrock Survival casi vanilla..."></textarea></div>
+        <div class="pb-row">
+          <div class="fg"><label>Direccion del servidor</label><input id="pb-mc-host" placeholder="mc.ejemplo.com"></div>
+          <div class="fg"><label>Puerto</label><input id="pb-mc-port" type="number" placeholder="19132"></div>
+        </div>
+        <div class="fg"><label>Version</label><select id="pb-mc-tipo">
+          <option value="B">Bedrock</option>
+          <option value="J">Java</option>
+          <option value="B+J">Ambas</option>
+        </select></div>
+      </div>
+      <div id="pb-f-localizador" style="display:none">
+        <h2>Datos del Lugar</h2>
+        <div class="fg"><label>Tipo de lugar</label><select id="pb-lz-tipo" onchange="PB_lzTipoChange()">
+          <option value="banos">Baño</option>
+          <option value="agua">Agua</option>
+          <option value="carga-electrica">Carga Electrica</option>
+          <option value="lavanderia">Lavanderia</option>
+          <option value="reciclaje">Punto de Reciclaje</option>
+        </select></div>
+        <div class="fg" id="pb-lz-mat-wrap" style="display:none"><label>Material que reciben</label><select id="pb-lz-mat">
+          <option value="electronico">Electronico</option>
+          <option value="plastico">Plastico</option>
+          <option value="papel">Papel</option>
+          <option value="vidrio">Vidrio</option>
+          <option value="metal">Metal</option>
+        </select></div>
+        <div class="fg"><label>Nombre</label><input id="pb-lz-nm" placeholder="Nombre del lugar" maxlength="60"></div>
+        <div class="fg"><label>Horario</label><input id="pb-lz-hr" placeholder="Lun - Vie: 8:00 - 18:00" maxlength="60"></div>
+        <div class="fg"><label>Ubicacion</label><input id="pb-lz-ct" data-raw placeholder="-25.3349, -57.5206" autocomplete="off" oninput="PB_ctIn(this.id)"></div>
+        <div class="fg"><button type="button" onclick="PB_pedirGPS('pb-lz-ct')">📍 Usar mi ubicacion</button></div>
+        <div class="fg-hint" id="pb-lz-ct-h"></div>
+        <div class="fg"><label>Canal de contacto</label>
+          <select id="pb-lz-ch">
+            <option value="">Ninguno</option>
+            <option value="WA">WhatsApp</option>
+            <option value="TG">Telegram</option>
+            <option value="WA.TG">WhatsApp y Telegram</option>
+          </select>
+        </div>
+      </div>
+      <div id="pb-f-jugadores" style="display:none">
+        <h2>Datos del Jugador</h2>
+        <div class="fg"><label>Nombre de Juego</label><input id="pb-jg-nm" placeholder="Overwatch 2" maxlength="40"></div>
+        <div class="fg"><label>Descripcion</label><textarea id="pb-jg-desc" rows="2" maxlength="55" placeholder="Busco gente para jugar de noche, nivel medio"></textarea></div>
+        <div class="fg"><label>Canal de contacto</label>
+          <select id="pb-jg-ch">
+            <option value="WA">WhatsApp</option>
+            <option value="TG">Telegram</option>
+            <option value="WA.TG">WhatsApp y Telegram</option>
+          </select>
+        </div>
+      </div>
+      <div id="pb-f-evento" style="display:none">
+        <h2>Datos del Evento</h2>
+        <div class="fg"><label>Titulo</label><input id="pb-ev-nm" maxlength="90" placeholder="Taller de formacion estudiantil"></div>
+        <div class="fg"><label>Descripcion</label><textarea id="pb-ev-desc" data-raw rows="4" placeholder="Que es, para quien, que llevar..."></textarea></div>
+        <div id="pb-ev-fs"><div class="pb-row">
+          <div class="fg"><label>Fecha</label><input type="date"></div>
+          <div class="fg"><label>Hora</label><input type="time"></div>
+        </div></div>
+        <div class="fg"><button type="button" onclick="PB_evAdd()">➕ Otra fecha</button></div>
+        <div class="fg"><label>Ubicacion (link de Google Maps o coordenadas)</label><input id="pb-ev-ct" data-raw placeholder="https://maps.app.goo.gl/..." autocomplete="off" oninput="PB_ctIn(this.id)"></div>
+        <div class="fg"><button type="button" onclick="PB_pedirGPS('pb-ev-ct')">📍 Usar mi ubicacion</button></div>
+        <div class="fg-hint" id="pb-ev-ct-h"></div>
+        <div class="fg"><label>Link de red social (opcional)</label><input id="pb-ev-lk" data-raw type="url" placeholder="https://www.instagram.com/p/..."></div>
+        <div class="fg-hint" id="pb-ev-cnt">Flyer obligatorio. Maximo 1024 letras en total</div>
+        <div class="fg-hint">Solo se admiten eventos abiertos a todos y sin fines de lucro:<br>* Gratuitos o a voluntad<br>* Comunitarios, como talleres, charlas, ferias o limpiezas etc<br>* Beneficos para una causa colectiva: comedor, refugio, escuela<br><br>No se admiten colectas para una persona o familia (polladas, rifas)</div>
+      </div>
+      <div class="PG1"><button class="view-all-button" id="pb-submit" onclick="PB_enviar()">Enviar Solicitud</button></div>
+    </div>
+    <div id="pb-tab-mis" style="display:none">
+      <div id="pb-mis-list"><div class="fg-hint pb-c">Cargando...</div></div>
+    </div>
+    <div id="pb-tab-pend" style="display:none">
+      <div id="pb-sol-list"><div class="fg-hint pb-c">Cargando...</div></div>
+    </div>
+    <div id="pb-tab-cuenta" style="display:none">
+      <form>
+        <h2>Cambiar Contrasena</h2>
+        <div class="fg"><label>Contrasena Actual</label><input id="pb-cpa" type="password" placeholder="••••••" autocomplete="current-password"></div>
+        <div class="fg">
+          <label>Nueva Contrasena</label>
+          <input id="pb-cpn" type="password" placeholder="minimo 10 caracteres" autocomplete="new-password" oninput="PB_checkPwStrength('pb-cpn','pb-cpn-hint')">
+          <div class="fg-hint" id="pb-cpn-hint">Minimo 10 caracteres</div>
+        </div>
+        <div class="fg"><label>Confirmar Nueva</label><input id="pb-cpn2" type="password" placeholder="••••••" autocomplete="new-password"></div>
+        <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_cambiarPass()">Guardar Nueva Contrasena</button></div>
+        <div class="PG1"><button type="button" onclick="PB_logout()">Cerrar Sesion</button></div>
+      </form>
+      <form>
+        <h2>Cambiar Numero</h2>
+        <div class="fg"><label>Numero Nuevo</label><input id="pb-ctn" type="tel" inputmode="numeric" placeholder="595972184435" autocomplete="off"></div>
+        <div class="fg"><label>Contrasena Actual</label><input id="pb-cta" type="password" placeholder="••••••" autocomplete="current-password"></div>
+        <div class="fg-hint">Confirmas enviando un mensaje desde el numero nuevo</div>
+        <div class="PG1"><button type="submit" class="view-all-button" onclick="event.preventDefault();PB_cambiarTel()">Solicitar Cambio</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+const PB_URL=(()=>{
+  const base=document.querySelector('meta[name=api-base]')?.content||'';
+  return base||'/api/productos';
+})();
+const PB_PUBLICO_BASE=(()=>{
+  const base=document.querySelector('meta[name=publico-base]')?.content||'';
+  return base||'/web/Publico';
+})();
+const PB_MAX_SIZE=200*1024;
+const PB_NB_MAX=100;
+const PB_CATS=['minecraft','localizador','jugadores','evento'];
+const PB_CAT_LABEL={minecraft:'Servidor Minecraft',localizador:'Lugar',jugadores:'Encuentra Jugadores',evento:'Evento'};
+const PB_TIPO_LABEL={banos:'Baño',agua:'Agua','carga-electrica':'Carga Electrica',lavanderia:'Lavanderia',reciclaje:'Punto de Reciclaje'};
+function PB_lzLabel(cat,NB){
+  if(cat!=='localizador')return PB_CAT_LABEL[cat]||cat;
+  const tipo=(NB||'').split(';')[1]||'';
+  const base=tipo.split('-')[0];
+  return PB_TIPO_LABEL[base]||base||'Lugar';
+}
+
+function PB_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
+function PB_sck(k,v){const sec=location.protocol==="https:"?";Secure":"";document.cookie=`${k}=${encodeURIComponent(v)};path=/;max-age=7776000;SameSite=Strict${sec}`;}
+function PB_dck(k){document.cookie=`${k}=;path=/;max-age=0`;}
+
+let _PB_tel=PB_ck("ap_tel"),_PB_tk=PB_ck("ap_tk");
+let _PB_msg=null;
+
+function PB_esc(s){const d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function PB_toast(t,tp='ok',d=3000){
+  if(tp!=='ok'){
+    const g=document.getElementById('PB_DG1'),p=g.querySelector('p');
+    p.textContent=t;p.className=tp;
+    g.querySelector('button[type=button]').onclick=()=>open('https://wa.me/595972184435?text='+encodeURIComponent('Ayuda: '+t),'_blank','noopener');
+    if(!g.open)g.showModal();
+    return;
+  }
+  if(_PB_msg)_PB_msg.remove();
+  _PB_msg=document.createElement('div');
+  _PB_msg.className='pb-msg '+tp;
+  _PB_msg.textContent=t;
+  document.body.appendChild(_PB_msg);
+  setTimeout(()=>{if(_PB_msg){_PB_msg.remove();_PB_msg=null;}},d);
+}
+
+async function PB_fetch(action,opts={}){
+  const isGet=!opts.method||opts.method==="GET";
+  const url=isGet?`${PB_URL}?action=${action}`:PB_URL;
+  if(!isGet&&opts.body){const _b=JSON.parse(opts.body);_b.action=action;if(_PB_tk&&!_b.token)_b.token=_PB_tk;opts.body=JSON.stringify(_b);}
+  const res=await fetch(url,{headers:{"Content-Type":"application/json"},...opts});
+  const data=await res.json().catch(()=>({}));
+  if(res.status===401){PB_dck('ap_tel');PB_dck('ap_tk');_PB_tel=null;_PB_tk=null;}
+  return{ok:res.ok,status:res.status,data};
+}
+
+let _PB_rt='alta';
+window.PB_showTab=function(t){
+  const rs=t==='rst';
+  document.getElementById('pb-login-box').style.display=t==='login'?'block':'none';
+  document.getElementById('pb-reg-box').style.display=t==='login'?'none':'block';
+  document.getElementById('pb-tlogin').classList.toggle('act',t==='login');
+  document.getElementById('pb-treg').classList.toggle('act',t==='reg');
+  _PB_rt=rs?'clave':'alta';
+  document.querySelector('#pb-reg-box h2').textContent=rs?'Recuperar Cuenta':'Nuevo Usuario';
+  document.getElementById('pb-rbtn').textContent=rs?'Cambiar Contrasena':'Crear Cuenta';
+};
+
+window.PB_checkPwStrength=function(inputId='pb-rp',hintId='pb-rp-hint'){
+  const v=document.getElementById(inputId).value;
+  const hint=document.getElementById(hintId);
+  const okLen=v.length>=10;
+  if(!v){hint.className='fg-hint';hint.textContent='Minimo 10 caracteres';return;}
+  if(okLen){hint.className='fg-hint ok';hint.textContent='Contrasena segura';}
+  else{hint.className='fg-hint err';hint.textContent='Falta: largo (10+)';}
+};
+
+window.PB_mainTab=function(t){
+  document.getElementById('pb-tab-nuevo').style.display=t==='nuevo'?'block':'none';
+  document.getElementById('pb-tab-mis').style.display=t==='mis'?'block':'none';
+  document.getElementById('pb-tab-pend').style.display=t==='pend'?'block':'none';
+  document.getElementById('pb-tab-cuenta').style.display=t==='cuenta'?'block':'none';
+  document.getElementById('pb-tnuevo').classList.toggle('act',t==='nuevo');
+  document.getElementById('pb-tmis').classList.toggle('act',t==='mis');
+  document.getElementById('pb-tpend').classList.toggle('act',t==='pend');
+  document.getElementById('pb-tcuenta').classList.toggle('act',t==='cuenta');
+  if(t==='mis')PB_loadMisLugares();
+  if(t==='pend')PB_loadSolicitudes();
+};
+
+window.PB_catChange=function(){
+  const c=document.getElementById('pb-cat').value;
+  PB_CATS.forEach(cat=>{document.getElementById('pb-f-'+cat).style.display=cat===c?'':'none';});
+  if(c==='localizador')PB_lzTipoChange();
+  const f=document.getElementById('pb-img')._file;
+  if(f)PB_img(f);
+};
+
+window.PB_lzTipoChange=function(){
+  const t=document.getElementById('pb-lz-tipo').value;
+  document.getElementById('pb-lz-mat-wrap').style.display=t==='reciclaje'?'':'none';
+};
+
+const PB_CTH='En Google Maps mantene presionado el lugar y pega aca los numeros, o usa tu ubicacion';
+const PB_CTE='En la app Google Maps: Compartir, Copiar enlace. O pega los numeros, o usa tu ubicacion';
+const PB_MU=/^https?:\/\/(?:maps\.app\.goo\.gl|goo\.gl\/maps|maps\.google\.[a-z.]+|(?:www\.)?google\.[a-z.]+\/maps)\S*$/i;
+const PB_HT=id=>id==='pb-ev-ct'?PB_CTE:PB_CTH;
+['pb-lz-ct','pb-ev-ct'].forEach(i=>{document.getElementById(i+'-h').textContent=PB_HT(i);});
+function PB_ctP(v){
+  const m=v.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/)||v.match(/(-?\d{1,2}\.\d+)\s*,\s*\+?(-?\d{1,3}\.\d+)/);
+  if(!m)return null;
+  const la=+m[1],lo=+m[2];
+  return Math.abs(la)<=90&&Math.abs(lo)<=180?[la,lo]:null;
+}
+function PB_CT(p){return`${p[0]<0?'S':'N'}${Math.abs(p[0]).toFixed(4)}${p[1]<0?'W':'E'}${Math.abs(p[1]).toFixed(4)}`;}
+const PB_V=id=>document.getElementById(id).value.trim();
+
+window.PB_pedirGPS=function(id){
+  if(!navigator.geolocation)return PB_toast('Tu navegador no soporta ubicacion','err');
+  const hint=document.getElementById(id+'-h');
+  hint.className='fg-hint';hint.textContent='Obteniendo...';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    document.getElementById(id).value=pos.coords.latitude.toFixed(5)+', '+pos.coords.longitude.toFixed(5);
+    PB_ctIn(id);
+  },()=>{
+    hint.className='fg-hint err';hint.textContent='No se pudo obtener ubicacion';
+  },{timeout:10000});
+};
+
+window.PB_ctIn=function(id){
+  const v=document.getElementById(id).value,hint=document.getElementById(id+'-h'),p=PB_ctP(v),ev=id==='pb-ev-ct';
+  hint.textContent='';
+  if(!v.trim()){hint.className='fg-hint';hint.textContent=PB_HT(id);return;}
+  if(/share\.google/.test(v)){hint.className='fg-hint err';hint.textContent='Ese link es del buscador de Google, no de Maps. Abri el lugar en la app Google Maps y usa Compartir';return;}
+  if(ev&&!p&&PB_MU.test(v.trim())){hint.className='fg-hint ok';hint.textContent='Link de Google Maps valido';return;}
+  if(!p){hint.className='fg-hint err';hint.textContent=ev?'Pega un link de Google Maps o -25.3349, -57.5206':/goo\.gl/.test(v)?'Ese link no trae coordenadas, pega los numeros':'Formato: -25.3349, -57.5206';return;}
+  const a=document.createElement('a');
+  a.href=`https://www.google.com/maps?q=${p[0]},${p[1]}`;a.target='_blank';a.rel='noopener noreferrer';a.textContent='ver en el mapa';
+  hint.className='fg-hint ok';hint.append('Ubicacion valida, ',a);
+};
+
+function PB_evTx(){
+  const nm=PB_cl(PB_V('pb-ev-nm')).trim(),ds=PB_V('pb-ev-desc'),lv=PB_V('pb-ev-ct'),p=PB_ctP(lv),lk=PB_V('pb-ev-lk');
+  const ml=p?`https://maps.google.com/?q=${p.join(',')}`:PB_MU.test(lv)&&!/share\.google/.test(lv)?lv:'';
+  const fr=[...document.querySelectorAll('#pb-ev-fs .pb-row')].map(r=>[...r.querySelectorAll('input')].map(i=>i.value)),pz=fr.some(([a,b])=>!a!==!b);
+  const fx=[...new Set(fr.filter(([a,b])=>a&&b).map(v=>v.join(' ')))].sort().map(v=>{
+    const[y,m,d]=v.slice(0,10).split('-'),[H,M]=v.slice(11).split(':').map(Number);
+    return`🗓️ ${d}/${m}/${y.slice(2)} ${H%12||12}${M?':'+String(M).padStart(2,'0'):''}${H<12?'AM':'PM'}`;
+  }).join('\n');
+  const t=`${nm}\n${ds}\n\n${fx}\n📍 ${ml}${/^https?:\/\/\S+$/.test(lk)?'\n'+lk:''}`;
+  return{t,nm,p,ml,ok:!!(nm&&ds&&fx&&ml&&!pz)};
+}
+window.PB_evAdd=function(){
+  const f=document.getElementById('pb-ev-fs'),r=f.firstElementChild.cloneNode(true);
+  r.querySelectorAll('input').forEach(i=>i.value='');
+  f.append(r);r.querySelector('input').focus();
+};
+document.getElementById('pb-f-evento').addEventListener('input',()=>{
+  const n=PB_evTx().t.length,c=document.getElementById('pb-ev-cnt');
+  c.className='fg-hint'+(n>1024?' err':'');c.textContent=`${n}/1024 letras. Flyer obligatorio`;
+});
+
+function PB_cl(s){return s.replace(/[;\/\\<>"`|\x00-\x1f]/g,'').replace(/'/g,'’').replace(/-(?=[A-Z]{2}=)/g,'- ');}
+document.getElementById('pb-tab-nuevo').addEventListener('input',e=>{
+  const t=e.target;
+  if(!t.matches('textarea:not([data-raw]),input:not([data-raw]):not([type=number]):not([type=file]):not([type=date]):not([type=time])'))return;
+  const c=PB_cl(t.value);
+  if(c!==t.value)t.value=c;
+});
+
+async function PB_processImg(file){
+  const isAnimatable=file.type==='image/avif'||file.type==='image/webp';
+  if(isAnimatable&&file.size<=PB_MAX_SIZE){
+    const ext=file.type==='image/avif'?'.avif':'.webp';
+    return{blob:file,ext,size:file.size};
+  }
+  if(isAnimatable&&file.size>PB_MAX_SIZE){
+    const ok=confirm(`Supera ${PB_MAX_SIZE/1024}KB, se comprimira y perdera la animacion. Continuar?`);
+    if(!ok)return{error:'Cancelado'};
+  }
+  const url=URL.createObjectURL(file);
+  const img=new Image();
+  await new Promise(r=>{img.onload=r;img.src=url;});
+  URL.revokeObjectURL(url);
+  const cv=document.createElement('canvas');
+  if(document.getElementById('pb-cat').value==='evento'){
+    for(const m of[1280,1024,800,640,480]){
+      const k=Math.min(1,m/Math.max(img.width,img.height));
+      cv.width=Math.round(img.width*k);cv.height=Math.round(img.height*k);
+      cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+      for(const q of[.8,.6,.4]){
+        const b=await new Promise(r=>cv.toBlob(r,'image/webp',q));
+        if(b&&b.size<=PB_MAX_SIZE)return{blob:b,ext:'.webp',size:b.size};
+      }
+    }
+    return{error:'Imagen muy pesada'};
+  }
+  cv.width=256;cv.height=256;
+  cv.getContext('2d').drawImage(img,0,0,256,256);
+  let q=0.85,blob=null,tries=0;
+  do{blob=await new Promise(r=>cv.toBlob(r,'image/webp',q));q=Math.max(0.05,q-0.1);tries++;}
+  while(blob&&blob.size>PB_MAX_SIZE&&tries<12);
+  return{blob,ext:'.webp',size:blob.size};
+}
+
+function PB_setThumb(blob){
+  const thumb=document.getElementById('pb-imgprev');
+  const icon=document.getElementById('pb-img-icon');
+  thumb.src=URL.createObjectURL(blob);
+  thumb.style.display='block';
+  icon.style.display='none';
+}
+
+document.getElementById('pb-img').onchange=function(e){
+  const f=e.target.files[0];if(!f)return;
+  document.getElementById('pb-img')._file=f;
+  PB_img(f);
+};
+async function PB_img(f){
+  const result=await PB_processImg(f);
+  if(result.error)return PB_toast(result.error,'err');
+  PB_setThumb(result.blob);
+  document.getElementById('pb-imgnm').textContent=`${(result.size/1024).toFixed(0)} KB`;
+  document.getElementById('pb-img')._blob=result.blob;
+  document.getElementById('pb-img')._ext=result.ext;
+  PB_toast('Imagen cargada','ok');
+};
+
+async function PB_blobToB64(blob){
+  return new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result.split(',')[1]);fr.readAsDataURL(blob);});
+}
+
+function PB_showMain(){
+  document.getElementById('pb-auth').style.display='none';
+  document.getElementById('pb-main').style.display='block';
+  const h=decodeURIComponent(location.hash.split('#')[2]||'');
+  if(PB_CATS.includes(h))document.getElementById('pb-cat').value=h;
+  PB_catChange();
+}
+
+window.PB_login=async function(){
+  const tel=document.getElementById('pb-lu').value.replace(/\D/g,'');
+  const p=document.getElementById('pb-lp').value;
+  if(!tel||!p)return PB_toast('Completa los campos','warn');
+  const{ok,data}=await PB_fetch('login',{method:'POST',body:JSON.stringify({telefono:tel,password:p})});
+  if(!ok)return PB_toast(data.error||'Error','err');
+  PB_in(tel,data);
+};
+
+function PB_in(tel,d){
+  _PB_tel=tel;_PB_tk=d.token;
+  PB_sck('ap_tel',tel);PB_sck('ap_tk',_PB_tk);
+  if(d.alias)PB_sck('ap_al',d.alias);
+  PB_toast('Bienvenido');
+  PB_showMain();
+}
+
+window.PB_registro=async function(){
+  const tel=document.getElementById('pb-ru').value.replace(/\D/g,'');
+  const p=document.getElementById('pb-rp').value;
+  const p2=document.getElementById('pb-rp2').value;
+  if(!tel||!p)return PB_toast('Completa los campos','warn');
+  if(p!==p2)return PB_toast('Las contrasenas no coinciden','warn');
+  if(p.length<10)return PB_toast('La contrasena necesita 10+ caracteres','warn');
+  const r=await VF1({tipo:_PB_rt,telefono:tel,password:p},PB_toast);
+  if(r)PB_in(tel,r);
+};
+
+window.PB_cambiarPass=async function(){
+  const pa=document.getElementById('pb-cpa').value;
+  const pn=document.getElementById('pb-cpn').value;
+  const pn2=document.getElementById('pb-cpn2').value;
+  if(!pa||!pn)return PB_toast('Completa los campos','warn');
+  if(pn!==pn2)return PB_toast('Las contrasenas nuevas no coinciden','warn');
+  if(pn.length<10)return PB_toast('La nueva contrasena necesita 10+ caracteres','warn');
+  const{ok,data}=await PB_fetch('cambiarPass',{method:'POST',body:JSON.stringify({password:pa,passwordNuevo:pn})});
+  if(!ok)return PB_toast(data.error||'Error','err');
+  _PB_tk=data.token;PB_sck('ap_tk',_PB_tk);
+  ['pb-cpa','pb-cpn','pb-cpn2'].forEach(i=>document.getElementById(i).value='');
+  PB_toast('Contrasena actualizada');
+};
+
+window.PB_cambiarTel=async function(){
+  const tn=document.getElementById('pb-ctn').value.replace(/\D/g,'');
+  const pa=document.getElementById('pb-cta').value;
+  if(!tn||!pa)return PB_toast('Completa los campos','warn');
+  if(!await VF1({tipo:'numero',token:_PB_tk,password:pa,telefonoNuevo:tn},PB_toast))return;
+  ['pb-ctn','pb-cta'].forEach(i=>document.getElementById(i).value='');
+  PB_toast('Cambio solicitado');
+};
+
+window.PB_logout=async function(){
+  await PB_fetch('logout',{method:'POST',body:JSON.stringify({})});
+  PB_dck('ap_tel');PB_dck('ap_tk');
+  _PB_tel=null;_PB_tk=null;
+  location.reload();
+};
+
+function PB_genID(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+
+function PB_buildNB(cat){
+  const G=id=>PB_cl(document.getElementById(id).value).trim();
+  if(cat==='minecraft'){
+    const nm=G('pb-mc-nm');
+    const desc=G('pb-mc-desc');
+    const host=G('pb-mc-host');
+    const port=document.getElementById('pb-mc-port').value.trim();
+    const tipo=document.getElementById('pb-mc-tipo').value;
+    if(!nm||!host||!port)return null;
+    return{NB:`${nm};${desc};${host};${port};${tipo}`,CH:'',CT:''};
+  }
+  if(cat==='localizador'){
+    const nm=G('pb-lz-nm');
+    const tipo=document.getElementById('pb-lz-tipo').value;
+    const hr=G('pb-lz-hr');
+    const ch=document.getElementById('pb-lz-ch').value;
+    const p=PB_ctP(PB_V('pb-lz-ct'));
+    if(!nm||!p)return null;
+    const tipoTag=tipo==='reciclaje'?`reciclaje-${document.getElementById('pb-lz-mat').value}`:tipo;
+    return{NB:`${nm};${tipoTag};${hr}`,CH:ch,CT:PB_CT(p)};
+  }
+  if(cat==='evento'){
+    const r=PB_evTx();
+    if(!r.ok)return null;
+    return{NB:r.nm,CH:'',CT:r.p?PB_CT(r.p):'',md:r.t};
+  }
+  if(cat==='jugadores'){
+    const jg=G('pb-jg-nm');
+    const desc=G('pb-jg-desc');
+    const ch=document.getElementById('pb-jg-ch').value;
+    if(!jg)return null;
+    return{NB:`${jg};${desc}`,CH:ch,CT:''};
+  }
+  return null;
+}
+
+window.PB_enviar=async function(){
+  const cat=document.getElementById('pb-cat').value;
+  if(cat==='localizador'&&!PB_ctP(PB_V('pb-lz-ct'))){PB_flagField('pb-lz-ct');return PB_toast('Falta la ubicacion','warn');}
+  if(cat==='evento'){
+    const r=PB_evTx();
+    if(!r.ml){PB_flagField('pb-ev-ct');return PB_toast('Falta el link de Google Maps','warn');}
+    if(!r.ok)return PB_toast('Completa titulo, descripcion, fecha y hora','warn');
+    if(r.t.length>1024)return PB_toast(`Texto muy largo: ${r.t.length}/1024 letras`,'warn');
+  }
+  const packed=PB_buildNB(cat);
+  if(!packed)return PB_toast('Completa los campos requeridos','warn');
+  if(packed.NB.length>PB_NB_MAX)return PB_toast('Muy Largo','warn');
+  const imgEl=document.getElementById('pb-img');
+  const imgBlob=imgEl._blob;
+  const imgExt=imgEl._ext||'.webp';
+  if(!imgBlob)return PB_flagField('pb-img-thumb');
+  const body={categoria:cat,ID:PB_genID(),NB:packed.NB,PC:'0',CH:packed.CH,CT:packed.CT};
+  if(packed.md)body.md=packed.md;
+  body.imgData=await PB_blobToB64(imgBlob);body.imgExt=imgExt;
+  const btn=document.getElementById('pb-submit');
+  btn.disabled=true;btn.textContent='Enviando...';
+  const{ok,data}=await PB_fetch('enviar',{method:'POST',body:JSON.stringify(body)});
+  btn.disabled=false;btn.textContent='Enviar Solicitud';
+  if(!ok)return PB_toast(data.error||'Error al enviar','err');
+  PB_toast('Solicitud enviada!');
+  PB_resetForm();
+  PB_mainTab('pend');
+};
+
+function PB_flagField(elId){
+  const el=document.getElementById(elId);
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.remove('pb-shake');
+  void el.offsetWidth;
+  el.classList.add('pb-shake');
+  setTimeout(()=>el.classList.remove('pb-shake'),1300);
+}
+
+function PB_resetForm(){
+  ['pb-mc-nm','pb-mc-desc','pb-mc-host','pb-mc-port','pb-lz-nm','pb-lz-hr','pb-lz-ct','pb-jg-nm','pb-jg-desc','pb-ev-nm','pb-ev-desc','pb-ev-ct','pb-ev-lk'].forEach(i=>document.getElementById(i).value='');
+  const fs=document.getElementById('pb-ev-fs');
+  while(fs.children.length>1)fs.lastElementChild.remove();
+  fs.querySelectorAll('input').forEach(i=>i.value='');
+  ['pb-lz-ct','pb-ev-ct'].forEach(i=>{const e=document.getElementById(i+'-h');e.className='fg-hint';e.textContent=PB_HT(i);});
+  document.getElementById('pb-imgnm').textContent='Toca para subir';
+  document.getElementById('pb-img')._file=null;
+  const prev=document.getElementById('pb-imgprev');
+  prev.style.display='none';prev.src='';
+  document.getElementById('pb-img-icon').style.display='';
+  document.getElementById('pb-img')._blob=null;
+  document.getElementById('pb-img')._ext=null;
+}
+
+function PB_extractEntries(node,cat,out){
+  if(Array.isArray(node)){
+    node.forEach(fn=>{
+      if(typeof fn!=='string')return;
+      const mID=fn.match(/ID=([^-]+)/),mNM=fn.match(/NM=([^-]+)/),mCH=fn.match(/CH=([^-]+)/),
+        mCT=fn.match(/CT=([SN][\d.]+[WE][\d.]+)/),mNB=fn.match(/NB=(.+)\.\w+$/);
+      if(!mID||!mNM||!mNB)return;
+      out.push({fn,ID:mID[1],telefono:mNM[1],CH:mCH?mCH[1]:'',CT:mCT?mCT[1]:null,NB:mNB[1],categoria:cat});
+    });
+    return;
+  }
+  if(node&&typeof node==='object')Object.values(node).forEach(v=>PB_extractEntries(v,cat,out));
+}
+
+async function PB_fetchPublicoJson(cat,force){
+  try{
+    const r=await fetch(`${PB_PUBLICO_BASE}/${cat}/data.json`);
+    if(!r.ok)return null;
+    const d=await r.json();
+    return d.galleries||d;
+  }catch{return null;}
+}
+
+async function PB_scanAllLugares(force){
+  const all=[];
+  await Promise.all(PB_CATS.filter(c=>c!=='evento').map(async cat=>{
+    const dj=await PB_fetchPublicoJson(cat,force);
+    if(dj)PB_extractEntries(dj,cat,all);
+  }));
+  return all;
+}
+
+window.PB_loadMisLugares=async function(){
+  const lst=document.getElementById('pb-mis-list');
+  lst.innerHTML='<div class="fg-hint pb-c">Cargando...</div>';
+  const all=await PB_scanAllLugares(true);
+  const mios=all.filter(e=>e.telefono===_PB_tel);
+  if(!mios.length){lst.innerHTML='<div class="fg-hint pb-c">Sin lugares publicados aun</div>';return;}
+  lst.innerHTML='';
+  mios.forEach(e=>{
+    const div=document.createElement('div');div.className='pb-sol-item';
+    const nombre=(e.NB||'').split(';')[0]||e.ID;
+    div.innerHTML=`<div class="pb-sol-info">
+      <div class="nm">${PB_esc(nombre)} <span class="pb-badge apr">Publicado</span></div>
+      <div class="fg-hint">${PB_esc(PB_lzLabel(e.categoria,e.NB))}</div>
+      <div class="pb-sol-acts">
+        <button>Solicitar Borrado</button>
+      </div>
+    </div>`;
+    div.querySelector('.pb-sol-acts button').onclick=()=>PB_solicitarBorrado(e.ID);
+    lst.appendChild(div);
+  });
+};
+
+window.PB_solicitarBorrado=async function(ID){
+  if(!confirm(`Solicitar el borrado de este lugar? Un admin debe confirmarlo.`))return;
+  const{ok,data}=await PB_fetch('solicitarBorrado',{method:'POST',body:JSON.stringify({ID})});
+  if(!ok)return PB_toast(data.error||'Error','err');
+  PB_toast('Borrado solicitado');
+};
+
+window.PB_loadSolicitudes=async function(){
+  const lst=document.getElementById('pb-sol-list');
+  lst.innerHTML='<div class="fg-hint pb-c">Cargando...</div>';
+  const{ok,data}=await PB_fetch('historial',{method:'POST',body:JSON.stringify({})});
+  if(!ok){lst.innerHTML=`<div class="fg-hint err">${PB_esc(data.error||'Error')}</div>`;return;}
+  const entries=(data.entries||[]).filter(e=>PB_CATS.includes(e.categoria));
+  const tp=data.telPend?`<div class="fg-hint ok pb-c">Cambio de numero pendiente: ${PB_esc(data.telPend)}</div>`:'';
+  if(!entries.length){lst.innerHTML=tp+'<div class="fg-hint pb-c">Sin solicitudes pendientes</div>';return;}
+  lst.innerHTML=tp;
+  const badges={pendiente:'<span class="pb-badge pend">Pendiente</span>',rechazado:'<span class="pb-badge rej">Rechazado</span>'};
+  entries.forEach(e=>{
+    const div=document.createElement('div');div.className='pb-sol-item';
+    const nombre=(e.NB||'').split(';')[0]||e.ID;
+    div.innerHTML=`<div class="pb-sol-info">
+      <div class="nm">${PB_esc(nombre)} ${badges[e.estado]||''}</div>
+      <div class="fg-hint">${PB_esc(PB_lzLabel(e.categoria,e.NB))}</div>
+      ${e.estado==='rechazado'&&e.motivo?`<div class="pb-sol-neg">${PB_esc(e.motivo)}</div>`:''}
+    </div>`;
+    lst.appendChild(div);
+  });
+};
+
+if(_PB_tel&&_PB_tk){
+  PB_fetch('historial',{method:'POST',body:JSON.stringify({})})
+    .then(({ok})=>{if(ok)PB_showMain();else{PB_dck('ap_tel');PB_dck('ap_tk');_PB_tel=null;_PB_tk=null;}});
+}
+})();
+</script>

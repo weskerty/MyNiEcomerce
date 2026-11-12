@@ -5,15 +5,15 @@
 <meta property="og:site_name" content="Che Agana">
 <meta property="og:title" content="Mensaje Oculto en Imagen">
 <meta property="og:description" content="🕵️ Mensaje Oculto Esconde un mensaje o un archivo dentro de un texto, una foto o un video que se ven normales. Con contrasena queda cifrado (AES256). Todo">
-<meta property="og:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/NM%3Du1e73ed63ed-ID%3DMensaje_Oculto_en_Imagen-NB%3DMensaje%20Oculto%20en%20Imagen.webp">
+<meta property="og:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/NM%3Du1e73ed63ed-ID%3DMensaje_Oculto_en_Imagen-NB%3DMensaje%20Oculto%20en%20Imagen.webp">
 <meta property="og:url" content="https://cheagana.com/A/Mensaje_Oculto_en_Imagen">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Mensaje Oculto en Imagen">
 <meta name="twitter:description" content="🕵️ Mensaje Oculto Esconde un mensaje o un archivo dentro de un texto, una foto o un video que se ven normales. Con contrasena queda cifrado (AES256). Todo">
-<meta name="twitter:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/NM%3Du1e73ed63ed-ID%3DMensaje_Oculto_en_Imagen-NB%3DMensaje%20Oculto%20en%20Imagen.webp">
+<meta name="twitter:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/NM%3Du1e73ed63ed-ID%3DMensaje_Oculto_en_Imagen-NB%3DMensaje%20Oculto%20en%20Imagen.webp">
 <link rel="canonical" href="https://cheagana.com/A/Mensaje_Oculto_en_Imagen">
 <base href="/">
-<script src="/web/scripts/Otros/HTMLCoreInyector.js" data-r="web/otros/Archivos/Dinamico/🧩 Apps/📺 Media/NM=u1e73ed63ed-ID=Mensaje_Oculto_en_Imagen-NB=Mensaje Oculto en Imagen.html"></script>
+<script src="/web/js/HTMLCoreInyector.js" data-r="web/🧩 Apps/📺 Media/NM=u1e73ed63ed-ID=Mensaje_Oculto_en_Imagen-NB=Mensaje Oculto en Imagen.html"></script>
 </head><body><div class="markdown-content"><div style="text-align:center;position:relative;padding-top:0;margin-top:0">
 <style>
 .mo-st{color:rgba(255,255,255,.75);font-size:1.3em;font-weight:600;margin:10px 0 6px}
@@ -77,7 +77,7 @@ const MO_MG=TE.encode('CHAGANA1'),MO_SL=96,MO_DL=24,MO_MX=1280;
 let MO_PF=null,MO_SF=null,MO_RF=null,MO_U=[];
 const MO_CAT=(...a)=>{const r=new Uint8Array(a.reduce((n,x)=>n+x.length,0));let o=0;for(const x of a){r.set(x,o);o+=x.length}return r};
 const MO_EL=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
-const MO_LIB=()=>import('/web/scripts/Otros/Steganography/src/text.js');
+const MO_LIB=()=>import('/web/js/lib/Steganography/src/text.js');
 async function MO_Z(b,d){return new Uint8Array(await new Response(new Blob([b]).stream().pipeThrough(new(d?DecompressionStream:CompressionStream)('deflate-raw'))).arrayBuffer())}
 async function MO_K(p,s){const k=await crypto.subtle.importKey('raw',TE.encode(p),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt:s,iterations:200000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt'])}
 async function MO_PK(t,f,pw){

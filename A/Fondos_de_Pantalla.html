@@ -5,15 +5,15 @@
 <meta property="og:site_name" content="Che Agana">
 <meta property="og:title" content="Fondos de Pantalla">
 <meta property="og:description" content="🏠 🔍 Formato: 🖥️ 📱 🌿 Nature 🌑 Dark 🎨 Vector 🚗 Autos 🌌 Galaxy ← Volver a Aplicaciones">
-<meta property="og:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/NM%3Du1e73ed63ed-ID%3DFondos_de_Pantalla-NB%3DFondos%20de%20Pantalla.webp">
+<meta property="og:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/NM%3Du1e73ed63ed-ID%3DFondos_de_Pantalla-NB%3DFondos%20de%20Pantalla.webp">
 <meta property="og:url" content="https://cheagana.com/A/Fondos_de_Pantalla">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Fondos de Pantalla">
 <meta name="twitter:description" content="🏠 🔍 Formato: 🖥️ 📱 🌿 Nature 🌑 Dark 🎨 Vector 🚗 Autos 🌌 Galaxy ← Volver a Aplicaciones">
-<meta name="twitter:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/NM%3Du1e73ed63ed-ID%3DFondos_de_Pantalla-NB%3DFondos%20de%20Pantalla.webp">
+<meta name="twitter:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/NM%3Du1e73ed63ed-ID%3DFondos_de_Pantalla-NB%3DFondos%20de%20Pantalla.webp">
 <link rel="canonical" href="https://cheagana.com/A/Fondos_de_Pantalla">
 <base href="/">
-<script src="/web/scripts/Otros/HTMLCoreInyector.js" data-r="web/otros/Archivos/Dinamico/🧩 Apps/📺 Media/NM=u1e73ed63ed-ID=Fondos_de_Pantalla-NB=Fondos de Pantalla.html"></script>
+<script src="/web/js/HTMLCoreInyector.js" data-r="web/🧩 Apps/📺 Media/NM=u1e73ed63ed-ID=Fondos_de_Pantalla-NB=Fondos de Pantalla.html"></script>
 </head><body><div class="markdown-content"><div style="text-align:center;position:relative;padding-top:0;margin-top:0">
 <style>
 ._ic{display:block;margin:0 auto 8px}
@@ -89,7 +89,7 @@
   const gEl=document.getElementById('wp-grid');
   const pgEl=document.getElementById('wp-pg');
   let SW=null,gfP=null;
-  const GF1=()=>window.GridFit?Promise.resolve(window.GridFit):gfP||(gfP=new Promise(r=>{const s=document.createElement('script');s.src='web/scripts/Otros/GridFit.js';s.onload=s.onerror=()=>r(window.GridFit);document.head.appendChild(s)}));
+  const GF1=()=>window.GridFit?Promise.resolve(window.GridFit):gfP||(gfP=new Promise(r=>{const s=document.createElement('script');s.src='web/js/lib/GridFit.js';s.onload=s.onerror=()=>r(window.GridFit);document.head.appendChild(s)}));
   const stEl=document.getElementById('wp-st');
   const qEl=document.getElementById('wp-q');
   const tEl=document.getElementById('wp-toast');
@@ -98,7 +98,7 @@
   const mvEl=document.getElementById('wp-mv');
   let _tt;
 
-  if(window.__CFG){WA=window.__CFG.waitAnim||'';}else{fetch('web/scripts/config.json').then(r=>r.ok?r.json():{}).then(c=>{WA=c.waitAnim||'';}).catch(()=>{});}
+  if(window.__CFG){WA=window.__CFG.waitAnim||'';}else{fetch('web/js/plugins/config.json').then(r=>r.ok?r.json():{}).then(c=>{WA=c.waitAnim||'';}).catch(()=>{});}
 
   function toast(m){tEl.textContent=m;tEl.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>tEl.classList.remove('show'),2500);}
   function ST(m){if(stEl)stEl.textContent=m;}
@@ -236,5 +236,5 @@
   doSearch('nature landscape',1);
 })();
 </script>
-<p><a href="web/otros/Archivos/HTML/apps.html" class="back-button">← Volver a Aplicaciones</a></p>
+<p><a href="web/paginas/apps.html" class="back-button">← Volver a Aplicaciones</a></p>
 </div></div></body></html>

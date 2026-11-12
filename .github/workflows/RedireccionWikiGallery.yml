@@ -3,7 +3,7 @@ name: BOT Reddireccionador a Wikipedia en Galeria Incompletas
 on:
   push:
     paths:
-      - 'web/otros/Archivos/Imagenes/Ambiente/Extintos/**'
+      - 'web/adjuntos/T90E7EOM/Extintos/**'
   workflow_dispatch:
 
 permissions:
@@ -90,7 +90,7 @@ jobs:
                   return False
           
           def process_extintos_folder():
-              base_path = Path("web", "otros", "Archivos", "Imagenes", "Ambiente", "Extintos")
+              base_path = Path("web", "adjuntos", "T90E7EOM", "Extintos")
               
               if not base_path.exists():
                   print(f"Directory not found: {base_path}")
@@ -141,6 +141,6 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add web/otros/Archivos/Imagenes/Ambiente/Extintos/*.html
+          git add web/adjuntos/T90E7EOM/Extintos/*.html
           git diff --staged --quiet || git commit -m "Redireccion a Wikipedia por falta de .md/html"
           git push

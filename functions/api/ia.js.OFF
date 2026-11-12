@@ -36,7 +36,7 @@ async function checkRateLimit(ip,context){
 
 async function getCatalogo(origin,context){
   const cache=caches.default;
-  const key=new Request(origin+'/web/Dinamico/all.txt');
+  const key=new Request(origin+'/web/tienda/all.txt');
   const hit=await cache.match(key);
   if(hit)return hit.text();
   const r=await fetchTO(key.url);

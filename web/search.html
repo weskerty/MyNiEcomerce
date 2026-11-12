@@ -48,14 +48,14 @@
 
 <script>
 (function(){
-const DJ='web/Dinamico/data.json';
+const DJ='web/tienda/data.json';
 const EXTRA_DJ=[
-'web/otros/Archivos/Dinamico/Blogs/data.json',
-'web/otros/Archivos/Dinamico/🎮 Juegos/data.json',
-'web/otros/Archivos/Dinamico/🧩 Apps/data.json'
+'web/Blogs/data.json',
+'web/🎮 Juegos/data.json',
+'web/🧩 Apps/data.json'
 ];
 const MS_CDN='https://cdn.jsdelivr.net/npm/minisearch@7/dist/umd/index.js';
-const MS_LOCAL='web/scripts/Otros/MiniSearch/index.js';
+const MS_LOCAL='web/js/lib/MiniSearch/index.js';
 const PAGE=40;
 
 let ms,allItems=[],ready=false,curList=[],curPg=0,dbt=null,_idc=0,curFlat=false;
@@ -79,7 +79,7 @@ function gHA(){
 }
 
 let gfP=null;
-const GF1=()=>window.GridFit?Promise.resolve(window.GridFit):gfP||(gfP=new Promise(r=>{const s=document.createElement('script');s.src='web/scripts/Otros/GridFit.js';s.onload=s.onerror=()=>r(window.GridFit);document.head.appendChild(s)}));
+const GF1=()=>window.GridFit?Promise.resolve(window.GridFit):gfP||(gfP=new Promise(r=>{const s=document.createElement('script');s.src='web/js/lib/GridFit.js';s.onload=s.onerror=()=>r(window.GridFit);document.head.appendChild(s)}));
 function loadMS(){
   return window.MiniSearch?Promise.resolve():new Promise(res=>{
     const s=document.createElement('script');

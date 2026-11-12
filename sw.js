@@ -1,48 +1,48 @@
-const V='v194';
-const N_ICON='web/otros/Archivos/Imagenes/Permanente/ICONS/ICON.png';
-const N_ICO='web/otros/Archivos/Imagenes/Permanente/ICONS/NOTIFY-MNCM-96x96.png';
-const N_BANNER='web/otros/Archivos/Imagenes/Permanente/ICONS/notif-banner.avif';
-const FRASES_HTML='web/otros/Archivos/DataBase/Libros/cuentos.html';
+const V='v196';
+const N_ICON='web/recursos/iconos/ICON.png';
+const N_ICO='web/recursos/iconos/NOTIFY-MNCM-96x96.png';
+const N_BANNER='web/recursos/iconos/notif-banner.avif';
+const FRASES_HTML='web/recursos/libros/cuentos.html';
 const PRE=[
 'index.html',
-'web/scripts/Otros/core.js',
+'web/js/core.js',
 'web/es.html',
 'web/estilo.css',
 'web/search.html',
 'web/blogs.html',
-'web/otros/Archivos/HTML/centralPage.html',
-'web/otros/Archivos/HTML/apps.html',
-'web/otros/Archivos/HTML/Grupos.html',
-'web/scripts/Galerias.js',
-'web/scripts/chatBanner&Share.js',
+'web/paginas/centralPage.html',
+'web/paginas/apps.html',
+'web/paginas/Grupos.html',
+'web/js/plugins/Galerias.js',
+'web/js/plugins/chatBanner&Share.js',
 FRASES_HTML
 ];
 
 
-const PERM_C='10';
+const PERM_C='12';
 const PRE_PERM=[
-'web/otros/Archivos/DataBase/Libros/cuentos.json',
-'web/scripts/Otros/MarkDownIT/markdown-it.min.js',
-'web/scripts/Otros/MarkDownIT/markdownItAnchor.umd.min.js',
-'web/scripts/Otros/MiniSearch/index.js',
-'web/scripts/Otros/Leaflet/leaflet.js',
-'web/scripts/Otros/Leaflet/leaflet.css',
+'web/recursos/libros/cuentos.json',
+'web/js/lib/MarkDownIT/markdown-it.min.js',
+'web/js/lib/MarkDownIT/markdownItAnchor.umd.min.js',
+'web/js/lib/MiniSearch/index.js',
+'web/js/lib/Leaflet/leaflet.js',
+'web/js/lib/Leaflet/leaflet.css',
 'web/404.html',
-'web/favicon.ico',
-'web/otros/Archivos/Imagenes/wallpaper.webp',
-'web/otros/Archivos/Fuentes/Comfortaa/font.woff2',
-'web/otros/Archivos/Fuentes/Ubuntu/UbuntuSans-Regular.woff2',
-'web/otros/Archivos/Fuentes/Emojis/FluentEmojiColor.woff2',
-'web/otros/Archivos/Imagenes/Permanente/404.avif',
-'web/otros/Archivos/Imagenes/Permanente/wait.avif',
-'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/first_quarter_moon_face_animated.avif',
-'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/sun_with_face_animated.avif',
-'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg',
-'web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg',
-'web/otros/Archivos/Imagenes/Permanente/ICONS/Blogs.png',
-'web/otros/Archivos/Imagenes/Permanente/ICONS/Apps.png',
-'web/otros/Archivos/Imagenes/Permanente/ICONS/CatSmile.png',
-'web/otros/Archivos/Imagenes/Permanente/ICONS/Cesta.png',
+'web/recursos/favicon.ico',
+'web/recursos/fondos/wallpaper.webp',
+'web/recursos/fuentes/Comfortaa/font.woff2',
+'web/recursos/fuentes/Ubuntu/UbuntuSans-Regular.woff2',
+'web/recursos/fuentes/Emojis/FluentEmojiColor.woff2',
+'web/recursos/404.avif',
+'web/recursos/wait.avif',
+'web/recursos/svg/chatbanner/first_quarter_moon_face_animated.avif',
+'web/recursos/svg/chatbanner/sun_with_face_animated.avif',
+'web/recursos/svg/chatbanner/TelegramLogo.svg',
+'web/recursos/svg/chatbanner/WhatsAppLogo.svg',
+'web/recursos/iconos/Blogs.png',
+'web/recursos/iconos/Apps.png',
+'web/recursos/iconos/CatSmile.png',
+'web/recursos/iconos/Cesta.png',
 N_ICON,
 N_ICO,
 N_BANNER
@@ -61,7 +61,7 @@ const DJ=/\/(data|time)\.json(\?|$)/;
 const TEMP_C=V+'-tmp';
 const SHARE_C='share-pending';
 const SHARE_KEY='__share_data';
-const APPS_URL='web/otros/Archivos/HTML/apps.html';
+const APPS_URL='web/paginas/apps.html';
 const OPFS_DIR='notify';
 const DLA_C='dla-fetch';
 const DLA_TTL=600000;

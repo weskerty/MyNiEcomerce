@@ -6,16 +6,16 @@
 /sw.js
   Cache-Control: no-cache
 
-/web/Dinamico/data.json
+/web/tienda/data.json
   Cache-Control: no-cache
 
-/web/LiteMode/*
+/web/lite/*
   X-Robots-Tag: noindex
 
-/web/Pruebas/*
+/web/pruebas/*
   X-Robots-Tag: noindex
 
-/web/scripts/*
+/web/js/*
   X-Robots-Tag: noindex
 
 /web/es

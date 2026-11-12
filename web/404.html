@@ -8,8 +8,8 @@
 <div class="PG_404">
  <p>Nde Tavy Kp No tenes Saldo 😢</p>
  <p>o Peor aun... Lo que Buscas ya se Acabo</p>
- <img src="web/otros/Archivos/Imagenes/Permanente/404.avif" alt="DinoTriste">
- <a href="web/otros/Archivos/HTML/centralPage.html" class="view-all-button">Volver al Inicio</a>
+ <img src="web/recursos/404.avif" alt="DinoTriste">
+ <a href="web/paginas/centralPage.html" class="view-all-button">Volver al Inicio</a>
 </div>
 <script>
 (function(){
@@ -31,7 +31,7 @@ function goSearch(u){
 }
 window.__RT=setTimeout(goSearch,5000);
 const E4_ID=(h.match(/(?:ID=|#A\/)(\w+)/)||[])[1];
-if(E4_ID)fetch('web/Dinamico/data.json').then(r=>r.json()).then(d=>{
+if(E4_ID)fetch('web/tienda/data.json').then(r=>r.json()).then(d=>{
   const fl=o=>Object.values(o).flatMap(v=>Array.isArray(v)?v:typeof v==='object'&&v?fl(v):[]);
   const p=fl(d.galleries||{}).find(s=>typeof s==='string'&&(s.match(/ID=(\w+)/)||[])[1]===E4_ID);
   const u=p&&p.replace(/\.[^.]+$/,'.html');
@@ -44,7 +44,7 @@ E4_GO();
 const bgEl=document.getElementById('bg');
 const bgPrev=bgEl?.getAttribute('style');
 if(bgEl){
-  bgEl.style.backgroundImage="url('web/otros/Archivos/Imagenes/Permanente/PS2Fail.avif')";
+  bgEl.style.backgroundImage="url('web/recursos/PS2Fail.avif')";
   bgEl.style.backgroundSize='cover';
   bgEl.style.backgroundPosition='center';
 }

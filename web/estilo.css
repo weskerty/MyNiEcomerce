@@ -1,6 +1,6 @@
-@font-face{font-family:'Comfortaa';src:url('otros/Archivos/Fuentes/Comfortaa/font.woff2') format('woff2');font-display:swap}
-@font-face{font-family:'Ubuntu';src:url('otros/Archivos/Fuentes/Ubuntu/UbuntuSans-Regular.woff2') format('woff2');font-display:swap}
-@font-face{font-family:'Fluent Emoji Color';src:url('otros/Archivos/Fuentes/Emojis/FluentEmojiColor.woff2') format('woff2') tech(color-COLRv1);font-display:swap}
+@font-face{font-family:'Comfortaa';src:url('recursos/fuentes/Comfortaa/font.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Ubuntu';src:url('recursos/fuentes/Ubuntu/UbuntuSans-Regular.woff2') format('woff2');font-display:swap}
+@font-face{font-family:'Fluent Emoji Color';src:url('recursos/fuentes/Emojis/FluentEmojiColor.woff2') format('woff2') tech(color-COLRv1);font-display:swap}
 
 :root{
 --font:'Ubuntu',system-ui,Roboto,'Fluent Emoji Color',sans-serif;
@@ -70,7 +70,7 @@ button,a,label,input{-webkit-tap-highlight-color:transparent}
 body{margin:0;color:#fff;background:#000;font-family:var(--font);font-size:17px;overscroll-behavior-y:none;line-height:1.6}
 body.mob{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 body.mob .sel,body.mob .sel *{user-select:text;-webkit-user-select:text}
-body::before{content:"";position:fixed;inset:0;height:110vh;z-index:-1;background:url('otros/Archivos/Imagenes/wallpaper.webp') no-repeat center/cover;transform:translateZ(0);will-change:transform}
+body::before{content:"";position:fixed;inset:0;height:110vh;z-index:-1;background:url('recursos/fondos/wallpaper.webp') no-repeat center/cover;transform:translateZ(0);will-change:transform}
 #bg{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;z-index:-1;background-size:cover;background-position:center}
 .hide{display:none}
 video#bg-video{position:fixed;top:0;left:0;width:100%;height:100vh;height:100lvh;object-fit:cover;z-index:-1;will-change:transform}

@@ -13,7 +13,7 @@
 
 <link rel="canonical" href="https://cheagana.com/A/Actividades">
 <base href="/">
-<script src="/web/scripts/Otros/HTMLCoreInyector.js" data-r="web/otros/Archivos/HTML/Grupos.html"></script>
+<script src="/web/js/HTMLCoreInyector.js" data-r="web/paginas/Grupos.html"></script>
 </head><body><div class="markdown-content"><div id="rv-hd2">
   <h2>📰 Novedades</h2>
   <a id="rv-rss-btn" class="lk lk-rss" href="/api/rss?url=telegram%2Fchannel%2Fcheagana" target="_blank" rel="noopener noreferrer" title="Suscribirse al feed RSS">RSS</a>
@@ -31,7 +31,7 @@
     <div id="AG_M1" hidden></div>
   </div>
 </div>
-<a href="#web/otros/Archivos/HTML/AgregarPublico.html#evento" class="view-all-button" id="AG_SP1">➕ Se parte, publica tu evento</a>
+<a href="#web/paginas/AgregarPublico.html#evento" class="view-all-button" id="AG_SP1">➕ Se parte, publica tu evento</a>
 
 <dialog id="rv-ov" class="DX1">
   <button id="rv-x" data-x="1" onclick="rvClose()">✕</button>
@@ -174,7 +174,7 @@ function AG_X(tag,cls,txt){const e=document.createElement(tag);if(cls)e.classNam
 
 const AG=document.getElementById('AG1'),AG_C=document.getElementById('AG_C1'),AG_T=document.getElementById('AG_T1'),AG_M=document.getElementById('AG_M1'),FH=document.getElementById('rv-fh');
 const AG_MS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Setiembre','Octubre','Noviembre','Diciembre'];
-const LF_L='web/scripts/Otros/Leaflet/',LF_C='https://cdn.jsdelivr.net/npm/leaflet@1/dist/';
+const LF_L='web/js/lib/Leaflet/',LF_C='https://cdn.jsdelivr.net/npm/leaflet@1/dist/';
 const AG_AD=(src,ok,fb)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=fb;document.head.appendChild(s);};
 let PU1;
 const EVM=new Map();
@@ -208,7 +208,7 @@ function AG_LF(){
   });
 }
 
-function AG_PU(){return PU1??=window.DOMPurify?Promise.resolve():new Promise(ok=>AG_AD('web/scripts/Otros/DOMPurify/purify.min.js',ok,()=>AG_AD('https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js',ok,ok)));}
+function AG_PU(){return PU1??=window.DOMPurify?Promise.resolve():new Promise(ok=>AG_AD('web/js/lib/DOMPurify/purify.min.js',ok,()=>AG_AD('https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js',ok,ok)));}
 
 function AG_G(e,x){
   const z=n=>String(n).padStart(2,'0'),F=x=>`${x.getFullYear()}${z(x.getMonth()+1)}${z(x.getDate())}`,U=x=>`${F(x)}T${z(x.getHours())}${z(x.getMinutes())}00`;
@@ -366,7 +366,7 @@ if(!prev)return notify(null);
 const D=s=>s.replace(/&(#\\d+|[a-z]+);/g,(m,e)=>e[0]==='#'?String.fromCodePoint(e.slice(1)):{amp:'&',lt:'<',gt:'>',quot:'"',apos:"'"}[e]||m);
 await Promise.all(its.filter(s=>N(s)>prev).map(s=>{
 const t=s.match(/<title>([^<]+)<\\/title>/),i=s.match(/(?:poster|&lt;img src)=&quot;(https:\\/\\/[^&]+)&quot;/);
-return notify({title:'Nueva actividad \\uD83D\\uDCC5',body:t?D(t[1]):'Nueva actividad',...(i?{image:i[1]}:{}),tag:G(s),url:'${location.origin}/#web/otros/Archivos/HTML/Grupos.html'});
+return notify({title:'Nueva actividad \\uD83D\\uDCC5',body:t?D(t[1]):'Nueva actividad',...(i?{image:i[1]}:{}),tag:G(s),url:'${location.origin}/#web/paginas/Grupos.html'});
 }));
 })();`;
 
@@ -444,7 +444,7 @@ wOPFS();
   <a href="https://whatsapp.com/channel/0029Va8x68H0lwglgVgI0f38" class="BOTON-M2" title="WhatsApp">
     <div class="BOTON-M3">  
       <div class="BOTON-M4">
-        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg" alt="WhatsAppChannel">
+        <img src="web/recursos/svg/chatbanner/WhatsAppLogo.svg" alt="WhatsAppChannel">
       </div>
       <p class="BOTON-M5">WhatsApp</p>
     </div>
@@ -453,7 +453,7 @@ wOPFS();
  <a href="https://t.me/cheagana" class="BOTON-M2" title="Telegram">
     <div class="BOTON-M3">
       <div class="BOTON-M4">
-        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg" alt="TelegramChannel">
+        <img src="web/recursos/svg/chatbanner/TelegramLogo.svg" alt="TelegramChannel">
       </div>
       <p class="BOTON-M5">Telegram</p>
     </div>
@@ -462,7 +462,7 @@ wOPFS();
     <a href="https://www.instagram.com/cheagana" class="BOTON-M2" title="Instagram">
     <div class="BOTON-M3">
       <div class="BOTON-M4">
-        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/instagram-2016-logo-svgrepo-com.svg" alt="Instagram">
+        <img src="web/recursos/svg/instagram-2016-logo-svgrepo-com.svg" alt="Instagram">
       </div>
       <p class="BOTON-M5">Instagram</p>
     </div>
@@ -471,7 +471,7 @@ wOPFS();
   <a href="https://www.facebook.com/yoganopy" class="BOTON-M2" title="Facebook">
     <div class="BOTON-M3">
       <div class="BOTON-M4">
-        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/facebook-1-svgrepo-com.svg" alt="GitHub">
+        <img src="web/recursos/svg/facebook-1-svgrepo-com.svg" alt="GitHub">
       </div>
       <p class="BOTON-M5">Facebook</p>
     </div>
@@ -481,7 +481,7 @@ wOPFS();
   <a href="https://www.tiktok.com/@cheagana" class="BOTON-M2" title="TikTok">
     <div class="BOTON-M3">
       <div class="BOTON-M4">
-        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/tiktok-svgrepo-com.svg" alt="Tiktok">
+        <img src="web/recursos/svg/tiktok-svgrepo-com.svg" alt="Tiktok">
       </div>
       <p class="BOTON-M5">Tiktok</p>
     </div>
@@ -573,7 +573,7 @@ wOPFS();
   <a href="https://chat.whatsapp.com/FUCooyRJivk6CTbhEEwvf4" class="BOTON-M2" title="WhatsApp">
     <div class="BOTON-M3">  
       <div class="BOTON-M4">
-        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/WhatsAppLogo.svg" alt="WhatsAppChannel">
+        <img src="web/recursos/svg/chatbanner/WhatsAppLogo.svg" alt="WhatsAppChannel">
       </div>
       <p class="BOTON-M5">WhatsApp</p>
     </div>
@@ -582,7 +582,7 @@ wOPFS();
  <a href="https://t.me/+mqC7FGO7GOAzY2Qx" class="BOTON-M2" title="Telegram">
     <div class="BOTON-M3">
       <div class="BOTON-M4">
-        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/ChatBanner/TelegramLogo.svg" alt="TelegramChannel">
+        <img src="web/recursos/svg/chatbanner/TelegramLogo.svg" alt="TelegramChannel">
       </div>
       <p class="BOTON-M5">Telegram</p>
     </div>
@@ -619,7 +619,7 @@ wOPFS();
   <a href="https://stt.gg/6GDXDahB" class="BOTON-M2" title="Stoat">
     <div class="BOTON-M3">  
       <div class="BOTON-M4">
-        <img src="web/otros/Archivos/Imagenes/Permanente/SVG/stoat.png" alt="Stoat">
+        <img src="web/recursos/svg/stoat.png" alt="Stoat">
       </div>
       <p class="BOTON-M5">Stoat</p>
     </div>

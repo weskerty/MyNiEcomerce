@@ -3,7 +3,7 @@
 
 ### SPA sencillo pero veloz
 
-Tamaño HTML/CSS/JS: 5.2MB · Media: 37.1MB · Total: 46.0MB
+Tamaño HTML/CSS/JS: 5.1MB · Media: 33.6MB · Total: 42.1MB
 
 **Uso actual:** expositor de artículos. Para que gente con interes ambiental levante sus tiendas ecologicas facilmente.
 
@@ -17,14 +17,14 @@ Puede cargar JS y CSS dinámicamente desde cada artículo (útil para incrustar 
 Si querés replicarlo:
 
 **SPA:**  
-[core.js](web/scripts/Otros/core.js)
+[core.js](web/js/core.js)
 
 ---
 
 ### Funcionamiento mínimo
 
 - [index.html](/index.html) → carga `core.js`, MDI, etc.  
-- [core.js](/web/scripts/Otros/core.js) → SPA, ruta configurable desde `index`  
+- [core.js](/web/js/core.js) → SPA, ruta configurable desde `index`  
 - [es.html](/web/es.html) → primera página que carga `core.js`  
 - [estilo.css](/web/estilo.css) → tema de la web
 
@@ -34,7 +34,7 @@ Con solo esos 3 archivos ya tenés una página dinámica funcional. Desde `es.ht
 
 ### Uso avanzado
 
-En `web/otros/scripts/` existe `list.json`, donde se define la lista de plugins que se cargan junto a `core.js`. Estos scripts permanecen en toda la navegacion. 
+En el app-config de `index.html` (`plugins`) se define la lista de plugins de `web/js/plugins/` que se cargan junto a `core.js`. Estos scripts permanecen en toda la navegacion. 
 
 Ejemplo: galerías con Swiper. Permite agrupar imágenes Markdown dentro de:
 
@@ -45,9 +45,9 @@ O cargarlas desde `data.json` (ver `POS/scripts/converter.js` o workflow de gale
 PWA
 sw.js con notificaciones dinamicas como suscripcion de cada contenido dinamico (Puede ser inseguro depende de lo que tu mismo generes)
 
-Ver [Notificaciones RSS](/web/otros/Archivos/HTML/Grupos.html) como lo guarda en notify/script.js Ver tambien plugin de core.js install.js e install.md 
+Ver [Notificaciones RSS](/web/paginas/Grupos.html) como lo guarda en notify/script.js Ver tambien plugin de core.js install.js e install.md 
 
-Resuscripcion a la mierda de PWA de iOS en [centralPage](/web/otros/Archivos/HTML/centralPage.html) 
+Resuscripcion a la mierda de PWA de iOS en [centralPage](/web/paginas/centralPage.html) 
 
 
 ---

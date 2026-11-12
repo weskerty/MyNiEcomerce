@@ -82,8 +82,8 @@ body.LS1 .BN_PL{width:30px;height:30px;font-size:.9rem}
 <script>
 (function(){
 try{localStorage.getItem('GL1')&&document.body.classList.add('LS1')}catch{}
-const DJ='web/otros/Archivos/Dinamico/Blogs/data.json';
-const TJ='web/otros/Archivos/Dinamico/Blogs/time.json';
+const DJ='web/Blogs/data.json';
+const TJ='web/Blogs/time.json';
 async function BN_FT1(){
   try{return await(await fetch(TJ)).json()}catch(e){return{}}
 }
@@ -149,7 +149,7 @@ async function BN_FR(){
 }
 
 async function BP_1(gr){
-  if(!window.GridFit)await new Promise(r=>{const s=document.createElement('script');s.src='web/scripts/Otros/GridFit.js';s.onload=r;s.onerror=r;document.head.appendChild(s)});
+  if(!window.GridFit)await new Promise(r=>{const s=document.createElement('script');s.src='web/js/lib/GridFit.js';s.onload=r;s.onerror=r;document.head.appendChild(s)});
   return window.GridFit?window.GridFit.itemsPerPage(gr,280,200,16,120):PAGE;
 }
 
@@ -200,7 +200,7 @@ function mkCard(item){
     if(lk){a.href=item.link;a.target='_blank';a.rel='noopener noreferrer'}
     const bg=document.createElement('div');
     bg.className='BN_BG';
-    bg.dataset.bg=item.img||'web/otros/Archivos/Imagenes/Permanente/VacioFallback.jpg';
+    bg.dataset.bg=item.img||'web/recursos/VacioFallback.jpg';
     if(item.vid){
       const pl=document.createElement('button');pl.className='BN_PL';pl.textContent='▶';pl.ariaLabel='Reproducir';
       pl.onclick=e=>{
@@ -313,7 +313,7 @@ if(!document.getElementById('bl-gr'))return;
 const OPFS_S=`const RUN=true;
 if(!RUN)return;
 return(async()=>{
-const R=await fetch('web/otros/Archivos/Dinamico/Blogs/data.json',{cache:'no-store'});
+const R=await fetch('web/Blogs/data.json',{cache:'no-store'});
 if(!R.ok)return notify(null);
 const txt=await R.text();
 const root=await self.navigator.storage.getDirectory();
@@ -373,7 +373,7 @@ if(!window.__BN0){window.__BN0=1;document.addEventListener('contentLoaded',BN_ON
 (async()=>{
 const btn=document.getElementById('nt-btn');
 if(!btn)return;
-if(!window.PS1)await new Promise(r=>{const s=document.createElement('script');s.src='web/scripts/Otros/Push.js';s.onload=s.onerror=r;document.head.appendChild(s)});
+if(!window.PS1)await new Promise(r=>{const s=document.createElement('script');s.src='web/js/lib/Push.js';s.onload=s.onerror=r;document.head.appendChild(s)});
 window.PS1?.(btn);
 })();
 </script>

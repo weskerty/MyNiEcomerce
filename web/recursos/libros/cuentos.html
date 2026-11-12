@@ -1,0 +1,71 @@
+<style data-content>
+#FD_wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;padding:24px;max-width:600px;margin:0 auto}
+#FD_wrap img{max-width:100%;border-radius:12px}
+#FD_credito{font-size:.8em;opacity:.7;text-decoration:none;color:inherit}
+#FD_credito:hover{text-decoration:underline}
+</style>
+
+<div id="FD_wrap">
+<h1 id="FD_titulo"></h1>
+<p id="FD_descripcion"></p>
+<img id="FD_imagen" src="" alt="">
+<a id="FD_credito" href="" target="_blank" rel="noopener"></a>
+</div>
+
+<script>
+var FD_base="web/recursos/libros/";
+var FD_LS_KEY="fd_cuento";
+var FD_TTL=23*60*60*1000;
+
+function FD_getState(){
+  try{
+    var s=JSON.parse(localStorage.getItem(FD_LS_KEY));
+    if(s&&typeof s.id==="number"&&typeof s.exp==="number"&&Array.isArray(s.seen))return s;
+  }catch(e){}
+  return null;
+}
+
+function FD_pick(cuentos,state){
+  var now=Date.now();
+  if(state&&now<state.exp){
+    var actual=cuentos.find(function(c){return c.id===state.id});
+    if(actual)return{cuento:actual,state:state};
+  }
+  var seen=state?state.seen:[];
+  var candidatos=cuentos.filter(function(c){return seen.indexOf(c.id)===-1});
+  if(candidatos.length===0){
+    seen=[];
+    candidatos=cuentos;
+  }
+  var elegido=candidatos[Math.floor(Math.random()*candidatos.length)];
+  var nuevoSeen=seen.concat([elegido.id]);
+  var nuevoState={id:elegido.id,exp:now+FD_TTL,seen:nuevoSeen};
+  localStorage.setItem(FD_LS_KEY,JSON.stringify(nuevoState));
+  return{cuento:elegido,state:nuevoState};
+}
+
+fetch(FD_base+"cuentos.json")
+  .then(function(r){return r.json()})
+  .then(function(cuentos){
+    var state=FD_getState();
+    var r=FD_pick(cuentos,state);
+    var c=r.cuento;
+    document.getElementById("FD_titulo").textContent=c.titulo;
+    document.getElementById("FD_imagen").src=FD_base+c.imagen;
+    document.getElementById("FD_imagen").alt=c.titulo;
+    document.getElementById("FD_descripcion").textContent=c.descripcion;
+    var m=c.imagen.match(/^pexels-(.+)-(\d+)\.\w+$/);
+    var cr=document.getElementById("FD_credito");
+    if(m){
+      cr.textContent="Foto por: pexels-"+m[1];
+      cr.href="https://www.pexels.com/photo/"+m[2]+"/";
+    }
+  })
+  .catch(function(e){
+    document.getElementById("FD_wrap").textContent="Hoy no hay Frases 😿 "+e;
+  });
+</script>
+
+<div style="text-align:center;">
+  <a href="web/paginas/apps.html" class="back-button">← Volver al Inicio</a>
+</div>

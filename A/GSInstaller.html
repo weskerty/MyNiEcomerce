@@ -5,15 +5,15 @@
 <meta property="og:site_name" content="Che Agana">
 <meta property="og:title" content="GSInstaller">
 <meta property="og:description" content="Instalador GSI NO PROBADO PELIGROSO USA FASTBOOT Comprobando espacio... Inicia el telefono en modo Fastboot (Power + Volumen abajo) y conecta el cable. Con">
-<meta property="og:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/%F0%9F%92%9A%20Android/NM%3Du1e73ed63ed-ID%3DGSInstaller-NB%3DGSInstaller.avif">
+<meta property="og:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/%F0%9F%92%9A%20Android/NM%3Du1e73ed63ed-ID%3DGSInstaller-NB%3DGSInstaller.avif">
 <meta property="og:url" content="https://cheagana.com/A/GSInstaller">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GSInstaller">
 <meta name="twitter:description" content="Instalador GSI NO PROBADO PELIGROSO USA FASTBOOT Comprobando espacio... Inicia el telefono en modo Fastboot (Power + Volumen abajo) y conecta el cable. Con">
-<meta name="twitter:image" content="https://cheagana.com/web/otros/Archivos/Dinamico/%F0%9F%A7%A9%20Apps/%F0%9F%92%9A%20Android/NM%3Du1e73ed63ed-ID%3DGSInstaller-NB%3DGSInstaller.avif">
+<meta name="twitter:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/%F0%9F%92%9A%20Android/NM%3Du1e73ed63ed-ID%3DGSInstaller-NB%3DGSInstaller.avif">
 <link rel="canonical" href="https://cheagana.com/A/GSInstaller">
 <base href="/">
-<script src="/web/scripts/Otros/HTMLCoreInyector.js" data-r="web/otros/Archivos/Dinamico/🧩 Apps/💚 Android/NM=u1e73ed63ed-ID=GSInstaller-NB=GSInstaller.html"></script>
+<script src="/web/js/HTMLCoreInyector.js" data-r="web/🧩 Apps/💚 Android/NM=u1e73ed63ed-ID=GSInstaller-NB=GSInstaller.html"></script>
 </head><body><div class="markdown-content"><style>
 .gsi-warn{color:#ffb300}
 #gsiLog{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:10px 12px;height:220px;overflow-y:auto;font-size:.8em;white-space:pre-wrap;margin:10px 0;font-family:monospace}
@@ -98,7 +98,7 @@ const ovEl=document.getElementById("gsiStOv"),ovImg=document.getElementById("gsi
 function ovShow1(t){const wa=window.__CFG?.waitAnim;if(wa)ovImg.src=wa;ovTxt.textContent=t||"Cargando...";ovEl.style.display="flex"}
 function ovHide1(){ovEl.style.display="none"}
 ovShow1("Iniciando...");
-const { FastbootDevice } = await import("/web/scripts/Otros/Fastboot/fastboot.mjs");
+const { FastbootDevice } = await import("/web/js/lib/Fastboot/fastboot.mjs");
 const { ZipReader, BlobReader } = await import("https://cdn.jsdelivr.net/npm/@zip.js/zip.js@2.24.0/+esm");
 
 const VPARTS1=["vbmeta","vbmeta_system","vbmeta_vendor","vbmeta_boot"];
