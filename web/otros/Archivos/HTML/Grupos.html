@@ -336,21 +336,23 @@ if(!RUN)return;
 return(async()=>{
 const R=await fetch('/api/rss?url=${encodeURIComponent(RSS_PATH)}',{cache:'no-store'});
 if(!R.ok)return notify(null);
-const x=await R.text();
-const gM=x.match(/<item>[\\s\\S]*?<guid[^>]*>([^<]+)<\\/guid>/);
-if(!gM)return notify(null);
-const guid=gM[1];
+const G=s=>(s.match(/<guid[^>]*>([^<]+)<\\/guid>/)||[,''])[1];
+const N=s=>+(G(s).match(/(\\d+)$/)||[,0])[1];
+const its=(await R.text()).match(/<item>[\\s\\S]*?<\\/item>/g)||[];
+const top=Math.max(0,...its.map(N));
 const root=await self.navigator.storage.getDirectory();
 const dir=await root.getDirectoryHandle('notify',{create:true});
-let prev=null;
-try{prev=await(await(await dir.getFileHandle('rss.state')).getFile()).text();}catch{}
-const wh=await(await dir.getFileHandle('rss.state',{create:true})).createWritable();
-await wh.write(guid);await wh.close();
-if(prev===null||guid===prev)return notify(null);
-const tM=x.match(/<item>[\\s\\S]*?<title>([^<]+)<\\/title>/);
-const title=(tM?tM[1]:'Nueva actividad').replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
-const iM=x.match(/poster=&quot;(https:\\/\\/[^&]+)&quot;/)||x.match(/src=&quot;(https:\\/\\/[^&\\s]+)&quot;/);
-notify({title:'Nueva actividad \\uD83D\\uDCC5',body:title,...(iM?{image:iM[1]}:{}),tag:'rss-'+guid,url:'${location.origin}/#web/otros/Archivos/HTML/Grupos.html'});
+let prev=0;
+try{prev=+await(await(await dir.getFileHandle('Eventos.state')).getFile()).text()||0;}catch{}
+if(!(top>prev))return notify(null);
+const wh=await(await dir.getFileHandle('Eventos.state',{create:true})).createWritable();
+await wh.write(''+top);await wh.close();
+if(!prev)return notify(null);
+const D=s=>s.replace(/&(#\\d+|[a-z]+);/g,(m,e)=>e[0]==='#'?String.fromCodePoint(e.slice(1)):{amp:'&',lt:'<',gt:'>',quot:'"',apos:"'"}[e]||m);
+await Promise.all(its.filter(s=>N(s)>prev).map(s=>{
+const t=s.match(/<title>([^<]+)<\\/title>/),i=s.match(/(?:poster|&lt;img src)=&quot;(https:\\/\\/[^&]+)&quot;/);
+return notify({title:'Nueva actividad \\uD83D\\uDCC5',body:t?D(t[1]):'Nueva actividad',...(i?{image:i[1]}:{}),tag:G(s),url:'${location.origin}/#web/otros/Archivos/HTML/Grupos.html'});
+}));
 })();`;
 
 async function wOPFS(){
