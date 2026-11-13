@@ -230,7 +230,7 @@ function mkCard(item){
 function LB1(bg){
   const url=bg.dataset.bg;
   if(!url)return;
-  bg.style.backgroundImage='url('+encodeURI(url)+')';
+  bg.style.backgroundImage='url("'+url.replace(/["\\]/g,'\\$&')+'")';
   delete bg.dataset.bg;
   if(bg.classList.contains('BN_BG')){
     const im=new Image();

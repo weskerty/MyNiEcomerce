@@ -101,7 +101,7 @@ label.ST_CI{cursor:pointer}
   $('FD_I1').onchange=async e=>{
     const f=e.target.files[0];if(!f)return;
     try{
-      const b=await createImageBitmap(f,{imageOrientation:'from-image'}),k=Math.min(1,2560/Math.max(b.width,b.height)),c=document.createElement('canvas'),x=c.getContext('2d');
+      const b=await createImageBitmap(f),k=Math.min(1,2560/Math.max(b.width,b.height)),c=document.createElement('canvas'),x=c.getContext('2d');
       c.width=Math.round(b.width*k);c.height=Math.round(b.height*k);
       x.fillStyle='#111';x.fillRect(0,0,c.width,c.height);x.drawImage(b,0,0,c.width,c.height);
       const T=t=>new Promise(r=>c.toBlob(r,t,.85));

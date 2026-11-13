@@ -129,7 +129,7 @@ async function lGD(j){
     return JC[j];
   };
   if(window.__DJ?.[j])return aG(window.__DJ[j]);
-  JC[j+'_p']=fetch(j).then(r=>r.json()).then(d=>aG(d.galleries)).catch(()=>{JC[j]=null;IDX[j]=null;delete JC[j+'_p'];return null});
+  JC[j+'_p']=fetch(j).then(r=>r.json()).then(d=>aG(d.galleries)).catch(()=>{delete JC[j+'_p'];return null});
   return JC[j+'_p'];
 }
 window.__GLD=lGD;
@@ -144,11 +144,12 @@ function reqGeo(cb){
   _geoReq=true;
   if(!navigator.geolocation)return;
   navigator.geolocation.getCurrentPosition(
-    p=>{
+    p=>loadGU().then(g=>{
+      if(!g)return;
       _geo={lat:p.coords.latitude,lon:p.coords.longitude};
       _geoCbs.forEach(f=>f(_geo));
       _geoCbs=[];
-    },
+    }),
     ()=>{},
     {maximumAge:600000}
   );
@@ -171,10 +172,10 @@ function sortIdxByCT(idx){
 const _reRender=[];
 function sortAllLoaded(){
   for(const j in IDX)if(IDX[j])sortIdxByCT(IDX[j]);
-  _reRender.forEach(f=>f());
-  _reRender.length=0;
+  _reRender.splice(0).forEach(f=>f());
 }
-loadGU().then(()=>reqGeo(sortAllLoaded));
+function rR(c,cb){if(_geo)return;_reRender.push(cb);const s=c.__stop;c.__stop=()=>{const i=_reRender.indexOf(cb);if(i>-1)_reRender.splice(i,1);if(s)s()}}
+loadGU();reqGeo(sortAllLoaded);
 
 const _wm=new Set();
 function wm(s){if(!s||_wm.has(s))return;_wm.add(s);const i=new Image();i.decoding='async';i.src=s}
@@ -264,9 +265,6 @@ function mkCarousel(c,imgs,isMD,altMap){
   }
 }
 
-function mkSubBtns(c,subcats,onPick){
-  const bar=document.createElement('div');bar.className='BS1';
-  let active=null;
 const _seg=typeof Intl!=='undefined'&&Intl.Segmenter?new Intl.Segmenter('es',{granularity:'grapheme'}):null;
 const _emoRe=/\p{Extended_Pictographic}/u;
 const _EMO_FALLBACK='📦';
@@ -276,6 +274,9 @@ function splitEmoji(name){
   if(g&&_emoRe.test(g))return{emo:g,txt:name.slice(g.length).trim()};
   return{emo:_EMO_FALLBACK,txt:name};
 }
+function mkSubBtns(c,subcats,onPick){
+  const bar=document.createElement('div');bar.className='BS1';
+  let active=null;
   for(const name in subcats){
     if(!subcats[name].length)continue;
     const{emo,txt}=splitEmoji(name);
@@ -302,7 +303,7 @@ function mkGrid(c,imgs){
   const inner=document.createElement('div');inner.className='gi-grid-inner';c.appendChild(inner);
   const row=document.createElement('div');row.className='gi-grid-row';inner.appendChild(row);
   const nav=document.createElement('nav');inner.appendChild(nav);
-  let pg=0,pageSize=PAGE,pages=buildPages(imgs,pageSize),sw=null;
+  let pg=0,pageSize=PAGE,pages=buildPages(imgs,pageSize),sw=null,rdy=false;
   function applyPageSize(n){
     if(n===pageSize)return;
     const f=pages[pg]?pages[pg].start:0;
@@ -312,18 +313,17 @@ function mkGrid(c,imgs){
   const ac=new AbortController();
   function stop(){destroyed=true;ac.abort();if(ro){ro.disconnect();ro=null}}
   loadGF().then(gf=>{
-    if(!gf||destroyed)return;
+    if(destroyed)return;
+    rdy=true;
+    if(!gf){renderPage(0,false);return}
     sw=gf.SW1(row,{sig:ac.signal,n:()=>pages.length,p:()=>pg,go:i=>{const d=i>pg?1:-1;pg=i;renderPage(pg,false,d,1)},
       fill:(el,i)=>{for(let k=pages[i].start;k<pages[i].end;k++)el.appendChild(mkNode(imgs[k],null,null,true))}});
-    nv();sw.pre();
+    const ipp=()=>{const L=document.body.classList.contains('LS1');return gf.itemsPerPage(c,L?LW:ITEM,L?parseFloat(getComputedStyle(c).getPropertyValue('--LR_I'))+2:IH,GAP,120)};
+    pageSize=ipp();pages=buildPages(imgs,pageSize);renderPage(0,false);
     const scheduleCompute=()=>{
       if(pending)return;pending=true;
-      _ric(()=>{pending=false;if(destroyed)return;
-        const L=document.body.classList.contains('LS1');
-        applyPageSize(gf.itemsPerPage(c,L?LW:ITEM,L?parseFloat(getComputedStyle(c).getPropertyValue('--LR_I'))+2:IH,GAP,120));
-      });
+      _ric(()=>{pending=false;if(!destroyed)applyPageSize(ipp())});
     };
-    scheduleCompute();
     ro=new ResizeObserver(scheduleCompute);
     ro.observe(c);
   });
@@ -346,8 +346,7 @@ function mkGrid(c,imgs){
       if(sw)sw.pre();
     }
     if(scroll&&c.scrollIntoView)c.scrollIntoView({behavior:'smooth',block:'start'})}
-  renderPage(0,false);
-  return{setImgs(ni){imgs=ni;pg=0;pages=buildPages(imgs,pageSize);renderPage(0,false)},stop};
+  return{setImgs(ni){imgs=ni;pg=0;pages=buildPages(imgs,pageSize);if(rdy)renderPage(0,false)},stop};
 }
 
 function decorate(c){
@@ -397,7 +396,7 @@ async function pCont(c,isSw){
   if(c.__stop){c.__stop();c.__stop=null}
   if(c.__fetchAC){c.__fetchAC.abort()}
   if(c._subBar){c._subBar.remove();c._subBar=null}
-  const ac=new AbortController();c.__fetchAC=ac;
+  const ac=new AbortController();c.__fetchAC=ac;loadGF();
   const j=c.dataset.jsonPath||DJ,k=c.dataset.galleryKey,fFixed=c.dataset.pathFilter,key=k||c.id.replace(/-gallery|-grid/g,'');
   const needsWait=JC[j]===undefined;
   if(needsWait){
@@ -421,17 +420,9 @@ async function pCont(c,isSw){
     decorate(c);
     const imgs=fFixed?(idx.f[fFixed]||[]):idx._all;
     c.innerHTML='';if(!imgs.length)return;
-    if(isSw){mkCarousel(c,imgs);return}
+    if(isSw){mkCarousel(c,imgs);rR(c,()=>pCont(c,true));return}
     const grid=mkGrid(c,imgs);
-    if(grid){
-      c.__stop=grid.stop;
-      if(!_geo){
-        const cb=()=>{const r=fRaw();grid.setImgs(fFixed?(r.f[fFixed]||[]):r._all)};
-        _reRender.push(cb);
-        const prevStop=c.__stop;
-        c.__stop=()=>{const i=_reRender.indexOf(cb);if(i>-1)_reRender.splice(i,1);if(prevStop)prevStop()};
-      }
-    }
+    if(grid){c.__stop=grid.stop;rR(c,()=>{const r=fRaw();grid.setImgs(fFixed?(r.f[fFixed]||[]):r._all)})}
     return;
   }
   decorateFlat(c);
@@ -440,12 +431,7 @@ async function pCont(c,isSw){
   if(!grid)return;
   let curName=null;
   c.__stop=grid.stop;
-  if(!_geo){
-    const cb=()=>{const r=fRaw();grid.setImgs(curName?r.f[curName]:r._all)};
-    _reRender.push(cb);
-    const prevStop=c.__stop;
-    c.__stop=()=>{const i=_reRender.indexOf(cb);if(i>-1)_reRender.splice(i,1);if(prevStop)prevStop()};
-  }
+  rR(c,()=>{const r=fRaw();grid.setImgs(curName?r.f[curName]:r._all)});
   const bar=mkSubBtns(c,idx.f,name=>{
     curName=name;
     const r=fRaw();
@@ -458,9 +444,7 @@ async function pCont(c,isSw){
 function cMD(c){const imgs=[...c.querySelectorAll('img')].map(i=>({src:i.src,alt:i.alt}));if(!imgs.length)return;c.innerHTML='';
 mkCarousel(c,imgs.map(x=>x.src),true,imgs)}
 
-let iGR=false;
-async function iG(){if(iGR)return;iGR=true;
-try{
+function iG(){
 const s=[...document.querySelectorAll('.contenedor-imagenes-animado:not([data-gi])')],
 g=[...document.querySelectorAll('.grid-gallery:not([data-gi])')],
 m=[...document.querySelectorAll('.galeriaMD:not([data-gi])')];
@@ -469,7 +453,7 @@ s.forEach(c=>{c.dataset.gi=1;VG1(c);decorate(c);c.__ld=()=>pCont(c,true);IO.obse
 g.forEach(c=>{c.dataset.gi=1;c.__ld=()=>pCont(c,false);IO.observe(c);_observed.add(c)});
 if(g.some(c=>c.dataset.title!==''))BR1();
 m.forEach(c=>{c.dataset.gi=1;decorate(c);c.__ld=()=>cMD(c);IO.observe(c);_observed.add(c)});
-}finally{iGR=false}}
+}
 
 document.addEventListener('contentLoaded',()=>{
 _observed.forEach(c=>{
@@ -478,5 +462,4 @@ if(c.__stop){c.__stop();c.__stop=null}
 IO.unobserve(c);_observed.delete(c)
 }});
 iG()});
-loadGU();reqGeo(()=>{});
 iG()}();

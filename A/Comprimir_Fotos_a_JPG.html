@@ -51,7 +51,7 @@ let CJ_O=[],CJ_U=[],CJ_R=[],CJ_G=0;
 const CJ_SZ=n=>n<1048576?Math.round(n/1024)+' KB':(n/1048576).toFixed(1)+' MB';
 const CJ_BL=(c,q)=>new Promise(r=>c.toBlob(r,'image/jpeg',q));
 async function CJ_C1(f){
-  const bm=await createImageBitmap(f,{imageOrientation:'from-image'});
+  const bm=await createImageBitmap(f);
   const mx=+$('cj-mx').value,ow=bm.width,oh=bm.height,c=document.createElement('canvas');
   let k=mx?Math.min(1,mx/Math.max(ow,oh)):1,q,b;
   const lim=$('cj-lk').checked?+$('cj-kb').value*1024:0;

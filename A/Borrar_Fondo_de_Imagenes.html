@@ -140,7 +140,7 @@ function BF_P1(c){
     const m=BF_MD(),au=$('bf-dv').value==='auto';let dv=BF_DV(),d=$('bf-d').value;
     try{
       c.st('Leyendo imagen...');
-      const bm=await createImageBitmap(c.f,{imageOrientation:'from-image'}),mx=+$('bf-mx').value,k=mx?Math.min(1,mx/Math.max(bm.width,bm.height)):1;
+      const bm=await createImageBitmap(c.f),mx=+$('bf-mx').value,k=mx?Math.min(1,mx/Math.max(bm.width,bm.height)):1;
       if(c.cv)c.cv.width=0;
       c.a=null;c.w=Math.max(1,Math.round(bm.width*k));c.h=Math.max(1,Math.round(bm.height*k));
       c.cv=document.createElement('canvas');c.cv.width=c.w;c.cv.height=c.h;
