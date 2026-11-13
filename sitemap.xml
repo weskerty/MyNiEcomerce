@@ -136,6 +136,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://cheagana.com/A/Borrar_Fondo_de_Imagenes</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://cheagana.com/A/Botones_Sonidos</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

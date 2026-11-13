@@ -259,7 +259,7 @@ self.addEventListener('install',e=>{
 self.addEventListener('activate',e=>{
   e.waitUntil(
     caches.keys().then(ks=>Promise.all(
-      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==SHARE_C&&k!==EXT_C&&k!==DLA_C&&k!==PERM_C).map(k=>caches.delete(k))
+      ks.filter(k=>k!==V&&k!==TEMP_C&&k!==SHARE_C&&k!==EXT_C&&k!==DLA_C&&k!==PERM_C&&k!=='transformers-cache').map(k=>caches.delete(k))
     )).then(()=>self.clients.claim())
   );
 });
