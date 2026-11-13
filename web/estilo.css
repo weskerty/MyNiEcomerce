@@ -310,6 +310,7 @@ body .DRG .bl-card:active{animation:none!important;transform:none;background:rgb
 #content>*,.AN1,blockquote.red{animation:none}
 details::details-content,summary::after,blockquote{transition:none}
 }
-body.low-perf{--GL_M:0;--GL_T:0s;--GL_E:var(--rdm-shadow);--GL_EH:var(--rdm-shadow);--BF_CT:none;--BF_DG:none;--BF_DQ:none;--BF_BD:none;--BG_CT:var(--rdm-bg);--BG_DG:var(--rdm-bg);--BG_DQ:var(--rdm-bg)}
+body.low-perf{--GL_M:0;--GL_T:0s;--GL_E:var(--rdm-shadow);--GL_EH:var(--rdm-shadow);--BF_CT:none;--BF_DG:none;--BF_DQ:none;--BF_BD:none;--BG_CT:var(--rdm-bg);--BG_DG:var(--rdm-bg);--BG_DQ:var(--rdm-bg);background:var(--rdm-bg)}
+body.low-perf::before,body.low-perf .content::before{display:none}
 body.low-perf :is(#content>*,.AN1,blockquote.red){animation:none}
 body.low-perf details::details-content,body.low-perf summary::after,body.low-perf blockquote{transition:none}

@@ -1,6 +1,7 @@
 <style>
 #ST_W{padding:8px 12px}
 #ST_D[hidden]{display:none}
+body.low-perf #FD_W1{display:none}
 .ST_INFO{font-size:.78em;color:rgba(255,255,255,.5);margin-bottom:10px}
 .ST_CACHES{display:flex;flex-direction:column;gap:8px}
 .ST_CI{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid var(--rdm-border);border-radius:var(--r-sm);padding:12px 14px}
@@ -14,7 +15,7 @@ label.ST_CI{cursor:pointer}
 
 <div id="ST_W">
 <label class="ST_CI"><span class="nm">Desactivar Transparencia y Animaciones</span><input type="checkbox" id="ST_SW"></label>
-<div class="ST_CI"><span class="nm">🖼️ Fondo de pantalla</span><button id="FD_B1">Elegir</button><button id="FD_R1">Restaurar</button><input type="file" id="FD_I1" accept="image/*" hidden></div>
+<div class="ST_CI" id="FD_W1"><span class="nm">🖼️ Fondo de pantalla</span><button id="FD_B1">Elegir</button><button id="FD_R1">Restaurar</button><input type="file" id="FD_I1" accept="image/*" hidden></div>
 <details id="ST_ND" hidden>
 <summary>🔔 Notificaciones</summary>
 <div class="ST_CACHES" id="ST_NT"></div>
