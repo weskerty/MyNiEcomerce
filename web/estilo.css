@@ -201,7 +201,7 @@ button:not([class]):disabled::after{display:none}
 .BMD1{margin-bottom:8px}
 
 .GL_C{--GL_R:var(--GL_RC)}
-:is(.gallery-item,.bl-card):active{border-color:var(--GL_BC);background-image:var(--GL_RC),var(--GL_PF);background-clip:border-area,padding-box;background-origin:border-box}
+:is(.gallery-item,.bl-card):active:where(:not(.DRG *,.LS1 .gi-grid-row *,.LS1 .bl-grid *)){border-color:var(--GL_BC);background-image:var(--GL_RC),var(--GL_PF);background-clip:border-area,padding-box;background-origin:border-box}
 
 :where(.content,#disqus-container,dialog,details,table){
 border:var(--GL_BW) solid var(--GL_BC);
@@ -299,11 +299,9 @@ details:not([open])>summary:focus-visible{outline:none}
 #content:focus,#content :is(h1,h2):focus{outline:none}
 .PL1:focus-visible{box-shadow:var(--FRH)}
 @media(prefers-reduced-motion:no-preference){
-body:not(.low-perf) :is(.GL_C,.gallery-item:active,.bl-card:active,.PL1_A,.PL1:active,.PL1:focus-visible,:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.TB1>label):is(:active,.act,[aria-pressed=true],[aria-current=page],:checked+label),:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2):focus-visible,details:not([open]):has(>summary:focus-visible),details[open]>summary:focus-visible){--GL_RC:conic-gradient(from var(--a),var(--GL_CS));animation:FR1 3s linear infinite}
+body:not(.low-perf) :is(.GL_C,:is(.gallery-item,.bl-card):active:where(:not(.DRG *,.LS1 .gi-grid-row *,.LS1 .bl-grid *)),.PL1_A,.PL1:active,.PL1:focus-visible,:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.TB1>label):is(:active,.act,[aria-pressed=true],[aria-current=page],:checked+label),:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2):focus-visible,details:not([open]):has(>summary:focus-visible),details[open]>summary:focus-visible){--GL_RC:conic-gradient(from var(--a),var(--GL_CS));animation:FR1 3s linear infinite}
 }
 }
-body .DRG .gallery-item:active{animation:none!important;transform:none;background:var(--GL_PF);border-color:rgba(255,255,255,.2)}
-body .DRG .bl-card:active{animation:none!important;transform:none;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
 
 @media(prefers-reduced-motion:reduce){
 :root{--GL_M:0;--GL_T:0s;--GL_E:var(--rdm-shadow);--GL_EH:var(--rdm-shadow);--BF_CT:none;--BF_DG:none;--BF_DQ:none;--BF_BD:none;--BG_CT:var(--rdm-bg);--BG_DG:var(--rdm-bg);--BG_DQ:var(--rdm-bg)}

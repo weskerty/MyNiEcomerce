@@ -9,7 +9,7 @@
 .bl-card::after{content:'';opacity:var(--GL_M);position:absolute;inset:0;z-index:3;background:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.12),transparent 60%);transform:translateX(-120%);transition:.6s;pointer-events:none}
 @media(hover:hover){.bl-card:hover::after{transform:translateX(120%)}}
 @media(hover:hover){.bl-card:hover{will-change:transform;transform:translateY(calc(-5px*var(--GL_M))) scale(calc(1 + .01*var(--GL_M)));box-shadow:0 16px 40px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.2);text-decoration:none}}
-.bl-card:active{transform:scale(.98)}
+.bl-card:active:where(:not(.DRG *)){transform:scale(.98)}
 div.bl-card{pointer-events:none}
 .bl-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .4s cubic-bezier(.2,.8,.2,1),filter .3s ease;filter:brightness(.5) saturate(1.2)}
 @media(hover:hover){.bl-card:hover .bl-bg{transform:scale(calc(1 + .05*var(--GL_M)));filter:brightness(.4) saturate(1.4)}}
@@ -280,10 +280,14 @@ function renderPage(gr,list,p,animate,dir,sw){
   requestAnimationFrame(()=>GS_ALL(gr));
 }
 
-let GS_RT=null;
-function GS_RS(){
+let GS_RT=null,GS_W=0;
+function GS_RS(gr){
   clearTimeout(GS_RT);
-  GS_RT=setTimeout(()=>{const gr=document.getElementById('bl-gr');if(gr)GS_ALL(gr)},150);
+  GS_RT=setTimeout(()=>{
+    const n=window.GridFit?GridFit.itemsPerPage(gr,280,200,16,120):PAGE;
+    if(n===PAGE)return GS_ALL(gr);
+    curPg=Math.floor(curPg*PAGE/n);PAGE=n;renderPage(gr,curList,curPg,false);
+  },150);
 }
 
 async function init(){
@@ -302,7 +306,7 @@ async function init(){
   if(window.GridFit)SW=GridFit.SW1(gr,{n:()=>Math.ceil(curList.length/PAGE),p:()=>curPg,go:i=>{curPg=i;renderPage(gr,curList,curPg,false,0,1)},
     fill:(el,i)=>{curList.slice(i*PAGE,i*PAGE+PAGE).forEach(it=>{const c=mkCard(it);el.appendChild(c);const bg=c.querySelector('[data-bg]');if(bg)LB1(bg)});requestAnimationFrame(()=>GS_ALL(el))}});
   renderPage(gr,items,0,false);
-  window.addEventListener('resize',GS_RS);
+  new ResizeObserver(e=>{const w=Math.round(e[0].contentRect.width);if(!w||w===GS_W)return;if(GS_W)GS_RS(gr);GS_W=w}).observe(gr);
 }
 
 window.__KP1?.();

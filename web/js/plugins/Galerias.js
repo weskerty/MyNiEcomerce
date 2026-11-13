@@ -69,7 +69,7 @@ function fCD0(idx){
   if(idx._f0)return idx._f0;
   return idx._f0={_all:idx._all.filter(p=>!_CD0.test(p)),f:Object.fromEntries(Object.entries(idx.f).map(([k,v])=>[k,v.filter(p=>!_CD0.test(p))]))};
 }
-function nN(n){const m=n.match(/NB=([^.]+)/);return m?m[1]:n}
+function nN(n){const m=n.match(/NB=(.+)/);return m?m[1].trim():n}
 function mL(p){return p.replace(/\.[^.]+$/,'.html')}
 function VH1(j,k){const g=document.createElement('div');g.className='grid-gallery';g.dataset.title=g.dataset.galleryKey=k;g.dataset.jsonPath=j;return'<div style="text-align:center">'+g.outerHTML+'<a href="#" class="back-button GB1">← Volver al Inicio</a></div><script>window.__KP1?.()</script>'}
 window.__VR1?.(r=>{try{const d=decodeURIComponent(r),m=!d.includes('..')&&d.match(/^(web\/.*\/)([^/]+)\/Grilla\.vr\.html$/);return m&&VH1(m[1]+'data.json',m[2])}catch{}});

@@ -80,10 +80,10 @@ function SW1(el,o){
         off=0;
         if(!n){anim=false;tx(0);shw(0);return}
         o.go(p+n,1);
-        el.style.transition='';el.style.transform='';
+        el.style.transition='';el.style.transform='';el.style.visibility='hidden';
         if(el.getBoundingClientRect().top<0)el.scrollIntoView({behavior:'smooth',block:'start'});
         const im=[...el.querySelectorAll('img')].map(i=>i.decode?i.decode().catch(()=>{}):0);
-        Promise.race([Promise.all(im),new Promise(r=>setTimeout(r,120))]).then(()=>requestAnimationFrame(()=>{shw(0);anim=false;S.pre()}));
+        Promise.race([Promise.all(im),new Promise(r=>setTimeout(r,120))]).then(()=>requestAnimationFrame(()=>{shw(0);el.style.visibility='';anim=false;S.pre()}));
       },270);
     }
   });
