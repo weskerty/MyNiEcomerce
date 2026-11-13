@@ -30,6 +30,8 @@
 .bf-ac:empty{display:none}
 .bf-ls{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;max-width:900px;margin:0 auto}
 .bf-cd{border-radius:14px;padding:10px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.06);text-align:left;min-width:0}
+.bf-iw{position:relative}
+.bf-iw .wait-anim{position:absolute;inset:0;margin:auto}
 .bf-im{display:block;width:100%;height:240px;object-fit:contain;border-radius:8px;background:repeating-conic-gradient(#777 0 25%,#aaa 0 50%) 0 0/16px 16px}
 .bf-nm{font-weight:700;color:#fff;word-break:break-all;margin-top:6px;font-size:.9em}
 .bf-ms{color:rgba(255,255,255,.55);font-size:.78em;margin:2px 0 6px;line-height:1.4}
@@ -67,6 +69,7 @@
 <script>
 (function(){
 const $=i=>document.getElementById(i);
+const WA=window.__CFG?.waitAnim||'';
 const BF_M=[
 ['onnx-community/ormbg-ONNX','ormbg','Apache-2.0','General y rapido. Recomendado para empezar.',{q8:42,fp16:84,fp32:168}],
 ['onnx-community/BiRefNet_lite-ONNX','BiRefNet lite','MIT','Bordes mas finos. Pide mas de 1,5 GB de memoria libre.',{fp16:109,fp32:214}],
@@ -125,8 +128,13 @@ function BF_RN(c,m,d,dv){
     BF_W1().postMessage({id,m,d,dv,w:c.w,h:c.h,px},[px]);
   });
 }
+function BF_BZ(c,v){
+  c.bz=v;c.im.style.opacity=v?.5:1;
+  if(v&&WA&&!c.wi){c.wi=document.createElement('img');c.wi.className='wait-anim';c.wi.src=WA;c.wi.alt='';c.iw.append(c.wi)}
+  else if(!v){c.wi?.remove();c.wi=null}
+}
 function BF_P1(c){
-  c.bz=1;c.st('En espera...');
+  BF_BZ(c,1);c.st('En espera...');
   BF_Q=BF_Q.then(async()=>{
     if(!BF_C.includes(c))return;
     const m=BF_MD(),au=$('bf-dv').value==='auto';let dv=BF_DV(),d=$('bf-d').value;
@@ -137,7 +145,7 @@ function BF_P1(c){
       c.a=null;c.w=Math.max(1,Math.round(bm.width*k));c.h=Math.max(1,Math.round(bm.height*k));
       c.cv=document.createElement('canvas');c.cv.width=c.w;c.cv.height=c.h;
       c.x=c.cv.getContext('2d');c.x.drawImage(bm,0,0,c.w,c.h);bm.close();
-    }catch{c.bz=0;c.st('Error Imagen (formato no soportado)');return}
+    }catch{BF_BZ(c,0);c.st('Error Imagen (formato no soportado)');return}
     try{
       c.st('Preparando modelo...');
       let r;
@@ -145,7 +153,7 @@ function BF_P1(c){
       catch(e){if(!au||dv!=='webgpu')throw e;dv='wasm';d=BF_RD(m[4],0);c.st('WebGPU fallo, probando con WASM...');r=await BF_RN(c,m[0],d,dv)}
       c.a=r.a;c.i=`${m[1]} ${d} · ${dv==='webgpu'?'WebGPU':'WASM'} · ${(r.ms/1000).toFixed(1)} s`;
     }catch(e){c.st('Error Modelo '+(e&&e.message||'').slice(0,160))}
-    c.bz=0;
+    BF_BZ(c,0);
     if(c.a&&BF_C.includes(c))await BF_R1(c);
   });
 }
@@ -174,7 +182,7 @@ async function BF_R1(c){
   if(g!==c.g||!b||c.bz||!BF_C.includes(c))return;
   if(c.ru)URL.revokeObjectURL(c.ru);
   c.ru=URL.createObjectURL(b);c.b=b;c.nm=c.f.name.replace(/\.[^.]+$/,'')+'-sin-fondo.'+(ty.split('/')[1]==='jpeg'?'jpg':ty.split('/')[1]);
-  c.im.src=c.ru;c.im.style.opacity=1;
+  c.im.src=c.ru;
   c.st(`${c.i} · ${cw}x${ch} · ${BF_SZ(b.size)}`);
   if(!c.v){
     BF_B(c.ac,'⬇️',()=>BF_DL(c),'Descargar');
@@ -201,12 +209,13 @@ function BF_AC(){
 }
 function BF_A1(f){
   const e=document.createElement('div');e.className='bf-cd';
-  const im=document.createElement('img');im.className='bf-im';im.alt='';im.style.opacity=.5;
+  const im=document.createElement('img');im.className='bf-im';im.alt='';
+  const iw=document.createElement('div');iw.className='bf-iw';iw.append(im);
   const n=document.createElement('div');n.className='bf-nm';n.textContent=f.name;
   const s=document.createElement('div');s.className='bf-ms';
   const ac=document.createElement('div');ac.className='bf-ac';
-  e.append(im,n,s,ac);$('bf-ls').prepend(e);
-  const c={e,im,ac,f,g:0,fu:URL.createObjectURL(f),st:t=>{s.textContent=t}};
+  e.append(iw,n,s,ac);$('bf-ls').prepend(e);
+  const c={e,im,iw,ac,f,g:0,fu:URL.createObjectURL(f),st:t=>{s.textContent=t}};
   im.src=c.fu;
   c.xb=BF_B(ac,'✖️',()=>BF_X(c),'Quitar');
   BF_C.push(c);BF_AC();BF_P1(c);
