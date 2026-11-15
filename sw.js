@@ -1,4 +1,4 @@
-const V='v200';
+const V='v201';
 const N_ICON='web/recursos/iconos/ICON.png';
 const N_ICO='web/recursos/iconos/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/recursos/iconos/notif-banner.avif';
@@ -19,7 +19,7 @@ FRASES_HTML
 ];
 
 
-const PERM_C='12';
+const PERM_C='13';
 const PRE_PERM=[
 'web/recursos/libros/cuentos.json',
 'web/js/lib/MarkDownIT/markdown-it.min.js',
