@@ -1,3 +1,4 @@
+<script src="/web/js/HTMLCoreInyector.js" data-a="AgregarPublico" data-t="Publica tu Evento o Lugar" data-d="Suma tu evento a la agenda."></script>
 <style>
 #pb-wrap{padding-bottom:90px}
 #pb-wrap button{font-family:inherit;margin:0}
@@ -348,7 +349,7 @@ function PB_evTx(){
     const[y,m,d]=v.slice(0,10).split('-'),[H,M]=v.slice(11).split(':').map(Number);
     return`🗓️ ${d}/${m}/${y.slice(2)} ${H%12||12}${M?':'+String(M).padStart(2,'0'):''}${H<12?'AM':'PM'}`;
   }).join('\n');
-  const t=`${nm}\n${ds}\n\n${fx}\n📍 ${ml}${/^https?:\/\/\S+$/.test(lk)?'\n'+lk:''}`;
+  const t=`${nm}\n${ds}\n\n${/^https?:\/\/\S+$/.test(lk)?lk+'\n\n':''}${fx}\n📍 ${ml}`;
   return{t,nm,p,ml,ok:!!(nm&&ds&&fx&&ml&&!pz)};
 }
 window.PB_evAdd=function(){

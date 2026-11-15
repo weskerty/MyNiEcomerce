@@ -103,7 +103,9 @@
 #AG_C1 b{color:rgba(255,255,255,.5)}
 .AG_E1{padding:0;border:1px solid rgba(255,140,0,.35);border-radius:8px;background:rgba(255,140,0,.12);color:#ffaa33;font:inherit;font-weight:700;cursor:pointer}
 .AG_E3{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:rgba(255,255,255,.35)}
-.AG_H2{outline:1px solid rgba(255,255,255,.45);border-radius:8px}
+span.AG_H2{line-height:28px}
+.AG_H2{border:1px solid #0000;border-radius:8px;background-image:var(--GL_R),linear-gradient(#0000,#0000);background-clip:border-area,padding-box;background-origin:border-box}
+@supports not (background-clip:border-area){.AG_H2{border-color:rgba(255,255,255,.45)}}
 .AG_K1{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
 .rv-it .AG_K1{margin:0;padding:0 14px 10px}
 .AG_K1 .lk{font-family:inherit;cursor:pointer}
@@ -257,7 +259,7 @@ function AG_R(){
   for(const c of 'LMMJVSD')AG_C.append(AG_X('b','',c));
   for(let i=0;i<off;i++)AG_C.append(document.createElement('span'));
   for(let d=1;d<=n;d++){
-    const td=y===hy.getFullYear()&&m===hy.getMonth()&&d===hy.getDate()?'AG_H2':'';
+    const td=y===hy.getFullYear()&&m===hy.getMonth()&&d===hy.getDate()?'AG_H2 GL_C':'';
     if(!ds.has(d)){AG_C.append(AG_X('span',td,d));continue;}
     const b=AG_X('button','AG_E1 '+td+(ds.get(d)?'':' AG_E3'),d);
     b.onclick=()=>rvOpen(i=>{const e=EVM.get(i);return e&&AG_IM(e,y,m,d);},`📅 ${d}/${m+1}/${y}`,[y,m,d]);
