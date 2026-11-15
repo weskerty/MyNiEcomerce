@@ -30,7 +30,7 @@
 #AP_DG1 p.err{color:var(--err)}
 #AP_DG1 p.warn{color:var(--warn)}
 #AP_DG1 div,#AP_CR1>div+div{display:flex;gap:10px;justify-content:center;margin-top:16px}
-#AP_CR1{width:auto;padding:12px}
+#AP_CR1{width:fit-content;padding:12px}
 #ap-mis-f{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:12px}
 #ap-mis-f[hidden]{display:none}
 #AP_CR1 .AP_CR2{position:relative;max-width:min(90vw,420px);max-height:60vh;overflow:hidden}
@@ -663,7 +663,7 @@ function AP_resetForm(){
   document.getElementById('ap-img')._ext=null;
   document.getElementById('ap-img')._file=null;
   _AP_editando=null;
-  if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;AP_libsReady.then(AP_initMDE);}
+  if(_AP_mde){_AP_mde.toTextArea();_AP_mde=null;document.getElementById('ap-mdtxt').value='';AP_libsReady.then(AP_initMDE);}
   document.getElementById('ap-submit').textContent='Enviar Solicitud';
 }
 
@@ -735,29 +735,8 @@ window.AP_solicitarBorrado=async function(ID){
   AP_toast('Borrado solicitado');
 };
 
-function AP_H2M(n){
-  return[...n.childNodes].map(c=>{
-    if(c.nodeType===3)return c.textContent;
-    if(c.nodeType!==1)return'';
-    const t=c.tagName,i=()=>AP_H2M(c);
-    if(/^H[1-6]$/.test(t))return'\n'+'#'.repeat(t[1])+' '+c.textContent.trim()+'\n';
-    switch(t){
-      case'P':return c.attributes.length?c.outerHTML:'\n'+i().trim()+'\n';
-      case'BR':return'';
-      case'STRONG':case'B':return'**'+i()+'**';
-      case'EM':case'I':return'*'+i()+'*';
-      case'A':return'['+i()+']('+c.getAttribute('href')+')';
-      case'IMG':return[...c.attributes].some(a=>a.name!=='src'&&a.name!=='alt')?c.outerHTML:'!['+(c.getAttribute('alt')||'')+']('+c.getAttribute('src')+')';
-      case'UL':case'OL':return'\n'+[...c.children].map((li,k)=>(t==='OL'?(k+1)+'. ':'- ')+AP_H2M(li).trim().replace(/\n/g,'\n  ')).join('\n')+'\n';
-      case'BLOCKQUOTE':return'\n'+i().trim().split('\n').map(l=>'> '+l).join('\n')+'\n';
-      case'HR':return'\n---\n';
-      case'CODE':return'`'+c.textContent+'`';
-      default:return c.outerHTML;
-    }
-  }).join('');
-}
-
-window.AP_editarPublicado=async function(e){
+window.AP_editarPublicado=function(e){
+  AP_resetForm();
   AP_mainTab('nuevo');
   AP_setTipo(e.categoria,e.sub);
   document.getElementById('ap-ch').value=e.CH||'WA.TG';
@@ -771,15 +750,9 @@ window.AP_editarPublicado=async function(e){
   setTimeout(()=>{document.getElementById('ap-sub').value=e.sub||'';},50);
   _AP_gpsCT=e.CT||null;
   if(e.CT)document.getElementById('ap-gps-hint').textContent='Se mantiene la ubicacion anterior, podes actualizarla';
-  const hPath=e.fn.replace(/\.\w+$/,'.html');
-  try{
-    const r=await fetch(hPath.startsWith('web/')?`/${hPath}`:hPath);
-    const mc=r.ok&&new DOMParser().parseFromString(await r.text(),'text/html').querySelector('.markdown-content');
-    if(mc&&_AP_mde)_AP_mde.value(AP_H2M(mc).replace(/\n{3,}/g,'\n\n').trim());
-  }catch{}
   _AP_editando={ID:e.ID};
   document.getElementById('ap-submit').textContent='Guardar Edicion';
-  AP_toast('Volve a subir la imagen para reenviar','warn',5000);
+  AP_toast('Volve a completar la descripcion y la imagen','warn',5000);
 };
 
 window.AP_editarRechazado=async function(ID){
