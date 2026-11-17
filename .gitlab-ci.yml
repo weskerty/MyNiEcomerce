@@ -3,8 +3,10 @@ deploy:
   variables:
     GIT_DEPTH: "1"
   script:
+    - apk add --no-cache brotli
     - mkdir public
     - find . -mindepth 1 -maxdepth 1 ! -name public ! -name .git ! -name .github ! -name .gitlab-ci.yml -exec mv {} public/ \;
+    - find public -type f \( -name '*.html' -o -name '*.js' -o -name '*.mjs' -o -name '*.json' -o -name '*.css' -o -name '*.svg' -o -name '*.xml' -o -name '*.txt' -o -name '*.md' \) -exec brotli -k -q 9 {} +
   pages: true
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
