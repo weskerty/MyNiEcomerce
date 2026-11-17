@@ -12,18 +12,6 @@ permissions:
   id-token: write
 
 jobs:
-  mirror:
-    runs-on: ubuntu-slim
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - run: |
-          git remote add codeberg https://laWiskaPY:${{ secrets.CODEBERG_TOKEN }}@codeberg.org/laWiskaPY/kore.js.git
-          git push codeberg --mirror
-          git push codeberg HEAD:pages --force
-
   deploy:
     runs-on: ubuntu-slim
     concurrency:
