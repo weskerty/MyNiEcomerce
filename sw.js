@@ -1,4 +1,4 @@
-const V='v204';
+const V='v205';
 const N_ICON='web/recursos/iconos/ICON.png';
 const N_ICO='web/recursos/iconos/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/recursos/iconos/notif-banner.avif';
@@ -53,7 +53,7 @@ const EXT_CACHE=[
   {origin:'esm.unpkg.com',ttl:0},
   {origin:'unpkg.com',ttl:0}
 ];
-const MIRRORS=['https://weskerty.github.io/MyNiEcomerce','https://lawiskapy.codeberg.page/kore.js','https://cheagana.netlify.app','https://mc.cheagana.com'];
+const MIRRORS=['https://kore-js-a0481c.gitlab.io','https://lawiskapy.codeberg.page/kore.js','https://cheagana.netlify.app','https://mc.cheagana.com'];
 const MIRROR_TIMEOUT=2000;
 let serverIsDown=false;
 const EXT_C='ext-fonts';
