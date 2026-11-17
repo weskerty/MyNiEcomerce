@@ -265,14 +265,11 @@ function mkCarousel(c,imgs,isMD,altMap){
   }
 }
 
-const _seg=typeof Intl!=='undefined'&&Intl.Segmenter?new Intl.Segmenter('es',{granularity:'grapheme'}):null;
-const _emoRe=/\p{Extended_Pictographic}/u;
+const _emoRe=/^\p{Extended_Pictographic}(?:️|\p{EMod}|[\u{E0020}-\u{E007F}])*(?:‍\p{Extended_Pictographic}(?:️|\p{EMod})*)*/u;
 const _EMO_FALLBACK='📦';
 function splitEmoji(name){
-  if(!_seg)return{emo:_EMO_FALLBACK,txt:name};
-  const g=[..._seg.segment(name)][0]?.segment||'';
-  if(g&&_emoRe.test(g))return{emo:g,txt:name.slice(g.length).trim()};
-  return{emo:_EMO_FALLBACK,txt:name};
+  const g=_emoRe.exec(name)?.[0];
+  return g?{emo:g,txt:name.slice(g.length).trim()}:{emo:_EMO_FALLBACK,txt:name};
 }
 function mkSubBtns(c,subcats,onPick){
   const bar=document.createElement('div');bar.className='BS1';
