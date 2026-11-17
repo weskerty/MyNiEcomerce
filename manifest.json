@@ -30,5 +30,5 @@
 ],
 "file_handlers": [{"action": "/open-file", "accept": {"image/*": [".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif"], "application/pdf": [".pdf"]}}],
 "protocol_handlers": [{"protocol": "web+cheagana", "url": "/?protocol=%s"}],
-"share_target": {"action": "/_share", "method": "POST", "enctype": "multipart/form-data", "params": {"title": "title", "text": "text", "url": "url", "files": [{"name": "files", "accept": ["image/*", "video/*", "audio/*", "application/pdf", "application/epub", "*/*"]}]}}
+"share_target": {"action": "/_share", "method": "POST", "enctype": "multipart/form-data", "params": {"title": "title", "text": "text", "url": "url", "files": [{"name": "files", "accept": ["*/*"]}]}}
 }
