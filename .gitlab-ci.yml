@@ -1,0 +1,10 @@
+deploy:
+  image: alpine
+  variables:
+    GIT_DEPTH: "1"
+  script:
+    - mkdir public
+    - find . -mindepth 1 -maxdepth 1 ! -name public ! -name .git ! -name .github ! -name .gitlab-ci.yml -exec mv {} public/ \;
+  pages: true
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
