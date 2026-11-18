@@ -14,7 +14,9 @@ label.ST_CI{cursor:pointer}
 </style>
 
 <div id="ST_W">
-<label class="ST_CI"><span class="nm">Desactivar Transparencia y Animaciones</span><input type="checkbox" id="ST_SW"></label>
+<label class="ST_CI"><span class="nm">🌙 Modo oscuro (sin transparencia ni animaciones)</span><input type="checkbox" id="ST_SW"></label>
+<label class="ST_CI"><span class="nm">☰ Modo lista (galerias y blog)</span><input type="checkbox" id="ST_LS"></label>
+<label class="ST_CI"><span class="nm">💬 Abrir comentarios automaticamente</span><input type="checkbox" id="ST_DQ"></label>
 <div class="ST_CI" id="FD_W1"><span class="nm">🖼️ Fondo de pantalla</span><button id="FD_B1">Elegir</button><button id="FD_R1">Restaurar</button><input type="file" id="FD_I1" accept="image/*" hidden></div>
 <details id="ST_ND" hidden>
 <summary>🔔 Notificaciones</summary>
@@ -93,6 +95,14 @@ label.ST_CI{cursor:pointer}
     localStorage.setItem('perf',swEl.checked?'low':'high');
     document.body.classList.toggle('low-perf',swEl.checked);
   };
+
+  const lsEl=$('ST_LS');
+  lsEl.checked=!!localStorage.getItem('GL1');
+  lsEl.onchange=()=>{lsEl.checked?localStorage.setItem('GL1','1'):localStorage.removeItem('GL1');document.body.classList.toggle('LS1',lsEl.checked)};
+
+  const dqEl=$('ST_DQ');
+  dqEl.checked=!!localStorage.getItem('DQ1');
+  dqEl.onchange=()=>dqEl.checked?localStorage.setItem('DQ1','1'):localStorage.removeItem('DQ1');
 
   const FD_U='web/recursos/fondos/wallpaper.webp';
   async function FD_C1(){for(const k of await caches.keys()){const c=await caches.open(k);if(await c.match(FD_U))return c}throw 0}

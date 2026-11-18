@@ -1,4 +1,4 @@
-const V='v206';
+const V='v207';
 const N_ICON='web/recursos/iconos/ICON.png';
 const N_ICO='web/recursos/iconos/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/recursos/iconos/notif-banner.avif';
@@ -14,7 +14,7 @@ const PRE=[
 'web/paginas/apps.html',
 'web/paginas/Grupos.html',
 'web/js/plugins/Galerias.js',
-'web/js/plugins/chatBanner&Share.js',
+'web/js/plugins/navbar.js',
 FRASES_HTML
 ];
 

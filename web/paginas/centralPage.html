@@ -7,18 +7,6 @@
 ._nb.l{left:0}
 ._nb.r{right:0}
 
-#content{
-background:transparent!important;
-backdrop-filter:none!important;
--webkit-backdrop-filter:none!important;
-box-shadow:none!important;
-border:none!important;
-padding:0!important;
-margin:0!important;
-max-width:none!important
-}
-
-#content::before{display:none!important}
 body.low-perf :is(.pc-mi,.app-btn){backdrop-filter:none}
 
 
@@ -203,14 +191,14 @@ window.PS1?.(btn);
   </div>
 </div>
 
-<div style="padding:0 16px 16px"><div class="grid-gallery FV1" data-title="" data-gallery-key="⭐ Favoritos"></div></div>
+<div class="GL_P1 FV2" hidden><div class="grid-gallery FV1 GL_AP" data-title="" data-gallery-key="⭐ Favoritos" data-nl></div></div>
 
 <script>
 (function(){
 try{
 const f=localStorage.getItem('FAV');
 document.querySelector('.FV1').dataset.jsonPath=URL.createObjectURL(new Blob([f||'{}']));
-if(JSON.parse(f).galleries['⭐ Favoritos'].length)document.querySelector('.pc-wrap').classList.add('FV_ON');
+if(JSON.parse(f).galleries['⭐ Favoritos'].length){document.querySelector('.pc-wrap').classList.add('FV_ON');document.querySelector('.FV2').hidden=false;}
 }catch(e){}
 const i=document.getElementById('INS');
 function show(){i.style.display='';}
