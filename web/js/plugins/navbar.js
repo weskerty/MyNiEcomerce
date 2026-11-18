@@ -89,7 +89,7 @@ body.NB_V{padding-bottom:76px}
 .NB_E{font-size:18px}
 .NB_L{font-size:15px;font-weight:500}
 .NB_S{display:none}
-.NB_CX{margin-left:12px}
+.NB1 .NB_CX{order:0;margin-right:12px}
 .NB_TM{margin-left:10px}
 .cb-pk,.cb-fng{display:none}
 body.NB_SD :is(.NB1,.NB_HD):not(.NB_H){transform:translateY(-100%)}
@@ -262,7 +262,7 @@ OR1.addEventListener('change',()=>syncNB());
 function CX_S1(k,mk){
   const p=OR1.matches&&k.startsWith('tts')?_hd:_nb;
   _nb.classList.toggle('NB_C',!!k&&p===_nb);
-  if(_cx.parentNode!==p)p.insertBefore(_cx,p===_nb?_tm:null);
+  if(_cx.parentNode!==p)p.append(_cx);
   if(k===_cxK)return!1;
   _cxK=k;_cx.replaceChildren(...(mk?[mk()]:[]));
   return!0;
