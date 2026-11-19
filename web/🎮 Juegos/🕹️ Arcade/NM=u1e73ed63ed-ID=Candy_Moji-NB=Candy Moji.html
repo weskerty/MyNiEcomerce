@@ -25,7 +25,9 @@
 !function(){
 const a=document.getElementById('CC_C'),c=a.getContext('2d');
 const EM=['\u{1F353}','\u{1F34A}','\u{1F34B}','\u{1F347}','\u{1F34F}','\u{1F36C}'];
-let W=0,DR=1,E,R,C,cs,bx,by,Gv,T=[],st='',pr=null,sel=null,ds=null,sc=0,mv=0,cas=0,lk=0,PP=[],id=0,lt=performance.now(),best=+localStorage.getItem('CC_B')||0;
+let W=0,DR=1,E,R,C,cs,bx,by,Gv,T=[],st='',pr=null,sel=null,ds=null,sc=0,mv=0,cas=0,lk=0,PP=[],id=0,lt=performance.now(),best=+localStorage.getItem('CC_B')||0,SPR=[],dv=1;
+const SG=(e,s)=>{const z=Math.ceil(s*1.4*DR),o=new OffscreenCanvas(z,z),x=o.getContext('2d');x.font=`${s*DR}px sans-serif`;x.textAlign='center';x.textBaseline='middle';x.fillText(e,z/2,z/2);return o};
+const DI=(o,x,y,k)=>{const z=o.width/DR*k;c.drawImage(o,x-z/2,y-z/2,z,z)};
 const vb=n=>navigator.vibrate&&navigator.vibrate(n);
 const RN=()=>Math.random()*EM.length|0;
 const GX=j=>bx+j*cs+cs/2,GY=i=>by+i*cs+cs/2;
@@ -116,6 +118,7 @@ if(Math.abs(t.tx-t.x)<.5&&Math.abs(t.ty-t.y)<.5){t.x=t.tx;t.y=t.ty}else mg=1;
 for(const p of PP){p.y-=cs*.8*d;p.l-=d}
 PP=PP.filter(p=>p.l>0);
 lk-=d;
+if(mg||PP.length||st!='idle'&&(st!='over'||lk>-.2))dv=1;
 if(mg)return;
 if(st=='swap'){
 const s=FM(TY());
@@ -139,17 +142,12 @@ function D(){
 c.clearRect(0,0,W,E);
 c.textAlign='center';
 c.textBaseline='middle';
-c.font=`${cs*.8|0}px sans-serif`;
 if(sel){c.fillStyle='rgba(255,255,255,.28)';c.beginPath();c.arc(GX(sel[1]),GY(sel[0]),cs*.46,0,7);c.fill()}
-c.fillStyle='#fff';
 for(const row of T)for(const t of row){
 if(!t)continue;
-const k=t.dy?.4+.6*t.al:1;
 c.globalAlpha=t.dy?t.al:1;
-c.setTransform(k*DR,0,0,k*DR,t.x*DR,t.y*DR);
-c.fillText(EM[t.e],0,0);
+DI(SPR[t.e],t.x,t.y,t.dy?.4+.6*t.al:1);
 }
-c.setTransform(DR,0,0,DR,0,0);
 c.globalAlpha=1;
 c.shadowColor='#000';
 c.shadowBlur=6;
@@ -176,7 +174,7 @@ if(!a.isConnected)return X();
 const d=Math.max(0,Math.min((t-lt)/1e3,.05));
 lt=t;
 U(d);
-D();
+if(dv){dv=0;D()}
 }
 function RS(){
 const ch=innerWidth!=W,o=innerWidth<innerHeight;
@@ -190,6 +188,8 @@ cs=Math.floor(Math.min(W*.96/C,E*.78/R));
 bx=(W-C*cs)/2;
 by=(E-R*cs)/2+E*.04;
 Gv=cs*45;
+SPR=EM.map(e=>SG(e,cs*.8|0));
+dv=1;
 if(ch||T.length!=R||T[0].length!=C)RT();
 else T.forEach((row,i)=>row.forEach((t,j)=>{if(t){t.tx=t.x=GX(j);t.ty=t.y=GY(i)}}));
 }
@@ -200,6 +200,7 @@ return i<0||j<0||i>=R||j>=C?null:[i,j];
 const LS=[[window,'resize',RS],[document,'contentUnload',X]];
 function X(){cancelAnimationFrame(id);LS.forEach(([t,e,f])=>t.removeEventListener(e,f))}
 a.onpointerdown=e=>{
+dv=1;
 if(st=='over'){if(lk<=0)RT();return}
 if(st!='idle')return;
 const q=CL(e.clientX,e.clientY);

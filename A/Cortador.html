@@ -26,7 +26,9 @@
 const a=document.getElementById('CF_C'),c=a.getContext('2d'),RD=Math.PI*2;
 const EF=['\u{1F3ED}','\u2622\uFE0F','\u2623\uFE0F','\u{1F6E2}\uFE0F','\u{1F6AC}','\u{1F5D1}\uFE0F','\u{1F32B}\uFE0F','\u26FD','\u{1F525}','\u{1F697}','\u{1F964}','\u{1F50B}'],EC=['\u{1F431}','\u{1F408}','\u{1F63A}','\u{1F638}','\u{1F63B}','\u{1F640}','\u{1F639}','\u{1F63C}'];
 const PK=a=>a[Math.random()*a.length|0];
-let W,DR=1,E,Gv,Ob=[],PT=[],TR=[],pp=0,sc=0,lv=3,sp=.5,fl=0,id=0,lt=performance.now(),best=+localStorage.getItem('CF_B')||0;
+let W,DR=1,E,Gv,Ob=[],PT=[],TR=[],pp=0,sc=0,lv=3,sp=.5,fl=0,id=0,lt=performance.now(),best=+localStorage.getItem('CF_B')||0,SM=new Map();
+const SG=(e,s)=>{const z=Math.ceil(s*1.4*DR),o=new OffscreenCanvas(z,z),x=o.getContext('2d');x.font=`${s*DR}px sans-serif`;x.textAlign='center';x.textBaseline='middle';x.fillText(e,z/2,z/2);return o};
+const GS=(e,s)=>{const k=e+s;let o=SM.get(k);if(!o)SM.set(k,o=SG(e,s));return o};
 const vb=n=>navigator.vibrate&&navigator.vibrate(n);
 const DS=(px,py,ax,ay,bx,by)=>{const dx=bx-ax,dy=by-ay,l=dx*dx+dy*dy||1,t=Math.max(0,Math.min(1,((px-ax)*dx+(py-ay)*dy)/l));return Math.hypot(px-ax-t*dx,py-ay-t*dy)};
 function PC(V){let A=0,cx=0,cy=0;for(let i=0;i<V.length;i++){const p=V[i],q=V[(i+1)%V.length],f=p[0]*q[1]-q[0]*p[1];A+=f;cx+=(p[0]+q[0])*f;cy+=(p[1]+q[1])*f}const s=A/2;return[Math.abs(s),cx/(6*s),cy/(6*s)]}
@@ -88,17 +90,9 @@ function DI(o){
 c.save();
 c.translate(o.x,o.y);
 c.rotate(o.a);
-c.save();
-c.beginPath();
-o.V.forEach((v,k)=>k?c.lineTo(v[0],v[1]):c.moveTo(v[0],v[1]));
-c.closePath();
-c.clip();
-c.fillStyle='#fff';
-c.font=`${o.r*1.6|0}px sans-serif`;
-c.textAlign='center';
-c.textBaseline='middle';
-c.fillText(o.e,o.ox,o.oy);
-c.restore();
+if(o.ox||o.oy){c.beginPath();o.V.forEach((v,k)=>k?c.lineTo(v[0],v[1]):c.moveTo(v[0],v[1]));c.clip()}
+const s=GS(o.e,o.r*1.6|0),z=s.width/DR;
+c.drawImage(s,o.ox-z/2,o.oy-z/2,z,z);
 c.restore();
 }
 function D(){
@@ -137,7 +131,7 @@ lt=t;
 U(d);
 D();
 }
-function RS(){DR=Math.min(2,devicePixelRatio||1);a.width=(W=innerWidth)*DR;a.height=(E=innerHeight)*DR;c.setTransform(DR,0,0,DR,0,0);Gv=E*1.4}
+function RS(){DR=Math.min(2,devicePixelRatio||1);a.width=(W=innerWidth)*DR;a.height=(E=innerHeight)*DR;c.setTransform(DR,0,0,DR,0,0);Gv=E*1.4;SM.clear()}
 const LS=[[window,'resize',RS],[document,'contentUnload',X]];
 function X(){cancelAnimationFrame(id);LS.forEach(([t,e,f])=>t.removeEventListener(e,f))}
 a.onpointerdown=e=>{pp={x:e.clientX,y:e.clientY,t:performance.now()};TR=[pp]};

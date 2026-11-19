@@ -1,189 +1,157 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Lector de Barras y QR - Che Agana</title>
-<meta name="description" content="🔍 Lector QR 📷 Camara 📤 Subir ✨ Crear Tipo QR (lo lee cualquier camara) Aztec (mas correccion) 🖼 Imagen o video 🗑 Quitar 🔍 Probar escaneo 🗺 Mapa Ajus">
+<meta name="description" content="🔍 Lector QR 📷 Camara 📤 Subir ✨ Crear Cancelar 🔗 Abrir enlace 📋 Copiar 🔄 Nuevo 🔙 ⬇️ PNG ⬇️ SVG ⬇️ MP4 ⬇️ GIF Texto o enlace Tipo QR (lo lee cualquier">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Che Agana">
 <meta property="og:title" content="Lector de Barras y QR">
-<meta property="og:description" content="🔍 Lector QR 📷 Camara 📤 Subir ✨ Crear Tipo QR (lo lee cualquier camara) Aztec (mas correccion) 🖼 Imagen o video 🗑 Quitar 🔍 Probar escaneo 🗺 Mapa Ajus">
+<meta property="og:description" content="🔍 Lector QR 📷 Camara 📤 Subir ✨ Crear Cancelar 🔗 Abrir enlace 📋 Copiar 🔄 Nuevo 🔙 ⬇️ PNG ⬇️ SVG ⬇️ MP4 ⬇️ GIF Texto o enlace Tipo QR (lo lee cualquier">
 <meta property="og:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/NM%3Du1e73ed63ed-ID%3DLector_de_Barras_y_QR-NB%3DLector%20de%20Barras%20y%20QR.avif">
 <meta property="og:url" content="https://cheagana.com/A/Lector_de_Barras_y_QR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Lector de Barras y QR">
-<meta name="twitter:description" content="🔍 Lector QR 📷 Camara 📤 Subir ✨ Crear Tipo QR (lo lee cualquier camara) Aztec (mas correccion) 🖼 Imagen o video 🗑 Quitar 🔍 Probar escaneo 🗺 Mapa Ajus">
+<meta name="twitter:description" content="🔍 Lector QR 📷 Camara 📤 Subir ✨ Crear Cancelar 🔗 Abrir enlace 📋 Copiar 🔄 Nuevo 🔙 ⬇️ PNG ⬇️ SVG ⬇️ MP4 ⬇️ GIF Texto o enlace Tipo QR (lo lee cualquier">
 <meta name="twitter:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/NM%3Du1e73ed63ed-ID%3DLector_de_Barras_y_QR-NB%3DLector%20de%20Barras%20y%20QR.avif">
 <link rel="canonical" href="https://cheagana.com/A/Lector_de_Barras_y_QR">
 <base href="/">
 <script src="/web/js/HTMLCoreInyector.js" data-a="Lector_de_Barras_y_QR"></script>
-</head><body><div class="markdown-content"><div style="text-align:center;position:relative;padding-top:0;margin-top:0">
+</head><body><div class="markdown-content"><div class="QR_W1">
 <style>
-.qr-st{color:rgba(255,255,255,.75);font-size:1.3em;font-weight:600;margin:10px 0 22px;min-height:1.6em;transition:color .2s}
-.qr-st.act{color:rgba(56,189,248,.9)}
-.qr-st.ok{color:rgba(37,211,102,.9)}
-.qr-btns{display:flex;gap:16px;justify-content:center;margin-bottom:18px}
-.qr-mi{width:90px;height:90px;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border-radius:18px;border:none;cursor:pointer;color:white;background:linear-gradient(135deg,rgba(255,255,255,.25),rgba(255,255,255,.05),rgba(255,255,255,.15));transition:transform .2s,opacity .2s;font-family:inherit}
-.qr-mi:hover{transform:scale(1.08)}
-.qr-mi:disabled{opacity:.35;cursor:not-allowed;transform:none}
-.qr-mi-ic{font-size:2rem;line-height:1}
-.qr-mi-lb{font-size:.72rem;color:rgba(255,255,255,.8)}
-.qr-area{margin:0 auto;max-width:320px;border-radius:16px;overflow:hidden;position:relative;background:rgba(0,0,0,.25)}
-.qr-cc{display:block;margin:10px auto 0;background:none;border:none;color:rgba(255,255,255,.45);font-size:.8em;cursor:pointer;font-family:inherit;text-decoration:underline}
-.qr-cc:hover{color:rgba(255,255,255,.75)}
-.qr-rt{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:12px 16px;color:white;font-size:.9em;word-break:break-all;text-align:left;margin-bottom:10px;max-height:160px;overflow-y:auto;white-space:pre-wrap}
-.qr-rl{display:inline-block;padding:8px 20px;border-radius:10px;background:rgba(37,211,102,.85);color:white;text-decoration:none;font-size:.9em;margin-bottom:10px;transition:background .2s}
-.qr-rl:hover{background:#1ebe5d;color:white;text-decoration:none}
-.qr-ac{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.qr-btn{padding:8px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.14);color:white;cursor:pointer;font-size:.9em;transition:background .2s;font-family:inherit}
-.qr-btn:hover{background:rgba(255,255,255,.24)}
-.qr-tk{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.97);border:1px solid rgba(255,255,255,.15);color:white;padding:10px 22px;border-radius:12px;font-size:.88em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999;white-space:nowrap}
-.qr-tk.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.qr-modal{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.88);overflow-y:auto}
-.qr-modal.open{display:flex;flex-direction:column;align-items:center;padding:20px 16px;gap:12px}
-.qr-cw{position:relative;max-width:min(90vw,420px);max-height:60vh;overflow:hidden}
-.qr-cw img{display:block;max-width:100%;max-height:60vh}
+.QR_W1{text-align:center}
+.QR_I1{font-size:2.6rem;line-height:1.2}
+.qr-st{min-height:1.4em;margin:4px 0 20px;font:700 1.35rem/1.3 var(--font-h);color:var(--RD_F);transition:color .2s}
+.qr-st.act{color:var(--RD_MF)}
+.qr-st.ok{color:var(--ok)}
+.qr-ac{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0}
+.qr-area{max-width:360px;margin:0 auto;border:1px solid var(--RD_L);border-radius:16px;overflow:hidden;background:var(--RD_M)}
 #qr-reader{position:relative;aspect-ratio:1}
-#qr-reader video{width:100%!important;height:100%;object-fit:cover;display:block;border-radius:0}
-.QS_G1{position:absolute;inset:12%;pointer-events:none;--c:rgba(56,189,248,.95);--l:26px;--w:4px;background:linear-gradient(var(--c) 0 0) 0 0/var(--l) var(--w),linear-gradient(var(--c) 0 0) 0 0/var(--w) var(--l),linear-gradient(var(--c) 0 0) 100% 0/var(--l) var(--w),linear-gradient(var(--c) 0 0) 100% 0/var(--w) var(--l),linear-gradient(var(--c) 0 0) 0 100%/var(--l) var(--w),linear-gradient(var(--c) 0 0) 0 100%/var(--w) var(--l),linear-gradient(var(--c) 0 0) 100% 100%/var(--l) var(--w),linear-gradient(var(--c) 0 0) 100% 100%/var(--w) var(--l);background-repeat:no-repeat}
+#qr-reader video{display:block;width:100%!important;height:100%;object-fit:cover}
 #qr-reader img{display:none!important}
-.qg-wr{position:relative;margin:0 auto;max-width:min(320px,86vw);width:100%}
+.QS_G1{position:absolute;inset:12%;pointer-events:none;--c:rgba(255,255,255,.9);--l:26px;--w:4px;background:linear-gradient(var(--c) 0 0) 0 0/var(--l) var(--w),linear-gradient(var(--c) 0 0) 0 0/var(--w) var(--l),linear-gradient(var(--c) 0 0) 100% 0/var(--l) var(--w),linear-gradient(var(--c) 0 0) 100% 0/var(--w) var(--l),linear-gradient(var(--c) 0 0) 0 100%/var(--l) var(--w),linear-gradient(var(--c) 0 0) 0 100%/var(--w) var(--l),linear-gradient(var(--c) 0 0) 100% 100%/var(--l) var(--w),linear-gradient(var(--c) 0 0) 100% 100%/var(--w) var(--l);background-repeat:no-repeat}
+.qr-rt{max-width:560px;max-height:200px;margin:0 auto;overflow-y:auto;text-align:left;word-break:break-all}
+.qr-dt{margin:8px 0 0;color:var(--RD_MF);font-size:.8rem}
+.qr-tk{position:fixed;bottom:24px;left:50%;z-index:999;padding:10px 20px;border:1px solid var(--RD_L);border-radius:12px;background:var(--rdm-bg);color:var(--RD_F);font-size:.9rem;white-space:nowrap;box-shadow:var(--RD_SH);opacity:0;pointer-events:none;translate:-50% 20px;transition:opacity .25s,translate .25s}
+.qr-tk.show{opacity:1;translate:-50% 0}
+#qr-cif{margin:0 44px 12px 0;padding-top:6px;text-align:left}
+.qr-cw img{display:block;max-width:100%;max-height:60vh;margin:0 auto}
+.QG_L1{display:flex;flex-direction:column;gap:16px;text-align:left}
+.QG_V1{display:contents}
+.qg-wr{position:sticky;top:8px;z-index:2;container-type:inline-size scroll-state;pointer-events:none}
+.QG_F1{position:relative;width:min(300px,66vw);margin:0 auto;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.45);transform-origin:0 0;transition:transform var(--GL_T)}
+@container scroll-state(stuck:top){.QG_F1{transform:translateX(calc((min(300px,66vw) - 100cqw)/2)) scale(.34)}}
+@supports not (container-type:scroll-state){.qg-wr{position:static}}
 .qg-cv{display:block;width:100%;height:auto;border-radius:14px;background:#fff}
-.qg-ov{position:absolute;left:0;top:0;width:100%;height:100%;border-radius:14px;pointer-events:none}
-.qg-dg{margin:0 auto 6px;max-width:min(320px,86vw);text-align:left;font-size:.78em;line-height:1.55;color:rgba(255,255,255,.75);white-space:pre-line;word-break:break-word}
-.qr-dt{font-size:11px;opacity:.6;margin:-4px 0 10px;min-height:1em}
-.qg-scr{max-height:52vh;overflow-y:auto;padding-right:4px}
-.qg-d{margin:2px 0 8px;font-size:11px;opacity:.65;line-height:1.35}
-.qg-in{width:100%;box-sizing:border-box;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 14px;color:white;font-size:.9em;font-family:inherit;outline:none;margin-bottom:10px}
-.qg-in:focus{border-color:rgba(56,189,248,.4)}
-.qg-row{display:flex;align-items:center;gap:10px;margin:6px 0}
-.qg-row label{flex:0 0 92px;text-align:left;color:rgba(255,255,255,.6);font-size:.8em}
-.qg-row input[type=range]{flex:1;accent-color:#38bdf8}
-.qg-row select{flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:10px;color:white;padding:6px 8px;font-family:inherit;font-size:.85em}
-.qg-row span{flex:0 0 42px;color:rgba(255,255,255,.5);font-size:.78em;text-align:right}
-.qg-adv{margin:10px 0;text-align:left}
-.qg-adv summary{cursor:pointer;color:rgba(255,255,255,.6);font-size:.85em;text-align:center}
+.qg-ov{position:absolute;inset:0;width:100%;height:100%;border-radius:14px;pointer-events:none}
+.QG_O1{order:1;margin:0}
+.QG_C1 .qr-ac{justify-content:flex-start}
+.QG_LB{display:block;margin:0 0 6px;color:var(--RD_F2);font-size:.88rem}
+#qg-t{width:100%}
+.qg-dg{padding:10px 14px;border:1px solid var(--RD_L);border-radius:12px;color:var(--RD_F2);font-size:.82rem;line-height:1.55;white-space:pre-line;overflow-wrap:anywhere}
+.qg-dg:empty{display:none}
+.qg-row{display:grid;grid-template-columns:6.5em minmax(0,1fr) 3.2em;align-items:center;gap:2px 10px;margin:14px 0 0}
+.qg-row label{color:var(--RD_F2);font-size:.88rem}
+.qg-row :is(input,select){width:100%}
+.qg-row select{grid-column:2/-1}
+.qg-row span{color:var(--RD_MF);font-size:.82rem;text-align:right;font-variant-numeric:tabular-nums}
+.qg-row small{grid-column:1/-1;color:var(--RD_MF);font-size:.78rem;line-height:1.4}
+#qg:not(.QG_HI) .QG_IM{display:none}
+@media(min-width:760px){
+.QG_L1{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:28px;align-items:start}
+.QG_V1{display:flex;flex-direction:column;gap:14px;position:sticky;top:16px}
+.qg-wr{position:relative;top:auto}
+.QG_F1{width:100%;box-shadow:none}
+}
 </style>
-<div style="font-size:2.8rem;margin:0 auto 4px;line-height:1.2">🔍</div>
-<div class="qr-st" id="qr-st">Lector QR</div>
-<div style="padding:0 12px;max-width:100%">
-  <div id="qr-idle">
+<div class="QR_I1" aria-hidden="true">🔍</div>
+<div class="qr-st" id="qr-st" role="status">Lector QR</div>
+<div id="qr-idle">
 <div class="BOTON-M1">
-  <button class="BOTON-M2" id="qr-cb" title="Camara">
-    <div class="BOTON-M3">
-      <div class="BOTON-M4">📷</div>
-      <p class="BOTON-M5">Camara</p>
-    </div>
-  </button>
-  <button class="BOTON-M2" id="qr-fb" title="Subir">
-    <div class="BOTON-M3">
-      <div class="BOTON-M4">📤</div>
-      <p class="BOTON-M5">Subir</p>
-    </div>
-  </button>
-  <button class="BOTON-M2" id="qg-ab" title="Crear">
-    <div class="BOTON-M3">
-      <div class="BOTON-M4">✨</div>
-      <p class="BOTON-M5">Crear</p>
-    </div>
-  </button>
+<button class="BOTON-M2" id="qr-cb" title="Camara"><div class="BOTON-M3"><div class="BOTON-M4">📷</div><p class="BOTON-M5">Camara</p></div></button>
+<button class="BOTON-M2" id="qr-fb" title="Subir"><div class="BOTON-M3"><div class="BOTON-M4">📤</div><p class="BOTON-M5">Subir</p></div></button>
+<button class="BOTON-M2" id="qg-ab" title="Crear"><div class="BOTON-M3"><div class="BOTON-M4">✨</div><p class="BOTON-M5">Crear</p></div></button>
 </div>
-    <input type="file" id="qr-in" accept="image/*" style="display:none">
-  </div>
-  <div id="qg" style="display:none;padding:4px 0 12px">
-    <input class="qg-in" id="qg-t" type="text" placeholder="Texto o enlace para el QR">
-    <div class="qg-row"><label>Tipo</label><select id="qg-k"><option value="qr">QR (lo lee cualquier camara)</option><option value="az">Aztec (mas correccion)</option></select></div>
-    <div class="qg-wr"><canvas class="qg-cv" id="qg-cv" width="320" height="320"></canvas><canvas class="qg-ov" id="qg-ov"></canvas></div>
-    <div class="qr-ac" style="margin:12px 0">
-      <button class="qr-btn" id="qg-ib">🖼 Imagen o video</button>
-      <button class="qr-btn" id="qg-rb" style="display:none">🗑 Quitar</button>
-      <button class="qr-btn" id="qg-tb">🔍 Probar escaneo</button>
-      <button class="qr-btn" id="qg-mp" style="display:none">🗺 Mapa</button>
-    </div>
-    <div class="qg-dg" id="qg-dg"></div>
-    <input type="file" id="qg-if" accept="image/*,video/*" style="display:none">
-    <details class="qg-adv">
-      <summary>Ajuste fino</summary>
-      <div class="qg-scr">
-      <div id="qg-gq">
-      <div class="qg-row"><label>Densidad</label><select id="qg-v"><option value="0">Automatica</option><option value="5">v5 chico</option><option value="7">v7</option><option value="10">v10</option><option value="14">v14</option><option value="18">v18 denso</option></select></div>
-      <p class="qg-d">Mayor = mas espacio para que se note la imagen, pero mas dificil de escanear con camaras simples. Automatica elige el minimo necesario para el texto</p>
-      <div class="qg-row"><label>Correccion</label><select id="qg-e"><option value="H">Alta (30%)</option><option value="Q">Media (25%)</option><option value="M">Baja (15%)</option><option value="L">Minima (7%)</option></select></div>
-      <p class="qg-d">Mayor = el QR sigue leyendose aunque este sucio o tapado, pero ocupa mas espacio</p>
-      </div>
-      <div id="qg-ga" style="display:none">
-      <p class="qg-d">Aztec: el nucleo central (diana) siempre queda solido y sin margen. La camara nativa del iPhone no lo lee, hace falta una app lectora</p>
-      <div class="qg-row"><label>Correccion</label><input type="range" id="qg-ae" min="10" max="95" value="50"><span id="qg-ae-l">50%</span></div>
-      <p class="qg-d">Parte del simbolo reservada a correccion. Llega a 95% (repara casi la mitad). Mas = simbolo mas grande, con mas modulos para la imagen</p>
-      <div class="qg-row"><label>Forma</label><select id="qg-af"><option value="">Automatica</option><option value="compact">Compacto</option><option value="full">Completo</option></select></div>
-      <p class="qg-d">Compacto es mas chico pero admite pocos datos. Completo agrega la grilla de referencia</p>
-      </div>
-      <div class="qg-row"><label>Margen</label><input type="range" id="qg-qz" min="0" max="4" value="1"><span id="qg-qz-l">1</span></div>
-      <p class="qg-d">Borde blanco alrededor, en bloques. Menor = imagen mas aprovechada. El estandar pide 4: con 0 o 1 puede fallar si se pega sobre un fondo oscuro o con dibujo</p>
-      <div class="qg-row"><label>Forma</label><select id="qg-sh"><option value="ci">Circulo</option><option value="rd">Redondeado</option><option value="sq">Cuadrado</option><option value="ht">Halftone</option></select></div>
-      <p class="qg-d">Cuadrado es lo mas parecido a un QR normal, mas facil de leer para camaras viejas. Halftone: la imagen cubre todo el QR y solo el centro de cada bloque lleva el dato (Fantasma = cuanto manda la imagen)</p>
-      <div class="qg-row"><label>Punto min</label><input type="range" id="qg-mn" min="10" max="80" value="35"><span id="qg-mn-l">35%</span></div>
-      <p class="qg-d">Mayor = los puntos claros de la imagen se ven mas grandes</p>
-      <div class="qg-row"><label>Punto max</label><input type="range" id="qg-mx" min="60" max="110" value="100"><span id="qg-mx-l">100%</span></div>
-      <p class="qg-d">Mayor = los puntos oscuros se agrandan y pueden tocar al vecino, complicando la lectura</p>
-      <div class="qg-row"><label>Fantasma</label><input type="range" id="qg-gh" min="0" max="100" value="70"><span id="qg-gh-l">70%</span></div>
-      <p class="qg-d">Mayor = se ve mas imagen de fondo entre los bloques del QR</p>
-      <div class="qg-row"><label>Umbral</label><input type="range" id="qg-th" min="0" max="90" value="15"><span id="qg-th-l">15%</span></div>
-      <p class="qg-d">Menor = mas partes de la imagen se unen entre bloques. Mayor = deja mas huecos en blanco</p>
-      <div class="qg-row"><label>Zona calibracion</label><select id="qg-tm"><option value="0">Proteger (recomendado)</option><option value="1">Tambien pintar</option></select></div>
-      <p class="qg-d">La cruz (QR) o la grilla (Aztec) que usa la camara para medir se deja en blanco por seguridad. Tambien pintar mete imagen ahi, se ve mas completo pero con mas riesgo de fallar la lectura</p>
-      <div class="qg-row"><label>Saturacion</label><input type="range" id="qg-sa" min="0" max="100" value="40"><span id="qg-sa-l">40%</span></div>
-      <p class="qg-d">Mayor = colores mas intensos y vivos</p>
-      <div class="qg-row"><label>Color</label><select id="qg-co"><option value="1">De la imagen</option><option value="0">Monocromo</option></select></div>
-      <p class="qg-d">Monocromo ignora los colores de la imagen, solo usa negro</p>
-      <div class="qg-row"><label>Salida</label><select id="qg-px"><option value="512">512 px</option><option value="1024" selected>1024 px</option><option value="2048">2048 px</option></select></div>
-      <p class="qg-d">Mayor = mas resolucion en el archivo final, mas pesado</p>
-      <div class="qg-row"><label>Detalle img</label><input type="range" id="qg-sd" min="1" max="4" value="1"><span id="qg-sd-l">1x</span></div>
-      <p class="qg-d">Mayor = se nota mas la imagen dentro de cada bloque, sin agrandar el QR</p>
-      <div class="qg-row" style="margin-top:10px"><label>Posicion X</label><input type="range" id="qg-ix" min="-100" max="100" value="0"><span id="qg-ix-l">0%</span></div>
-      <p class="qg-d">Mueve la imagen a la izquierda o derecha</p>
-      <div class="qg-row"><label>Posicion Y</label><input type="range" id="qg-iy" min="-100" max="100" value="0"><span id="qg-iy-l">0%</span></div>
-      <p class="qg-d">Mueve la imagen hacia arriba o abajo</p>
-      <div class="qg-row"><label>Zoom</label><input type="range" id="qg-iz" min="20" max="300" value="100"><span id="qg-iz-l">100%</span></div>
-      <p class="qg-d">Mayor = acerca la imagen (se ve mas grande y recortada)</p>
-      <div class="qg-row"><label>Giro</label><input type="range" id="qg-ir" min="0" max="359" value="0"><span id="qg-ir-l">0°</span></div>
-      <p class="qg-d">Rota la imagen dentro del QR (el QR en si nunca gira)</p>
-      <div class="qg-row"><label>Ancho img</label><input type="range" id="qg-iw" min="20" max="300" value="100"><span id="qg-iw-l">100%</span></div>
-      <p class="qg-d">Estira o achica la imagen solo a lo ancho</p>
-      <div class="qg-row"><label>Alto img</label><input type="range" id="qg-ih" min="20" max="300" value="100"><span id="qg-ih-l">100%</span></div>
-      <p class="qg-d">Estira o achica la imagen solo a lo alto</p>
-      <div class="qr-ac" style="margin-top:8px"><button class="qr-btn" id="qg-irs">↺ Reiniciar posicion</button></div>
-      </div>
-    </details>
-    <div class="qr-ac">
-      <button class="qr-btn" id="qg-pn">⬇️ PNG</button>
-      <button class="qr-btn" id="qg-sv">⬇️ SVG</button>
-      <button class="qr-btn" id="qg-mv" style="display:none">⬇️ MP4</button>
-      <button class="qr-btn" id="qg-gf" style="display:none">⬇️ GIF</button>
-      <button class="qr-btn" id="qg-bk">↩ Volver</button>
-    </div>
-  </div>
-  <div class="qr-area" id="qr-sa" style="display:none">
-    <div id="qr-reader"></div>
-    <button class="qr-cc" id="qr-cc">Cancelar</button>
-  </div>
-  <div id="qr-ra" style="display:none;padding:12px 0">
-    <div class="qr-rt" id="qr-rt"></div>
-    <div class="qr-dt" id="qr-dt"></div>
-    <a class="qr-rl" id="qr-rl" href="#" target="_blank" rel="noopener noreferrer" style="display:none">🔗 Abrir enlace</a>
-    <div class="qr-ac">
-      <button class="qr-btn" id="qr-cp">📋 Copiar</button>
-      <button class="qr-btn" id="qr-ns">🔄 Nuevo</button>
-    </div>
-  </div>
+<input type="file" id="qr-in" accept="image/*" hidden>
 </div>
+<div id="qr-sa" style="display:none">
+<div class="qr-area"><div id="qr-reader"></div></div>
+<div class="qr-ac"><button id="qr-cc">Cancelar</button></div>
+</div>
+<div id="qr-ra" style="display:none">
+<code class="qr-rt" id="qr-rt"></code>
+<div class="qr-dt" id="qr-dt"></div>
+<div class="qr-ac">
+<a class="RD_B1" id="qr-rl" href="#" target="_blank" rel="noopener noreferrer" style="display:none">🔗 Abrir enlace</a>
+<button id="qr-cp">📋 Copiar</button>
+<button id="qr-ns">🔄 Nuevo</button>
+</div>
+</div>
+<div id="qg" class="QG_L1" style="display:none">
+<button class="_nb l" id="qg-bk" aria-label="Volver" title="Volver">🔙</button>
+<div class="QG_V1">
+<div class="qg-wr"><div class="QG_F1"><canvas class="qg-cv" id="qg-cv" width="320" height="320"></canvas><canvas class="qg-ov" id="qg-ov"></canvas></div></div>
+<div class="qr-ac QG_O1">
+<button id="qg-pn">⬇️ PNG</button>
+<button id="qg-sv">⬇️ SVG</button>
+<button id="qg-mv" style="display:none">⬇️ MP4</button>
+<button id="qg-gf" style="display:none">⬇️ GIF</button>
+</div>
+</div>
+<div class="QG_C1">
+<label class="QG_LB" for="qg-t">Texto o enlace</label>
+<input id="qg-t" type="text" placeholder="https://..." autocomplete="off">
+<div class="qg-row"><label for="qg-k">Tipo</label><select id="qg-k"><option value="qr">QR (lo lee cualquier camara)</option><option value="az">Aztec (mas correccion)</option></select></div>
+<div class="qr-ac">
+<button id="qg-ib">🖼 Imagen o video</button>
+<button id="qg-rb" style="display:none">🗑 Quitar</button>
+<button id="qg-tb">🔍 Probar escaneo</button>
+<button id="qg-mp" style="display:none">🗺 Mapa</button>
+</div>
+<div class="qg-dg" id="qg-dg"></div>
+<input type="file" id="qg-if" accept="image/*,video/*" hidden>
+<details>
+<summary>🔳 Codigo</summary>
+<div id="qg-gq">
+<div class="qg-row"><label for="qg-v">Densidad</label><select id="qg-v"><option value="0">Automatica</option><option value="5">v5 chico</option><option value="7">v7</option><option value="10">v10</option><option value="14">v14</option><option value="18">v18 denso</option></select><small>Mayor = mas espacio para que se note la imagen, pero mas dificil de escanear con camaras simples. Automatica elige el minimo necesario para el texto</small></div>
+<div class="qg-row"><label for="qg-e">Correccion</label><select id="qg-e"><option value="H">Alta (30%)</option><option value="Q">Media (25%)</option><option value="M">Baja (15%)</option><option value="L">Minima (7%)</option></select><small>Mayor = el QR sigue leyendose aunque este sucio o tapado, pero ocupa mas espacio</small></div>
+</div>
+<div id="qg-ga" style="display:none">
+<div class="qg-row"><small>Aztec: el nucleo central (diana) siempre queda solido y sin margen. La camara nativa del iPhone no lo lee, hace falta una app lectora</small></div>
+<div class="qg-row"><label for="qg-ae">Correccion</label><input type="range" id="qg-ae" min="10" max="95" value="50"><span id="qg-ae-l">50%</span><small>Parte del simbolo reservada a correccion. Llega a 95% (repara casi la mitad). Mas = simbolo mas grande, con mas modulos para la imagen</small></div>
+<div class="qg-row"><label for="qg-af">Forma</label><select id="qg-af"><option value="">Automatica</option><option value="compact">Compacto</option><option value="full">Completo</option></select><small>Compacto es mas chico pero admite pocos datos. Completo agrega la grilla de referencia</small></div>
+</div>
+<div class="qg-row"><label for="qg-qz">Margen</label><input type="range" id="qg-qz" min="0" max="4" value="1"><span id="qg-qz-l">1</span><small>Borde blanco alrededor, en bloques. Menor = imagen mas aprovechada. El estandar pide 4: con 0 o 1 puede fallar si se pega sobre un fondo oscuro o con dibujo</small></div>
+<div class="qg-row"><label for="qg-sh">Forma</label><select id="qg-sh"><option value="ci">Circulo</option><option value="rd">Redondeado</option><option value="sq">Cuadrado</option><option value="ht">Halftone</option></select><small>Cuadrado es lo mas parecido a un QR normal, mas facil de leer para camaras viejas. Halftone: la imagen cubre todo el QR y solo el centro de cada bloque lleva el dato (Fantasma = cuanto manda la imagen)</small></div>
+<div class="qg-row"><label for="qg-px">Salida</label><select id="qg-px"><option value="512">512 px</option><option value="1024" selected>1024 px</option><option value="2048">2048 px</option></select><small>Mayor = mas resolucion en el archivo final, mas pesado</small></div>
+</details>
+<details class="QG_IM">
+<summary>🎨 Puntos y color</summary>
+<div class="qg-row"><label for="qg-mn">Punto min</label><input type="range" id="qg-mn" min="10" max="80" value="35"><span id="qg-mn-l">35%</span><small>Mayor = los puntos claros de la imagen se ven mas grandes</small></div>
+<div class="qg-row"><label for="qg-mx">Punto max</label><input type="range" id="qg-mx" min="60" max="110" value="100"><span id="qg-mx-l">100%</span><small>Mayor = los puntos oscuros se agrandan y pueden tocar al vecino, complicando la lectura</small></div>
+<div class="qg-row"><label for="qg-gh">Fantasma</label><input type="range" id="qg-gh" min="0" max="100" value="70"><span id="qg-gh-l">70%</span><small>Mayor = se ve mas imagen de fondo entre los bloques del QR</small></div>
+<div class="qg-row"><label for="qg-th">Umbral</label><input type="range" id="qg-th" min="0" max="90" value="15"><span id="qg-th-l">15%</span><small>Menor = mas partes de la imagen se unen entre bloques. Mayor = deja mas huecos en blanco</small></div>
+<div class="qg-row"><label for="qg-tm">Zona calibracion</label><select id="qg-tm"><option value="0">Proteger (recomendado)</option><option value="1">Tambien pintar</option></select><small>La cruz (QR) o la grilla (Aztec) que usa la camara para medir se deja en blanco por seguridad. Tambien pintar mete imagen ahi, se ve mas completo pero con mas riesgo de fallar la lectura</small></div>
+<div class="qg-row"><label for="qg-sa">Saturacion</label><input type="range" id="qg-sa" min="0" max="100" value="40"><span id="qg-sa-l">40%</span><small>Mayor = colores mas intensos y vivos</small></div>
+<div class="qg-row"><label for="qg-co">Color</label><select id="qg-co"><option value="1">De la imagen</option><option value="0">Monocromo</option></select><small>Monocromo ignora los colores de la imagen, solo usa negro</small></div>
+<div class="qg-row"><label for="qg-sd">Detalle img</label><input type="range" id="qg-sd" min="1" max="4" value="1"><span id="qg-sd-l">1x</span><small>Mayor = se nota mas la imagen dentro de cada bloque, sin agrandar el QR</small></div>
+</details>
+<details class="QG_IM">
+<summary>🖼 Ajustar imagen</summary>
+<div class="qg-row"><label for="qg-ix">Posicion X</label><input type="range" id="qg-ix" min="-100" max="100" value="0"><span id="qg-ix-l">0%</span><small>Mueve la imagen a la izquierda o derecha</small></div>
+<div class="qg-row"><label for="qg-iy">Posicion Y</label><input type="range" id="qg-iy" min="-100" max="100" value="0"><span id="qg-iy-l">0%</span><small>Mueve la imagen hacia arriba o abajo</small></div>
+<div class="qg-row"><label for="qg-iz">Zoom</label><input type="range" id="qg-iz" min="20" max="300" value="100"><span id="qg-iz-l">100%</span><small>Mayor = acerca la imagen (se ve mas grande y recortada)</small></div>
+<div class="qg-row"><label for="qg-ir">Giro</label><input type="range" id="qg-ir" min="0" max="359" value="0"><span id="qg-ir-l">0°</span><small>Rota la imagen dentro del QR (el QR en si nunca gira)</small></div>
+<div class="qg-row"><label for="qg-iw">Ancho img</label><input type="range" id="qg-iw" min="20" max="300" value="100"><span id="qg-iw-l">100%</span><small>Estira o achica la imagen solo a lo ancho</small></div>
+<div class="qg-row"><label for="qg-ih">Alto img</label><input type="range" id="qg-ih" min="20" max="300" value="100"><span id="qg-ih-l">100%</span><small>Estira o achica la imagen solo a lo alto</small></div>
+<div class="qr-ac"><button id="qg-irs">↺ Reiniciar posicion</button></div>
+</details>
+</div>
+</div>
+<dialog class="DX1" id="qr-cm">
+<button data-x="1" id="qr-ccl" aria-label="Cerrar">✕</button>
+<div class="qr-dt" id="qr-cif"></div>
+<div class="qr-cw"><img id="qr-ci" src="" alt=""></div>
+<div class="qr-ac"><button id="qr-cok">✂️ Recortar</button><button id="qr-csk">↩ Sin recorte</button></div>
+</dialog>
 <div class="qr-tk" id="qr-tk"></div>
-<div class="qr-modal" id="qr-cm">
-  <div class="qr-cw"><img id="qr-ci" src="" alt=""></div>
-  <div id="qr-cif" style="color:rgba(255,255,255,.55);font-size:.8em;margin-top:4px"></div>
-  <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;justify-content:center">
-    <button class="qr-btn" id="qr-cok">✂️ Recortar</button>
-    <button class="qr-btn" id="qr-csk">↩ Sin recorte</button>
-    <button class="qr-btn" id="qr-ccl">✕</button>
-  </div>
-</div>
 <script>
 (function(){
   const ZXW='https://cdn.jsdelivr.net/npm/zxing-wasm@3.1.4/dist/iife/reader/index.js';
@@ -323,15 +291,10 @@
     cb.disabled=false;fb.disabled=false;
   }
 
-  function QS_CE(open){
-    const el=document.getElementById('content');
-    if(el)el.style.minHeight=open?(window.innerHeight*1.5)+'px':'';
-  }
-
   function QS_CX(){
     if(_cp){_cp.destroy();_cp=null;}
     if(_blobUrl){URL.revokeObjectURL(_blobUrl);_blobUrl=null;}
-    cm.classList.remove('open');document.body.style.overflow='';QS_CE(false);
+    cm.close();document.body.style.overflow='';
   }
 
   async function QS_HF(file){
@@ -341,8 +304,7 @@
     cb.disabled=true;fb.disabled=true;
     try{await QS_LC();}catch{}
     cif.textContent=file.name;
-    QS_CE(true);
-    cm.classList.add('open');document.body.style.overflow='hidden';
+    cm.showModal();document.body.style.overflow='hidden';
     const url=URL.createObjectURL(file);
     _blobUrl=url;
     function QS_IC(){
@@ -373,6 +335,8 @@
     _pf=null;cb.disabled=false;fb.disabled=false;
     if(!_res&&sa.style.display==='none'){idle.style.display='';QS_ST('Lector QR');}
   };
+
+  cm.oncancel=e=>{e.preventDefault();$('qr-ccl').onclick();};
 
   $('qr-cc').onclick=()=>{
     QS_KK();
@@ -666,6 +630,7 @@
       $('qg-ir-l').textContent=$('qg-ir').value+'°';
       QD_CL();
       const P=QG_PR(),az=P.k==='az';
+      qg.classList.toggle('QG_HI',!!QG_I);
       $('qg-gq').style.display=az?'none':'';$('qg-ga').style.display=az?'':'none';
       if(!t){QG_M=null;const x=qgc.getContext('2d');qgc.width=qgc.height=320;x.clearRect(0,0,320,320);QS_ST('Crear QR');return;}
       if(az&&!window.bwipjs){
