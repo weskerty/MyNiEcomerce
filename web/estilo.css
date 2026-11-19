@@ -40,10 +40,10 @@ color-scheme:dark;
 @supports not (background-clip:border-area){:root{--GL_RW:linear-gradient(#0000,#0000);--GL_RC:var(--GL_RW);--GL_RS:var(--GL_RW);--GL_RU:var(--GL_RW);--GL_BC:rgba(255,255,255,.22);--GL_CL:padding-box;--GL_IN:inset 1px 1px 0 rgba(255,255,255,.5),inset 0 0 14px rgba(255,255,255,.07)}}
 body:not(.low-perf){--RD_BT:rgba(255,255,255,.06);--RD_BH:rgba(255,255,255,.11);--RD_BS:rgba(255,255,255,.17);--RD_BB:rgba(255,255,255,.12);--RD_BHB:rgba(255,255,255,.2);--RD_BSB:rgba(255,255,255,.32);--RD_S:rgba(16,18,20,.38);--RD_C:rgba(16,18,20,.42);--RD_M:rgba(255,255,255,.12);--RD_L:rgba(255,255,255,.16);--RD_F:#fff;--RD_F2:rgba(255,255,255,.9);--RD_MF:rgba(255,255,255,.72);--RD_PN:var(--BG_CT);--RD_DG:var(--BG_DG);--RD_GF:blur(14px) saturate(1.4);--RD_SH:inset 0 1px 0 rgba(255,255,255,.14),0 10px 30px -14px rgba(0,0,0,.55);text-shadow:0 1px 3px rgba(0,0,0,.35)}
 
-html{touch-action:pan-x pan-y;overflow-x:clip;scroll-padding-top:80px;scrollbar-color:rgba(255,255,255,.35) transparent}
+html{touch-action:pan-x pan-y;scroll-padding-top:80px;scrollbar-color:rgba(255,255,255,.35) transparent}
 button,a,label,input{-webkit-tap-highlight-color:transparent}
 button{font-family:inherit}
-body{margin:0;background:var(--RD_B);color:var(--RD_F);font:17px/1.6 var(--font);overscroll-behavior-y:none}
+body{margin:0;background:var(--RD_B);color:var(--RD_F);font:17px/1.6 var(--font);overscroll-behavior-y:none;overflow-x:clip}
 body.mob{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 body.mob .sel,body.mob .sel *{user-select:text;-webkit-user-select:text}
 body::before{content:'';position:fixed;top:0;left:0;z-index:-1;width:100%;height:100lvh;background:linear-gradient(rgba(8,16,12,.25),rgba(8,16,12,.25)),url('recursos/fondos/wallpaper.webp') center/cover}

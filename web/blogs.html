@@ -74,6 +74,9 @@ const RSS=window.__CFG?.rss||[];
 const RU=p=>'/api/rss?url='+encodeURIComponent(p);
 let PAGE=20;
 let SW=null,curList=[],curPg=0,_lst=[],_cat=null;
+const HB=window.__HS1?.B;
+function BH1(){window.__HS2?.('B',[_cat,curPg*PAGE])}
+function BN_FL(){return _cat?_lst.filter(x=>x.t==='b'&&x.cat===_cat):_lst}
 
 function fN(p){return p.split('/').pop().replace(/\.[^.]+$/,'')}
 function mL(p){return p.replace(/\.[^.]+$/,'.html')}
@@ -139,9 +142,9 @@ async function BP_1(gr){
 function BN_CF(){
   const gr=document.getElementById('bl-gr');
   if(!gr)return;
-  curList=_cat?_lst.filter(x=>x.t==='b'&&x.cat===_cat):_lst;
+  curList=BN_FL();
   curPg=0;
-  renderPage(gr,curList,0,true);
+  renderPage(gr,curList,0,true);BH1();
 }
 
 function BN_CB1(cats){
@@ -150,7 +153,7 @@ function BN_CB1(cats){
   if(cats.length<2)return;
   cats.forEach(name=>{
     const b=document.createElement('button');
-    b.className='PL1';b.textContent=name;
+    b.className='PL1'+(name===_cat?' PL1_A':'');b.textContent=name;
     b.addEventListener('click',()=>{
       _cat=_cat===name?null:name;
       [...box.children].forEach(x=>x.classList.toggle('PL1_A',x===b&&_cat!==null));
@@ -258,7 +261,7 @@ function renderPage(gr,list,p,animate,dir,sw){
   gr.querySelector('.bl-ar:not(.bl-ni)')?.classList.add('bl-ld');
   if(list.length>PAGE){
     const nav=document.createElement('nav');
-    if(window.GridFit)GridFit.PN1(nav,p,maxPg+1,i=>{const d=i>curPg?1:-1;curPg=i;renderPage(gr,curList,curPg,true,d);BS1(gr)});
+    if(window.GridFit)GridFit.PN1(nav,p,maxPg+1,i=>{const d=i>curPg?1:-1;curPg=i;renderPage(gr,curList,curPg,true,d);BS1(gr);BH1()});
     (navBox||gr).appendChild(nav);
   }
   if(SW&&!sw)SW.pre();
@@ -287,11 +290,13 @@ async function init(){
   gr.style.display='';
   PAGE=await BP_1(gr);
   const items=[...(galleries?parseBlogs(galleries,T):[]),...nw].sort((a,b)=>b.ts-a.ts);
-  _lst=items;curList=items;curPg=0;_cat=null;
-  BN_CB1([...new Set(items.filter(x=>x.t==='b').map(x=>x.cat))]);
-  if(window.GridFit)SW=GridFit.SW1(gr,{n:()=>Math.ceil(curList.length/PAGE),p:()=>curPg,go:i=>{curPg=i;renderPage(gr,curList,curPg,false,0,1)},
+  const cs=[...new Set(items.filter(x=>x.t==='b').map(x=>x.cat))];
+  _lst=items;_cat=cs.length>1&&cs.includes(HB?.[0])?HB[0]:null;curList=BN_FL();
+  curPg=Math.min(Math.max(0,Math.ceil(curList.length/PAGE)-1),Math.floor((HB?.[1]||0)/PAGE));
+  BN_CB1(cs);
+  if(window.GridFit)SW=GridFit.SW1(gr,{n:()=>Math.ceil(curList.length/PAGE),p:()=>curPg,go:i=>{curPg=i;renderPage(gr,curList,curPg,false,0,1);BH1()},
     fill:(el,i)=>{curList.slice(i*PAGE,i*PAGE+PAGE).forEach(it=>{const c=mkCard(it);el.appendChild(c);const bg=c.querySelector('[data-bg]');if(bg)LB1(bg)});el.querySelector('.bl-ar:not(.bl-ni)')?.classList.add('bl-ld');requestAnimationFrame(()=>GS_ALL(el))}});
-  renderPage(gr,items,0,false);
+  renderPage(gr,curList,curPg,false);
   new ResizeObserver(e=>{const w=Math.round(e[0].contentRect.width);if(!w||w===GS_W)return;if(GS_W)GS_RS(gr);GS_W=w}).observe(gr);
 }
 

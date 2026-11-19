@@ -81,6 +81,7 @@ function mL(p){return p.replace(/\.[^.]+$/,'.html')}
 function VH1(j,k){const g=document.createElement('div');g.className='grid-gallery';g.dataset.title=g.dataset.galleryKey=k;g.dataset.jsonPath=j;return'<div style="text-align:center">'+g.outerHTML+'<a href="#" class="back-button GB1">← Volver al Inicio</a></div><script>window.__KP1?.()</script>'}
 window.__VR1?.(r=>{try{const d=decodeURIComponent(r),m=!d.includes('..')&&d.match(/^(web\/.*\/)([^/]+)\/Grilla\.vr\.html$/);return m&&VH1(m[1]+'data.json',m[2])}catch{}});
 function VG1(c){if(c.dataset.href!=null)return;const j=c.dataset.jsonPath||DJ,k=c.dataset.galleryKey||c.id.replace(/-gallery|-grid/g,'');if(k&&/^web\/.*data\.json$/.test(j))c.dataset.href='#'+j.replace(/data\.json$/,'')+k+'/Grilla.vr.html'}
+function GH1(c,k,v){const o=history.state?.G?.[k]||[null,0];if(c.isConnected&&(o[0]!==v[0]||o[1]!==v[1]))window.__HS2('G',{...history.state?.G,[k]:v})}
 function BR1(){const ct=document.getElementById('content');if(ct&&!ct.querySelector('.GV1'))ct.insertAdjacentHTML('afterbegin','<a href="#" class="_nb l GB1" aria-label="Volver">🔙</a><a href="#" class="_nb r GV1" aria-label="Lista o cuadricula"></a>')}
 const _PC=/PC=(\d+)/;
 function fPC(n){const m=n.match(_PC);return m?m[1].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+' Gs':''}
@@ -297,13 +298,13 @@ function splitEmoji(name){
   const g=_emoRe.exec(name)?.[0];
   return g?{emo:g,txt:name.slice(g.length).trim()}:{emo:_EMO_FALLBACK,txt:name};
 }
-function mkSubBtns(c,subcats,onPick){
+function mkSubBtns(c,subcats,onPick,cur){
   const bar=document.createElement('div');bar.className='BS1';
-  let active=null;
+  let active=cur||null;
   for(const name in subcats){
     if(!subcats[name].length)continue;
     const{emo,txt}=splitEmoji(name);
-    const a=document.createElement('a');a.className='BS2';a.href='#';
+    const a=document.createElement('a');a.className='BS2'+(name===active?' GL_C':'');a.href='#';
     const box=document.createElement('div');box.className='BS3';
     const sp=document.createElement('span');sp.className='BS4';sp.textContent=emo;
     const pt=document.createElement('p');pt.className='BS5 gi-txt';pt.textContent=txt;
@@ -321,7 +322,7 @@ function mkSubBtns(c,subcats,onPick){
   return bar;
 }
 
-function mkGrid(c,imgs){
+function mkGrid(c,imgs,s0,sv){
   if(!imgs.length)return;
   const inner=document.createElement('div');inner.className='gi-grid-inner';c.appendChild(inner);
   const row=document.createElement('div');row.className='gi-grid-row';inner.appendChild(row);
@@ -333,16 +334,16 @@ function mkGrid(c,imgs){
     pageSize=n;pages=buildPages(imgs,pageSize);pg=Math.min(pages.length-1,Math.floor(f/n));renderPage(pg,false);
   }
   let ro=null,destroyed=false,pending=false;
-  const ac=new AbortController();
+  const ac=new AbortController(),p0=()=>Math.min(pages.length-1,Math.floor((s0||0)/pageSize));
   function stop(){destroyed=true;ac.abort();if(ro){ro.disconnect();ro=null}}
   loadGF().then(gf=>{
     if(destroyed)return;
     rdy=true;
-    if(!gf){renderPage(0,false);return}
+    if(!gf){renderPage(pg=p0(),false);return}
     sw=gf.SW1(row,{sig:ac.signal,n:()=>pages.length,p:()=>pg,go:i=>{const d=i>pg?1:-1;pg=i;renderPage(pg,false,d,1)},
       fill:(el,i)=>{for(let k=pages[i].start;k<pages[i].end;k++)el.appendChild(mkNode(imgs[k],null,null,true))}});
     const ipp=()=>{if(document.body.classList.contains('LS1')&&!c.closest('[data-nl]'))return gf.itemsPerPage(inner,LW,parseFloat(getComputedStyle(c).getPropertyValue('--LR_I'))+2,GAP,120);const cs=getComputedStyle(c),mw=parseFloat(cs.getPropertyValue('--MW1'))||MW,th=parseFloat(cs.getPropertyValue('--TH1'))||TH,cw=inner.offsetWidth||mw,n=Math.max(1,Math.floor((cw+GAP)/(mw+GAP)));return gf.itemsPerPage(inner,mw,(cw-(n-1)*GAP)/n+th,GAP,120)};
-    pageSize=ipp();pages=buildPages(imgs,pageSize);renderPage(0,false);
+    pageSize=ipp();pages=buildPages(imgs,pageSize);renderPage(pg=p0(),false);
     const scheduleCompute=()=>{
       if(pending)return;pending=true;
       _ric(()=>{pending=false;if(!destroyed)applyPageSize(ipp())});
@@ -362,14 +363,14 @@ function mkGrid(c,imgs){
     let slot=0;
     for(let i=start;i<end;i++,slot++)cell(slot,imgs[i]);
     while(row.children.length>slot)row.lastChild.remove();
-    nv();
+    nv();if(sv)sv(start);
     if(!sw1){
       row.style.setProperty('--d',dir?(dir>0?'24px':'-24px'):'0px');
       row.classList.remove('AN1');void row.offsetWidth;row.classList.add('AN1');
       if(sw)sw.pre();
     }
     if(scroll&&c.scrollIntoView)c.scrollIntoView({behavior:'smooth',block:'start'})}
-  return{setImgs(ni){imgs=ni;pg=0;pages=buildPages(imgs,pageSize);if(rdy)renderPage(0,false)},stop};
+  return{setImgs(ni,k){imgs=ni;if(!k)pg=s0=0;pages=buildPages(imgs,pageSize);pg=Math.min(pg,pages.length-1);if(rdy)renderPage(pg,false)},stop};
 }
 
 function decorate(c){
@@ -420,7 +421,7 @@ async function pCont(c,isSw){
   if(c.__fetchAC){c.__fetchAC.abort()}
   if(c._subBar){c._subBar.remove();c._subBar=null}
   const ac=new AbortController();c.__fetchAC=ac;loadGF();
-  const j=c.dataset.jsonPath||DJ,k=c.dataset.galleryKey,fFixed=c.dataset.pathFilter,key=k||c.id.replace(/-gallery|-grid/g,'');
+  const j=c.dataset.jsonPath||DJ,k=c.dataset.galleryKey,fFixed=c.dataset.pathFilter,key=k||c.id.replace(/-gallery|-grid/g,''),HK=j+'|'+key,H0=history.state?.G?.[HK]||[];
   const needsWait=JC[j]===undefined;
   if(needsWait){
     showGISkeleton(c);
@@ -443,23 +444,25 @@ async function pCont(c,isSw){
     const imgs=fFixed?(idx.f[fFixed]||[]):idx._all;
     c.innerHTML='';if(!imgs.length)return;
     if(isSw){mkCarousel(c,imgs);rR(c,()=>pCont(c,true));return}
-    const grid=mkGrid(c,imgs);
-    if(grid){c.__stop=grid.stop;rR(c,()=>{const r=fRaw();grid.setImgs(fFixed?(r.f[fFixed]||[]):r._all)})}
+    const grid=mkGrid(c,imgs,H0[1],s=>GH1(c,HK,[null,s]));
+    if(grid){c.__stop=grid.stop;rR(c,()=>{const r=fRaw();grid.setImgs(fFixed?(r.f[fFixed]||[]):r._all,1)})}
     return;
   }
   decorateFlat(c);
   c.innerHTML='';
-  const grid=mkGrid(c,idx._all);
+  const n0=idx.f[H0[0]]?.length?H0[0]:null;
+  let curName=n0;
+  const grid=mkGrid(c,n0?idx.f[n0]:idx._all,H0[1],s=>GH1(c,HK,[curName,s]));
   if(!grid)return;
-  let curName=null;
   c.__stop=grid.stop;
-  rR(c,()=>{const r=fRaw();grid.setImgs(curName?r.f[curName]:r._all)});
+  if(n0&&c._h2)c._h2.textContent=n0;
+  rR(c,()=>{const r=fRaw();grid.setImgs(curName?r.f[curName]:r._all,1)});
   const bar=mkSubBtns(c,idx.f,name=>{
     curName=name;
     const r=fRaw();
     if(c._h2)c._h2.textContent=name||c._baseTitle;
     grid.setImgs(name?r.f[name]:r._all);
-  });
+  },n0);
   c._subBar=bar;
 }
 
