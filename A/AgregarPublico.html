@@ -196,7 +196,7 @@ const PB_PUBLICO_BASE=(()=>{
 })();
 const PB_MAX_SIZE=200*1024;
 const PB_NB_MAX=100;
-const PB_CATS=['minecraft','jugadores','evento'];
+const PB_CATS=['minecraft','jugadores','evento'],PB_AN=(window.__AN1||'').toLowerCase();
 const PB_CAT_LABEL={minecraft:'Servidor Minecraft',jugadores:'Encuentra Jugadores',evento:'Evento'};
 
 function PB_ck(k){const m=document.cookie.match(new RegExp('(?:^|; )'+k+'=([^;]*)'));return m?decodeURIComponent(m[1]):null;}
@@ -404,8 +404,7 @@ async function PB_blobToB64(blob){
 function PB_showMain(){
   document.getElementById('pb-auth').style.display='none';
   document.getElementById('pb-main').style.display='block';
-  const h=decodeURIComponent(location.hash.split('#')[2]||'');
-  if(PB_CATS.includes(h))document.getElementById('pb-cat').value=h;
+  if(PB_CATS.includes(PB_AN))document.getElementById('pb-cat').value=PB_AN;
   PB_catChange();
 }
 

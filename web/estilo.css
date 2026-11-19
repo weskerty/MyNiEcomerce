@@ -199,10 +199,10 @@ body.NB_GL:not(.low-perf) .bl-card::after{content:'';position:absolute;inset:0;z
 .RD_P1{font-size:1.05rem;line-height:1.6;color:var(--RD_MF);max-width:34em;margin:0}
 .RD_SC1{padding:48px 0 0}
 
-@keyframes FI1{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-#content>*{animation:FI1 .25s ease}
-@keyframes AN1k{from{opacity:0;transform:translateX(var(--d,0))}to{opacity:1;transform:none}}
-.AN1{animation:AN1k .25s ease backwards}
+@keyframes FI1{from{transform:scale(.96)}}
+#content>*{animation:FI1 .2s cubic-bezier(.16,1,.3,1);transform-origin:50% 0}
+@keyframes AN1k{from{transform:translateX(var(--d,0)) scale(.96)}}
+.AN1{animation:AN1k .25s ease backwards;transform-origin:50% 0}
 
 dialog{border:1px solid var(--RD_L);border-radius:var(--r-lg);background:var(--RD_DG);color:var(--RD_F);padding:22px;width:800px;max-width:calc(100vw - 32px);box-shadow:0 20px 60px rgba(0,0,0,.5),var(--GL_IN);backdrop-filter:var(--BF_DG)}
 dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:var(--BF_BD)}
@@ -239,10 +239,11 @@ body:not(.NB_GL) .content:has(.GL_P1)::before{display:none}
 
 @property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
 @keyframes FR1{to{--a:360deg}}
+.FR_I1{--FR_N1:infinite}
 @supports (background-clip:border-area){
 :is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.TB1>label,.NB_CX button):is(.act,[aria-pressed=true],[aria-current=page],:checked+label,.GL_C,.PL1_A),:is(.RD_B1,.PL1,._nb,.gi-ad,.NB_TM):is(.act,[aria-pressed=true],[aria-current=page],:checked+label,.GL_C,.PL1_A),.NB_I[aria-current=page]{border-color:#0000;background-image:linear-gradient(var(--RD_BS),var(--RD_BS)),var(--GL_RC);background-clip:padding-box,border-area;background-origin:border-box}
 @media(prefers-reduced-motion:no-preference){
-body:not(.low-perf) :is(:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.TB1>label,.NB_CX button):is(.act,[aria-pressed=true],[aria-current=page],:checked+label,.GL_C,.PL1_A),:is(.RD_B1,.PL1,._nb,.gi-ad,.NB_TM):is(.act,[aria-pressed=true],[aria-current=page],:checked+label,.GL_C,.PL1_A),.NB_I[aria-current=page]){--GL_RC:conic-gradient(from var(--a),var(--GL_CS));animation:FR1 4s linear var(--FR_N1,infinite)}
+body:not(.low-perf) :is(:is(.BOTON-L1,.view-all-button,.back-button,button:not([class]),.BOTON-M2,.BS2,.TB1>label,.NB_CX button):is(.act,[aria-pressed=true],[aria-current=page],:checked+label,.GL_C,.PL1_A),:is(.RD_B1,.PL1,._nb,.gi-ad,.NB_TM):is(.act,[aria-pressed=true],[aria-current=page],:checked+label,.GL_C,.PL1_A),.NB_I[aria-current=page]){--GL_RC:conic-gradient(from var(--a),var(--GL_CS));animation:FR1 4s linear var(--FR_N1,1)}
 }
 }
 

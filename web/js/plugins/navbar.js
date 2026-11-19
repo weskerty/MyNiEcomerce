@@ -38,7 +38,6 @@ function getRouteWA(){
 const css=document.createElement("style");
 css.textContent=`
 .NB1,.NB_HD{position:fixed;z-index:9999;display:flex;align-items:center;box-sizing:border-box;font-family:var(--font);color:var(--RD_F);text-shadow:0 1px 3px rgba(0,0,0,.35);border:1px solid var(--RD_L);background:var(--RD_C);backdrop-filter:var(--RD_GF);box-shadow:var(--RD_SH);transition:opacity .3s ease-out,transform .4s cubic-bezier(.4,0,.2,1),visibility .4s}
-.NB1{--FR_N1:1}
 .NB_HD{top:0;left:0;right:0;height:64px;padding:0 var(--RD_W);border-width:0 0 1px}
 .NB_HD .NB_CX{margin-left:auto;padding:0}
 body.NB_V{padding-top:64px}
@@ -269,14 +268,14 @@ function CX_S1(k,mk){
 }
 
 function _mkCart(){
-  const el=document.createElement('button');el.className='NB_CT GL_C';
+  const el=document.createElement('button');el.className='NB_CT GL_C FR_I1';
   el.innerHTML=`🛒 Finalizar Compra <span class=NB_BD>${CB_Q1()}</span>`;
   el.addEventListener('click',toggleModal);
   return el;
 }
 
 function _mkAsk(){
-  const el=document.createElement('button');el.className='NB_AK';
+  const el=document.createElement('button');el.className='NB_AK GL_C FR_I1';
   el.textContent='Pregunta 🤗';
   el.addEventListener('click',()=>{
     const wa=getRouteWA();
@@ -561,7 +560,7 @@ function initShare(){
     CB_E1().appendChild(el);
   }
   el.id="compartir-enlace";
-  el.innerHTML=`<div id="compartir-bloque"><a id="compartir-btn" href="#"><span class="share-btn view-all-button">Compartir</span></a></div>`;
+  el.innerHTML=`<div id="compartir-bloque"><a id="compartir-btn" href="#"><span class="share-btn view-all-button GL_C">Compartir</span></a></div>`;
   const a=document.getElementById("compartir-btn");
   if(!a||!navigator.share)return;
   a.removeAttribute("href");a.style.cursor="pointer";
