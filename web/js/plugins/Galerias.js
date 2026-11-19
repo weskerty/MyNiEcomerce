@@ -24,7 +24,7 @@ function loadGU(){
   });
   return _GUp;
 }
-const _S=document.createElement('style');
+const AP='.GL_AP:is([data-nl],body:not(.LS1) *)',_S=document.createElement('style');
 _S.textContent=`
 .contenedor-imagenes-animado{width:100%;position:relative;overflow:hidden}
 .gi-track{position:relative;height:${IH}px;cursor:grab;overflow:hidden;touch-action:pan-y}
@@ -54,11 +54,11 @@ _S.textContent=`
 .gi-section>.gi-hd>h2,.gi-hd-flat>h2{margin:0;font-size:1.4rem;color:var(--RD_F)}
 .gi-hd-flat{display:block;margin:0 0 14px;color:inherit;text-decoration:none;text-align:left}
 .GL_AP{--MW1:104px;--TH1:46px}
-.GL_AP .gallery-item{border:0;border-radius:0;background:none;box-shadow:none;overflow:visible}
-.GL_AP .gallery-item>img{border-radius:24%;box-shadow:0 10px 24px -10px rgba(0,0,0,.7),inset 0 0 0 1px rgba(255,255,255,.1);transition:filter .15s}
-@media(hover:hover){.GL_AP .gallery-item:hover{box-shadow:none}.GL_AP .gallery-item:hover>img{filter:brightness(1.12)}}
-.GL_AP .gallery-item .mc{grid-template-columns:1fr;align-content:start;padding:8px 2px 0;text-align:center}
-.GL_AP .gallery-item .mc p{font-size:.78rem;font-weight:500}
+${AP} .gallery-item{border:0;border-radius:0;background:none;box-shadow:none;overflow:visible}
+${AP} .gallery-item>img{border-radius:24%;box-shadow:0 10px 24px -10px rgba(0,0,0,.7),inset 0 0 0 1px rgba(255,255,255,.1);transition:filter .15s}
+@media(hover:hover){${AP} .gallery-item:hover{box-shadow:none}${AP} .gallery-item:hover>img{filter:brightness(1.12)}}
+${AP} .gallery-item .mc{grid-template-columns:1fr;align-content:start;padding:8px 2px 0;text-align:center}
+${AP} .gallery-item .mc p{font-size:.78rem;font-weight:500}
 .GL_AP :is(.gi-pc,.gi-ad){display:none}
 .GL_AP .BS1{margin-bottom:20px}
 body.LS1 .gi-grid-row:not([data-nl] *){grid-template-columns:repeat(auto-fill,minmax(${LW}px,1fr))}
