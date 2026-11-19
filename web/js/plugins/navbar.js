@@ -173,9 +173,8 @@ body.low-perf .cb-d[open]{animation:none}
 #cs .cb-s2{font-size:.9em;color:var(--RD_MF)}
 #cs .cb-er{font-size:1.3em;font-weight:700;color:var(--warn)}
 #compartir-bloque{margin:30px 0;padding:10px 0;display:flex;align-items:center;justify-content:center}
-#compartir-bloque a{text-decoration:none}
 #compartir-bloque .share-btn{margin:0;padding:11px 28px}
-.share-btn::before{content:'↗';font-size:1.15em;line-height:1}
+.share-btn::before{content:'↗';margin-right:6px;font-size:1.15em;line-height:1}
 .cb-bl{position:fixed;right:10px;bottom:8px;width:48px;height:48px;box-sizing:border-box;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font:inherit;cursor:pointer;z-index:9999;color:var(--RD_F);border:1px solid var(--RD_L);background:var(--RD_C);backdrop-filter:var(--RD_GF);box-shadow:var(--RD_SH);transition:opacity .4s ease-in,transform .4s cubic-bezier(.4,0,.2,1),visibility .4s}
 .cb-bl.cb-bh{opacity:0;transform:scale(.4);pointer-events:none;visibility:hidden;transition:opacity .25s ease-out,transform .4s cubic-bezier(.4,0,.2,1),visibility .4s}
 .cb-bl img{width:32px;height:32px}
@@ -555,17 +554,18 @@ function CB_E1(){return document.querySelector("#content .markdown-content")||do
 function initShare(){
   let el=document.getElementById("sh");
   if(!el){
-    if(!SHARE_ALL||!navigator.share||document.getElementById("compartir-enlace"))return;
+    if(!SHARE_ALL||document.getElementById("compartir-enlace"))return;
     el=document.createElement("div");
     CB_E1().appendChild(el);
   }
   el.id="compartir-enlace";
-  el.innerHTML=`<div id="compartir-bloque"><a id="compartir-btn" href="#"><span class="share-btn view-all-button GL_C">Compartir</span></a></div>`;
-  const a=document.getElementById("compartir-btn");
-  if(!a||!navigator.share)return;
-  a.removeAttribute("href");a.style.cursor="pointer";
-  function onSh(e){e.preventDefault();const t=el.dataset.t;navigator.share(t?{text:t,url:location.href}:{url:location.href});}
-  a.addEventListener("click",onSh);
+  el.innerHTML=`<div id="compartir-bloque"><button id="compartir-btn" type="button" class="share-btn view-all-button GL_C">Compartir</button></div>`;
+  const b=document.getElementById("compartir-btn");
+  b.addEventListener("click",()=>{
+    const t=el.dataset.t,u=location.href;
+    if(navigator.share)return navigator.share(t?{text:t,url:u}:{url:u}).catch(()=>{});
+    navigator.clipboard.writeText(t?t+" "+u:u).then(()=>{b.textContent="Link copiado";setTimeout(()=>{b.textContent="Compartir"},2000)}).catch(()=>{});
+  });
 }
 
 function CB_A1(){
