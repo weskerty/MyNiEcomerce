@@ -17,6 +17,9 @@ EasyMDE/easymde.min.css|https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.
 DOMPurify/purify.min.js|https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js
 Leaflet/leaflet.js|https://cdn.jsdelivr.net/npm/leaflet@1/dist/leaflet.js
 Leaflet/leaflet.css|https://cdn.jsdelivr.net/npm/leaflet@1/dist/leaflet.css
+Leaflet/leaflet.markercluster.js|https://cdn.jsdelivr.net/npm/leaflet.markercluster@1/dist/leaflet.markercluster.js
+Leaflet/MarkerCluster.css|https://cdn.jsdelivr.net/npm/leaflet.markercluster@1/dist/MarkerCluster.css
+Leaflet/MarkerCluster-LICENCE.txt|https://cdn.jsdelivr.net/npm/leaflet.markercluster@1/MIT-LICENCE.txt
 Cropper/cropper.min.js|https://cdn.jsdelivr.net/npm/cropperjs@1/dist/cropper.min.js
 Cropper/cropper.min.css|https://cdn.jsdelivr.net/npm/cropperjs@1/dist/cropper.min.css
 Html5Qrcode/html5-qrcode.min.js|https://cdn.jsdelivr.net/npm/html5-qrcode@2/html5-qrcode.min.js

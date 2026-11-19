@@ -21,7 +21,8 @@
 #rc-map.leaflet-container{background:#1a1f2e}
 #rc-map .leaflet-control-attribution{background:rgba(10,12,20,.75)!important;color:rgba(255,255,255,.45)!important;font-size:.6em!important}
 #rc-map .leaflet-control-attribution a{color:rgba(255,255,255,.55)!important}
-.rc-pn{font:20px/1 var(--font);text-align:center;white-space:nowrap;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));transition:font-size .15s}
+.rc-pn{position:relative;font:20px/1 var(--font);text-align:center;white-space:nowrap;transition:font-size .15s}
+.rc-pn b{position:absolute;top:-6px;right:-8px;min-width:16px;padding:0 3px;border-radius:8px;background:#4ade80;color:#000;font:700 11px/16px sans-serif}
 .rc-pn.on{font-size:30px;filter:drop-shadow(0 0 6px rgba(74,222,128,.9))}
 #rc-panel{margin-top:12px;padding:14px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
 .rc-e{margin:12px 0;text-align:center;color:rgba(255,255,255,.4)}
@@ -49,7 +50,7 @@ const MAT_EMOJI={electronico:'🔌',plastico:'🧴',papel:'📄',vidrio:'🍶',m
 const MAT_LABEL={electronico:'Electronicos',plastico:'Plastico',papel:'Papel',vidrio:'Vidrio',metal:'Metal',pilas:'Pilas',organico:'Organico',aceite:'Aceite',ropa:'Ropa'};
 const PNL=document.getElementById('rc-panel'),AN=window.__AN1;
 
-let GR=[],map=null,MKS=[],SEL=null,_filter='',_matFilter='',_myPos=null,myMarker=null;
+let GR=[],map=null,MKS=[],CG=null,SEL=null,_filter='',_matFilter='',_myPos=null,myMarker=null;
 
 function X(t,c,s){const e=document.createElement(t);if(c)e.className=c;if(s!=null)e.textContent=s;return e;}
 function em(p){return p.c==='reciclaje'&&_matFilter?MAT_EMOJI[_matFilter]:CAT_EMOJI[p.c];}
@@ -57,10 +58,10 @@ function lbl(p){return p.c==='reciclaje'&&p.m?p.m.map(k=>`${MAT_EMOJI[k]} ${MAT_
 function match(p){return(!_filter||p.c===_filter)&&(_filter!=='reciclaje'||!_matFilter||(p.m||[]).includes(_matFilter));}
 function vis(g){return g.its.some(match);}
 
-function mkIcon(g,sel){
-  const e=[...new Set(g.its.filter(match).map(em))].slice(0,3);
+function mkIcon(gs,sel,n){
+  const e=[...new Set(gs.flatMap(g=>g.its.filter(match).map(em)))].slice(0,3);
   const w=(sel?30:20)*e.length+4;
-  return L.divIcon({html:`<div class="rc-pn${sel?' on':''}">${e.join('')}</div>`,className:'',iconSize:[w,sel?32:24],iconAnchor:[w/2,sel?16:12]});
+  return L.divIcon({html:`<div class="rc-pn${sel?' on':''}">${e.join('')}${n?`<b>${n}</b>`:''}</div>`,className:'',iconSize:[w,sel?32:24],iconAnchor:[w/2,sel?16:12]});
 }
 
 function showDetail(g){
@@ -88,10 +89,10 @@ function emptyPanel(t){PNL.textContent='';PNL.append(X('p','rc-e',t));}
 
 function selectPin(g){
   const prev=MKS.find(m=>m.g===SEL);
-  if(prev)prev.m.setIcon(mkIcon(prev.g,false));
+  if(prev)prev.m.setIcon(mkIcon([prev.g],false));
   SEL=g;
   const cur=MKS.find(m=>m.g===g);
-  if(cur)cur.m.setIcon(mkIcon(g,true));
+  if(cur)cur.m.setIcon(mkIcon([g],true));
   showDetail(g);
   PNL.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
@@ -99,12 +100,11 @@ function selectPin(g){
 function applyFilter(){
   SEL=null;
   emptyPanel('📍 Selecciona un punto en el mapa');
-  const v=[];
-  MKS.forEach(({g,m})=>{
-    if(vis(g)){m.setIcon(mkIcon(g,false));if(!map.hasLayer(m))m.addTo(map);v.push([g.lat,g.lng]);}
-    else if(map.hasLayer(m))m.remove();
-  });
-  if(v.length)map.fitBounds(v,{padding:[32,32],maxZoom:13});
+  CG.clearLayers();
+  const v=MKS.filter(({g})=>vis(g));
+  v.forEach(({g,m})=>m.setIcon(mkIcon([g],false)));
+  CG.addLayers(v.map(x=>x.m));
+  if(v.length)map.fitBounds(v.map(({g})=>[g.lat,g.lng]),{padding:[32,32],maxZoom:13});
   else emptyPanel('Sin lugares de este tipo aun');
 }
 
@@ -137,10 +137,9 @@ function initMap(){
     attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom:19
   }).addTo(map);
-  GR.forEach(g=>{
-    const m=L.marker([g.lat,g.lng],{icon:mkIcon(g,false)}).on('click',()=>selectPin(g)).addTo(map);
-    MKS.push({g,m});
-  });
+  CG=L.markerClusterGroup({showCoverageOnHover:false,iconCreateFunction:c=>mkIcon(c.getAllChildMarkers().map(m=>m.options.g),false,c.getChildCount())}).addTo(map);
+  GR.forEach(g=>MKS.push({g,m:L.marker([g.lat,g.lng],{icon:mkIcon([g],false),g}).on('click',()=>selectPin(g))}));
+  CG.addLayers(MKS.map(x=>x.m));
   addMyMarker();
   const AD=document.getElementById('rc-add');
   map.on('moveend',()=>{const c=map.getCenter();AD.href=`https://www.openstreetmap.org/note/new#map=${map.getZoom()}/${c.lat.toFixed(5)}/${c.lng.toFixed(5)}`;});
@@ -149,20 +148,20 @@ function initMap(){
   map.fitBounds(pts,{padding:[32,32],maxZoom:13});
 }
 
-const LF_L='web/js/lib/Leaflet/',LF_C='https://cdn.jsdelivr.net/npm/leaflet@1/dist/';
+const LF_L='web/js/lib/Leaflet/',LF_C='https://cdn.jsdelivr.net/npm/leaflet@1/dist/',MC_C='https://cdn.jsdelivr.net/npm/leaflet.markercluster@1/dist/';
 function loadLeaflet(cb){
-  if(window.L){cb();return;}
-  const css=document.createElement('link');
-  css.rel='stylesheet';css.href=LF_L+'leaflet.css';
-  css.onerror=()=>{css.href=LF_C+'leaflet.css'};
-  document.head.appendChild(css);
-  const add=(src,fb)=>{
+  if(window.L?.MarkerClusterGroup){cb();return;}
+  const css=(f,c)=>{const l=document.createElement('link');l.rel='stylesheet';l.href=LF_L+f;l.onerror=()=>{l.href=c+f};document.head.appendChild(l);};
+  const add=(f,c,ok,fb)=>{
     const s=document.createElement('script');
-    s.src=src;s.onload=cb;
-    s.onerror=fb||(()=>emptyPanel('Error Mapa'));
+    s.src=(fb?c:LF_L)+f;s.onload=ok;
+    s.onerror=fb?()=>emptyPanel('Error Mapa'):()=>add(f,c,ok,1);
     document.head.appendChild(s);
   };
-  add(LF_L+'leaflet.js',()=>add(LF_C+'leaflet.js'));
+  const mc=()=>{css('MarkerCluster.css',MC_C);add('leaflet.markercluster.js',MC_C,cb);};
+  if(window.L)return mc();
+  css('leaflet.css',LF_C);
+  add('leaflet.js',LF_C,mc);
 }
 
 function selectCat(cat){
@@ -190,7 +189,7 @@ function LZ_B1(L){
 }
 
 document.addEventListener('contentUnload',function(){
-  if(map){map.remove();map=null;MKS=[];}
+  if(map){map.remove();map=null;MKS=[];CG=null;}
   myMarker=null;_myPos=null;
 },{once:true});
 

@@ -27,6 +27,8 @@ const PRE_PERM=[
 'web/js/lib/MiniSearch/index.js',
 'web/js/lib/Leaflet/leaflet.js',
 'web/js/lib/Leaflet/leaflet.css',
+'web/js/lib/Leaflet/leaflet.markercluster.js',
+'web/js/lib/Leaflet/MarkerCluster.css',
 'web/404.html',
 'web/recursos/favicon.ico',
 'web/recursos/fondos/wallpaper.webp',
