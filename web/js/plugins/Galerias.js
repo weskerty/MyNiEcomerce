@@ -44,7 +44,7 @@ _S.textContent=`
 .gallery-item .mc p{align-self:start}
 .gallery-item .mc p{grid-column:1/-1;margin:0;font-size:.82rem;font-weight:500;line-height:1.25;color:var(--RD_F);word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .gi-pc{font-size:.85rem;font-weight:700;color:var(--RD_F);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gi-ad{grid-column:2;grid-row:2;display:grid;place-items:center;box-sizing:border-box;width:28px;height:28px;border-radius:8px;font-size:1.15rem;font-weight:500;line-height:1}
+.gi-ad{grid-column:2;grid-row:2;align-self:end;display:grid;place-items:center;box-sizing:border-box;width:44px;height:40px;margin:0 -10px -8px 0;border-width:1px 0 0 1px;border-radius:14px 0 0 0;font-size:1.3rem;font-weight:500;line-height:1}
 .gi-ad.gi-ok{background-color:var(--ok);border-color:var(--ok)}
 .gi-grid-row .gallery-item{width:100%;height:auto}
 .gallery-item.gi-ph{height:${ITEM}px}
@@ -65,8 +65,9 @@ body.LS1 .gi-grid-row:not([data-nl] *){grid-template-columns:repeat(auto-fill,mi
 body.LS1 .gi-grid-row:not([data-nl] *) .gallery-item{flex-direction:row;align-items:center;width:100%;height:calc(var(--LR_I) + 2px);border-radius:14px}
 body.LS1 .gi-grid-row:not([data-nl] *) .gallery-item>img{width:var(--LR_I);height:var(--LR_I);aspect-ratio:auto}
 body.LS1 .gi-grid-row:not([data-nl] *) .mc{flex:1;align-self:stretch;grid-template-rows:auto auto;align-content:center;padding:0 10px 0 var(--LR_P)}
+body.LS1 .gi-grid-row:not([data-nl] *) .mc:has(.gi-ad){padding-right:58px}
 body.LS1 .gi-grid-row:not([data-nl] *) .mc p{grid-column:1}
-body.LS1 .gi-grid-row:not([data-nl] *) .gi-ad{grid-row:1/3}`;
+body.LS1 .gi-grid-row:not([data-nl] *) .gi-ad{position:absolute;top:0;right:0;bottom:0;width:48px;height:auto;margin:0;border-width:0 0 0 1px;border-radius:0}`;
 document.head.appendChild(_S);
 const IO=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){IO.unobserve(x.target);x.target.__ld&&x.target.__ld()}})},{rootMargin:'300px'});
 let _hidden=false;document.addEventListener('visibilitychange',()=>{_hidden=document.hidden});
@@ -78,11 +79,11 @@ function fCD0(idx){
 }
 function nN(n){const m=n.match(/NB=(.+)/);return m?m[1].trim():n}
 function mL(p){return p.replace(/\.[^.]+$/,'.html')}
-function VH1(j,k){const g=document.createElement('div');g.className='grid-gallery';g.dataset.title=g.dataset.galleryKey=k;g.dataset.jsonPath=j;return'<div style="text-align:center">'+g.outerHTML+'<a href="#" class="back-button GB1">← Volver al Inicio</a></div><script>window.__KP1?.()</script>'}
+function VH1(j,k){const g=document.createElement('div');g.className='grid-gallery';g.dataset.title=g.dataset.galleryKey=k;g.dataset.jsonPath=j;return'<div style="text-align:center"><div class="GL_P1">'+g.outerHTML+'</div><a href="#" class="back-button GB1">← Volver al Inicio</a></div><script>window.__KP1?.()</script>'}
 window.__VR1?.(r=>{try{const d=decodeURIComponent(r),m=!d.includes('..')&&d.match(/^(web\/.*\/)([^/]+)\/Grilla\.vr\.html$/);return m&&VH1(m[1]+'data.json',m[2])}catch{}});
 function VG1(c){if(c.dataset.href!=null)return;const j=c.dataset.jsonPath||DJ,k=c.dataset.galleryKey||c.id.replace(/-gallery|-grid/g,'');if(k&&/^web\/.*data\.json$/.test(j))c.dataset.href='#'+j.replace(/data\.json$/,'')+k+'/Grilla.vr.html'}
 function GH1(c,k,v){const o=history.state?.G?.[k]||[null,0];if(c.isConnected&&(o[0]!==v[0]||o[1]!==v[1]))window.__HS2('G',{...history.state?.G,[k]:v})}
-function BR1(){const ct=document.getElementById('content');if(ct&&!ct.querySelector('.GV1'))ct.insertAdjacentHTML('afterbegin','<a href="#" class="_nb l GB1" aria-label="Volver">🔙</a><a href="#" class="_nb r GV1" aria-label="Lista o cuadricula"></a>')}
+function BR1(){const ct=document.getElementById('content');if(ct&&!ct.querySelector('.GV1'))(ct.querySelector('.GL_P1')||ct).insertAdjacentHTML('afterbegin','<a href="#" class="_nb l GB1" aria-label="Volver">🔙</a><a href="#" class="_nb r GV1" aria-label="Lista o cuadricula"></a>')}
 const _PC=/PC=(\d+)/;
 function fPC(n){const m=n.match(_PC);return m?m[1].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+' Gs':''}
 let _GF=window.GridFit||null,_GFp=null;
@@ -386,7 +387,7 @@ function decorate(c){
   const hd=document.createElement(href?'a':'div');
   hd.className='gi-hd';
   if(href)hd.href=href;
-  const h2=document.createElement('h2');h2.textContent=title+' ➡️';
+  const h2=document.createElement('h2');h2.textContent=title+(href?' ➡️':'');
   hd.appendChild(h2);
   sec.insertBefore(hd,c);
   c._h2=h2;c._baseTitle=title;

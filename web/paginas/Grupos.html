@@ -296,6 +296,7 @@ body.low-perf .rv-dt{backdrop-filter:none;background:#111114}
 #AG_C1 b{color:rgba(255,255,255,.5)}
 .AG_E1{padding:0;border:1px solid rgba(255,140,0,.35);border-radius:8px;background:rgba(255,140,0,.12);color:#ffaa33;font:inherit;font-weight:700;cursor:pointer}
 .AG_E3{border-color:rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:rgba(255,255,255,.35)}
+.AG_E1[aria-pressed=true]{border-color:#ffaa33;background-color:rgba(255,140,0,.45);color:#fff}
 span.AG_H2{line-height:28px}
 .AG_H2{border:1px solid #0000;border-radius:8px;background-image:var(--GL_R),linear-gradient(#0000,#0000);background-clip:border-area,padding-box;background-origin:border-box}
 @supports not (background-clip:border-area){.AG_H2{border-color:rgba(255,255,255,.45)}}
@@ -347,7 +348,7 @@ const LF_L='web/js/lib/Leaflet/',LF_C='https://cdn.jsdelivr.net/npm/leaflet@1/di
 const AG_AD=(src,ok,fb)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=fb;document.head.appendChild(s);};
 let PU1;
 const EVM=new Map();
-let AY=0,AM=0,MP=null,MK=null,LP=null,GR=[],_ls=[],MY=null,MM=null,_fd=null;
+let AY=0,AM=0,MP=null,MK=null,LP=null,GR=[],_ls=[],MY=null,MM=null,_fd=null,_fk=null;
 const AG_PS=x=>x.dt<new Date().setHours(0,0,0,0);
 const AG_IM=(e,y,m,d,f)=>e.ds.some(x=>x.dt.getFullYear()===y&&x.dt.getMonth()===m&&(d==null||x.dt.getDate()===d)&&!(f&&AG_PS(x)));
 
@@ -407,7 +408,7 @@ function AG_K(it){
 function AG_NB(g){
   const c=MP.latLngToContainerPoint(g.p),S=new Set();
   for(const h of GR)if(MP.latLngToContainerPoint(h.p).distanceTo(c)<40)h.its.forEach(i=>S.add(i));
-  AG_F(i=>S.has(i),`📍 ${S.size} ${S.size>1?'eventos en la zona':'evento'}`);
+  AG_F(i=>S.has(i),`📍 ${S.size} ${S.size>1?'eventos en la zona':'evento'}`,null,g);
 }
 
 function AG_MR(){
@@ -444,7 +445,8 @@ function AG_R(){
     const td=y===hy.getFullYear()&&m===hy.getMonth()&&d===hy.getDate()?'AG_H2 GL_C':'';
     if(!ds.has(d)){AG_C.append(AG_X('span',td,d));continue;}
     const b=AG_X('button','AG_E1 '+td+(ds.get(d)?'':' AG_E3'),d);
-    b.onclick=()=>AG_F(i=>{const e=EVM.get(i);return e&&AG_IM(e,y,m,d);},`📅 ${d}/${m+1}/${y}`,[y,m,d]);
+    b._k=y+'-'+m+'-'+d;b.setAttribute('aria-pressed',b._k===_fk);
+    b.onclick=()=>AG_F(i=>{const e=EVM.get(i);return e&&AG_IM(e,y,m,d);},`📅 ${d}/${m+1}/${y}`,[y,m,d],b._k);
     AG_C.append(b);
   }
   AG_MR();
@@ -504,8 +506,10 @@ function AG_MO(){
   MO.hidden=_n>=_ls.length;
 }
 
-function AG_F(f,lb,dd){
-  _fd=dd||null;
+function AG_F(f,lb,dd,k){
+  if(f&&k===_fk)return AG_F();
+  _fk=f?k:null;_fd=dd||null;
+  for(const b of AG_C.querySelectorAll('.AG_E1'))b.setAttribute('aria-pressed',b._k===_fk);
   _ls=typeof f==='function'?items.filter(f):items;
   _n=0;GD.textContent='';FH.textContent='';
   if(_ls!==items){const b=AG_X('button','','Ver todas');b.onclick=()=>AG_F();FH.append(AG_X('h2','',lb),b);}

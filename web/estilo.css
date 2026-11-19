@@ -127,8 +127,8 @@ body.LS1 .GV1::before{content:'▦'}
 ._nb{position:absolute;top:16px;z-index:10;display:grid;place-items:center;width:40px;height:40px;border-radius:10px;font-size:1.1rem}
 ._nb.l{left:16px}
 ._nb.r{right:16px}
-body.NB_GL ._nb.l{left:var(--RD_W)}
-body.NB_GL ._nb.r{right:var(--RD_W)}
+body.NB_GL .content>._nb.l{left:var(--RD_W)}
+body.NB_GL .content>._nb.r{right:var(--RD_W)}
 .content:has(>._nb){padding-top:72px}
 
 .PG1{display:flex;justify-content:center;align-items:center;gap:6px;margin:28px 0 8px}
@@ -231,6 +231,9 @@ ins.adsbygoogle[data-ad-status=unfilled]{display:none!important}
 body.NB_GL:not(.low-perf) #sh-bar{backdrop-filter:var(--RD_GF)}
 .GL_P1,.gi-section,.grid-gallery:not(.gi-section *){padding:24px;border:1px solid var(--RD_L);border-radius:24px;background:var(--RD_C);box-shadow:var(--RD_SH)}
 @media(max-width:600px){.GL_P1,.gi-section,.grid-gallery:not(.gi-section *){padding:16px 12px}}
+.GL_P1:has(>._nb){position:relative;padding-top:80px}
+.GL_P1>._nb{top:24px}.GL_P1>._nb.l{left:24px}.GL_P1>._nb.r{right:24px}
+@media(max-width:600px){.GL_P1:has(>._nb){padding-top:72px}.GL_P1>._nb{top:16px}.GL_P1>._nb.l{left:12px}.GL_P1>._nb.r{right:12px}}
 :is(.GL_P1,.gi-section,.markdown-content) :is(.GL_P1,.gi-section,.grid-gallery){margin-top:0;padding:0;border:0;background:none;box-shadow:none}
 body.NB_GL:not(.low-perf) :is(.GL_P1,.gi-section,.grid-gallery:not(.gi-section *)):not(:is(.GL_P1,.gi-section,.markdown-content) *),body:not(.low-perf) .content:has(.GL_P1) .GL_P1:not(.GL_P1 *){backdrop-filter:var(--RD_GF)}
 body:not(.NB_GL) .content :is(.gi-section,.grid-gallery:not(.gi-section *)):not(.GL_P1 *){background:none;box-shadow:none}
