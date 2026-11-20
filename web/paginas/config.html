@@ -17,6 +17,8 @@ label.ST_CI{cursor:pointer}
 <label class="ST_CI"><span class="nm">🌙 Modo oscuro (sin transparencia ni animaciones)</span><input type="checkbox" id="ST_SW"></label>
 <label class="ST_CI"><span class="nm">☰ Modo lista (galerias y blog)</span><input type="checkbox" id="ST_LS"></label>
 <label class="ST_CI"><span class="nm">💬 Abrir comentarios automaticamente</span><input type="checkbox" id="ST_DQ"></label>
+<label class="ST_CI"><span class="nm">📅 Agenda Predeterminada</span><select id="ST_CA"><option value="">Google Calendar</option><option value="o">Outlook</option><option value="i">Archivo .ics (cualquier app)</option></select></label>
+<label class="ST_CI"><span class="nm">🗺️ Mapa Predeterminado</span><select id="ST_MA"><option value="">Google Maps</option><option value="a">App del celular (Android)</option><option value="w">Waze</option><option value="p">Apple Maps</option><option value="o">OpenStreetMap</option></select></label>
 <div class="ST_CI" id="FD_W1"><span class="nm">🖼️ Fondo de pantalla</span><button id="FD_B1">Elegir</button><button id="FD_R1">Restaurar</button><input type="file" id="FD_I1" accept="image/*" hidden></div>
 <details id="ST_ND" hidden>
 <summary>🔔 Notificaciones</summary>
@@ -103,6 +105,11 @@ label.ST_CI{cursor:pointer}
   const dqEl=$('ST_DQ');
   dqEl.checked=!!localStorage.getItem('DQ1');
   dqEl.onchange=()=>dqEl.checked?localStorage.setItem('DQ1','1'):localStorage.removeItem('DQ1');
+
+  [['ST_CA','CA1'],['ST_MA','MA1']].forEach(([i,k])=>{
+    const s=$(i);s.value=localStorage.getItem(k)||'';
+    s.onchange=()=>s.value?localStorage.setItem(k,s.value):localStorage.removeItem(k);
+  });
 
   const FD_U='web/recursos/fondos/wallpaper.webp';
   async function FD_C1(){for(const k of await caches.keys()){const c=await caches.open(k);if(await c.match(FD_U))return c}throw 0}

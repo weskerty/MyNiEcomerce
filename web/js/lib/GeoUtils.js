@@ -21,5 +21,6 @@ function encode(lat,lon,precision){
   }
   return out;
 }
-window.GeoUtils={haversine,parseCT,encode};
+function MU1(k,la,lo,n){const q=la+','+lo,t=n?encodeURIComponent(n):'';return k==='a'?`geo:${q}?q=${q}${t&&`(${t})`}`:k==='w'?`https://waze.com/ul?ll=${q}&navigate=yes`:k==='p'?`https://maps.apple.com/?ll=${q}&q=${t||q}`:k==='o'?`https://www.openstreetmap.org/?mlat=${la}&mlon=${lo}#map=17/${la}/${lo}`:`https://www.google.com/maps/search/?api=1&query=${q}`}
+window.GeoUtils={haversine,parseCT,encode,MU1};
 }();

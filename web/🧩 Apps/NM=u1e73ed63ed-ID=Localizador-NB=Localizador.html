@@ -68,16 +68,16 @@ function showDetail(g){
   PNL.textContent='';
   const tg=X('div','rc-tags');
   [...new Set(g.its.flatMap(lbl))].forEach(t=>tg.append(X('span','rc-tag',t)));
-  PNL.append(tg,X('h3','rc-nm',[...new Set(g.its.map(q=>q.n||CAT_LABEL[q.c]))].join(' / ')));
+  const nm=[...new Set(g.its.map(q=>q.n||CAT_LABEL[q.c]))].join(' / ');
+  PNL.append(tg,X('h3','rc-nm',nm));
   [...new Set(g.its.map(q=>q.h).filter(Boolean))].forEach(h=>PNL.append(X('div','rc-row','🕐 '+h)));
   const f=g.its.find(q=>q.f!=null),w=g.its.find(q=>q.p||q.w||q.g)||{};
   if(f)PNL.append(X('div','rc-row',f.f?'💲 Pago':'💲 Gratis'));
   if(w.p)PNL.append(X('div','rc-row','📞 +'+w.p));
-  const q=`${g.lat},${g.lng}`,ac=X('div','rc-acts');
+  const ac=X('div','rc-acts'),M=k=>GeoUtils.MU1(k,g.lat,g.lng,nm),MN={a:'Abrir en app','':'Google Maps',p:'Apple Maps',w:'Waze',o:'OpenStreetMap'};
   const A=(c,h,t,b)=>{const a=X('a','lk '+c,t);a.href=h;if(b){a.target='_blank';a.rel='noopener noreferrer';}ac.append(a);};
-  A('lk-mp',`geo:${q}?q=${q}`,'Abrir en app');
-  A('lk-mp',`https://www.google.com/maps?q=${q}`,'Google Maps',1);
-  A('lk-mp',`https://maps.apple.com/?q=${q}`,'Apple Maps',1);
+  let mk='';try{mk=localStorage.getItem('MA1')||''}catch{}
+  (mk?[mk]:['a','','p']).forEach(k=>A('lk-mp',M(k),MN[k],k!=='a'));
   if(w.w){A('lk-wa',`https://wa.me/${w.w}`,'WhatsApp',1);A('lk-sm',`sms:+${w.w}`,'SMS');}
   if(w.p)A('lk-tl',`tel:+${w.p}`,'Llamar');
   if(w.g)A('lk-tg',`https://t.me/${w.g}`,'Telegram',1);
@@ -195,9 +195,8 @@ document.addEventListener('contentUnload',function(){
 
 geoLocate();
 
-fetch(JSON_URL)
-  .then(r=>r.json())
-  .then(L=>{
+Promise.all([fetch(JSON_URL).then(r=>r.json()),window.GeoUtils||new Promise((ok,ko)=>{const s=document.createElement('script');s.src='web/js/lib/GeoUtils.js';s.onload=ok;s.onerror=ko;document.head.appendChild(s)})])
+  .then(([L])=>{
     const G={};
     L.forEach(p=>{(G[p.la+','+p.lo]??={lat:p.la,lng:p.lo,its:[]}).its.push(p);});
     GR=Object.values(G);

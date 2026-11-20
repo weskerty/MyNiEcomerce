@@ -266,6 +266,8 @@
   </a>
 </div>
 </div>
+
+<div class="GL_P1"><a href="web/paginas/config.html">Cambiar Calendario</a> · <a href="web/paginas/config.html">Cambiar Mapa</a></div>
 </aside>
 </div>
 
@@ -424,6 +426,14 @@ function AG_PU(){return PU1??=window.DOMPurify?Promise.resolve():new Promise(ok=
 function AG_G(e,x){
   const z=n=>String(n).padStart(2,'0'),F=x=>`${x.getFullYear()}${z(x.getMonth()+1)}${z(x.getDate())}`,U=x=>`${F(x)}T${z(x.getHours())}${z(x.getMinutes())}00`;
   const n=new Date(x.dt);n.setDate(n.getDate()+1);
+  let c='';try{c=localStorage.getItem('CA1')||''}catch{}
+  const d=x.dt,s=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate(),d.getHours()+3,d.getMinutes())),f=new Date(+s+72e5),I=t=>t.toISOString().slice(0,19)+'Z',D=t=>`${t.getFullYear()}-${z(t.getMonth()+1)}-${z(t.getDate())}`;
+  if(c==='o')return'https://outlook.live.com/calendar/0/action/compose?'+new URLSearchParams({rru:'addevent',subject:e.t,startdt:x.ad?D(d):I(s),enddt:x.ad?D(n):I(f),allday:!!x.ad,body:e.l||'',location:e.p?e.p.join(','):''});
+  if(c==='i'){
+    const E=t=>String(t).replace(/[\\;,]/g,'\\$&').replace(/\r?\n/g,'\\n'),T=t=>I(t).replace(/[-:]/g,''),FO=l=>{let o='',k=0;for(const h of l){const b=new TextEncoder().encode(h).length;if(k+b>75){o+='\r\n ';k=1}o+=h;k+=b}return o};
+    const v=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Che Agana//Eventos//ES','BEGIN:VEVENT','UID:'+F(d)+'-'+(e.l||e.t).replace(/[^A-Za-z0-9]/g,'').slice(-40)+'@cheagana.com','DTSTAMP:'+T(new Date()),...(x.ad?['DTSTART;VALUE=DATE:'+F(d),'DTEND;VALUE=DATE:'+F(n)]:['DTSTART:'+T(s),'DTEND:'+T(f)]),'SUMMARY:'+E(e.t),...(e.l?['DESCRIPTION:'+E(e.l)]:[]),...(e.p?['LOCATION:'+E(e.p.join(',')),'GEO:'+e.p.join(';')]:[]),'END:VEVENT','END:VCALENDAR'];
+    return'data:text/calendar;charset=utf-8,'+encodeURIComponent(v.map(FO).join('\r\n')+'\r\n');
+  }
   const q={action:'TEMPLATE',text:e.t,dates:x.ad?`${F(x.dt)}/${F(n)}`:`${U(x.dt)}/${U(new Date(+x.dt+72e5))}`,ctz:'America/Asuncion',details:e.l};
   if(e.p)q.location=e.p.join(',');
   return'https://calendar.google.com/calendar/render?'+new URLSearchParams(q);
@@ -435,13 +445,14 @@ function AG_K(it){
   const e=EVM.get(it),mu=gH(it,'description').replace(/&amp;/g,'&').match(AG_MU);
   if(!e&&!mu)return'';
   const k=AG_X('div','AG_K1','');let p=k;
-  const A=(c,h,t,p=k)=>{const a=AG_X('a','lk '+c,t);a.href=h;a.target='_blank';a.rel='noopener noreferrer';p.append(a);};
+  const A=(c,h,t,p=k)=>{const a=AG_X('a','lk '+c,t);a.href=h;if(h.startsWith('data:'))a.download=(e.t.replace(/[\\/:*?"<>|]/g,'').trim().slice(0,60)||'Evento')+'.ics';else if(/^https?:/.test(h)){a.target='_blank';a.rel='noopener noreferrer'}p.append(a);};
   if(e){
     const N=e.ds.length;
     if(N>1){const b=AG_X('button','lk lk-ag',`Agendar (${N}) ▾`),c=p=AG_X('div','AG_K1','');b.onclick=()=>c.classList.toggle('on');k.append(b);}
     for(const x of e.ds)A('lk-ag',AG_G(e,x),'Agendar'+(N>1?` ${x.dt.getDate()}/${x.dt.getMonth()+1}`:'')+(x.ad?'':` ${String(x.dt.getHours()).padStart(2,'0')}:${String(x.dt.getMinutes()).padStart(2,'0')}`),p);
   }
-  if(mu)A('lk-mp',mu[0],'Maps');
+  let m='';try{m=localStorage.getItem('MA1')||''}catch{}
+  if(mu)A('lk-mp',m&&e?.p&&window.GeoUtils?GeoUtils.MU1(m,e.p[0],e.p[1],e.t):mu[0],'Maps');
   if(p!==k)k.append(p);
   return k;
 }
@@ -634,7 +645,7 @@ async function wOPFS(){
 async function load(){
   for(let i=0;i<6;i++)GD.append(AG_X('div','rv-sk',''));
   try{
-    const res=await fetch(RSS_URL);
+    const[res]=await Promise.all([fetch(RSS_URL),window.GeoUtils||new Promise(ok=>AG_AD('web/js/lib/GeoUtils.js',ok,ok))]);
     if(!res.ok)throw 0;
     const doc=new DOMParser().parseFromString(await res.text(),'text/xml');
     if(doc.querySelector('parseerror'))throw 0;
