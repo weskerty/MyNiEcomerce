@@ -44,7 +44,7 @@ _S.textContent=`
 .gallery-item .mc p{align-self:start}
 .gallery-item .mc p{grid-column:1/-1;margin:0;font-size:.82rem;font-weight:500;line-height:1.25;color:var(--RD_F);word-break:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .gi-pc{font-size:.85rem;font-weight:700;color:var(--RD_F);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gi-ad{grid-column:2;grid-row:2;align-self:end;display:grid;place-items:center;box-sizing:border-box;width:44px;height:40px;margin:0 -10px -8px 0;border-width:1px 0 0 1px;border-radius:14px 0 0 0;font-size:1.3rem;font-weight:500;line-height:1}
+.gi-ad{grid-column:2;grid-row:2;align-self:end;display:grid;place-items:center;box-sizing:border-box;width:44px;max-width:none;height:40px;margin:0 -10px -8px 0;border-width:1px 0 0 1px;border-radius:14px 0 0 0;font-size:1.3rem;font-weight:500;line-height:1}
 .gi-ad.gi-ok{background-color:var(--ok);border-color:var(--ok)}
 .gi-grid-row .gallery-item{width:100%;height:auto}
 .gallery-item.gi-ph{height:${ITEM}px}
@@ -64,10 +64,9 @@ ${AP} .gallery-item .mc p{font-size:.78rem;font-weight:500}
 body.LS1 .gi-grid-row:not([data-nl] *){grid-template-columns:repeat(auto-fill,minmax(${LW}px,1fr))}
 body.LS1 .gi-grid-row:not([data-nl] *) .gallery-item{flex-direction:row;align-items:center;width:100%;height:calc(var(--LR_I) + 2px);border-radius:14px}
 body.LS1 .gi-grid-row:not([data-nl] *) .gallery-item>img{width:var(--LR_I);height:var(--LR_I);aspect-ratio:auto}
-body.LS1 .gi-grid-row:not([data-nl] *) .mc{flex:1;align-self:stretch;grid-template-rows:auto auto;align-content:center;padding:0 10px 0 var(--LR_P)}
+body.LS1 .gi-grid-row:not([data-nl] *) .mc{flex:1;align-self:stretch;grid-template-columns:1fr;grid-template-rows:auto auto;align-content:center;padding:0 10px 0 var(--LR_P)}
 body.LS1 .gi-grid-row:not([data-nl] *) .mc:has(.gi-ad){padding-right:58px}
-body.LS1 .gi-grid-row:not([data-nl] *) .mc p{grid-column:1}
-body.LS1 .gi-grid-row:not([data-nl] *) .gi-ad{position:absolute;top:0;right:0;bottom:0;width:48px;height:auto;margin:0;border-width:0 0 0 1px;border-radius:0}`;
+body.LS1 .gi-grid-row:not([data-nl] *) .gi-ad{position:absolute;top:0;right:0;bottom:0;align-self:stretch;width:48px;height:auto;margin:0;border-width:0 0 0 1px;border-radius:0}`;
 document.head.appendChild(_S);
 const IO=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){IO.unobserve(x.target);x.target.__ld&&x.target.__ld()}})},{rootMargin:'300px'});
 let _hidden=false;document.addEventListener('visibilitychange',()=>{_hidden=document.hidden});
