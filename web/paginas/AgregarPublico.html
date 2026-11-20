@@ -10,9 +10,9 @@
 <h1 class="NB_TT">🥳 Publicar Evento</h1>
 <div id="ag" class="AG1" hidden>
 <div data-v="nuevo">
-<div class="GL_P1"><h2>Que vas a publicar?</h2><div class="AG_K" id="pb-tp"></div><p class="AG_H" id="pb-th"></p></div>
-<div class="GL_P1"><h2 id="pb-ih">Flyer</h2><label class="AG_IM" id="pb-im"></label></div>
-<div class="GL_P1" data-c="evento"><h2>Datos del evento</h2>
+<div class="GL_P1"><div class="AG_K" id="pb-tp"></div><p class="AG_H" id="pb-th"></p>
+<div class="AG_IR"><label class="AG_IM" id="pb-im"></label><div class="AG_F"><span id="pb-ih">Flyer</span><small class="AG_H">Toca, arrastra o pega una imagen</small></div></div>
+<div data-c="evento">
 <label class="AG_F"><span>Titulo</span><input id="pb-ev-nm" maxlength="90" placeholder="Taller de formacion estudiantil"></label>
 <label class="AG_F"><span>Descripcion</span><textarea id="pb-ev-desc" data-raw rows="4" placeholder="Que es, para quien, que llevar..."></textarea></label>
 <div class="AG_F"><span>Fecha y hora</span><div id="pb-ev-fs"><div class="AG_R2"><input type="date" aria-label="Fecha"><input type="time" aria-label="Hora"></div></div><button type="button" id="pb-ev-add">➕ Otra fecha</button></div>
@@ -22,16 +22,17 @@
 <p class="AG_H" id="pb-ev-cnt"></p>
 <div class="PB_RG"><p>Solo eventos abiertos a todos y sin fines de lucro:</p><ul><li>Gratuitos o a voluntad</li><li>Comunitarios, como talleres, charlas, ferias o limpiezas</li><li>Beneficos para una causa colectiva: comedor, refugio, escuela. Si tiene costo, indicar a quien va lo recaudado</li><li>Marchas y manifestaciones pacificas</li></ul><p>No se admiten:</p><ul><li>Eventos contra un grupo de personas o sus derechos (por origen, religion, genero, orientacion sexual, etc)</li><li>Colectas para una persona o familia (polladas, rifas)</li><li>Publicidad de un negocio presentada como evento</li><li>Actos partidarios o proselitismo politico</li></ul></div>
 </div>
-<div class="GL_P1" data-c="minecraft" hidden><h2>Datos del servidor</h2>
+<div data-c="minecraft" hidden>
 <label class="AG_F"><span>Nombre</span><input id="pb-mc-nm" maxlength="40" placeholder="Casita Server"></label>
 <label class="AG_F"><span>Descripcion corta</span><textarea id="pb-mc-desc" rows="2" maxlength="90" placeholder="Bedrock Survival casi vanilla..."></textarea></label>
 <div class="AG_R2"><label class="AG_F"><span>Direccion</span><input id="pb-mc-host" placeholder="mc.ejemplo.com"></label><label class="AG_F"><span>Puerto</span><input id="pb-mc-port" type="number" placeholder="19132"></label></div>
 <label class="AG_F"><span>Version</span><select id="pb-mc-tipo"><option value="B">Bedrock</option><option value="J">Java</option><option value="B+J">Ambas</option></select></label>
 </div>
-<div class="GL_P1" data-c="jugadores" hidden><h2>Datos del jugador</h2>
+<div data-c="jugadores" hidden>
 <label class="AG_F"><span>Juego</span><input id="pb-jg-nm" maxlength="40" placeholder="Overwatch 2"></label>
 <label class="AG_F"><span>Descripcion</span><textarea id="pb-jg-desc" rows="2" maxlength="55" placeholder="Busco gente para jugar de noche, nivel medio"></textarea></label>
 <label class="AG_F"><span>Contacto</span><select id="pb-jg-ch"><option value="WA">WhatsApp</option><option value="TG">Telegram</option><option value="WA.TG">WhatsApp y Telegram</option></select></label>
+</div>
 </div>
 <button type="button" class="view-all-button AG_GO" id="pb-go">Enviar Solicitud</button>
 </div>
@@ -86,7 +87,7 @@ function TP(t,i){
   document.querySelectorAll('#ag [data-c]').forEach(e=>e.hidden=e.dataset.c!==t);
   $('pb-th').textContent=PB_TH[t];
   $('pb-ih').textContent=t==='evento'?'Flyer':'Imagen o logo';
-  $('pb-im').style.cssText=t==='evento'?'--ar:4/5;--w:240px;--of:contain':'--w:160px';
+  $('pb-im').style.cssText=t==='evento'?'--ar:4/5':'';
   if(!i)z.re();
 }
 function PB_buildNB(){

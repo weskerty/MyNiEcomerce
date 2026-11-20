@@ -7,16 +7,17 @@ const GF={k:'js',l:'web/js/lib/GridFit.js',ok:()=>window.GridFit};
 const st=document.createElement('style');
 st.textContent=`.AG1:not([hidden]){display:grid;gap:16px}.AG1 [hidden]{display:none!important}.AG1>[data-v]:not(.GL_P1){display:grid;gap:16px;align-content:start}
 .AG1 h2{margin:0 0 14px;font-size:1.2rem}.AG1 .GL_P1>:last-child{margin-bottom:0}
-.AG_K{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.AG_L>input{width:100%;margin-bottom:12px}.AG_TB{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.AG_TB .PL1{flex-direction:column;justify-content:center;gap:2px;height:auto;padding:8px 4px;font-size:.75rem}.AG_TB b{font-size:1.3rem;font-weight:400;line-height:1}
+.AG_K{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.AG_K+.AG_H{margin:-6px 0 18px}.AG_CU{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}.AG_CU p{margin:0}[data-v=cta] form{margin-top:22px;padding-top:20px;border-top:1px solid var(--RD_L)}.AG_L>input{width:100%;margin-bottom:12px}.AG_TB{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.AG_TB .PL1{flex-direction:column;justify-content:center;gap:2px;height:auto;padding:8px 4px;font-size:.75rem}.AG_TB b{font-size:1.3rem;font-weight:400;line-height:1}
 .AG_F{display:grid;gap:4px;margin:0 0 14px}.AG_F>span{font-size:.85rem;color:var(--RD_MF)}.AG_F :is(input,select,textarea){width:100%;min-width:0}.AG_R2>*{min-width:0}.AG_H+.AG_GO{margin-top:12px}
-.AG_R2{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0 12px}
+.AG_R2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}@media(max-width:480px){.AG_W{grid-column:1/-1}}
 .AG_H{display:block;margin:4px 0 0;font-size:.82rem;color:var(--RD_MF)}.AG_H.ok{color:var(--ok)}.AG_H.err{color:var(--err)}.AG_C{text-align:center}
 .AG_GO{display:block;width:100%;margin:0;padding:14px;font-size:1rem}
-.AG_IM{position:relative;display:grid;place-items:center;width:min(100%,var(--w,200px));aspect-ratio:var(--ar,1);margin:0 auto;border:1.5px dashed var(--RD_BHB);border-radius:16px;background:var(--RD_BT);color:var(--RD_MF);font-size:.85rem;text-align:center;cursor:pointer;overflow:hidden}
+.AG_IR{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}.AG_IR>div{flex:1;min-width:0}.AG_IR .AG_F:last-child{margin-bottom:0}
+.AG_IM{position:relative;display:grid;place-items:center;flex-shrink:0;width:var(--w,96px);aspect-ratio:var(--ar,1);border:1.5px dashed var(--RD_BHB);border-radius:12px;background:var(--RD_BT);cursor:pointer;overflow:hidden}
 .AG_IM:hover,.AG_IM.on{background:var(--RD_BH);border-color:var(--RD_BSB)}.AG_IM:focus-within{outline:2px solid var(--RD_F);outline-offset:2px}
-.AG_IM input{position:absolute;width:1px;height:1px;opacity:0}.AG_IM b{display:block;font-size:2rem}
+.AG_IM input{position:absolute;width:1px;height:1px;opacity:0}.AG_IM b{font-size:1.6rem;font-weight:400}
 .AG_IM img{position:absolute;inset:0;width:100%;height:100%;object-fit:var(--of,cover)}.AG_IM img:not([src]),.AG_IM small:empty{display:none}
-.AG_IM small{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);padding:2px 10px;border-radius:8px;background:var(--RD_DG);color:var(--RD_F);white-space:nowrap}
+.AG_IM small{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);padding:0 6px;border-radius:6px;font-size:.7rem;background:var(--RD_DG);color:var(--RD_F);white-space:nowrap}
 .AG_L{--LR_I:84px}.AG_L .BMD1::before{content:none}.AG_L .BMD1-CN{padding:10px 12px 10px var(--LR_P)}.AG_L .BMD1:last-child{margin:0}
 .AG_LI{display:grid;place-items:center;width:var(--LR_I);min-height:var(--LR_I);flex-shrink:0;align-self:stretch;background:var(--RD_M);font-size:2rem}.AG_LI img{width:100%;height:100%;object-fit:cover}
 .AG_AC{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.AG_AC button{padding:4px 10px;font-size:.8rem}
@@ -120,10 +121,10 @@ async function CROP(u,ar){
   return d;
 }
 function IZ(L,of){
-  L.innerHTML='<input type="file" accept="image/avif,image/webp,image/*"><img alt=""><span><b>📷</b>Toca, arrastra o pega una imagen</span><small></small>';
+  L.innerHTML='<input type="file" accept="image/avif,image/webp,image/*" aria-label="Imagen"><img alt=""><b>📷</b><small></small>';L.title='Toca, arrastra o pega una imagen';
   const i=L.querySelector('input'),pv=L.querySelector('img'),sm=L.querySelector('small');
   const z={v:null,f:null,L,
-    async set(f){z.f=f;const r=await IM(f,of());if(r.e)return T(r.e,'err');z.v=r;if(pv.src)URL.revokeObjectURL(pv.src);pv.src=URL.createObjectURL(r.b);sm.textContent=Math.round(r.b.size/1024)+' KB · tocar para cambiar'},
+    async set(f){z.f=f;const r=await IM(f,of());if(r.e)return T(r.e,'err');z.v=r;if(pv.src)URL.revokeObjectURL(pv.src);pv.src=URL.createObjectURL(r.b);sm.textContent=Math.round(r.b.size/1024)+' KB'},
     re(){if(z.f)z.set(z.f)},
     clr(){z.v=z.f=null;pv.removeAttribute('src');sm.textContent=''}};
   i.onchange=()=>{if(i.files[0])z.set(i.files[0]);i.value=''};
@@ -244,7 +245,7 @@ function UI(){
   r.insertAdjacentHTML('beforeend',`<form data-v="in" class="GL_P1"><div class="AG_K"><button type="button" class="PL1" data-m="in">Iniciar Sesion</button><button type="button" class="PL1" data-m="reg">Crear Cuenta</button></div><h2></h2>${TEL.replace('{L}','Numero de telefono').replace('{A}','username')}${pw('Contrasena','p','current-password')}${pw('Confirmar contrasena','p2','new-password',1)}<button class="view-all-button AG_GO"></button><p class="AG_H AG_C"><a href="#" data-m="rst">Olvide mi contrasena</a></p><p class="AG_H AG_C">Una sola cuenta para vender y publicar eventos</p></form>
 <div data-v="pub" class="GL_P1 AG_L"><input type="search" placeholder="Buscar por nombre o ID" autocomplete="off"><div class="AG_K"></div><div data-l></div><div data-pg></div></div>
 <div data-v="sol" class="GL_P1 AG_L"></div>
-<div data-v="cta"><div class="GL_P1"><h2>👤 Tu cuenta</h2><p data-tel></p><button type="button" data-out>Cerrar Sesion</button></div><form class="GL_P1" data-f="pw"><h2>Cambiar contrasena</h2>${pw('Contrasena actual','p','current-password')}${pw('Nueva contrasena','n','new-password',1)}${pw('Confirmar nueva','n2','new-password',1)}<button class="view-all-button AG_GO">Guardar contrasena</button></form><form class="GL_P1" data-f="tel"><h2>Cambiar numero</h2>${TEL.replace('{L}','Numero nuevo').replace('{A}','off')}${pw('Contrasena actual','p','current-password')}<p class="AG_H">Confirmas enviando un mensaje desde el numero nuevo</p><button class="view-all-button AG_GO">Solicitar cambio</button></form></div>`);
+<div data-v="cta" class="GL_P1"><div class="AG_CU"><p data-tel></p><button type="button" data-out>Cerrar Sesion</button></div><form data-f="pw"><h2>Cambiar contrasena</h2>${pw('Contrasena actual','p','current-password')}${pw('Nueva contrasena','n','new-password',1)}${pw('Confirmar nueva','n2','new-password',1)}<button class="view-all-button AG_GO">Guardar contrasena</button></form><form data-f="tel"><h2>Cambiar numero</h2>${TEL.replace('{L}','Numero nuevo').replace('{A}','off')}${pw('Contrasena actual','p','current-password')}<p class="AG_H">Confirmas enviando un mensaje desde el numero nuevo</p><button class="view-all-button AG_GO">Solicitar cambio</button></form></div>`);
   const fi=Q('[data-v=in]'),fs=fi.elements,tf=fs.t.nextElementSibling;
   const MO=m=>{
     fi.dataset.m=m;const rg=m!=='in';

@@ -1,7 +1,5 @@
 <script src="/web/js/HTMLCoreInyector.js" data-a="AgregarProducto" data-t="Publica tu Producto" data-d="Envia tu producto, propuesta o caso para publicarlo en Che Agana."></script>
 <style>
-#ap-mh{margin:-8px 0 12px}
-#ap-bl{margin:14px 0 0}
 #ag .EasyMDEContainer :is(.CodeMirror,.editor-preview){background:var(--RD_C);color:var(--RD_F);border-color:var(--RD_L)}
 #ag .EasyMDEContainer .CodeMirror{min-height:180px;border-radius:0 0 10px 10px}
 #ag .editor-toolbar{border-color:var(--RD_L);border-radius:10px 10px 0 0}
@@ -14,22 +12,22 @@
 <h1 class="NB_TT">🏪 Publicar</h1>
 <div id="ag" class="AG1" hidden>
 <div data-v="nuevo">
-<div class="GL_P1"><h2>Que vas a publicar?</h2><div class="AG_K" id="ap-tp"></div><p class="AG_H" id="ap-th"></p><label class="AG_F" id="ap-bl" hidden><span>Seccion del blog</span><select id="ap-bsec"></select></label></div>
-<div class="GL_P1"><h2>Imagen</h2><label class="AG_IM" id="ap-im"></label></div>
-<div class="GL_P1"><h2>Datos</h2>
+<div class="GL_P1"><div class="AG_K" id="ap-tp"></div><p class="AG_H" id="ap-th"></p><label class="AG_F" id="ap-bl" hidden><span>Seccion del blog</span><select id="ap-bsec"></select></label>
+<div class="AG_IR"><label class="AG_IM" id="ap-im"></label><div>
 <label class="AG_F"><span id="ap-nbl">Nombre del producto</span><input id="ap-nb" maxlength="100" autocomplete="off"></label>
+<label class="AG_F"><span>Codigo ID (opcional)</span><input id="ap-id" maxlength="50" autocomplete="off" placeholder="Vacio = aleatorio"><small class="AG_H" id="ap-ih"></small></label>
+</div></div>
 <div class="AG_R2 ap-p">
 <label class="AG_F"><span>Precio (Gs)</span><input id="ap-pc" inputmode="numeric" maxlength="14" placeholder="50.000" autocomplete="off"></label>
 <label class="AG_F"><span>Compra minima</span><input id="ap-cm" inputmode="numeric" maxlength="4" placeholder="1" autocomplete="off"></label>
 <label class="AG_F"><span>Categoria</span><select id="ap-cat"></select></label>
 <label class="AG_F"><span>Subcategoria</span><select id="ap-sub"></select></label>
-<label class="AG_F"><span>Contacto</span><select id="ap-ch"><option value="WA.TG">WhatsApp y Telegram</option><option value="WA">Solo WhatsApp</option><option value="TG">Solo Telegram</option><option value="SM">Solo SMS</option><option value="WA.SM">WhatsApp y SMS</option><option value="WA.TG.SM">WhatsApp, Telegram y SMS</option></select></label>
-<label class="AG_F"><span>Vence (opcional)</span><input id="ap-tm" type="datetime-local"></label>
+<label class="AG_F AG_W"><span>Contacto</span><select id="ap-ch"><option value="WA.TG">WhatsApp y Telegram</option><option value="WA">Solo WhatsApp</option><option value="TG">Solo Telegram</option><option value="SM">Solo SMS</option><option value="WA.SM">WhatsApp y SMS</option><option value="WA.TG.SM">WhatsApp, Telegram y SMS</option></select></label>
+<label class="AG_F AG_W"><span>Vence (opcional)</span><input id="ap-tm" type="datetime-local"></label>
 </div>
 <div class="AG_F ap-p"><span>Ubicacion (opcional)</span><button type="button" id="ap-gps">📍 Usar mi ubicacion</button><small class="AG_H" id="ap-gh"></small></div>
-<label class="AG_F"><span>Codigo ID (opcional)</span><input id="ap-id" maxlength="50" autocomplete="off" placeholder="Vacio = aleatorio"><small class="AG_H" id="ap-ih"></small></label>
+<div class="AG_F"><span id="ap-mh">Descripcion · <a href="web/paginas/Como%20Escribir%20tu%20Publicacion.html" target="_blank" rel="noopener">Como escribir tu publicacion ↗️</a></span><textarea id="ap-md"></textarea></div>
 </div>
-<div class="GL_P1"><h2>Descripcion</h2><p class="AG_H" id="ap-mh">Solo texto con formato, sin HTML. <a href="web/paginas/Como%20Escribir%20tu%20Publicacion.html" target="_blank" rel="noopener">Como escribir tu publicacion ↗️</a></p><textarea id="ap-md"></textarea></div>
 <button type="button" class="view-all-button AG_GO" id="ap-go">Enviar Solicitud</button>
 </div>
 </div>
@@ -64,7 +62,7 @@ function TP(t,i){
   $('ap-bl').hidden=t!=='Blogs';
   $('ap-th').textContent=p?'Tu numero queda como contacto del producto':'Se publica sin tu numero de telefono, con un alias anonimo';
   $('ap-nbl').textContent=p?'Nombre del producto':'Titulo';
-  $('ap-im').style.cssText=t==='Blogs'?'--ar:16/9;--w:100%':'';
+  $('ap-im').style.cssText=t==='Blogs'?'--ar:16/9;--w:128px':'';
   if(!i)z.re();
 }
 function RS(){
