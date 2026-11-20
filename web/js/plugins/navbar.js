@@ -3,7 +3,7 @@ const WA_BASE="https://wa.me/595972184435?text=";
 const SHARE_ALL=true;
 const IMG_BASE="web/recursos/svg/chatbanner/";
 const OFICIALPROVIDER=["595972184435"];
-const HIDE_PATHS=["web/🧩 Apps/","web/🎮 Juegos/","web/paginas/centralPage.html","web/paginas/AgregarProducto.html","web/DemoDire","web/pruebas/"];
+const HIDE_PATHS=["web/🧩 Apps/","web/🎮 Juegos/","web/paginas/centralPage.html","web/DemoDire","web/pruebas/"];
 const GL_P=["web/es.html","web/blogs.html","web/search.html","web/paginas/apps.html","web/paginas/Grupos.html","web/tienda/","web/Blogs/"];
 const NB_SC=false;
 const NB_ROUTES=[

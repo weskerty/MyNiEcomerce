@@ -160,7 +160,7 @@ body.NB_GL .content>._nb.r{right:var(--RD_W)}
 
 .BMD1,.sh-it,body.LS1 .bl-grid .bl-card{position:relative;display:flex;align-items:center;min-height:calc(var(--LR_I) + 2px);border:1px solid var(--RD_L);border-radius:14px;background:none;color:var(--RD_F);text-decoration:none;box-shadow:var(--RD_SH);overflow:hidden;transition:border-color .15s,background .15s}
 @media(hover:hover){:is(.BMD1,.sh-it,body.LS1 .bl-grid .bl-card):hover{border-color:rgba(var(--accent-2-rgb),.45);background:var(--RD_M);text-decoration:none}}
-:is(.BMD1,.sh-it,body.LS1 .bl-grid .bl-card)::before{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);z-index:3;color:var(--RD_MF);font-size:1.2rem}
+.BMD1::before,.sh-it::before,body.LS1 .bl-grid .bl-card::before{content:'›';position:absolute;right:14px;top:50%;transform:translateY(-50%);z-index:3;color:var(--RD_MF);font-size:1.2rem}
 .BMD1>img,.sh-it>img{width:var(--LR_I);height:var(--LR_I);margin:0;border-radius:0;object-fit:fill;flex-shrink:0;align-self:flex-start}
 .BMD1-CN,.sh-it-info{display:flex;flex-direction:column;justify-content:center;flex:1;min-width:0;gap:2px;padding:0 36px 0 var(--LR_P);text-align:left}
 .BMD1-CN h3,.sh-it-name,body.LS1 .bl-grid .bl-title{margin:0;font:500 .94rem/1.35 var(--font);color:var(--RD_F);text-align:left;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
