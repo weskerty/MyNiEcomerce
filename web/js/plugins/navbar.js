@@ -434,7 +434,9 @@ function renderCart(){
 function toggleModal(){
   if(modal.open)return void modal.close();
   renderCart();modal.showModal();document.body.style.overflow="hidden";
+  const t=Math.random();CB_HM.add(t);window.__HS3?.("CB",t);
 }
+const CB_HM=new Set();
 
 let _dcO1=null;
 function dcW1(){
@@ -468,9 +470,12 @@ function SW1(d){
 }
 const CB_FU=(d,ev)=>{const r=d.getBoundingClientRect();return ev.target===d&&(ev.clientX<r.left||ev.clientX>r.right||ev.clientY<r.top||ev.clientY>r.bottom)};
 SW1(modal);
+modal.addEventListener("close",()=>{if(CB_HM.has(history.state?.CB))history.back()});
 document.body.appendChild(modal);
 
 modal.addEventListener("click",ev=>{
+  const a=ev.target.closest("a[href]");
+  if(a&&CB_HM.has(history.state?.CB)){ev.preventDefault();ev.stopPropagation();addEventListener("popstate",()=>setTimeout(()=>location.hash="#"+a.getAttribute("href")),{once:!0});return void modal.close()}
   if(CB_FU(modal,ev)||ev.target.closest(".cb-mx,.cb-sc,a[href]"))return void toggleModal();
   const b=ev.target.closest("button");
   if(!b)return;
@@ -585,5 +590,6 @@ if(NB_SC)window.addEventListener('scroll',()=>{const y=scrollY,d=y-_sy;if(Math.a
 const content=document.getElementById("content");
 NB_P1();syncNB();
 dcW1();requestAnimationFrame(initPage);
+if(content)content.addEventListener("contentState",e=>{const t=e.detail.CB;if(!CB_HM.has(t)){if(modal.open)modal.close()}else if(!modal.open&&st.c.length){renderCart();modal.showModal();document.body.style.overflow="hidden"}});
 if(content)content.addEventListener("contentLoaded",()=>{_op=!1;document.body.classList.remove('NB_SD');NB_P1();syncNB();setTimeout(()=>{dcW1();requestAnimationFrame(initPage)},10)});
 }();

@@ -127,10 +127,11 @@ const C={
       const t=TPE(e);
       return{ID:e.ID,nb:e.NB,tp:t,img:e.fn,href:e.fn.replace(/\.[^.]+$/,'.html'),
         meta:(t?(AG1.TY[t]?.[1]||t)+(t==='Blogs'?' · '+e.sub:''):`${e.categoria}${e.sub?' / '+e.sub:''} · ${FP(e.PC)} Gs${e.CD==='0'?' · Agotado':''}`)+' · ID '+e.ID,
-        acts:[['✏️ Editar',()=>{AG1.V('nuevo');FILL(e)}],['🗑️ Pedir borrado',()=>AG1.DEL(e.ID,e.NB)]]};
+        acts:[['✏️ Editar',()=>AG1.ED(e.ID)],['🗑️ Pedir borrado',()=>AG1.DEL(e.ID,e.NB)]]};
     });
   },
   fix:d=>FILL(d,String(d.md||'').replace(/&lt;/g,'<')),
+  edit:async ID=>{const e=(await D()).all.find(x=>x.ID===ID);if(e)FILL(e)},
   vw:v=>{
     if(v!=='nuevo')return;
     D();

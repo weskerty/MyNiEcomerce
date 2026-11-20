@@ -75,7 +75,7 @@ async function VF(b){
   if(!g){g=E('dialog','AG_DG');g.id='AG_VF';g.innerHTML='<h3></h3><p>Envia el mensaje <b>desde ese numero</b>, por una de estas opciones:</p><div><a class="view-all-button" target="_blank" rel="noopener">WhatsApp</a><a class="view-all-button">SMS</a><a class="view-all-button" target="_blank" rel="noopener">Telegram</a></div><p class="AG_H"></p><div><button type="button">Cancelar</button></div>';S.r.append(g)}
   const e=encodeURIComponent(d.tx),a=g.querySelectorAll('a'),s=g.querySelector('p.AG_H');
   g.querySelector('h3').textContent='📞 '+(b.telefonoNuevo||b.telefono);
-  a[0].href=`https://wa.me/${W}?text=${e}`;a[1].href=`sms:+${W}?&body=${e}`;a[2].href=`https://t.me/${TG}?start=${d.codigo}`;
+  a[0].href=`https://wa.me/${W}?text=${e}`;a[1].href=`sms:+${W}?&body=${e}`;a[1].hidden=b.tipo!=='alta';a[2].href=`https://t.me/${TG}?start=${encodeURIComponent(d.codigo)}`;
   s.textContent='Esperando confirmacion...';g.showModal();
   return new Promise(res=>{
     let f=0,t;
@@ -84,13 +84,13 @@ async function VF(b){
     t=setInterval(async()=>{
       if(!g.isConnected)return end(null);
       const{d:r}=await A('estado',{sid:d.sid});
-      if(r.st==='ok')end(r);else if(r.error)end(null,r.error);else if(r.st==='sin')s.textContent='WhatsApp no mostro tu numero. Usa SMS';
+      if(r.st==='ok')end(r);else if(r.error)end(null,r.error);else if(r.st==='sin')s.textContent='WhatsApp no mostro tu numero. Usa '+(b.tipo==='alta'?'SMS':'Telegram');
     },3000);
   });
 }
 async function IM(f,o){
-  const an=/^image\/(avif|webp)$/.test(f.type);
-  if(an&&f.size<=MX)return{b:f,x:f.type==='image/avif'?'.avif':'.webp'};
+  const hd=String.fromCharCode(...new Uint8Array(await f.slice(0,12).arrayBuffer())),an=/^RIFF[\s\S]{4}WEBP/.test(hd)?'.webp':/^[\s\S]{4}ftypavi[fs]/.test(hd)?'.avif':'';
+  if(an&&f.size<=MX)return{b:f,x:an};
   if(an&&!confirm(`Supera ${MX/1024}KB, se comprimira y perdera la animacion. Continuar?`))return{e:'Cancelado'};
   const u=URL.createObjectURL(f),im=new Image();
   try{await new Promise((ok,ko)=>{im.onload=ok;im.onerror=ko;im.src=u})}catch{URL.revokeObjectURL(u);return{e:'Imagen no compatible'}}
@@ -144,8 +144,8 @@ const J=u=>fetch(u).then(r=>r.ok?r.json():{}).then(d=>d.galleries||d).catch(()=>
 function EX(n,c,s,o){
   if(Array.isArray(n))return n.forEach(fn=>{
     if(typeof fn!=='string')return;
-    const g=k=>fn.match(new RegExp(k+'=([^-]+)'))?.[1],ID=g('ID');
-    if(ID)o.push({fn,ID,NM:g('NM'),PC:+g('PC')||0,CD:g('CD'),CM:g('CM')||'',CH:g('CH')||'',CT:g('CT')||null,TM:g('TM')||null,NB:fn.match(/NB=(.+)\.\w+$/)?.[1]||ID,categoria:c,sub:s});
+    const f=fn.slice(fn.lastIndexOf('/')+1),g=k=>f.match(new RegExp('(?:^|-)'+k+'=([^-]+)'))?.[1],ID=g('ID');
+    if(ID)o.push({fn,ID,NM:g('NM'),PC:+g('PC')||0,CD:g('CD'),CM:g('CM')||'',CH:g('CH')||'',CT:g('CT')||null,TM:g('TM')||null,NB:f.match(/(?:^|-)NB=(.+)\.\w+$/)?.[1]||ID,categoria:c,sub:s});
   });
   if(n&&typeof n==='object')Object.entries(n).forEach(([k,v])=>EX(v,c,s||k,o));
 }
@@ -159,7 +159,7 @@ async function SEND(g,b,rs){
   const{ok,d}=await A('enviar',b);
   g.disabled=false;g.textContent=t;
   if(!ok)return T(d.error||'Error al enviar','err');
-  T('Solicitud enviada!');rs();V('sol');
+  T('Solicitud enviada!');rs();S.e=null;V('sol');window.__HS2?.('AG',{v:'sol'});
 }
 const B64=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result.split(',')[1]);f.readAsDataURL(b)});
 function K(el,ks,cur,on){
@@ -170,6 +170,7 @@ function K(el,ks,cur,on){
   }));
 }
 function RW(x){
+  const W=u=>/^web\//.test(u||'')?u:null;x={...x,href:W(x.href),img:W(x.img)};
   const r=E('div','BMD1'),c=E('div','BMD1-CN'),h=E('h3'),t=E(x.href?'a':'span',0,x.nb),im=E(x.href?'a':'span','AG_LI',x.img?null:x.ic||TY[x.tp]?.[0]||'📦');
   if(x.href){t.href=im.href=x.href;im.tabIndex=-1;im.setAttribute('aria-hidden','true')}
   if(x.img){const i=E('img');i.src=x.img;i.alt='';i.loading='lazy';i.decoding='async';im.append(i)}
@@ -182,7 +183,7 @@ function RW(x){
 async function PUB(){
   const c=Q('[data-v=pub]'),L=c.querySelector('[data-l]');
   L.replaceChildren(E('p','AG_H AG_C','Cargando...'));
-  P={all:await S.c.pub(),q:'',t:'*',pg:0};
+  S.ok.pub=1;P={all:await S.c.pub(),q:'',t:'*',pg:0};
   const qi=c.querySelector('input');qi.value='';qi.hidden=P.all.length<=8;
   PF();PR();
 }
@@ -207,31 +208,37 @@ function PR(){
 const NM=e=>(/^(minecraft|jugadores)$/.test(e.categoria)?String(e.NB).split(';')[0]:e.NB)||e.ID;
 function TL(c,s){const t=TY[c==='DemoDire'?s:c];return t?[t[0],t[1]+(c==='Blogs'&&s?' · '+s:'')]:['📦',c+(s?' / '+s:'')]}
 async function SOL(){
-  const c=Q('[data-v=sol]');
+  const c=Q('[data-v=sol]');S.ok.sol=1;
   c.replaceChildren(E('p','AG_H AG_C','Cargando...'));
   const{ok,d}=await A('historial');
   if(!ok)return c.replaceChildren(E('p','AG_H err AG_C',d.error||'Error'));
   const l=(d.entries||[]).map(e=>{
     const[ic,n]=TL(e.categoria,e.sub),rj=e.estado==='rechazado';
-    return RW({nb:NM(e),ic,meta:n,b:E('span','AG_B'+(rj?' r':''),rj?'Rechazado':'Pendiente'),ng:rj&&e.motivo,acts:rj&&S.c.own(e.categoria)?[['✏️ Editar y Reenviar',()=>RE(e.ID)]]:[]});
+    return RW({nb:NM(e),ic,meta:n,b:E('span','AG_B'+(rj?' r':''),rj?'Rechazado':'Pendiente'),ng:rj&&e.motivo,acts:rj&&S.c.own(e.categoria)?[['✏️ Editar y Reenviar',()=>ED(e.ID,1)]]:[]});
   });
   c.replaceChildren(...(d.telPend?[E('p','AG_H ok AG_C','Cambio de numero pendiente: '+d.telPend)]:[]),...(l.length?l:[E('p','AG_H AG_C','Sin solicitudes pendientes')]),E('p','AG_H AG_C','Lo aprobado sale de esta lista. Maximo 5 pendientes.'));
 }
-async function RE(ID){
+async function ED(ID,j,pop){
+  if(!pop)window.__HS3?.('AG',{v:'nuevo',e:ID,j});
+  if(pop&&S.e===ID)return V('nuevo',1);
+  S.e=ID;V('nuevo',pop);
+  if(!j)return S.c.edit?.(ID);
   const{ok,d}=await A('pendienteDetalle',{ID});
   if(!ok)return T(d.error||'Error','err');
-  V('nuevo');S.c.fix(d);
+  S.c.fix(d);
 }
-function V(v){
+const R=(h,pop)=>h?.e?ED(h.e,h.j,pop):V(h?.v||'nuevo',pop);
+document.addEventListener('contentState',e=>{if(S.r?.isConnected&&U.tk)R(e.detail.AG,1)});
+function V(v,pop){
   const inn=!!U.tk;
   if(inn&&v)S.v=v;
   Q('.AG_TB').hidden=!inn;
   S.r.querySelectorAll('[data-v]').forEach(e=>e.hidden=inn?e.dataset.v!==S.v:e.dataset.v!=='in');
   S.r.querySelectorAll('.AG_TB button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===S.v));
   if(!inn)return;
-  if(v&&S.r.getBoundingClientRect().top<0)S.r.scrollIntoView();
-  if(S.v==='pub')PUB();
-  if(S.v==='sol')SOL();
+  if(v&&!pop&&S.r.getBoundingClientRect().top<0)S.r.scrollIntoView();
+  if(S.v==='pub'&&!(pop&&S.ok.pub))PUB();
+  if(S.v==='sol'&&!(pop&&S.ok.sol))SOL();
   if(S.v==='cta')Q('[data-tel]').textContent='📞 '+U.tel;
   S.c.vw?.(S.v);
 }
@@ -240,7 +247,7 @@ const pw=(L,N,A,m)=>PW.replace('{L}',L).replace('{N}',N).replace('{A}',A).replac
 const TEL='<label class="AG_F"><span>{L}</span><input name="t" type="tel" inputmode="numeric" placeholder="595981123456" autocomplete="{A}" required><small class="AG_H">Con codigo de pais, sin + ni 0: 595 y tu numero</small></label>';
 function UI(){
   const r=S.r,tb=E('div','AG_TB');
-  [['nuevo','➕','Nueva'],['pub','📦','Publicados'],['sol','⏳','Solicitudes'],['cta','👤','Cuenta']].forEach(([k,i,n])=>{const b=E('button','PL1');b.type='button';b.dataset.t=k;b.append(E('b',0,i),n);b.onclick=()=>V(k);tb.append(b)});
+  [['nuevo','➕','Nueva'],['pub','📦','Publicados'],['sol','⏳','Solicitudes'],['cta','👤','Cuenta']].forEach(([k,i,n])=>{const b=E('button','PL1');b.type='button';b.dataset.t=k;b.append(E('b',0,i),n);b.onclick=()=>{V(k);window.__HS2?.('AG',{v:k})};tb.append(b)});
   r.prepend(tb);
   r.insertAdjacentHTML('beforeend',`<form data-v="in" class="GL_P1"><div class="AG_K"><button type="button" class="PL1" data-m="in">Iniciar Sesion</button><button type="button" class="PL1" data-m="reg">Crear Cuenta</button></div><h2></h2>${TEL.replace('{L}','Numero de telefono').replace('{A}','username')}${pw('Contrasena','p','current-password')}${pw('Confirmar contrasena','p2','new-password',1)}<button class="view-all-button AG_GO"></button><p class="AG_H AG_C"><a href="#" data-m="rst">Olvide mi contrasena</a></p><p class="AG_H AG_C">Una sola cuenta para vender y publicar eventos</p></form>
 <div data-v="pub" class="GL_P1 AG_L"><input type="search" placeholder="Buscar por nombre o ID" autocomplete="off"><div class="AG_K"></div><div data-l></div><div data-pg></div></div>
@@ -284,12 +291,12 @@ function UI(){
 function AG1(c){
   const r=document.getElementById('ag');
   if(!r)return;
-  S={r,c,v:'nuevo',z:null};U={tel:CK('ap_tel'),tk:CK('ap_tk'),al:CK('ap_al')};
+  S={r,c,v:'nuevo',z:null,ok:{},e:null};const h=window.__HS1?.AG;U={tel:CK('ap_tel'),tk:CK('ap_tk'),al:CK('ap_al')};
   UI();c.ini?.();
-  const go=()=>{r.hidden=false;V()};
+  const go=()=>{r.hidden=false;U.tk?R(h,1):V()};
   if(U.tk)A('historial').then(go);else go();
 }
-Object.assign(AG1,{TY,E,T,A,F,K,LL,IZ,B64,V,J,EX,DEL,SEND,U:()=>U});
+Object.assign(AG1,{TY,E,T,A,F,K,LL,IZ,B64,V,ED,J,EX,DEL,SEND,U:()=>U});
 window.AG1=AG1;
 if(window.AG_Q){const q=window.AG_Q;window.AG_Q=null;AG1(q)}
 })();

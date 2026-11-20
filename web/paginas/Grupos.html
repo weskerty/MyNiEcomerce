@@ -345,7 +345,7 @@ span.AG_H2{line-height:28px}
 const RSS_PATH='telegram/channel/cheagana';
 const RSS_URL='/api/rss?url='+encodeURIComponent(RSS_PATH);
 const GD=document.getElementById('rv-g'),MO=document.getElementById('rv-mo'),DL=document.getElementById('rv-ov'),DD=document.getElementById('rv-d');
-let items=[],_n=0;
+let items=[],_n=0;const AG_HM=new Map();
 const PAGE=12;
 
 const LD=document.createElement('link');
@@ -544,7 +544,7 @@ function AG_F(f,lb,dd,k){
   if(f)FH.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-async function AG_D(item){
+async function AG_D(item,h){
   await AG_PU();
   const{x,d}=AG_DT(item),desc=gH(item,'description'),m=fI(desc),link=AG_U1(item),pw=AG_X('div','rv-dp',''),inf=AG_X('div','rv-di',''),bd=AG_X('div','rv-db',''),k=AG_K(item);
   pw.append(AG_PO(m,'rv-dpi'));
@@ -559,6 +559,7 @@ async function AG_D(item){
   if(link){const a=AG_X('a','RD_B1 rv-dl','Ver publicacion ↗');a.href=link;a.target='_blank';a.rel='noopener noreferrer';inf.append(a);}
   DD.replaceChildren(pw,inf);
   DL.scrollTop=0;
+  if(!DL.open&&!h){const t=Math.random();AG_HM.set(t,item);window.__HS3?.('DL',t)}
   if(!DL.open)DL.showModal();
   document.body.style.overflow='hidden';
 }
@@ -575,7 +576,9 @@ DL.addEventListener('click',ev=>{
   const r=DL.getBoundingClientRect();
   if(ev.clientX<r.left||ev.clientX>r.right||ev.clientY<r.top||ev.clientY>r.bottom)DL.close();
 });
-DL.addEventListener('close',()=>{document.body.style.overflow='';DD.textContent='';});
+DL.addEventListener('close',()=>{document.body.style.overflow='';DD.textContent='';if(AG_HM.has(history.state?.DL))history.back();});
+const AG_CS=e=>{const t=e.detail.DL;if(!AG_HM.has(t)){if(DL.open)DL.close()}else if(!DL.open)AG_D(AG_HM.get(t),1);};
+document.addEventListener('contentState',AG_CS);
 
 const OPFS_S=`const RUN=true;
 if(!RUN)return;
@@ -628,6 +631,7 @@ async function load(){
 }
 
 document.addEventListener('contentUnload',function(){
+  document.removeEventListener('contentState',AG_CS);AG_HM.clear();
   if(DL.open)DL.close();
   document.body.style.overflow='';
   if(MP){MP.remove();MP=null;MM=null;}
