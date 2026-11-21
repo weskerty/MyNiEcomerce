@@ -34,8 +34,8 @@
 .sk-searching span{color:rgba(255,255,255,.6);font-size:.95em}
 .sk-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.97);border:1px solid rgba(255,255,255,.15);color:white;padding:10px 22px;border-radius:12px;font-size:.88em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999;white-space:nowrap}
 .sk-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.wp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:8px;min-height:40px}
-.wp-grid.wp-v{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
+.wp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(max(160px,calc((100% - 16px)/3)),1fr));gap:8px;margin-bottom:8px;min-height:40px}
+.wp-grid.wp-v{grid-template-columns:repeat(auto-fill,minmax(max(100px,calc((100% - 24px)/4)),1fr))}
 .wp-it{aspect-ratio:16/9;border-radius:12px;overflow:hidden;cursor:pointer;position:relative;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);box-sizing:border-box;transition:transform .15s,border-color .15s}
 .wp-grid.wp-v .wp-it{aspect-ratio:9/16}
 .wp-it img.wp-th{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
