@@ -1,5 +1,5 @@
 const RH={'content-type':'application/json'};
-const TO=5000,PPG=20;
+const TO=5000,PPG=20,ER={items:[],tp:0,e:1},DQ='naturaleza';
 
 function fetchTO(url,opts){
   const ac=new AbortController();
@@ -11,7 +11,7 @@ async function fromUnsplash(key,q,pg,ori){
   if(!key)return{items:[],tp:0};
   try{
     const r=await fetchTO(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(q)}&per_page=${PPG}&page=${pg}&orientation=${ori==='v'?'portrait':'landscape'}&client_id=${key}`);
-    if(!r.ok)return{items:[],tp:0};
+    if(!r.ok)return ER;
     const d=await r.json();
     return{
       items:(d.results||[]).map(p=>({
@@ -24,7 +24,7 @@ async function fromUnsplash(key,q,pg,ori){
       })),
       tp:Math.min(d.total_pages||1,333)
     };
-  }catch{return{items:[],tp:0};}
+  }catch{return ER;}
 }
 
 async function fromPexels(key,q,pg,ori){
@@ -33,7 +33,7 @@ async function fromPexels(key,q,pg,ori){
     const r=await fetchTO(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q)}&per_page=${PPG}&page=${pg}&orientation=${ori==='v'?'portrait':'landscape'}&locale=es-ES`,{
       headers:{Authorization:key}
     });
-    if(!r.ok)return{items:[],tp:0};
+    if(!r.ok)return ER;
     const d=await r.json();
     return{
       items:(d.photos||[]).map(p=>({
@@ -43,14 +43,14 @@ async function fromPexels(key,q,pg,ori){
       })),
       tp:Math.ceil((d.total_results||0)/PPG)
     };
-  }catch{return{items:[],tp:0};}
+  }catch{return ER;}
 }
 
 async function fromPixabay(key,q,pg,ori){
   if(!key)return{items:[],tp:0};
   try{
     const r=await fetchTO(`https://pixabay.com/api/?key=${key}&q=${encodeURIComponent(q)}&per_page=${PPG}&page=${pg}&orientation=${ori==='v'?'vertical':'horizontal'}&image_type=photo&lang=es`,{headers:{'User-Agent':'Mozilla/5.0 (compatible; Wallpaper/1.0)'}});
-    if(!r.ok)return{items:[],tp:0};
+    if(!r.ok)return ER;
     const d=await r.json();
     return{
       items:(d.hits||[]).map(h=>({
@@ -60,7 +60,7 @@ async function fromPixabay(key,q,pg,ori){
       })),
       tp:Math.ceil((d.totalHits||0)/PPG)
     };
-  }catch{return{items:[],tp:0};}
+  }catch{return ER;}
 }
 
 export async function onRequestGet(context){
@@ -79,10 +79,10 @@ export async function onRequestGet(context){
     return new Response('ok',{headers:{'cache-control':'no-store'}});
   }
 
-  const q=u.searchParams.get('q')||'naturaleza';
+  const q=u.searchParams.get('q')||DQ;
   const pg=Math.max(1,Math.min(500,parseInt(u.searchParams.get('page')||'1')));
   const ori=u.searchParams.get('ori')||'h';
-  const WC1=caches.default,WK1=new Request(`${u.origin}${u.pathname}?q=${encodeURIComponent(q.trim().toLowerCase())}&page=${pg}&ori=${ori}&l=es`);
+  const WC1=caches.default,K1=(q,pg)=>new Request(`${u.origin}${u.pathname}?q=${encodeURIComponent(q.trim().toLowerCase())}&page=${pg}&ori=${ori}&l=es`),WK1=K1(q,pg);
   const hit=await WC1.match(WK1);
   if(hit)return hit;
 
@@ -94,6 +94,10 @@ export async function onRequestGet(context){
 
   const results=[];
   for(let i=0;i<PPG;i++)for(const s of[a,b,c])if(s.items[i])results.push(s.items[i]);
+  if(!results.length&&(a.e||b.e||c.e)){
+    const fb=await WC1.match(K1(DQ,1));
+    return new Response(JSON.stringify({...(fb?await fb.json():{results:[]}),fb:1}),{status:503,headers:{...RH,'cache-control':'no-store'}});
+  }
   const tp=Math.min(Math.max(a.tp,b.tp,c.tp,1),500);
 
   const out=new Response(JSON.stringify({results,total_pages:tp,total:results.length}),{

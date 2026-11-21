@@ -165,10 +165,11 @@ body.low-perf .wp-dl{backdrop-filter:none}
     pgEl.innerHTML='';
     try{
       const r=await fetch('/api/wallpaper?q='+encodeURIComponent(q)+'&page='+p+'&ori='+WM,{signal:_sac.signal});
-      if(!r.ok)throw new Error(r.status);
-      const d=await r.json();
-      R=d.results||[];TP=d.total_pages||1;
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok&&!d.fb)throw new Error(r.status);
+      R=d.results||[];TP=d.fb?1:d.total_pages||1;
       render(R);
+      if(d.fb)(R.length?toast:ST)('Limite de busquedas, proba en unos minutos');
     }catch(e){
       if(e.name==='AbortError')return;
       gEl.innerHTML='';ST('Error: '+e.message);
