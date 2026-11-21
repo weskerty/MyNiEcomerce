@@ -291,6 +291,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://cheagana.com/A/HuellaDeDestruccion</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://cheagana.com/A/J1NFBCDE</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
