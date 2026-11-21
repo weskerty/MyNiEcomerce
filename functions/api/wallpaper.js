@@ -30,7 +30,7 @@ async function fromUnsplash(key,q,pg,ori){
 async function fromPexels(key,q,pg,ori){
   if(!key)return{items:[],tp:0};
   try{
-    const r=await fetchTO(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q)}&per_page=${PPG}&page=${pg}&orientation=${ori==='v'?'portrait':'landscape'}`,{
+    const r=await fetchTO(`https://api.pexels.com/v1/search?query=${encodeURIComponent(q)}&per_page=${PPG}&page=${pg}&orientation=${ori==='v'?'portrait':'landscape'}&locale=es-ES`,{
       headers:{Authorization:key}
     });
     if(!r.ok)return{items:[],tp:0};
@@ -49,7 +49,7 @@ async function fromPexels(key,q,pg,ori){
 async function fromPixabay(key,q,pg,ori){
   if(!key)return{items:[],tp:0};
   try{
-    const r=await fetchTO(`https://pixabay.com/api/?key=${key}&q=${encodeURIComponent(q)}&per_page=${PPG}&page=${pg}&orientation=${ori==='v'?'vertical':'horizontal'}&image_type=photo`);
+    const r=await fetchTO(`https://pixabay.com/api/?key=${key}&q=${encodeURIComponent(q)}&per_page=${PPG}&page=${pg}&orientation=${ori==='v'?'vertical':'horizontal'}&image_type=photo&lang=es`,{headers:{'User-Agent':'Mozilla/5.0 (compatible; Wallpaper/1.0)'}});
     if(!r.ok)return{items:[],tp:0};
     const d=await r.json();
     return{
@@ -79,10 +79,10 @@ export async function onRequestGet(context){
     return new Response('ok',{headers:{'cache-control':'no-store'}});
   }
 
-  const q=u.searchParams.get('q')||'nature landscape';
+  const q=u.searchParams.get('q')||'naturaleza';
   const pg=Math.max(1,Math.min(500,parseInt(u.searchParams.get('page')||'1')));
   const ori=u.searchParams.get('ori')||'h';
-  const WC1=caches.default,WK1=new Request(`${u.origin}${u.pathname}?q=${encodeURIComponent(q.trim().toLowerCase())}&page=${pg}&ori=${ori}`);
+  const WC1=caches.default,WK1=new Request(`${u.origin}${u.pathname}?q=${encodeURIComponent(q.trim().toLowerCase())}&page=${pg}&ori=${ori}&l=es`);
   const hit=await WC1.match(WK1);
   if(hit)return hit;
 
@@ -92,7 +92,8 @@ export async function onRequestGet(context){
     fromPixabay(env.PIXABAY_KEY,q,pg,ori)
   ]);
 
-  const results=[...a.items,...b.items,...c.items];
+  const results=[];
+  for(let i=0;i<PPG;i++)for(const s of[a,b,c])if(s.items[i])results.push(s.items[i]);
   const tp=Math.min(Math.max(a.tp,b.tp,c.tp,1),500);
 
   const out=new Response(JSON.stringify({results,total_pages:tp,total:results.length}),{

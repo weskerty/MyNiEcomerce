@@ -1,15 +1,15 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Fondos de Pantalla - Che Agana</title>
-<meta name="description" content="🏠 🔍 Formato: 🖥️ 📱 🌿 Nature 🌑 Dark 🎨 Vector 🚗 Autos 🌌 Galaxy ← Volver a Aplicaciones">
+<meta name="description" content="🏠 🔍 Formato: 🖥️ 📱 🌿 Naturaleza 🌑 Oscuro 🎨 Arte digital 🚗 Autos 🌌 Galaxia ← Volver a Aplicaciones">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Che Agana">
 <meta property="og:title" content="Fondos de Pantalla">
-<meta property="og:description" content="🏠 🔍 Formato: 🖥️ 📱 🌿 Nature 🌑 Dark 🎨 Vector 🚗 Autos 🌌 Galaxy ← Volver a Aplicaciones">
+<meta property="og:description" content="🏠 🔍 Formato: 🖥️ 📱 🌿 Naturaleza 🌑 Oscuro 🎨 Arte digital 🚗 Autos 🌌 Galaxia ← Volver a Aplicaciones">
 <meta property="og:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/NM%3Du1e73ed63ed-ID%3DFondos_de_Pantalla-NB%3DFondos%20de%20Pantalla.webp">
 <meta property="og:url" content="https://cheagana.com/A/Fondos_de_Pantalla">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Fondos de Pantalla">
-<meta name="twitter:description" content="🏠 🔍 Formato: 🖥️ 📱 🌿 Nature 🌑 Dark 🎨 Vector 🚗 Autos 🌌 Galaxy ← Volver a Aplicaciones">
+<meta name="twitter:description" content="🏠 🔍 Formato: 🖥️ 📱 🌿 Naturaleza 🌑 Oscuro 🎨 Arte digital 🚗 Autos 🌌 Galaxia ← Volver a Aplicaciones">
 <meta name="twitter:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/NM%3Du1e73ed63ed-ID%3DFondos_de_Pantalla-NB%3DFondos%20de%20Pantalla.webp">
 <link rel="canonical" href="https://cheagana.com/A/Fondos_de_Pantalla">
 <base href="/">
@@ -39,9 +39,8 @@
 .wp-it{aspect-ratio:16/9;border-radius:12px;overflow:hidden;cursor:pointer;position:relative;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.15);box-sizing:border-box;transition:transform .15s,border-color .15s}
 .wp-grid.wp-v .wp-it{aspect-ratio:9/16}
 .wp-it img.wp-th{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
-.wp-it:hover{transform:scale(1.03);border-color:rgba(56,189,248,.4)}
-.wp-attr{position:absolute;bottom:0;left:0;right:0;padding:3px 7px;background:rgba(0,0,0,.62);font-size:.6em;color:rgba(255,255,255,.85);opacity:0;transition:opacity .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
-.wp-it:hover .wp-attr{opacity:1}
+@media(hover:hover){.wp-it:hover{transform:scale(1.03);border-color:rgba(56,189,248,.4)}}
+.wp-attr{position:absolute;bottom:0;left:0;right:0;padding:3px 7px;background:rgba(0,0,0,.62);font-size:.6em;color:rgba(255,255,255,.85);text-align:left}
 .wp-dl{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:2}
 body.low-perf .wp-dl{backdrop-filter:none}
 .wp-dl.on{display:flex}
@@ -68,11 +67,11 @@ body.low-perf .wp-dl{backdrop-filter:none}
     <button class="wp-mo" id="wp-mv">📱</button>
   </div>
   <div class="wp-cats">
-    <button class="wp-cat" data-q="nature">🌿 Nature</button>
-    <button class="wp-cat" data-q="dark">🌑 Dark</button>
-    <button class="wp-cat" data-q="vector art">🎨 Vector</button>
-    <button class="wp-cat" data-q="cars">🚗 Autos</button>
-    <button class="wp-cat" data-q="galaxy">🌌 Galaxy</button>
+    <button class="wp-cat" data-q="naturaleza">🌿 Naturaleza</button>
+    <button class="wp-cat" data-q="oscuro">🌑 Oscuro</button>
+    <button class="wp-cat" data-q="arte digital">🎨 Arte digital</button>
+    <button class="wp-cat" data-q="autos">🚗 Autos</button>
+    <button class="wp-cat" data-q="galaxia">🌌 Galaxia</button>
   </div>
   <div id="wp-grid" class="wp-grid"></div>
   <div id="wp-pg" class="PG1"></div>
@@ -223,18 +222,18 @@ body.low-perf .wp-dl{backdrop-filter:none}
     };
   });
 
-  const _ori=window.matchMedia('(orientation: portrait)');
-  _ori.addEventListener('change',e=>setMode(e.matches?'v':'h'));
+  const _ori=window.matchMedia('(orientation: portrait)'),OR1=e=>setMode(e.matches?'v':'h');
+  _ori.addEventListener('change',OR1);
 
   const _el=document.getElementById('content');
   if(_el)_el.addEventListener('contentUnload',()=>{
     if(_sac){_sac.abort();_sac=null;}
     if(cdRaf){cancelAnimationFrame(cdRaf);cdRaf=null;}
-    _ori.removeEventListener('change',arguments.callee);
+    _ori.removeEventListener('change',OR1);
   },{once:true});
 
   setMode(WM);
-  doSearch('nature landscape',1);
+  doSearch('naturaleza',1);
 })();
 </script>
 <p><a href="web/paginas/apps.html" class="back-button">← Volver a Aplicaciones</a></p>
