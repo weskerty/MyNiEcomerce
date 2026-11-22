@@ -56,7 +56,7 @@
 <div class="pw-wrap">
   <div class="pw-gen-row">
     <label for="gp-len">Longitud</label>
-    <input type="number" id="gp-len" value="20" min="4">
+    <input type="number" id="gp-len" value="20" min="12">
   </div>
   <div class="pw-ck">
     <label><input type="checkbox" id="gp-rare">Simbolos raros</label>
@@ -226,9 +226,15 @@ Tiempo estimado para descifrarla:<br>
     return out.join('');
   }
 
+  function GP_OK(p,useRare,useEmoji,useGlyph){
+    const cs=[...p],cp=cs.map(c=>c.codePointAt(0)),inR=r=>cp.some(x=>r.some(([a,b])=>x>=a&&x<=b));
+    return [GP_LOW,GP_UP,GP_NUM,GP_SYM].concat(useRare?[GP_RARE]:[]).every(t=>cs.some(c=>t.includes(c)))&&(!useEmoji||inR(GP_EMOJI_RANGES))&&(!useGlyph||inR(GP_GLYPH_RANGES));
+  }
+
   $('gp-btn').onclick=()=>{
-    const len=Math.max(4,parseInt($('gp-len').value)||20);
-    const pass=GP_GEN(len,$('gp-rare').checked,$('gp-emoji').checked,$('gp-glyph').checked);
+    const len=Math.max(12,parseInt($('gp-len').value)||20),r=$('gp-rare').checked,e=$('gp-emoji').checked,g=$('gp-glyph').checked;
+    let pass;
+    do pass=GP_GEN(len,r,e,g);while(!GP_OK(pass,r,e,g));
     $('gp-out').textContent=pass;
     if(navigator.clipboard)navigator.clipboard.writeText(pass).then(()=>PW_T('Copiada al portapapeles')).catch(()=>{});
   };
