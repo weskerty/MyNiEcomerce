@@ -18,26 +18,105 @@
 <p>En el cuadro de descripcion se escribe texto simple con algunos simbolos. En cada ejemplo esta <strong>lo que se escribe</strong> y abajo <strong>como queda</strong>.</p>
 <p>Imagenes y videos: solo enlaces externos (que empiecen con https://).</p>
 <hr>
-<h2 id="-lo-basico" tabindex="-1"><a class="header-anchor" href="#-lo-basico">🔤 Lo basico</a></h2>
-<p>Una linea que empieza con ## es un titulo.</p>
+<h2 id="-texto" tabindex="-1"><a class="header-anchor" href="#-texto">🔤 Texto</a></h2>
+<p>Enter pasa a la linea siguiente. Una linea en blanco empieza un parrafo nuevo.</p>
 <p>Se escribe:</p>
-<pre><code>**negrita** y *cursiva*
+<pre><code>**negrita**, *cursiva* y ~~tachado~~
+Esta linea sigue justo abajo.
 
-- un item
-- otro item
-
-[texto del enlace](https://cheagana.com)
+Despues de una linea en blanco: parrafo nuevo.
 </code></pre>
 <p>Queda:</p>
-<p><strong>negrita</strong> y <em>cursiva</em></p>
+<p><strong>negrita</strong>, <em>cursiva</em> y <s>tachado</s><br>
+Esta linea sigue justo abajo.</p>
+<p>Despues de una linea en blanco: parrafo nuevo.</p>
+<hr>
+<h2 id="-resaltar" tabindex="-1"><a class="header-anchor" href="#-resaltar">🖍️ Resaltar</a></h2>
+<p>Entre <strong>==</strong> y <strong>==</strong>. Junto con el tachado sirve para ofertas.</p>
+<p>Se escribe:</p>
+<pre><code>Precio normal ~~50.000 Gs~~, hoy ==35.000 Gs==
+</code></pre>
+<p>Queda:</p>
+<p>Precio normal <s>50.000 Gs</s>, hoy <mark>35.000 Gs</mark></p>
+<hr>
+<h2 id="-titulos" tabindex="-1"><a class="header-anchor" href="#-titulos">🔠 Titulos</a></h2>
+<p>Una linea que empieza con <strong>#</strong> y un espacio. Mas <strong>#</strong>, mas chico.</p>
+<p>Se escribe:</p>
+<pre><code># Titulo grande
+## Titulo mediano
+### Titulo chico
+</code></pre>
+<p>Queda:</p>
+<h1 id="titulo-grande" tabindex="-1"><a class="header-anchor" href="#titulo-grande">Titulo grande</a></h1>
+<h2 id="titulo-mediano" tabindex="-1"><a class="header-anchor" href="#titulo-mediano">Titulo mediano</a></h2>
+<h3 id="titulo-chico" tabindex="-1"><a class="header-anchor" href="#titulo-chico">Titulo chico</a></h3>
+<hr>
+<h2 id="-listas" tabindex="-1"><a class="header-anchor" href="#-listas">📝 Listas</a></h2>
+<p>Con guion para puntos, con numero y punto para pasos.</p>
+<p>Se escribe:</p>
+<pre><code>- un item
+- otro item
+
+1. Elegi el color
+2. Agregalo al carrito
+3. Pedi por WhatsApp
+</code></pre>
+<p>Queda:</p>
 <ul>
 <li>un item</li>
 <li>otro item</li>
 </ul>
-<p><a href="https://cheagana.com">texto del enlace</a></p>
+<ol>
+<li>Elegi el color</li>
+<li>Agregalo al carrito</li>
+<li>Pedi por WhatsApp</li>
+</ol>
+<p>Con casillas:</p>
+<p>Se escribe:</p>
+<pre><code>- [x] Pagado
+- [x] Empaquetado
+- [ ] Enviado
+</code></pre>
+<p>Queda:</p>
+<ul class="task-list-container">
+<li class="task-list-item">✅ Pagado</li>
+<li class="task-list-item">✅ Empaquetado</li>
+<li class="task-list-item">⬜ Enviado</li>
+</ul>
 <hr>
-<h2 id="-tamano-de-imagen" tabindex="-1"><a class="header-anchor" href="#-tamano-de-imagen">📏 Tamano de imagen</a></h2>
-<p>Despues de la descripcion de la foto: un espacio y <strong>=ANCHOx</strong> (la x va siempre). Ancho en pixeles o en %. Sin tamano, la foto ocupa lo que mide.</p>
+<h2 id="-enlaces" tabindex="-1"><a class="header-anchor" href="#-enlaces">🔗 Enlaces</a></h2>
+<p>Texto entre <strong>[ ]</strong> y la direccion entre <strong>( )</strong>. Una direccion sola tambien queda como enlace.</p>
+<p>Se escribe:</p>
+<pre><code>[Ver la tienda](https://cheagana.com)
+
+https://cheagana.com
+</code></pre>
+<p>Queda:</p>
+<p><a href="https://cheagana.com">Ver la tienda</a></p>
+<p><a href="https://cheagana.com">https://cheagana.com</a></p>
+<hr>
+<h2 id="-linea-separadora" tabindex="-1"><a class="header-anchor" href="#-linea-separadora">➖ Linea separadora</a></h2>
+<p>Tres guiones solos, con una linea en blanco arriba y abajo. Sin la linea en blanco de arriba, el texto de encima se vuelve titulo.</p>
+<p>Se escribe:</p>
+<pre><code>Arriba
+
+---
+
+Abajo
+</code></pre>
+<p>Queda:</p>
+<p>Arriba</p>
+<hr>
+<p>Abajo</p>
+<hr>
+<h2 id="-fotos" tabindex="-1"><a class="header-anchor" href="#-fotos">📷 Fotos</a></h2>
+<p><strong>!</strong> y la descripcion entre <strong>[ ]</strong>, el enlace de la foto entre <strong>( )</strong>. La descripcion la leen los buscadores y los lectores de pantalla.</p>
+<p>Se escribe:</p>
+<pre><code>![Adaptador USB-C](https://link-de-la-foto.jpg)
+</code></pre>
+<p>Queda:</p>
+<p><img src="web/adjuntos/USBOTGSA/90757.avif" alt="Adaptador USB-C"></p>
+<p>Tamano: despues de la descripcion, un espacio y <strong>=ANCHOx</strong> (la x va siempre). Ancho en pixeles o en %. Sin tamano, la foto ocupa lo que mide.</p>
 <p>Se escribe:</p>
 <pre><code>![Adaptador =150x](https://link-de-la-foto.jpg)
 
@@ -55,7 +134,7 @@
 ![Foto 3](https://link-3.jpg)
 </code></pre>
 <p>Queda:</p>
-<div class="galeriaMD"><img src="web/adjuntos/USBOTGSA/90757.avif" alt="Ejemplo"><br>
+<div class="galeriaMD"><img loading="lazy" src="web/adjuntos/USBOTGSA/90757.avif" alt="Ejemplo"><br>
 <img loading="lazy" src="web/adjuntos/USBOTGSA/104954.avif" alt="Conectando hub, teclado y raton"><br>
 <img loading="lazy" src="web/adjuntos/USBOTGSA/104964.avif" alt="Ejemplo de uso"></div>
 <p>Si alguna foto lleva tamano o enlace no se arma la galeria. Para dejarlas sueltas, una linea en blanco entre foto y foto.</p>
@@ -125,25 +204,75 @@ Texto al lado de una foto chica.</p>
 </div>
 </div>
 <hr>
-<h2 id="-resaltar" tabindex="-1"><a class="header-anchor" href="#-resaltar">🖍️ Resaltar</a></h2>
+<h2 id="-videos-y-redes" tabindex="-1"><a class="header-anchor" href="#-videos-y-redes">🎬 Videos y redes</a></h2>
+<p>Pega el enlace solo, en su propia linea. YouTube, TikTok, Facebook y Reddit se ven ahi mismo; Instagram, X y Threads quedan en un boton <strong>▶ Ver post</strong> para que la pagina cargue rapido. Sirven tambien los enlaces de “Compartir” de cada app. En medio de un texto queda como enlace comun.</p>
 <p>Se escribe:</p>
-<pre><code>Precio normal 50.000 Gs, hoy ==35.000 Gs==
+<pre><code>Mira como se usa:
+
+https://youtu.be/stkw23ysF_Q
 </code></pre>
 <p>Queda:</p>
-<p>Precio normal 50.000 Gs, hoy <mark>35.000 Gs</mark></p>
+<p>Mira como se usa:</p>
+<p><iframe class="EM1" src="https://www.youtube-nocookie.com/embed/stkw23ysF_Q" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe></p>
 <hr>
-<h2 id="-lista-con-casillas" tabindex="-1"><a class="header-anchor" href="#-lista-con-casillas">✅ Lista con casillas</a></h2>
+<h2 id="-tablas" tabindex="-1"><a class="header-anchor" href="#-tablas">📊 Tablas</a></h2>
+<p>Columnas separadas por <strong>|</strong>. La segunda linea, con guiones, separa los titulos. En celular, si no entra, se desliza de costado.</p>
 <p>Se escribe:</p>
-<pre><code>- [x] Pagado
-- [x] Empaquetado
-- [ ] Enviado
+<pre><code>| Talle | Pecho | Precio |
+|---|---|---|
+| S | 90 cm | 80.000 Gs |
+| M | 96 cm | 85.000 Gs |
+| L | 102 cm | 90.000 Gs |
 </code></pre>
 <p>Queda:</p>
-<ul class="task-list-container">
-<li class="task-list-item">✅ Pagado</li>
-<li class="task-list-item">✅ Empaquetado</li>
-<li class="task-list-item">⬜ Enviado</li>
-</ul>
+<table>
+<thead>
+<tr>
+<th>Talle</th>
+<th>Pecho</th>
+<th>Precio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S</td>
+<td>90 cm</td>
+<td>80.000 Gs</td>
+</tr>
+<tr>
+<td>M</td>
+<td>96 cm</td>
+<td>85.000 Gs</td>
+</tr>
+<tr>
+<td>L</td>
+<td>102 cm</td>
+<td>90.000 Gs</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="-ficha-tecnica" tabindex="-1"><a class="header-anchor" href="#-ficha-tecnica">📋 Ficha tecnica</a></h2>
+<p>El dato en una linea y abajo <strong>:</strong> con el valor. Una linea en blanco entre dato y dato.</p>
+<p>Se escribe:</p>
+<pre><code>Material
+: Vidrio templado
+
+Cantidad
+: 6 vasos
+
+Capacidad
+: 350 ml
+</code></pre>
+<p>Queda:</p>
+<dl>
+<dt>Material</dt>
+<dd>Vidrio templado</dd>
+<dt>Cantidad</dt>
+<dd>6 vasos</dd>
+<dt>Capacidad</dt>
+<dd>350 ml</dd>
+</dl>
 <hr>
 <h2 id="-carteles" tabindex="-1"><a class="header-anchor" href="#-carteles">🪧 Carteles</a></h2>
 <p>Primera linea <strong>&gt; [!TIPO]</strong> y el texto en las lineas siguientes, cada una empezando con <strong>&gt;</strong>. Tipos: CONSEJO, NOTA, AVISO, PELIGRO. Una cita comun queda sin icono.</p>
@@ -204,50 +333,6 @@ desde 100.000 Gs</p>
 <p>Precios con IVA incluido</p>
 </div>
 <hr>
-<h2 id="-texto-oculto" tabindex="-1"><a class="header-anchor" href="#-texto-oculto">🙈 Texto oculto</a></h2>
-<p>Entre <strong>!!</strong> y <strong>!!</strong>. Se ve al pasar el mouse o tocarlo.</p>
-<p>Se escribe:</p>
-<pre><code>Adivina la capital: !!Asuncion!!
-</code></pre>
-<p>Queda:</p>
-<p>Adivina la capital: <span class="spoiler" tabindex="-1">Asuncion</span></p>
-<p>Ojo: dos signos de exclamacion pegados a lo que sigue (letra o signo) ocultan todo hasta los proximos dos. Esto no se ve:</p>
-<pre><code>!!NUEVO!!
-</code></pre>
-<p>Para exclamar deja siempre un espacio despues de los signos, asi: Oferta!! Solo hoy!!</p>
-<hr>
-<h2 id="-notas-al-pie" tabindex="-1"><a class="header-anchor" href="#-notas-al-pie">📌 Notas al pie</a></h2>
-<p>Las notas aparecen al final de la pagina. El numero lleva a la nota y la flecha vuelve.</p>
-<p>Se escribe:</p>
-<pre><code>Garantia de 6 meses[^1].
-
-[^1]: Solo defectos de fabrica, no golpes ni agua.
-</code></pre>
-<p>Queda:</p>
-<p>Garantia de 6 meses<sup class="footnote-ref"><a href="#footnote1">[1]</a><a class="footnote-anchor" id="footnote-ref1"></a></sup>.</p>
-<hr>
-<h2 id="-ficha-tecnica" tabindex="-1"><a class="header-anchor" href="#-ficha-tecnica">📋 Ficha tecnica</a></h2>
-<p>El dato en una linea y abajo <strong>:</strong> con el valor. Una linea en blanco entre dato y dato.</p>
-<p>Se escribe:</p>
-<pre><code>Material
-: Vidrio templado
-
-Cantidad
-: 6 vasos
-
-Capacidad
-: 350 ml
-</code></pre>
-<p>Queda:</p>
-<dl>
-<dt>Material</dt>
-<dd>Vidrio templado</dd>
-<dt>Cantidad</dt>
-<dd>6 vasos</dd>
-<dt>Capacidad</dt>
-<dd>350 ml</dd>
-</dl>
-<hr>
 <h2 id="-desplegable" tabindex="-1"><a class="header-anchor" href="#-desplegable">🔽 Desplegable</a></h2>
 <p>Entre <strong>::: details Titulo</strong> y <strong>:::</strong>. Se abre al tocar el titulo.</p>
 <p>Se escribe:</p>
@@ -281,16 +366,46 @@ En el dia dentro de Asuncion.
 </code></pre>
 <p>Queda:</p>
 <div class="TB1">
-<input type="radio" name="TB_384" id="TB_384_0" checked="checked"><label for="TB_384_0">Descripcion</label><div>
+<input type="radio" name="TB_537" id="TB_537_0" checked="checked"><label for="TB_537_0">Descripcion</label><div>
 <p>Adaptador de USB-C a USB-A.</p>
 </div>
-<input type="radio" name="TB_384" id="TB_384_1"><label for="TB_384_1">Compatibilidad</label><div>
+<input type="radio" name="TB_537" id="TB_537_1"><label for="TB_537_1">Compatibilidad</label><div>
 <p>Celulares con USB-C y OTG.</p>
 </div>
-<input type="radio" name="TB_384" id="TB_384_2"><label for="TB_384_2">Envio</label><div>
+<input type="radio" name="TB_537" id="TB_537_2"><label for="TB_537_2">Envio</label><div>
 <p>En el dia dentro de Asuncion.</p>
 </div>
 </div>
+<hr>
+<h2 id="-texto-oculto" tabindex="-1"><a class="header-anchor" href="#-texto-oculto">🙈 Texto oculto</a></h2>
+<p>Entre <strong>!!</strong> y <strong>!!</strong>. Se ve al pasar el mouse o tocarlo.</p>
+<p>Se escribe:</p>
+<pre><code>Adivina la capital: !!Asuncion!!
+</code></pre>
+<p>Queda:</p>
+<p>Adivina la capital: <span class="spoiler" tabindex="-1">Asuncion</span></p>
+<p>Ojo: dos signos de exclamacion pegados a lo que sigue (letra o signo) ocultan todo hasta los proximos dos. Esto no se ve:</p>
+<pre><code>!!NUEVO!!
+</code></pre>
+<p>Para exclamar deja siempre un espacio despues de los signos, asi: Oferta!! Solo hoy!! O usa la barra de <strong>Simbolos tal cual</strong>.</p>
+<hr>
+<h2 id="-notas-al-pie" tabindex="-1"><a class="header-anchor" href="#-notas-al-pie">📌 Notas al pie</a></h2>
+<p>Las notas aparecen al final de la pagina. El numero lleva a la nota y la flecha vuelve.</p>
+<p>Se escribe:</p>
+<pre><code>Garantia de 6 meses[^1].
+
+[^1]: Solo defectos de fabrica, no golpes ni agua.
+</code></pre>
+<p>Queda:</p>
+<p>Garantia de 6 meses<sup class="footnote-ref"><a href="#footnote1">[1]</a><a class="footnote-anchor" id="footnote-ref1"></a></sup>.</p>
+<hr>
+<h2 id="-simbolos-tal-cual" tabindex="-1"><a class="header-anchor" href="#-simbolos-tal-cual">🔣 Simbolos tal cual</a></h2>
+<p>Una barra <strong>\</strong> justo antes de un simbolo lo muestra como es, sin formato.</p>
+<p>Se escribe:</p>
+<pre><code>\*no es cursiva\* y \!!NUEVO\!!
+</code></pre>
+<p>Queda:</p>
+<p>*no es cursiva* y !!NUEVO!!</p>
 <hr class="footnotes-sep">
 <section class="footnotes">
 <ol class="footnotes-list">
