@@ -19,7 +19,7 @@ FRASES_HTML
 ];
 
 
-const PERM_C='15';
+const PERM_C='16';
 const PRE_PERM=[
 'web/recursos/libros/cuentos.json',
 'web/js/lib/MarkDownIT/markdown-it.min.js',
