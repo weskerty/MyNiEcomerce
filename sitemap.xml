@@ -6,6 +6,11 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://cheagana.com/A/GameVisorAtlantis</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://cheagana.com/A/RE_outbreak_Web_Online</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
