@@ -109,9 +109,9 @@ label.ST_CI{cursor:pointer}
     s.onchange=()=>s.value?localStorage.setItem(k,s.value):localStorage.removeItem(k);
   });
 
-  const FD_U='web/recursos/fondos/wallpaper.webp',FD_U2='web/recursos/fondos/wallpaper-low.webp';
-  async function FD_C1(){for(const k of await caches.keys()){const c=await caches.open(k);if(await c.match(FD_U))return c}throw 0}
-  const FD_F1=async(r,r2)=>{const c=await FD_C1();await c.put(FD_U,r);await c.put(FD_U2,r2);await fetch(FD_U,{cache:'reload'});await fetch(FD_U2,{cache:'reload'});location.reload()};
+  const FD_U=['web/recursos/fondos/wallpaper.webp','web/recursos/fondos/wallpaper-low.webp'];
+  async function FD_C1(){for(const k of await caches.keys()){const c=await caches.open(k);if(await c.match(FD_U[0]))return c}throw 0}
+  const FD_F1=async b=>{const c=await FD_C1();for(let i=0;i<2;i++){await c.put(FD_U[i],new Response(b[i]));await fetch(FD_U[i],{cache:'reload'})}location.reload()};
   $('FD_B1').onclick=()=>$('FD_I1').click();
   $('FD_I1').onchange=async e=>{
     const f=e.target.files[0];if(!f)return;
@@ -119,17 +119,13 @@ label.ST_CI{cursor:pointer}
       const b=await createImageBitmap(f),k=Math.min(1,2560/Math.max(b.width,b.height)),c=document.createElement('canvas'),x=c.getContext('2d');
       c.width=Math.round(b.width*k);c.height=Math.round(b.height*k);
       x.fillStyle='#111';x.fillRect(0,0,c.width,c.height);x.drawImage(b,0,0,c.width,c.height);
-      const T=(v,t,q)=>new Promise(r=>v.toBlob(r,t,q));
-      let o=await T(c,'image/webp',.85);if(o?.type!=='image/webp')o=await T(c,'image/jpeg',.85);
-      const m=document.createElement('canvas'),y=m.getContext('2d');
-      m.width=96;m.height=Math.round(96*c.height/c.width);
-      y.filter='blur(3px)';y.drawImage(c,-8,-8,m.width+16,m.height+16);y.filter='none';
-      y.fillStyle='rgba(0,0,0,.3)';y.fillRect(0,0,m.width,m.height);
-      await FD_F1(new Response(o),new Response(await T(m,'image/png')));
+      const T=t=>new Promise(r=>c.toBlob(r,t,.85));
+      let o=await T('image/webp');if(o?.type!=='image/webp')o=await T('image/jpeg');
+      await FD_F1([o,o]);
     }catch{alert('Error Fondo')}
   };
   $('FD_R1').onclick=async()=>{
-    try{const q='?r='+Date.now(),[r,r2]=await Promise.all([FD_U,FD_U2].map(u=>fetch(u+q,{cache:'no-store'})));if(!r.ok||!r2.ok)throw 0;await FD_F1(r,r2)}catch{alert('Error Fondo')}
+    try{const q='?r='+Date.now();await FD_F1(await Promise.all(FD_U.map(async u=>{const r=await fetch(u+q,{cache:'no-store'});if(!r.ok)throw 0;return r.blob()})))}catch{alert('Error Fondo')}
   };
 
   async function nt(){
