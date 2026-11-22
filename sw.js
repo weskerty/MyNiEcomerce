@@ -1,4 +1,4 @@
-const V='v223';
+const V='v225';
 const N_ICON='web/recursos/iconos/ICON.png';
 const N_ICO='web/recursos/iconos/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/recursos/iconos/notif-banner.jpg';
@@ -19,7 +19,7 @@ FRASES_HTML
 ];
 
 
-const PERM_C='14';
+const PERM_C='15';
 const PRE_PERM=[
 'web/recursos/libros/cuentos.json',
 'web/js/lib/MarkDownIT/markdown-it.min.js',
@@ -32,6 +32,7 @@ const PRE_PERM=[
 'web/404.html',
 'web/recursos/favicon.ico',
 'web/recursos/fondos/wallpaper.webp',
+'web/recursos/fondos/wallpaper-low.webp',
 'web/recursos/fuentes/Comfortaa/font.woff2',
 'web/recursos/fuentes/Ubuntu/UbuntuSans-Regular.woff2',
 'web/recursos/fuentes/Emojis/FluentEmojiColor.woff2',

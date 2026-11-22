@@ -185,6 +185,7 @@ body:not(.low-perf) #disqus-container{backdrop-filter:var(--BF_DQ)}
 
 .markdown-content{max-width:760px;margin:24px auto 0}
 body.NB_GL .markdown-content{position:relative;isolation:isolate;max-width:816px;padding:clamp(20px,5vw,48px);border:1px solid var(--RD_L);border-radius:28px;background:var(--RD_PN);box-shadow:var(--RD_SH)}
+@media(max-width:600px){body.NB_GL .content:has(>.markdown-content){--RD_W:8px}body.NB_GL .markdown-content{padding-inline:16px;border-radius:20px}}
 body.NB_GL:not(.low-perf) .markdown-content{background:none}
 body.NB_GL:not(.low-perf) .markdown-content::after{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--RD_PN);backdrop-filter:var(--BF_CT);pointer-events:none}
 body.NB_GL:not(.low-perf) .bl-card{isolation:isolate;background:none}
@@ -251,7 +252,9 @@ body:not(.low-perf) :is(:is(.BOTON-L1,.view-all-button,.back-button,button:not([
 }
 
 body.low-perf{--GL_M:0;--GL_T:0s;--GL_E:var(--rdm-shadow);--GL_EH:var(--rdm-shadow);--BF_CT:none;--BF_DG:none;--BF_DQ:none;--BF_BD:none;--BG_CT:var(--rdm-bg);--BG_DG:var(--rdm-bg);--BG_DQ:var(--rdm-bg)}
-body.low-perf::before,body.low-perf :is(#bg,#bg-video){display:none}
+body.DK1::before,body.low-perf :is(#bg,#bg-video){display:none}
+body.low-perf::before{background:url('recursos/fondos/wallpaper-low.webp') center/cover}
+body.low-perf:not(.DK1){--RD_S:rgba(12,12,14,.6);--RD_C:rgba(14,14,16,.55);--RD_PN:rgba(12,12,14,.66)}
 body.low-perf :is(#content>*,.AN1,blockquote.red){animation:none}
 body.low-perf :is(details::details-content,summary::after){transition:none}
 @media(prefers-reduced-motion:reduce){:root{--GL_M:0;--GL_T:0s}#content>*,.AN1,blockquote.red{animation:none}details::details-content,summary::after{transition:none}}

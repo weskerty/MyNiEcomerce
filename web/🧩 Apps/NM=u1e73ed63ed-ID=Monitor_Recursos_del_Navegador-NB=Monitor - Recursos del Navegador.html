@@ -324,7 +324,7 @@ body.low-perf .HT6{transition:none}
   }
   function lps(v){
     if(v)localStorage.setItem('perf',v);else localStorage.removeItem('perf');
-    document.body.classList.toggle('low-perf',v==='low');
+    window.__PF1(v);
     lpu();
   }
   lpu();
