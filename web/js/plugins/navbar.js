@@ -232,15 +232,8 @@ const _its=NB_ROUTES.map((r,i)=>{
   return a;
 });
 const _cx=document.createElement('div');_cx.className='NB_CX';
-const _tm=document.createElement('button');_tm.className='NB_TM';_tm.setAttribute('aria-label','Tema');
+const _tm=document.createElement('a');_tm.className='NB_TM';_tm.href='web/paginas/config.html';_tm.setAttribute('aria-label','Tema');
 _tm.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>';
-_tm.addEventListener('click',()=>{
-  let m;try{m=localStorage.getItem('perf')}catch(e){}
-  m={low:'dark',dark:'high'}[m]||'low';
-  window.__PF1(m);
-  try{localStorage.setItem('perf',m)}catch(e){}
-  const v=document.getElementById('bg-video');if(v&&m!=='high')v.pause();
-});
 function _mkSep(c){const s=document.createElement('span');s.className='NB_S '+c;return s;}
 _nb.append(_its[0],_mkSep('NB_S0'),_its[1],_its[2],_its[3],_cx,_mkSep('NB_S1'),_its[4],_tm);
 document.body.append(_hd,_nb);
