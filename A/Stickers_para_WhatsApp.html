@@ -46,9 +46,9 @@
 .SK_TI{flex:0 1 auto;min-width:0;display:flex;align-items:center;gap:6px;padding:0;border:0;background:none;color:var(--RD_F);cursor:pointer;overflow:hidden;font:inherit}
 .SK_TI img{width:40px;height:40px;border-radius:8px;object-fit:fill;flex:none}
 .SK_TI b{flex:none;margin:0 4px}
-.SK_OK p{margin:0 0 10px}
-.SK_OK b{word-break:break-all}
-.SK_OK .RD_B1{margin:4px}
+.SK_OK{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:8px}
+#wa-btn{display:inline-flex;align-items:center;gap:8px}
+#wa-btn::before{content:'';width:18px;height:18px;flex-shrink:0;background:var(--LK_C);-webkit-mask:var(--LK_I) center/contain no-repeat;mask:var(--LK_I) center/contain no-repeat}
 #SK_WT{margin:0}
 .sk-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);max-width:calc(100vw - 32px);box-sizing:border-box;background:var(--RD_DG);border:1px solid var(--RD_L);color:var(--RD_F);padding:10px 18px;border-radius:12px;font-size:.88em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:10000;text-align:center}
 .sk-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -114,7 +114,7 @@
 <div id="SK_TR" class="SK_TR" hidden>
 <p id="SK_WT" class="SK_TX" role="status" hidden></p>
 <div id="SK_TP" class="SK_TP"><button type="button" id="SK_TV" class="SK_TI"></button><button type="button" id="sk-cf" class="RD_B1 GL_C">Enviar ➤</button></div>
-<div id="SK_OK" class="SK_OK" hidden><p>✅ Listo. Al tocar el boton se abre WhatsApp con el mensaje <b id="SK_OC"></b>: solo toca Enviar ➤ y el bot te manda los stickers.</p><a id="wa-btn" class="RD_B1 GL_C" href="#" target="_blank" rel="noopener">💬 Abrir WhatsApp</a><button type="button" id="SK_NW" class="RD_B1">Armar otro pack</button></div>
+<div id="SK_OK" class="SK_OK" hidden><span>✅ Listo</span><a id="wa-btn" class="RD_B1 GL_C lk-wa" href="#" target="_blank" rel="noopener">Abrir en WhatsApp</a><button type="button" id="SK_NW" class="RD_B1">Armar otro Pack</button></div>
 </div>
 <div class="sk-toast" id="sk-toast" role="status"></div>
 <dialog id="SK_DG" class="DX1 SK_DG">
@@ -159,7 +159,7 @@
 
   const gEl=$('sk-grid'),pgEl=$('sk-pg'),tEl=$('sk-toast'),qEl=$('sk-q'),inEl=$('sc-in');
   const DG=$('SK_DG'),PD=$('SK_PD'),pBar=$('sc-pbar'),pLbl=$('sc-prog-lbl'),cropImg=$('sc-crop-img');
-  const TR=$('SK_TR'),OK=$('SK_OK'),OC=$('SK_OC'),WB=$('wa-btn'),AU=$('SK_AU');
+  const TR=$('SK_TR'),OK=$('SK_OK'),WB=$('wa-btn'),AU=$('SK_AU');
   const SN_U='web/recursos/notificaciones/cat.mp3';
   let SN_A=null;
   const ED_S={c:$('SK_EC'),o:$('SK_EO'),m:$('SK_EM')};
@@ -253,7 +253,6 @@
   const ER_1=e=>e.message==='503'?'Servidor ocupado, proba en un minuto':e.message==='403'||e.message==='verificacion'?'Error verificacion, recarga la pagina':null;
 
   function OK_1(sid,host){
-    OC.textContent='STICKERS='+sid;
     WB.href='https://wa.me/'+SK_WA+'?text='+encodeURIComponent('STICKERS='+sid);
     host.append(OK);OK.hidden=false;TR_R();SN_1();
   }
