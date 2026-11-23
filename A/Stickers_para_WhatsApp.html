@@ -46,9 +46,7 @@
 .SK_TI{flex:1;min-width:0;display:flex;align-items:center;gap:6px;padding:0;border:0;background:none;color:var(--RD_F);cursor:pointer;overflow:hidden;font:inherit}
 .SK_TI img{width:40px;height:40px;border-radius:8px;object-fit:fill;flex:none}
 .SK_TI b{flex:none;margin:0 4px}
-.SK_OK p{margin:0 0 10px}
-.SK_OK b{word-break:break-all}
-.SK_OK .RD_B1{margin:4px}
+.SK_OK{display:flex;align-items:center;justify-content:center;gap:8px}
 .sk-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);max-width:calc(100vw - 32px);box-sizing:border-box;background:var(--RD_DG);border:1px solid var(--RD_L);color:var(--RD_F);padding:10px 18px;border-radius:12px;font-size:.88em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:10000;text-align:center}
 .sk-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 @media(orientation:portrait){body.NB_V .sk-toast{bottom:100px}}
@@ -112,7 +110,7 @@
 </section>
 <div id="SK_TR" class="SK_TR" hidden>
 <div id="SK_TP" class="SK_TP"><button type="button" id="SK_TV" class="SK_TI"></button><button type="button" id="sk-cf" class="RD_B1 GL_C">Enviar ➤</button></div>
-<div id="SK_OK" class="SK_OK" hidden><p>✅ Listo. Al tocar el boton se abre WhatsApp con el mensaje <b id="SK_OC"></b>: solo toca Enviar ➤ y el bot te manda los stickers.</p><a id="wa-btn" class="RD_B1 GL_C" href="#" target="_blank" rel="noopener">💬 Abrir WhatsApp</a><button type="button" id="SK_NW" class="RD_B1">Armar otro pack</button></div>
+<div id="SK_OK" class="SK_OK" hidden><a id="wa-btn" class="RD_B1 GL_C" href="#" target="_blank" rel="noopener">💬 Enviar por WhatsApp</a><button type="button" id="SK_NW" class="RD_B1" aria-label="Armar otro pack" title="Armar otro pack">↺</button></div>
 </div>
 <div class="sk-toast" id="sk-toast" role="status"></div>
 <dialog id="SK_DG" class="DX1 SK_DG">
@@ -157,7 +155,9 @@
 
   const gEl=$('sk-grid'),pgEl=$('sk-pg'),tEl=$('sk-toast'),qEl=$('sk-q'),inEl=$('sc-in');
   const DG=$('SK_DG'),PD=$('SK_PD'),pBar=$('sc-pbar'),pLbl=$('sc-prog-lbl'),cropImg=$('sc-crop-img');
-  const TR=$('SK_TR'),OK=$('SK_OK'),OC=$('SK_OC'),WB=$('wa-btn'),AU=$('SK_AU');
+  const TR=$('SK_TR'),OK=$('SK_OK'),WB=$('wa-btn'),AU=$('SK_AU');
+  const SN_U='web/recursos/notificaciones/cat.mp3';
+  let SN_A=null;
   const ED_S={c:$('SK_EC'),o:$('SK_EO'),m:$('SK_EM')};
   $('SK1').style.setProperty('--SK_I',ITEM+'px');
   $('sc-ck').src=WA;
@@ -229,10 +229,13 @@
   }
   $('SK_TV').onclick=()=>TB_1('p');
 
+  function SN_P(){if(SN_A)return;SN_A=new Audio(SN_U);SN_A.muted=true;SN_A.play().then(()=>{SN_A.pause();SN_A.currentTime=0;SN_A.muted=false;}).catch(()=>{SN_A.muted=false;});}
+  function SN_1(){try{navigator.vibrate?.(800);}catch{}if(SN_A){SN_A.currentTime=0;SN_A.play().catch(()=>{});}}
+  const ER_1=e=>e.message==='503'?'Servidor ocupado, proba en un minuto':null;
+
   function OK_1(sid,host){
-    OC.textContent='STICKERS='+sid;
     WB.href='https://wa.me/'+SK_WA+'?text='+encodeURIComponent('STICKERS='+sid);
-    host.append(OK);OK.hidden=false;TR_R();
+    host.append(OK);OK.hidden=false;TR_R();SN_1();
   }
   $('SK_NW').onclick=()=>{OK.hidden=true;TR_R();TB_1('b');};
 
@@ -668,6 +671,7 @@
 
   $('sk-cf').onclick=async()=>{
     if(!P.length||PD.open)return;
+    SN_P();
     const items=[...P];
     PD_O('Procesando...');
     let nA=0,nF=0;
@@ -691,7 +695,7 @@
       items.forEach(FR_1);P=[];UP_1();
       OK_1(sid,TR);
       if(nF||nA)toast((nF?nF+' no se pudieron convertir. ':'')+(nA?nA+' sin musica.':''));
-    }catch(e){if(!GONE)toast('Error Stickers '+e.message);}
+    }catch(e){if(!GONE)toast(ER_1(e)||'Error Stickers '+e.message);}
     finally{PD_C();}
   };
 
@@ -715,10 +719,10 @@
       },500);});
       L.textContent='';W.hidden=true;
       OK_1(sid,$('SK_TS'));
-    }catch(e){if(!GONE){L.textContent='Error Telegram '+e.message;W.hidden=true;}}
+    }catch(e){if(!GONE){L.textContent=ER_1(e)||'Error Telegram '+e.message;W.hidden=true;}}
     finally{TG_B=0;}
   }
-  $('SK_TF').onsubmit=e=>{e.preventDefault();TG_1($('SK_TQ').value);};
+  $('SK_TF').onsubmit=e=>{e.preventDefault();SN_P();TG_1($('SK_TQ').value);};
 
   function ovOpen(it){
     ovSel=-1;
@@ -828,6 +832,7 @@
     PD_C();
     P.forEach(FR_1);P=[];
     if(_gfRo){_gfRo.disconnect();_gfRo=null}
+    if(SN_A){SN_A.pause();SN_A=null;}
     if(FFP){FFP.then(f=>f.terminate()).catch(()=>{});FFP=null;}
     clearTimeout(_tt);
   },{once:true});
