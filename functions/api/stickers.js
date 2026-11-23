@@ -37,6 +37,11 @@ export async function onRequestGet(context) {
   const { request, env } = context;
   const u = new URL(request.url);
   const sp  = u.searchParams;
+  if (sp.has('sid')) {
+    const sid = sp.get('sid');
+    if (!/^[a-f0-9]{12}$/.test(sid)) return new Response('', { status: 400, headers: RH_N });
+    return BK_1(env, `estado?sid=${sid}`, { headers: { 'x-bridge-key': env.BRIDGE_KEY, 'x-fwip': request.headers.get('cf-connecting-ip') || '' } });
+  }
   const q   = sp.get('q') || '';
   const cid = sp.get('cid') || 'anon';
   const ua  = request.headers.get('user-agent') || '';
