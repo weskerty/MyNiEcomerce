@@ -142,8 +142,6 @@
   const SK_WA='595973254371',SK_MX=30,GAP=8,PG_FALLBACK=6,TG_W=75;
   const ITEM=innerWidth<480?86:120;
   const MAX_SZ=20*1024*1024,DIM=256,TARGET=900*1024,AU_MX=1024*1024,AU_S=10;
-  const FF_B='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd';
-  const FF_C='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd';
   const MAXFR=150,VID_MAX=10,VID_FPS=15,THM=512;
   const ID_OK=typeof ImageDecoder!=='undefined';
   const SD_RX=/^[a-f0-9]{12}$/;
@@ -520,25 +518,7 @@
   function FF_L1(){
     if(GONE)return Promise.reject(new Error('salida'));
     if(FFP)return FFP;
-    FFP=(async()=>{
-      let t=await fetch(FF_B+'/ffmpeg.js').then(r=>r.text());
-      const wm=t.match(/new Worker\b[\s\S]*?e\.u\((\d+)\)/);
-      if(!wm)throw new Error('worker id regex fail');
-      if(!t.includes('{type:"module"}'))throw new Error('worker type patch fail');
-      t=t.replace('{type:"module"}','{type:void 0}');
-      const [w,c,wa]=await Promise.all([
-        fetch(FF_B+'/'+wm[1]+'.ffmpeg.js').then(r=>r.arrayBuffer()),
-        fetch(FF_C+'/ffmpeg-core.js').then(r=>r.arrayBuffer()),
-        fetch(FF_C+'/ffmpeg-core.wasm').then(r=>r.arrayBuffer())
-      ]);
-      const bu=(b,ty)=>URL.createObjectURL(new Blob([b],{type:ty}));
-      const js=bu(t,'text/javascript');
-      await new Promise((ok,no)=>{const s=document.createElement('script');s.src=js;s.onload=ok;s.onerror=()=>no(new Error('script load fail'));document.head.appendChild(s);});
-      URL.revokeObjectURL(js);
-      const f=new window.FFmpegWASM.FFmpeg();
-      await f.load({classWorkerURL:bu(w,'text/javascript'),coreURL:bu(c,'text/javascript'),wasmURL:bu(wa,'application/wasm')});
-      return f;
-    })();
+    FFP=(window.FF1?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');s.src='web/js/lib/FFmpeg.js';s.onload=ok;s.onerror=()=>{s.remove();no(new Error('ffmpeg'));};document.head.appendChild(s);})).then(()=>window.FF1());
     FFP.catch(()=>{FFP=null;});
     return FFP;
   }
@@ -663,8 +643,10 @@
     await ff.createDir('/vc').catch(()=>{});
     await ff.mount(window.FFmpegWASM.FFFSType.WORKERFS,{files:[f]},'/vc');
     try{return await fn(ff,'/vc/'+f.name);}
+    catch(e){FF_R1();throw e;}
     finally{await ff.unmount('/vc').catch(()=>{});}
   }
+  function FF_R1(){if(FFP){FFP.then(f=>f.terminate()).catch(()=>{});FFP=null;}}
 
   function FV_1(f,n){
     return FM_1(f,async(ff,p)=>{
@@ -681,11 +663,11 @@
   }
 
   async function VD_F2(it){
-    if(!it.fv)try{return await VD_F1(it.file,VID_FPS);}catch{}
+    await FF_L1();
     const fr=[];
-    try{for(const b of await FV_1(it.file,MAXFR))fr.push(await createImageBitmap(b));}
-    catch(e){AN_F1({fr});throw e;}
-    return {fr,fps:VID_FPS};
+    try{for(const b of await FV_1(it.file,MAXFR))fr.push(await createImageBitmap(b));return {fr,fps:VID_FPS};}
+    catch(e){AN_F1({fr});if(it.fv||GONE)throw e;}
+    return VD_F1(it.file,VID_FPS);
   }
 
   async function ST_E1(it,ovs){
@@ -897,7 +879,7 @@
     P.forEach(FR_1);P=[];
     if(_gfRo){_gfRo.disconnect();_gfRo=null}
     if(SN_A){SN_A.pause();SN_A=null;}
-    if(FFP){FFP.then(f=>f.terminate()).catch(()=>{});FFP=null;}
+    FF_R1();
   },{once:true});
 
   TL_1().then(()=>window.TS0()).catch(()=>{});

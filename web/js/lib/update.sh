@@ -23,6 +23,9 @@ Leaflet/MarkerCluster-LICENCE.txt|https://cdn.jsdelivr.net/npm/leaflet.markerclu
 Cropper/cropper.min.js|https://cdn.jsdelivr.net/npm/cropperjs@1/dist/cropper.min.js
 Cropper/cropper.min.css|https://cdn.jsdelivr.net/npm/cropperjs@1/dist/cropper.min.css
 Html5Qrcode/html5-qrcode.min.js|https://cdn.jsdelivr.net/npm/html5-qrcode@2/html5-qrcode.min.js
+FFmpeg/ffmpeg.js|https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd/ffmpeg.js
+FFmpeg/814.ffmpeg.js|https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd/814.ffmpeg.js
+FFmpeg/LICENSE|https://cdn.jsdelivr.net/gh/ffmpegwasm/ffmpeg.wasm@main/LICENSE
 '
 
 echo "$B1" | while IFS='|' read -r C1 C2; do

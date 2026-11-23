@@ -28,8 +28,9 @@
 .vc-prog-w{width:100%;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;margin-bottom:4px;display:none}
 .vc-prog{height:100%;background:#38bdf8;width:0%;transition:width .2s}
 .vc-lbl{color:rgba(255,255,255,.6);font-size:.83em;text-align:center;min-height:1.2em;margin-bottom:10px}
-.vc-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,.97);border:1px solid rgba(255,255,255,.15);color:white;padding:10px 22px;border-radius:12px;font-size:.88em;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:999}
-.vc-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.VC_DG{width:min(440px,calc(100vw - 32px));text-align:center}
+.VC_DG>button[data-x]{margin-bottom:6px}
+#vc-ep{clear:both;white-space:pre-line}
 .vc-reset{padding:8px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);cursor:pointer;font-size:.85em;display:none}
 .VS1{display:none;margin-bottom:14px}
 .VS2{width:100%;max-width:340px;border-radius:14px;background:#000;display:block;margin:0 auto}
@@ -96,7 +97,7 @@
     </div>
   </div>
 </div>
-<div class="vc-toast" id="vc-toast"></div>
+<dialog id="vc-er" class="DX1 VC_DG"><button data-x="1" aria-label="Cerrar">✕</button><p id="vc-ep" role="alert"></p></dialog>
 <script>
 (async()=>{
 
@@ -108,7 +109,7 @@ const E=document.getElementById('vc-prog-w');
 const F=document.getElementById('vc-prog');
 const G=document.getElementById('vc-lbl');
 const H=document.getElementById('vc-reset');
-const I=document.getElementById('vc-toast');
+const I=document.getElementById('vc-er');
 const VC_B1=document.getElementById('vc-dla');
 const VS_SEL=document.getElementById('vc-sel');
 const VS_PV=document.getElementById('vc-pv');
@@ -122,11 +123,7 @@ const VS_RTX=document.getElementById('vc-rest');
 const VS_WT=document.getElementById('vc-wt');
 const VS_WTT=document.getElementById('vc-wt-t');
 
-const FF_BASE='https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/umd';
-const FF_JS=FF_BASE+'/ffmpeg.js';
-const FF_CORE_BASE='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd';
-
-let J=null,K=0,L=[],M=false,N=null,U=null;
+let J=null,K=0,L=[],M=false,U=null;
 let VS_MD=null,VS_OU=null,VS_RU=null,VS_RN='',VS_ST=null;
 
 const lg=(...a)=>console.log('[vc]',...a);
@@ -134,11 +131,13 @@ const le=(...a)=>console.error('[vc][ERR]',...a);
 
 function O(a){
   le('toast',a);
-  I.textContent=a;
-  I.classList.add('show');
-  clearTimeout(N);
-  N=setTimeout(()=>I.classList.remove('show'),2200);
+  if(!I.isConnected)return;
+  const b=document.getElementById('vc-ep'),c=I.open?b.textContent.split('\n'):[];
+  if(!c.includes(a))c.push(a);
+  b.textContent=c.join('\n');
+  if(!I.open)I.showModal();
 }
+I.querySelector('[data-x]').onclick=()=>I.close();
 
 function P(a,b){
   lg('prog',a+'%',b||'');
@@ -405,123 +404,16 @@ function T(a){
 }
 
 async function V(){
-  if(U){
-    lg('V cache hit');
-    const d=await U;
-    lg('V cache ffmpeg',d);
-    return d;
-  }
-  lg('V init start');
+  if(U)return U;
   U=(async()=>{
     E.style.display='';
-    P(5,'FFmpeg...');
-
-    lg('V fetch ffjs',FF_JS);
-    let ffText;
-    try{
-      const r=await fetch(FF_JS);
-      lg('V ffjs status',r.status,r.ok);
-      if(!r.ok) throw new Error('ffmpeg.js HTTP '+r.status);
-      ffText=await r.text();
-      lg('V ffjs len',ffText.length);
-      if(!ffText.includes('{type:"module"}')) throw new Error('worker type patch fail');
-      ffText=ffText.replace('{type:"module"}','{type:void 0}');
-    }catch(err){
-      le('V ffjs fetch fail',err);
-      throw err;
-    }
-
-    const wm=ffText.match(/new Worker\b[\s\S]*?e\.u\((\d+)\)/);
-    lg('V worker regex match',wm?.[1]);
-    if(!wm) throw new Error('worker id regex fail');
-    const FF_W=FF_BASE+'/'+wm[1]+'.ffmpeg.js';
-    lg('V worker url',FF_W);
-
     P(20,'bajando FFmpeg 32 MB, la primera vez tarda...');
-    lg('V fetch assets: worker + core + wasm');
-    let wBuf,cBuf,waBuf;
-    try{
-      [wBuf,cBuf,waBuf]=await Promise.all([
-        fetch(FF_W).then(r=>{
-          lg('V worker fetch',r.status,r.ok);
-          if(!r.ok) throw new Error('worker HTTP '+r.status);
-          return r.arrayBuffer();
-        }),
-        fetch(FF_CORE_BASE+'/ffmpeg-core.js').then(r=>{
-          lg('V core fetch',r.status,r.ok);
-          if(!r.ok) throw new Error('core.js HTTP '+r.status);
-          return r.arrayBuffer();
-        }),
-        fetch(FF_CORE_BASE+'/ffmpeg-core.wasm').then(r=>{
-          lg('V wasm fetch',r.status,r.ok);
-          if(!r.ok) throw new Error('core.wasm HTTP '+r.status);
-          return r.arrayBuffer();
-        }),
-      ]);
-      lg('V assets ok worker',wBuf.byteLength,'core',cBuf.byteLength,'wasm',waBuf.byteLength);
-    }catch(err){
-      le('V assets fetch fail',err);
-      throw err;
-    }
-
-    const wURL=URL.createObjectURL(new Blob([wBuf],{type:'text/javascript'}));
-    const cURL=URL.createObjectURL(new Blob([cBuf],{type:'text/javascript'}));
-    const waURL=URL.createObjectURL(new Blob([waBuf],{type:'application/wasm'}));
-    lg('V blob urls created');
-
-    P(75,'init...');
-    const jsURL=URL.createObjectURL(new Blob([ffText],{type:'text/javascript'}));
-    await new Promise((a,b)=>{
-      const c=document.createElement('script');
-      c.src=jsURL;
-      c.onload=()=>{
-        lg('V script load ok, FFmpegWASM=',typeof window.FFmpegWASM);
-        URL.revokeObjectURL(jsURL);
-        a();
-      };
-      c.onerror=(ev)=>{
-        le('V script load fail',ev);
-        b(new Error('script load fail'));
-      };
-      document.head.appendChild(c);
-    });
-
-    if(!window.FFmpegWASM){
-      le('V window.FFmpegWASM undefined');
-      throw new Error('FFmpegWASM missing after script load');
-    }
-    lg('V FFmpegWASM keys',Object.keys(window.FFmpegWASM));
-
-    const {FFmpeg}=window.FFmpegWASM;
-    if(!FFmpeg){
-      le('V FFmpeg class undefined');
-      throw new Error('FFmpeg class missing');
-    }
-
-    const d=new FFmpeg();
-    lg('V FFmpeg instance',d);
-
+    if(!window.FF1)await new Promise((a,b)=>{const c=document.createElement('script');c.src='web/js/lib/FFmpeg.js';c.onload=a;c.onerror=()=>{c.remove();b(new Error('FFmpeg.js'));};document.head.appendChild(c);});
+    const d=await window.FF1();
     d.on('log',({type,message})=>lg('ff-log',type,message));
     d.on('progress',({progress,time})=>lg('ff-progress',Math.round(progress*100)+'%','t',time));
-
-    P(90,'iniciando FFmpeg...');
-    lg('V d.load start');
-    try{
-      await d.load({classWorkerURL:wURL,coreURL:cURL,wasmURL:waURL});
-      lg('V d.load ok');
-    }catch(err){
-      le('V d.load fail',err);
-      try{d.terminate();}catch(e2){}
-      throw err;
-    }
-
-    URL.revokeObjectURL(wURL);
-    URL.revokeObjectURL(cURL);
-    URL.revokeObjectURL(waURL);
-
     E.style.display='none';
     P(0,'');
-    lg('V ready');
     return d;
   })();
   return U;
@@ -662,7 +554,6 @@ document.getElementById('vc-rbk').onclick=VS_B1;
 
 function VC_TD1(){
   lg('VC_TD1 teardown urls',L.length);
-  clearTimeout(N);
   VS_W1(false);
   VS_P2();
   [VS_PV,VS_PA].forEach(a=>{a.pause();a.removeAttribute('src');});
