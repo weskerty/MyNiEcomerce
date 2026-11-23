@@ -788,19 +788,10 @@
     QG_U1();
   }
 
-  async function QG_SH(blob,name,type){
-    if(!navigator.canShare)return false;
-    try{
-      const f=new File([blob],name,{type});
-      if(!navigator.canShare({files:[f]}))return false;
-      await navigator.share({files:[f]});
-      return true;
-    }catch(e){return e&&e.name==='AbortError';}
-  }
-
   async function QG_OUT(blob,name,type){
-    if(await QG_SH(blob,name,type))return;
     QG_DL(blob,name);
+    const f=new File([blob],name,{type});
+    if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f]}).catch(()=>{});
   }
 
   function QG_PV(e){
