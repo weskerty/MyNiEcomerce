@@ -25,6 +25,9 @@
   <button onclick="simPush()">SW push</button>
   <button onclick="clearOPFS()">Limpiar OPFS</button>
 </div>
+<div class="row">
+  <button onclick="AV_1()">Aviso stickers (5s)</button>
+</div>
 
 <div id="log"></div>
 
@@ -68,6 +71,13 @@ async function simPush(){
   if(!reg.active)return log('SW no activo');
   reg.active.postMessage('RUN_OPFS');
   log('RUN_OPFS enviado al SW');
+}
+
+function AV_1(){
+  const a=new Audio('/web/recursos/notificaciones/cat.mp3');
+  a.muted=true;a.play().then(()=>{a.pause();a.currentTime=0;a.muted=false;}).catch(()=>{a.muted=false;});
+  log('Aviso en 5s: cambia de pestana o bloquea la pantalla');
+  setTimeout(()=>{try{navigator.vibrate?.(800);}catch{}a.currentTime=0;a.play().then(()=>log('Aviso: sono y vibro')).catch(e=>log('Error sonido: '+e.name));},5000);
 }
 
 async function clearOPFS(){
