@@ -1,10 +1,11 @@
 const RH = { "Content-Type": "application/json" };
 const RH_C = { "Content-Type": "application/json", "cache-control": "public,max-age=86400" };
-const STK_TTL = 86400;
+const RH_N = { "Content-Type": "application/json", "cache-control": "no-store" };
 const QUALITY = 'sm';
 const LOCALE = 'PY';
 const CONTENT_FILTER = 'off';
 const ENABLED = { stickers: true, gifs: true, memes: true, emojis: false, clips: true };
+const SD_RX = /^[a-f0-9]{12}$/;
 
 const BASE = 'https://api.klipy.com/api/v1';
 const EP = {
@@ -24,10 +25,24 @@ function norm(item) {
   return { url, title: item.title || '', type: item.type, blur_preview: item.blur_preview || '' };
 }
 
+async function BK_1(env, p, init) {
+  try {
+    const res = await fetch(`${env.SERVER_URL}/stickers/${p}`, init);
+    return new Response(await res.text(), { status: res.status, headers: RH_N });
+  } catch {
+    return new Response(JSON.stringify({ error: 'Error Stickers' }), { status: 502, headers: RH_N });
+  }
+}
+
 export async function onRequestGet(context) {
   const { request, env } = context;
   const u = new URL(request.url);
   const sp  = u.searchParams;
+  if (sp.has('sid')) {
+    const sid = sp.get('sid');
+    if (!SD_RX.test(sid)) return new Response('', { status: 400, headers: RH_N });
+    return BK_1(env, `estado?sid=${sid}`, { headers: { 'x-bridge-key': env.BRIDGE_KEY, 'x-fwip': request.headers.get('cf-connecting-ip') || '' } });
+  }
   const q   = sp.get('q') || '';
   const cid = sp.get('cid') || 'anon';
   const ua  = request.headers.get('user-agent') || '';
@@ -60,14 +75,16 @@ export async function onRequestGet(context) {
   );
 
   const data = [];
+  let fail = false;
   for (const r of results) {
-    if (!r?.result) continue;
+    if (!r?.result) { fail = true; continue; }
     for (const item of (r.data?.data || [])) {
       const n = norm(item);
       if (n) data.push(n);
     }
   }
 
+  if (fail || !data.length) return new Response(JSON.stringify({ data }), { status: data.length ? 200 : 503, headers: RH_N });
   const out = new Response(JSON.stringify({ data }), { status: 200, headers: RH_C });
   context.waitUntil(cache.put(cacheKey, out.clone()));
   return out;
@@ -79,20 +96,19 @@ export async function onRequestPost(context) {
   const ip = request.headers.get('cf-connecting-ip') || '';
 
   if (ct.includes('multipart/form-data')) {
-    const res = await fetch(`${env.SERVER_URL}/stickers/upload`, {
+    return BK_1(env, 'upload', {
       method: 'POST',
       headers: { 'x-bridge-key': env.BRIDGE_KEY, 'content-type': ct, 'x-fwip': ip },
       body: request.body
     });
-    return new Response(await res.text(), { status: res.status, headers: RH });
   }
 
-  const body = await request.text();
-  const ep   = JSON.parse(body).urls ? 'process' : 'tgpack';
-  const res  = await fetch(`${env.SERVER_URL}/stickers/${ep}`, {
+  let pack;
+  try { pack = (await request.json()).pack; } catch {}
+  if (typeof pack !== 'string' || !pack || pack.length > 200) return new Response('', { status: 400, headers: RH });
+  return BK_1(env, 'tgpack', {
     method: 'POST',
     headers: { 'x-bridge-key': env.BRIDGE_KEY, 'Content-Type': 'application/json', 'x-fwip': ip },
-    body
+    body: JSON.stringify({ pack })
   });
-  return new Response(await res.text(), { status: res.status, headers: RH });
 }
