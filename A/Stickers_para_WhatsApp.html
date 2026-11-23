@@ -247,7 +247,10 @@
     }
     throw new Error('salida');
   }
-  const ER_1=e=>e.message==='503'?'Servidor ocupado, proba en un minuto':null;
+  let TSP=null;
+  const TL_1=()=>window.TS1?Promise.resolve():TSP||(TSP=new Promise((ok,no)=>{const s=document.createElement('script');s.src='web/js/lib/Turnstile.js';s.onload=ok;s.onerror=()=>{TSP=null;no(new Error('verificacion'))};document.head.appendChild(s)}));
+  const TK_1=()=>TL_1().then(()=>window.TS1()).catch(()=>{throw new Error('verificacion')});
+  const ER_1=e=>e.message==='503'?'Servidor ocupado, proba en un minuto':e.message==='403'||e.message==='verificacion'?'Error verificacion, recarga la pagina':null;
 
   function OK_1(sid,host){
     OC.textContent='STICKERS='+sid;
@@ -705,7 +708,7 @@
       if(nF===items.length)throw new Error('conversion');
       if(urls.length)form.append('urls',JSON.stringify(urls));
       setProg(85,'Subiendo...');
-      const res=await fetch('/api/stickers',{method:'POST',body:form});
+      const res=await fetch('/api/stickers',{method:'POST',headers:{'x-ts':await TK_1()},body:form});
       if(!res.ok)throw new Error(res.status);
       const {sid,w}=await res.json();
       if(!SD_RX.test(sid||''))throw new Error('sid');
@@ -725,7 +728,7 @@
     const L=$('SK_TL'),W=$('SK_TW'),B=$('SK_TBR');
     W.hidden=false;B.style.width='0%';L.textContent='Pidiendo el pack...';
     try{
-      const r=await fetch('/api/stickers',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pack})});
+      const r=await fetch('/api/stickers',{method:'POST',headers:{'Content-Type':'application/json','x-ts':await TK_1()},body:JSON.stringify({pack})});
       if(!r.ok)throw new Error(r.status);
       const {sid,w}=await r.json();
       if(!SD_RX.test(sid||''))throw new Error('sid');
@@ -855,6 +858,8 @@
     if(FFP){FFP.then(f=>f.terminate()).catch(()=>{});FFP=null;}
     clearTimeout(_tt);
   },{once:true});
+
+  TL_1().then(()=>window.TS0()).catch(()=>{});
 
   (async()=>{
     try{

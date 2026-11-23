@@ -4,6 +4,7 @@ const AU='/api/productos',W='595972184435',TG='cheaganaBot',MX=204800,PZ=10;
 const TY={'':['📦','Producto'],Propuestas:['💡','Propuesta'],'Ejemplos de Corrupcion':['⚖️','Caso de Corrupcion'],Blogs:['📰','Blog'],evento:['🥳','Evento'],minecraft:['⛏️','Servidor Minecraft'],jugadores:['🎮','Encuentra Jugadores']};
 const CR=[{k:'css',l:'web/js/lib/Cropper/cropper.min.css',c:'https://cdn.jsdelivr.net/npm/cropperjs@1/dist/cropper.min.css'},{k:'js',l:'web/js/lib/Cropper/cropper.min.js',c:'https://cdn.jsdelivr.net/npm/cropperjs@1/dist/cropper.min.js',ok:()=>window.Cropper}];
 const GF={k:'js',l:'web/js/lib/GridFit.js',ok:()=>window.GridFit};
+const TSL={k:'js',l:'web/js/lib/Turnstile.js',ok:()=>window.TS1};
 const st=document.createElement('style');
 st.textContent=`.AG1:not([hidden]){display:grid;gap:16px}.AG1 [hidden]{display:none!important}.AG1>[data-v]:not(.GL_P1){display:grid;gap:16px;align-content:start}
 .AG1 h2{margin:0 0 14px;font-size:1.2rem}.AG1 .GL_P1>:last-child{margin-bottom:0}
@@ -60,7 +61,9 @@ function T(t,tp='ok',d=3000){
 }
 async function A(a,b={}){
   let r,d={};
-  try{r=await fetch(AU,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:U.tk||undefined,...b,action:a})});d=await r.json().catch(()=>({}))}
+  const h={'Content-Type':'application/json'};
+  if(/^(codigo|login|enviar)$/.test(a)){try{await LL(TSL);h['x-ts']=await window.TS1()}catch{return{ok:false,d:{error:'Error verificacion, recarga la pagina'}}}}
+  try{r=await fetch(AU,{method:'POST',headers:h,body:JSON.stringify({token:U.tk||undefined,...b,action:a})});d=await r.json().catch(()=>({}))}
   catch{return{ok:false,d:{error:'Sin conexion'}}}
   if(r.status===401&&!/^(login|codigo|cambiarPass)$/.test(a))OUT();
   if(r.ok&&d.alias&&d.alias!==U.al)SK('ap_al',U.al=d.alias);
