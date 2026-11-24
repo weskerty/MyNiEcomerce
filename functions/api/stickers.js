@@ -84,9 +84,8 @@ export async function onRequestGet(context) {
   }
 
   if (fail || !data.length) return new Response(JSON.stringify({ data }), { status: data.length ? 200 : 503, headers: RH_N });
-  const out = new Response(JSON.stringify({ data }), { status: 200, headers: RH_C });
-  context.waitUntil(cache.put(cacheKey, out.clone()));
-  return out;
+  context.waitUntil(cache.put(cacheKey, new Response(JSON.stringify({ data: data.filter(x => x.type !== 'ad') }), { status: 200, headers: RH_C })));
+  return new Response(JSON.stringify({ data }), { status: 200, headers: RH_N });
 }
 
 export async function onRequestPost(context) {
