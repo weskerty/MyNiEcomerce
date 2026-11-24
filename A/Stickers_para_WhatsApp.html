@@ -22,7 +22,7 @@
 .SK_SB{display:flex;gap:8px;margin:0 0 12px}
 .SK_SB input{flex:1;min-width:0}
 .SK_TX{color:var(--RD_MF);font-size:.9rem;margin:0 0 12px}
-.sk-grid{display:grid;grid-template-columns:repeat(auto-fill,var(--SK_I));gap:8px;justify-content:center;margin-bottom:8px;min-height:40px}
+.sk-grid{display:grid;grid-template-columns:repeat(auto-fill,var(--SK_I));grid-auto-flow:dense;gap:8px;justify-content:center;margin-bottom:8px;min-height:40px}
 .sk-it{width:var(--SK_I);height:var(--SK_I);padding:0;border-radius:14px;overflow:hidden;cursor:pointer;position:relative;background:var(--RD_M);border:2px solid var(--RD_L);box-sizing:border-box;transition:border-color .15s}
 .sk-it img{width:100%;height:100%;object-fit:fill;display:block;pointer-events:none}
 .sk-it[aria-pressed=true]{border-color:var(--ok)}
@@ -152,7 +152,7 @@
   const N3=n=>String(n).padStart(3,'0');
   const WA=window.__CFG?.waitAnim||'';
   let FFP=null,GONE=false,SB=0,TG_B=0,ED=null,ED_W=0,EA={},cropper=null,lastQ=null;
-  let R=[],RF=[],FT='',pg=0,P=[];
+  let R=[],RF=[],PS=[],FT='',pg=0,P=[];
   let ovNS=64,ovSel=-1;
   const HM=new Map();
 
@@ -187,7 +187,7 @@
           _gfPending=false;
           if(!gEl.clientWidth)return;
           const n=gf.itemsPerPage(gEl,ITEM,ITEM,GAP,140);
-          if(n!==PG){PG=n;if(RF.length)renderPage(0);}
+          if(n!==PG){PG=n;if(RF.length){PS_1();renderPage(0);}}
         });
       };
       scheduleGF();
@@ -292,8 +292,9 @@
     finally{setTimeout(()=>{SB=0;btn.disabled=false;},1500);}
   }
 
+  function PS_1(){PS=[[]];let c=0;for(const it of RF){if(it.type!=='ad'){if(c===PG){PS.push([]);c=0;}c++;}PS.at(-1).push(it);}}
   function FL_1(){
-    RF=FT?R.filter(x=>x.type===FT):R;pg=0;
+    RF=FT?R.filter(x=>x.type===FT):R;pg=0;PS_1();
     if(RF.length)renderPage(0);else{gEl.textContent='';pgEl.textContent='';gEl.append(MS_1('Sin resultados'));}
   }
   $('SK_FT').onclick=e=>{
@@ -327,7 +328,7 @@
   function renderPage(p,sw){
     const dir=p>pg?1:p<pg?-1:0;
     pg=p;gEl.textContent='';
-    RF.slice(p*PG,p*PG+PG).forEach(it=>it.type==='ad'?AD_1(it):gEl.append(CD_1(it)));
+    PS[p].forEach(it=>it.type==='ad'?AD_1(it):gEl.append(CD_1(it)));
     renderPg();
     if(sw)return;
     if(SW)SW.pre();
@@ -338,9 +339,9 @@
 
   function renderPg(){
     if(!_GF){loadGF().then(g=>{if(g)renderPg()});return}
-    if(!SW){SW=_GF.SW1(gEl,{n:()=>Math.ceil(RF.length/PG),p:()=>pg,ok:()=>!$('SK_B').hidden,go:i=>renderPage(i,1),
-      fill:(el,i)=>RF.slice(i*PG,i*PG+PG).forEach(it=>{if(it.type!=='ad')el.append(CD_1(it,1));else{const d=document.createElement('div');d.className='sk-it';el.append(d);}})});SW.pre()}
-    _GF.PN1(pgEl,pg,Math.ceil(RF.length/PG),renderPage);
+    if(!SW){SW=_GF.SW1(gEl,{n:()=>PS.length,p:()=>pg,ok:()=>!$('SK_B').hidden,go:i=>renderPage(i,1),
+      fill:(el,i)=>PS[i].forEach(it=>{if(it.type!=='ad')el.append(CD_1(it,1));else{const d=document.createElement('div');d.className='sk-ad';d.style.cssText=`width:${it.width}px;height:${it.height}px`;el.append(d);}})});SW.pre()}
+    _GF.PN1(pgEl,pg,PS.length,renderPage);
   }
 
   gEl.onclick=e=>{

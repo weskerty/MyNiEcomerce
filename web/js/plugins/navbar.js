@@ -80,6 +80,7 @@ body.NB_V{padding-bottom:76px}
 .NB_I0{order:0}.NB_S0{order:1}.NB_S1{order:3}.NB_I4{order:4}
 .NB_TM,.NB1.NB_C .NB_M{display:none}
 .NB_CX{padding:0 6px}
+.cb-bl{bottom:8px}.cb-fv{bottom:64px}
 }
 @media(orientation:landscape){
 .NB1{top:0;right:0;height:64px;padding:0 var(--RD_W);gap:4px;border:0;background:none;backdrop-filter:none;box-shadow:none}
@@ -91,6 +92,7 @@ body.NB_V{padding-bottom:76px}
 .NB1 .NB_CX{order:0;margin-right:12px}
 .NB_TM{margin-left:10px}
 .cb-pk,.cb-fng{display:none}
+.cb-bl{top:8px}.cb-fv{top:64px}
 body.NB_SD :is(.NB1,.NB_HD):not(.NB_H){transform:translateY(-100%)}
 }
 @media(orientation:landscape) and (max-width:980px){.NB1 .NB_L,.NB_HD .NB_BR span{display:none}}
@@ -175,10 +177,10 @@ body.low-perf .cb-d[open]{animation:none}
 #compartir-bloque{margin:30px 0;padding:10px 0;display:flex;align-items:center;justify-content:center}
 #compartir-bloque .share-btn{margin:0;padding:11px 28px}
 .share-btn::before{content:'↗';margin-right:6px;font-size:1.15em;line-height:1}
-.cb-bl{position:fixed;right:10px;bottom:8px;width:48px;height:48px;box-sizing:border-box;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font:inherit;cursor:pointer;z-index:9999;color:var(--RD_F);border:1px solid var(--RD_L);background:var(--RD_C);backdrop-filter:var(--RD_GF);box-shadow:var(--RD_SH);transition:opacity .4s ease-in,transform .4s cubic-bezier(.4,0,.2,1),visibility .4s}
+.cb-bl{position:fixed;right:10px;width:48px;height:48px;box-sizing:border-box;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;font:inherit;cursor:pointer;z-index:9999;color:var(--RD_F);border:1px solid var(--RD_L);background:var(--RD_C);backdrop-filter:var(--RD_GF);box-shadow:var(--RD_SH);transition:opacity .4s ease-in,transform .4s cubic-bezier(.4,0,.2,1),visibility .4s}
 .cb-bl.cb-bh{opacity:0;transform:scale(.4);pointer-events:none;visibility:hidden;transition:opacity .25s ease-out,transform .4s cubic-bezier(.4,0,.2,1),visibility .4s}
 .cb-bl img{width:32px;height:32px}
-.cb-fv{bottom:64px;font-size:24px}
+.cb-fv{font-size:24px}
 .cb-tl{background:rgba(250,204,21,.25);border-radius:6px;box-shadow:0 0 0 4px rgba(250,204,21,.25);transition:background .3s}
 .cb-fng{position:fixed;bottom:78px;left:50%;transform:translateX(-50%);font-size:38px;opacity:0;pointer-events:none;z-index:10000;transition:opacity .3s;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.4))}
 .cb-fng.cb-v{opacity:1;animation:cb-fngb 1s ease-in-out infinite}

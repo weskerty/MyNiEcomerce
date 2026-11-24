@@ -72,18 +72,22 @@ async function A(a,b={}){
 function OUT(){['ap_tel','ap_tk','ap_al'].forEach(k=>document.cookie=k+'=;path=/;max-age=0');U={};if(S.r?.isConnected)V()}
 function IN(tel,d){U={tel,tk:d.token,al:d.alias||U.al};SK('ap_tel',tel);SK('ap_tk',U.tk);if(U.al)SK('ap_al',U.al);T('Bienvenido');V('nuevo')}
 async function VF(b){
-  const{ok,d}=await A('codigo',b);
-  if(!ok)return T(d.error||'Error','err'),null;
   let g=Q('#AG_VF');
-  if(!g){g=E('dialog','AG_DG');g.id='AG_VF';g.innerHTML='<h3></h3><p>Envia el mensaje <b>desde ese numero</b>, por una de estas opciones:</p><div><a class="view-all-button" target="_blank" rel="noopener">WhatsApp</a><a class="view-all-button">SMS</a><a class="view-all-button" target="_blank" rel="noopener">Telegram</a></div><p class="AG_H"></p><div><button type="button">Cancelar</button></div>';S.r.append(g)}
-  const e=encodeURIComponent(d.tx),a=g.querySelectorAll('a'),s=g.querySelector('p.AG_H');
+  if(!g){g=E('dialog','AG_DG');g.id='AG_VF';g.innerHTML='<h3></h3><p>Envia el mensaje <b>desde ese numero</b>, por una de estas opciones:</p><div><img class="wait-anim" alt=""><a class="view-all-button" target="_blank" rel="noopener">WhatsApp</a><a class="view-all-button">SMS</a><a class="view-all-button" target="_blank" rel="noopener">Telegram</a></div><p class="AG_H"></p><div><button type="button">Cancelar</button></div>';g.querySelector('img').src=window.__CFG?.waitAnim||'';S.r.append(g)}
+  const a=g.querySelectorAll('a'),i=g.querySelector('img'),s=g.querySelector('p.AG_H');
   g.querySelector('h3').textContent='📞 '+(b.telefonoNuevo||b.telefono);
-  a[0].href=`https://wa.me/${W}?text=${e}`;a[1].href=`sms:+${W}?&body=${e}`;a[1].hidden=b.tipo!=='alta';a[2].href=`https://t.me/${TG}?start=${encodeURIComponent(d.codigo)}`;
-  s.textContent='Esperando confirmacion...';g.showModal();
-  return new Promise(res=>{
+  a.forEach(x=>x.hidden=1);i.hidden=0;s.textContent='';g.showModal();
+  return new Promise(async res=>{
     let f=0,t;
     const end=(v,m)=>{if(f)return;f=1;clearInterval(t);g.close();if(m)T(m,'err');res(v)};
     g.querySelector('button').onclick=()=>end(null);g.oncancel=()=>end(null);
+    const{ok,d}=await A('codigo',b);
+    if(f)return;
+    if(!ok)return end(null,d.error||'Error');
+    const e=encodeURIComponent(d.tx);
+    i.hidden=1;a[0].hidden=!d.wa;a[1].hidden=b.tipo!=='alta';a[2].hidden=0;
+    a[0].href=`https://wa.me/${d.wa}?text=${e}`;a[1].href=`sms:+${W}?&body=${e}`;a[2].href=`https://t.me/${TG}?start=${encodeURIComponent(d.codigo)}`;
+    s.textContent='Esperando confirmacion...';
     t=setInterval(async()=>{
       if(!g.isConnected)return end(null);
       const{d:r}=await A('estado',{sid:d.sid});
