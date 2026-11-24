@@ -58,16 +58,15 @@ export async function onRequestGet(context) {
     customer_id: cid,
     locale: LOCALE,
     content_filter: CONTENT_FILTER,
-    'ad-min-width': '50', 'ad-max-width': '400',
-    'ad-min-height': '50', 'ad-max-height': '250',
   });
   if (q) base.set('q', q);
+  const AD = sp.get('ad') === '0' ? '' : '&ad-min-width=50&ad-max-width=400&ad-min-height=50&ad-max-height=250';
 
   const results = await Promise.all(
     Object.entries(ENABLED)
       .filter(([, v]) => v)
       .map(([name]) =>
-        fetch(`${BASE}/${key}/${EP[name][mode]}?${base}`, {
+        fetch(`${BASE}/${key}/${EP[name][mode]}?${base}${name === 'stickers' ? AD : ''}`, {
           headers: { 'Content-Type': 'application/json', 'User-Agent': ua }
         }).then(r => r.ok ? r.json() : null).catch(() => null)
       )
