@@ -1,15 +1,15 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Stickers para WhatsApp - Che Agana</title>
-<meta name="description" content="🎨 Stickers para WhatsApp 🔍 Buscar 📦 Tu pack 0 ✈️ Telegram 🔍 Todos Stickers GIF Memes Clips Por temas de rendimiento solo se aceptan numeros paraguayos.">
+<meta name="description" content="🎨 Stickers para WhatsApp 🔍 Buscar 📦 Tu pack 0 ✈️ Telegram 🔍 Todos Stickers GIF Memes Clips Los stickers pueden tardar hasta 30 minutos en llegar. No re">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Che Agana">
 <meta property="og:title" content="Stickers para WhatsApp">
-<meta property="og:description" content="🎨 Stickers para WhatsApp 🔍 Buscar 📦 Tu pack 0 ✈️ Telegram 🔍 Todos Stickers GIF Memes Clips Por temas de rendimiento solo se aceptan numeros paraguayos.">
+<meta property="og:description" content="🎨 Stickers para WhatsApp 🔍 Buscar 📦 Tu pack 0 ✈️ Telegram 🔍 Todos Stickers GIF Memes Clips Los stickers pueden tardar hasta 30 minutos en llegar. No re">
 <meta property="og:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/NM%3Du1e73ed63ed-ID%3DStickers_para_WhatsApp-NB%3DStickers%20para%20WhatsApp.avif">
 <meta property="og:url" content="https://cheagana.com/A/Stickers_para_WhatsApp">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Stickers para WhatsApp">
-<meta name="twitter:description" content="🎨 Stickers para WhatsApp 🔍 Buscar 📦 Tu pack 0 ✈️ Telegram 🔍 Todos Stickers GIF Memes Clips Por temas de rendimiento solo se aceptan numeros paraguayos.">
+<meta name="twitter:description" content="🎨 Stickers para WhatsApp 🔍 Buscar 📦 Tu pack 0 ✈️ Telegram 🔍 Todos Stickers GIF Memes Clips Los stickers pueden tardar hasta 30 minutos en llegar. No re">
 <meta name="twitter:image" content="https://cheagana.com/web/%F0%9F%A7%A9%20Apps/%F0%9F%93%BA%20Media/NM%3Du1e73ed63ed-ID%3DStickers_para_WhatsApp-NB%3DStickers%20para%20WhatsApp.avif">
 <link rel="canonical" href="https://cheagana.com/A/Stickers_para_WhatsApp">
 <base href="/">
@@ -99,7 +99,7 @@
 <div id="sk-grid" class="sk-grid"></div>
 <div id="sk-pg" class="PG1"></div>
 <p class="SK_KL"><a href="https://klipy.com/" target="_blank" rel="noopener"><img src="web/adjuntos/Stickers_para_WhatsApp/KLIPY.svg" width="120" height="20" alt="Powered by KLIPY"></a></p>
-<p class="SK_NT">Por temas de rendimiento solo se aceptan numeros paraguayos.</p>
+<p class="SK_NT">Los stickers pueden tardar hasta 30 minutos en llegar. No repitas el pedido: los repetidos se ignoran.</p>
 </section>
 <section id="SK_P" hidden>
 <p class="SK_TX">Subi fotos, GIF o videos (se usan los primeros 10s) o elegi stickers en Buscar. En cada uno: ✂️ recortar, 🖼️ sumar una imagen, 🎵 ponerle musica.</p>
@@ -141,7 +141,7 @@
 </div>
 <script>
 (function(){
-  const ADS=true,MU=true;
+  const ADS=true,MU=true,KY='gCkt49niqCB9S2nlTLshWVfj8DOHunjpQCc8dAhJaxWhWfeZfvKVMmhvA9LeGR4W';
   const SK_WA='595985170023',SK_MX=10,GAP=8,PG_FALLBACK=6,TG_W=75;
   const ITEM=innerWidth<480?86:120;
   const MAX_SZ=20*1024*1024,DIM=256,TARGET=900*1024,AU_MX=1024*1024,AU_S=10;
@@ -206,6 +206,23 @@
   ERD.querySelector('[data-x]').onclick=()=>ERD.close();
   function setProg(p,l){pBar.style.width=p+'%';if(l!=null)pLbl.textContent=l;}
   function getCID(){try{let id=localStorage.getItem('sk_cid');if(!id){id=crypto.randomUUID();localStorage.setItem('sk_cid',id);}return id;}catch{return 'anon';}}
+  function KN_1(it){
+    if(it.type==='ad')return it.content?{type:'ad',content:it.content,width:it.width,height:it.height}:null;
+    const f=it.file,url=f&&(typeof f.webp==='string'?f.webp:f.sm?.webp?.url);
+    return url?{url,title:it.title||'',type:it.type,blur_preview:it.blur_preview||''}:null;
+  }
+  async function KS_1(q){
+    if(KY)try{
+      const p=new URLSearchParams({page:1,per_page:50,customer_id:getCID(),locale:'PY',content_filter:'off','ad-min-width':50,'ad-max-width':Math.min(400,innerWidth-32),'ad-min-height':50,'ad-max-height':250,'ad-device-w':screen.width,'ad-device-h':screen.height,'ad-pxratio':devicePixelRatio,'ad-language':'ES'});
+      if(q)p.set('q',q);
+      const rs=await Promise.all(['stickers','gifs','static-memes','clips'].map(e=>fetch(`https://api.klipy.com/api/v1/${KY}/${e}/${q?'search':'trending'}?${p}`).then(r=>r.json())));
+      const data=[];
+      for(const r of rs){if(!r.result)throw 0;for(const it of r.data?.data||[]){const n=KN_1(it);if(n)data.push(n);}}
+      return {data};
+    }catch{}
+    const p=new URLSearchParams({cid:getCID()});if(q)p.set('q',q);
+    const r=await fetch('/api/stickers?'+p);if(!r.ok)throw new Error(r.status);return r.json();
+  }
   function BT_1(t,l,c){const b=document.createElement('button');b.type='button';if(c)b.className=c;b.textContent=t;b.setAttribute('aria-label',l);b.title=l;return b;}
   function LD_1(t){const d=document.createElement('div');d.className='sk-searching';const i=document.createElement('img');i.className='wait-anim';i.src=WA;i.alt='';const s=document.createElement('span');s.textContent=t;d.append(i,s);return d;}
   function MS_1(t){const p=document.createElement('p');p.className='sk-msg';p.textContent=t;return p;}
@@ -268,10 +285,7 @@
     const btn=$('SK_SBB');btn.disabled=true;
     gEl.textContent='';gEl.append(LD_1('Buscando'));pgEl.textContent='';
     try{
-      const params=new URLSearchParams({cid:getCID()});if(q)params.set('q',q);
-      const r=await fetch('/api/stickers?'+params);
-      if(!r.ok)throw new Error(r.status);
-      const j=await r.json();
+      const j=await KS_1(q);
       R=(j.data||[]).filter(x=>x.type==='ad'?ADS&&x.content:x.url);lastQ=q;
       FL_1();
     }catch(e){gEl.textContent='';gEl.append(MS_1('Error Klipy '+e.message));}
@@ -845,9 +859,7 @@
     const res=$('sc-ov-res');
     res.textContent='';res.append(MS_1('Buscando...'));
     try{
-      const r=await fetch('/api/stickers?'+new URLSearchParams({q,cid:getCID()}));
-      if(!r.ok)throw 0;
-      const j=await r.json();
+      const j=await KS_1(q);
       res.textContent='';
       (j.data||[]).filter(x=>x.type!=='ad'&&x.url).slice(0,16).forEach(item=>{
         const b=document.createElement('button');b.type='button';b.className='ov-it';b.setAttribute('aria-label',item.title||'Imagen');
