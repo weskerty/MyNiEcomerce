@@ -9,7 +9,9 @@ if(cs&&cs.dataset.a&&!document.head.querySelector('title')){
 }
 let p=r?encodeURI(r):location.pathname.slice(1);
 if(!/\.html$/i.test(p))p+='.html';
-history.replaceState(null,'','/#'+p+location.hash);
+const hs=history.state;
+if(hs&&hs.i!=null)history.replaceState(hs,'','/');
+else history.replaceState(null,'',(r||cs&&cs.dataset.a?location.pathname:'/')+'#'+p+location.hash);
 const h=document.head;
 h.querySelectorAll('script,base,meta[name=viewport]').forEach(e=>e.remove());
 const hh=h.innerHTML;
