@@ -92,7 +92,7 @@
 
   const ETU='https://cdn.jsdelivr.net/npm/@uswriting/exiftool@1.0.9/+esm';
   const ETW='https://cdn.jsdelivr.net/npm/@6over3/zeroperl-ts@1.0.10/dist/esm/zeroperl.wasm';
-  const MBL='https://cdn.jsdelivr.net/npm/mediabunny@1.62.1/dist/bundles/mediabunny.min.mjs';
+  const MBL='https://cdn.jsdelivr.net/npm/mediabunny@1.66.3/dist/bundles/mediabunny.min.mjs';
   const PDL='https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.esm.min.js';
   const ETF=()=>fetch(ETW);
   const RO=new Set(['File','Composite','JFIF','RIFF','MPEG']);
@@ -368,7 +368,7 @@
   async function MW(u,nm,tags,all){
     const MB=await import(MBL),fm=FMT(u),of=fm==='mkv'?(/\.webm$/i.test(nm)?'WebM':'Mkv'):MBF[fm];
     const out=new MB.Output({format:new MB[of+'OutputFormat'](),target:new MB.BufferTarget()});
-    const cv=await MB.Conversion.init({input:new MB.Input({source:new MB.BufferSource(u),formats:MB.ALL_FORMATS}),output:out,tags:all?{}:t=>{
+    const cv=await MB.Conversion.init({input:new MB.Input({source:new MB.BufferSource(u),formats:MB.ALL_FORMATS}),output:out,copy:{shiftTolerance:1},tags:all?{creationTime:null}:t=>{
       const o={...t,raw:{...(t.raw||{})}};
       for(const k in tags){
         const n=k.split(':').pop();
