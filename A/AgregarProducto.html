@@ -131,7 +131,7 @@ const C={
     });
   },
   fix:d=>FILL(d,String(d.md||'').replace(/&lt;/g,'<')),
-  edit:async ID=>{const e=(await D()).all.find(x=>x.ID===ID);if(e)FILL(e)},
+  edit:async ID=>{const e=(await D()).all.find(x=>x.ID===ID);if(e)FILL(e,await fetch('https://weskerty.github.io/InfoWeb/web/media/'+e.fn.replace(/\.[^.]+$/,'.md').split('/').map(encodeURIComponent).join('/')).then(r=>r.ok?r.text():null).then(t=>t?.replace(/&lt;/g,'<')??null).catch(()=>null))},
   vw:v=>{
     if(v!=='nuevo')return;
     D();
