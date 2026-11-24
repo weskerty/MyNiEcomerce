@@ -562,9 +562,9 @@ function initShare(){
   el.innerHTML=`<div id="compartir-bloque"><button id="compartir-btn" type="button" class="share-btn view-all-button GL_C">Compartir</button></div>`;
   const b=document.getElementById("compartir-btn");
   b.addEventListener("click",()=>{
-    const t=el.dataset.t,u=location.href;
-    if(navigator.share)return navigator.share(t?{text:t,url:u}:{url:u}).catch(()=>{});
-    navigator.clipboard.writeText(t?t+" "+u:u).then(()=>{b.textContent="Link copiado";setTimeout(()=>{b.textContent="Compartir"},2000)}).catch(()=>{});
+    const t=el.dataset.t,u=location.href,x=t?t+" "+u:u;
+    if(navigator.share)return navigator.share(t?{text:x}:{url:u}).catch(()=>{});
+    navigator.clipboard.writeText(x).then(()=>{b.textContent="Link copiado";setTimeout(()=>{b.textContent="Compartir"},2000)}).catch(()=>{});
   });
 }
 
