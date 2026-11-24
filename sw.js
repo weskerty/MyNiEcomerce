@@ -1,4 +1,4 @@
-const V='v234';
+const V='v235';
 const N_ICON='web/recursos/iconos/ICON.png';
 const N_ICO='web/recursos/iconos/NOTIFY-MNCM-96x96.png';
 const N_BANNER='web/recursos/iconos/notif-banner.jpg';
@@ -220,12 +220,13 @@ async function runOPFS(){
 async function saveShareData(formData){
   const meta={title:formData.get('title')||'',text:formData.get('text')||'',url:formData.get('url')||'',files:[]};
   const raw=formData.getAll('files').filter(f=>f&&f.size>0);
+  await clearShareData();
   const sc=await caches.open(SHARE_C);
   const exp=String(Date.now()+SHARE_TTL);
-  await Promise.all(raw.map(async(f,i)=>{
+  meta.files=await Promise.all(raw.map(async(f,i)=>{
     const key='/__share_file_'+i;
     await sc.put(key,new Response(f,{headers:{'Content-Type':f.type||'application/octet-stream','X-Share-Name':f.name||('file'+i),'X-Share-Type':f.type||'','X-Expires':exp}}));
-    meta.files.push({key,name:f.name||('file'+i),type:f.type||'',size:f.size});
+    return{key,name:f.name||('file'+i),type:f.type||'',size:f.size};
   }));
   await sc.put(SHARE_KEY,new Response(JSON.stringify(meta),{headers:{'Content-Type':'application/json','X-Expires':exp}}));
 }
@@ -282,31 +283,6 @@ self.addEventListener('fetch',e=>{
       try{await saveShareData(await e.request.formData());}catch{}
       return Response.redirect('/#'+APPS_URL,303);
     })());
-    return;
-  }
-
-  if(url.pathname==='/_share_pending'&&e.request.method==='GET'){
-    e.respondWith((async()=>{
-      const sc=await caches.open(SHARE_C);
-      const meta=await sc.match(SHARE_KEY);
-      if(!meta)return new Response('null',{headers:{'Content-Type':'application/json'}});
-      const exp=parseInt(meta.headers.get('X-Expires')||0);
-      if(exp&&Date.now()>exp){await clearShareData();return new Response('null',{headers:{'Content-Type':'application/json'}});}
-      const m=JSON.parse(await meta.text());
-      if(!m.files||!m.files.length)return new Response(JSON.stringify({...m,blobs:[]}),{headers:{'Content-Type':'application/json'}});
-      const blobs=await Promise.all(m.files.map(async f=>{
-        const r=await sc.match(f.key);
-        if(!r)return null;
-        const ab=await r.arrayBuffer();
-        return{name:f.name,type:f.type,size:f.size,data:Array.from(new Uint8Array(ab))};
-      }));
-      return new Response(JSON.stringify({...m,blobs:blobs.filter(Boolean)}),{headers:{'Content-Type':'application/json'}});
-    })());
-    return;
-  }
-
-  if(url.pathname==='/_share_clear'&&e.request.method==='POST'){
-    e.respondWith(clearShareData().then(()=>new Response('ok')));
     return;
   }
 
