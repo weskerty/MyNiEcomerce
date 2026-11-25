@@ -40,7 +40,7 @@ export async function onRequestGet(context) {
   if (sp.has('sid')) {
     const sid = sp.get('sid');
     if (!/^[a-f0-9]{12}$/.test(sid)) return new Response('', { status: 400, headers: RH_N });
-    return BK_1(env, `estado?sid=${sid}`, { headers: { 'x-bridge-key': env.BRIDGE_KEY, 'x-fwip': request.headers.get('cf-connecting-ip') || '' } });
+    return BK_1(env, `estado?sid=${sid}`, { headers: { 'x-bridge-key': env.BRIDGE_KEY, 'x-fwip': request.headers.get('cf-connecting-ip') || '', 'x-fwcc': request.cf?.country || '' } });
   }
   const q   = sp.get('q') || '';
   const cid = sp.get('cid') || 'anon';
@@ -91,11 +91,12 @@ export async function onRequestPost(context) {
   const { request, env } = context;
   const ct = request.headers.get('content-type') || '';
   const ip = request.headers.get('cf-connecting-ip') || '';
+  const cc = request.cf?.country || '';
 
   if (ct.includes('multipart/form-data')) {
     return BK_1(env, 'upload', {
       method: 'POST',
-      headers: { 'x-bridge-key': env.BRIDGE_KEY, 'content-type': ct, 'x-fwip': ip },
+      headers: { 'x-bridge-key': env.BRIDGE_KEY, 'content-type': ct, 'x-fwip': ip, 'x-fwcc': cc },
       body: request.body
     });
   }
@@ -105,7 +106,7 @@ export async function onRequestPost(context) {
   if (typeof pack !== 'string' || !pack || pack.length > 200) return new Response('', { status: 400, headers: RH });
   return BK_1(env, 'tgpack', {
     method: 'POST',
-    headers: { 'x-bridge-key': env.BRIDGE_KEY, 'Content-Type': 'application/json', 'x-fwip': ip },
+    headers: { 'x-bridge-key': env.BRIDGE_KEY, 'Content-Type': 'application/json', 'x-fwip': ip, 'x-fwcc': cc },
     body: JSON.stringify({ pack })
   });
 }
