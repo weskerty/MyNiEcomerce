@@ -154,6 +154,7 @@ const C={
     });
   },
   fix:FIX,
+  tx:t=>{$('pb-ev-desc').value=t;CNT()},
   ini:()=>{
     AG1.K($('pb-tp'),PB_CATS,tp,TP);
     z=AG1.IZ($('pb-im'),()=>tp==='evento'?{fit:1}:{crop:1,ar:NaN});

@@ -40,7 +40,7 @@ const AP_LIBS=[
   {k:'js',l:'web/js/lib/EasyMDE/easymde.min.js',c:'https://cdn.jsdelivr.net/npm/easymde@2/dist/easymde.min.js',ok:()=>window.EasyMDE},
   {k:'js',l:'web/js/lib/DOMPurify/purify.min.js',c:'https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js',ok:()=>window.DOMPurify}
 ];
-const $=i=>document.getElementById(i),FP=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const $=i=>document.getElementById(i),FP=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'.'),MD=v=>mde?mde.value(v):$('ap-md').value=v;
 const T2L=t=>t?t.replace(/^(\d\d)\.(\d\d)\.(\d{4})\.(\d\d)\.(\d\d)$/,'$3-$2-$1T$4:$5'):'';
 const L2T=v=>v?v.replace(/^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d).*$/,'$3.$2.$1.$4.$5'):null;
 const TPE=e=>e.categoria==='Blogs'?'Blogs':e.categoria==='DemoDire'?e.sub:'';
@@ -68,7 +68,7 @@ function TP(t,i){
 function RS(){
   ['ap-id','ap-nb','ap-pc','ap-cm','ap-tm'].forEach(i=>$(i).value='');
   $('ap-ih').textContent=$('ap-gh').textContent='';ct=ed=null;z.clr();
-  if(mde)mde.value('');else $('ap-md').value='';
+  MD('');
   $('ap-go').textContent='Enviar Solicitud';
 }
 async function FILL(o,md){
@@ -79,7 +79,7 @@ async function FILL(o,md){
   $('ap-ch').value=o.CH||'WA.TG';$('ap-id').value=o.ID;$('ap-nb').value=o.NB||'';
   $('ap-pc').value=+o.PC?FP(+o.PC):'';$('ap-cm').value=+o.CM>1?o.CM:'';$('ap-tm').value=T2L(o.TM);
   ct=o.CT||null;$('ap-gh').className='AG_H';$('ap-gh').textContent=ct?'Se mantiene la ubicacion anterior, podes actualizarla':'';
-  if(md!=null){if(mde)mde.value(md);else $('ap-md').value=md}
+  if(md!=null)MD(md);
   ed=o.ID;$('ap-go').textContent='Guardar Edicion';
   AG1.T(md!=null?'Volve a subir la imagen para reenviar':'Volve a completar la descripcion y la imagen','warn');
 }
@@ -115,6 +115,7 @@ const C={
         acts:[['✏️ Editar',()=>AG1.ED(e.ID)],['🗑️ Pedir borrado',()=>AG1.DEL(e.ID,e.NB)]]};
     });
   },
+  tx:MD,
   fix:d=>FILL(d,String(d.md||'').replace(/&lt;/g,'<')),
   edit:async ID=>{const e=(await D()).all.find(x=>x.ID===ID);if(e)FILL(e,await fetch('https://weskerty.github.io/InfoWeb/web/media/'+e.fn.replace(/\.[^.]+$/,'.md').split('/').map(encodeURIComponent).join('/')).then(r=>r.ok?r.text():null).then(t=>t?.replace(/&lt;/g,'<')??null).catch(()=>null))},
   vw:v=>{
