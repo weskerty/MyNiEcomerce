@@ -146,19 +146,6 @@ document.addEventListener('paste',e=>{
   if(!f||d.types.includes('text/plain')&&document.activeElement?.matches('input:not([type=file]),textarea,[contenteditable]'))return;
   e.preventDefault();S.z.set(f);
 });
-async function SH(){
-  if(S.sh||S.e)return;S.sh=1;
-  try{
-    const C={cacheName:'share-pending'},r=await caches.match('/__share_data',C);
-    if(!r||Date.now()>+r.headers.get('X-Expires'))return;
-    const d=await r.json(),b=d.files.find(x=>x.type.startsWith('image/')),t=S.c.tx&&(d.text.includes(d.url)?d.text:d.text+'\n'+d.url).trim();
-    if(!b&&!t)return;
-    const f=b&&new File([await(await caches.match(b.key,C)).blob()],b.name,{type:b.type});
-    await caches.delete('share-pending');
-    if(t)S.c.tx(t);
-    if(f)S.z.set(f);
-  }catch{}
-}
 function F(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.remove('AG_SH');void el.offsetWidth;el.classList.add('AG_SH');setTimeout(()=>el.classList.remove('AG_SH'),1300)}
 const J=u=>fetch(u).then(r=>r.ok?r.json():{}).then(d=>d.galleries||d).catch(()=>({}));
 function EX(n,c,s,o){
@@ -261,7 +248,6 @@ function V(v,pop){
   if(S.v==='sol'&&!(pop&&S.ok.sol))SOL();
   if(S.v==='cta')Q('[data-tel]').textContent='📞 '+U.tel;
   S.c.vw?.(S.v);
-  if(S.v==='nuevo')SH();
 }
 const PW='<label class="AG_F"><span>{L}</span><input name="{N}" type="password" placeholder="••••••" autocomplete="{A}" required{M}></label>';
 const pw=(L,N,A,m)=>PW.replace('{L}',L).replace('{N}',N).replace('{A}',A).replace('{M}',m?' minlength="10"':'');
