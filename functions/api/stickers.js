@@ -37,6 +37,7 @@ export async function onRequestGet(context) {
   const { request, env } = context;
   const u = new URL(request.url);
   const sp  = u.searchParams;
+  if (sp.has('d')) return BK_1(env, 'disp', { headers: { 'x-bridge-key': env.BRIDGE_KEY, 'x-fwip': request.headers.get('cf-connecting-ip') || '', 'x-fwcc': request.cf?.country || '' } });
   if (sp.has('sid')) {
     const sid = sp.get('sid');
     if (!/^[a-f0-9]{12}$/.test(sid)) return new Response('', { status: 400, headers: RH_N });
