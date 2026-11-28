@@ -3,8 +3,8 @@
 
 ### SPA sencillo pero veloz
 
-Tamaño HTML/CSS/JS: 5.8MB · Imagenes: 31.6MB · Video/audio: 2.6MB · Fuentes: 3.0MB · JSON/texto: 0.3MB · Binarios: 0.2MB · Total: 43.7MB\
-A/: 1.4MB
+Tamaño HTML/CSS/JS: 5.9MB · Imagenes: 31.6MB · Video/audio: 2.6MB · Fuentes: 3.0MB · JSON/texto: 0.3MB · Binarios: 0.2MB · Total: 43.7MB\
+A/: 1.5MB
 
 **Uso actual:** expositor de artículos. Para que gente con interes ambiental levante sus tiendas ecologicas facilmente.
 
